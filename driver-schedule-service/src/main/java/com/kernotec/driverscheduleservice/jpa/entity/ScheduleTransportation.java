@@ -5,9 +5,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.ZonedDateTime;
+import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -57,4 +60,18 @@ public class ScheduleTransportation extends BaseAuditEntity {
     @JoinColumn(name = "schedule_transportation_state_id", referencedColumnName = "id",
                 insertable = false, updatable = false)
     private ScheduleTransportationState scheduleTransportationState;
+
+    @ManyToMany
+    @JoinTable(name = "cancel_reasons",
+               joinColumns = @JoinColumn(name = "schedule_transportation_id",
+                                         referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "reason_id", referencedColumnName = "id"))
+    private Set<Reason> cancelReasons;
+
+    @ManyToMany
+    @JoinTable(name = "reschedule_reasons",
+               joinColumns = @JoinColumn(name = "schedule_transportation_id",
+                                         referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "reason_id", referencedColumnName = "id"))
+    private Set<Reason> rescheduleReasons;
 }

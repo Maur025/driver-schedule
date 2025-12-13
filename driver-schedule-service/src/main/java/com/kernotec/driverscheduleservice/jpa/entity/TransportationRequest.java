@@ -12,9 +12,12 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.ZonedDateTime;
+import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -71,4 +74,11 @@ public class TransportationRequest extends BaseAuditEntity {
     @JoinColumn(name = "transportation_request_state_id", referencedColumnName = "id",
                 insertable = false, updatable = false)
     private TransportationRequestState transportationRequestState;
+
+    @ManyToMany
+    @JoinTable(name = "reject_reasons",
+               joinColumns = @JoinColumn(name = "transportation_request_id",
+                                         referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "reason_id", referencedColumnName = "id"))
+    private Set<Reason> rejectReasons;
 }

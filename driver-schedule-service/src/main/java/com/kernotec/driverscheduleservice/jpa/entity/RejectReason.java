@@ -27,11 +27,11 @@ public class RejectReason extends BaseAuditEntity {
                 updatable = false)
     private Reason reason;
 
-    @Column(name = "trasportation_request_id", nullable = false)
-    private UUID trasportationRequestId;
+    @Column(name = "transportation_request_id", nullable = false)
+    private UUID transportationRequestId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trasportation_request_id", referencedColumnName = "id", insertable = false,
+    @JoinColumn(name = "transportation_request_id", referencedColumnName = "id", insertable = false,
                 updatable = false)
     private TransportationRequest transportationRequest;
 }
