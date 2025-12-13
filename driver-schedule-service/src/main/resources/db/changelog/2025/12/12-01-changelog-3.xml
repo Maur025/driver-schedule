@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+  <changeSet id="1765582587595-1" author="mmoya@PragmaInvest.com">
+    <createTable tableName="locations">
+      <column defaultValueComputed="uuid_generate_v4()" name="id" type="uuid">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_locations"/>
+      </column>
+      <column defaultValueComputed="now()" name="created_at" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by" type="VARCHAR(255)"/>
+      <column defaultValueComputed="now()" name="updated_at" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_by" type="VARCHAR(255)"/>
+      <column defaultValueNumeric="0" name="version" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column defaultValueBoolean="false" name="deleted" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="description" type="VARCHAR(255)"/>
+      <column name="lat" type="DOUBLE"/>
+      <column name="lng" type="DOUBLE"/>
+    </createTable>
+  </changeSet>
+  <changeSet id="1765582587595-2" author="mmoya@PragmaInvest.com">
+    <createTable tableName="person">
+      <column defaultValueComputed="uuid_generate_v4()" name="id" type="uuid">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person"/>
+      </column>
+      <column defaultValueComputed="now()" name="created_at" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by" type="VARCHAR(255)"/>
+      <column defaultValueComputed="now()" name="updated_at" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_by" type="VARCHAR(255)"/>
+      <column defaultValueNumeric="0" name="version" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column defaultValueBoolean="false" name="deleted" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="document" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="phone" type="VARCHAR(255)"/>
+      <column name="user_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="person_type_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="1765582587595-3" author="mmoya@PragmaInvest.com">
+    <createTable tableName="person_types">
+      <column defaultValueComputed="uuid_generate_v4()" name="id" type="uuid">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person_types"/>
+      </column>
+      <column defaultValueComputed="now()" name="created_at" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by" type="VARCHAR(255)"/>
+      <column defaultValueComputed="now()" name="updated_at" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_by" type="VARCHAR(255)"/>
+      <column defaultValueNumeric="0" name="version" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column defaultValueBoolean="false" name="deleted" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="code" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="1765582587595-4" author="mmoya@PragmaInvest.com">
+    <createTable tableName="schedule_transportation_states">
+      <column defaultValueComputed="uuid_generate_v4()" name="id" type="uuid">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_schedule_transportation_states"/>
+      </column>
+      <column defaultValueBoolean="false" name="deleted" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="code" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="1765582587595-5" author="mmoya@PragmaInvest.com">
+    <createTable tableName="schedule_transportations">
+      <column defaultValueComputed="uuid_generate_v4()" name="id" type="uuid">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_schedule_transportations"/>
+      </column>
+      <column defaultValueComputed="now()" name="created_at" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by" type="VARCHAR(255)"/>
+      <column defaultValueComputed="now()" name="updated_at" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_by" type="VARCHAR(255)"/>
+      <column defaultValueNumeric="0" name="version" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column defaultValueBoolean="false" name="deleted" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="schedule_from" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="schedule_to" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="vehicle_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="driver_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="transportation_request_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="schedule_transportation_state_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="1765582587595-6" author="mmoya@PragmaInvest.com">
+    <createTable tableName="transportation_request_states">
+      <column defaultValueComputed="uuid_generate_v4()" name="id" type="uuid">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_transportation_request_states"/>
+      </column>
+      <column defaultValueBoolean="false" name="deleted" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="code" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="1765582587595-7" author="mmoya@PragmaInvest.com">
+    <createTable tableName="transportation_requests">
+      <column defaultValueComputed="uuid_generate_v4()" name="id" type="uuid">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_transportation_requests"/>
+      </column>
+      <column defaultValueComputed="now()" name="created_at" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by" type="VARCHAR(255)"/>
+      <column defaultValueComputed="now()" name="updated_at" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_by" type="VARCHAR(255)"/>
+      <column defaultValueNumeric="0" name="version" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column defaultValueBoolean="false" name="deleted" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="people_number" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="assets" type="VARCHAR(1000)"/>
+      <column name="passengers" type="VARCHAR(1000)"/>
+      <column name="start_time" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="end_time" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="requested_date" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="transportation_request_state_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="starting_lat" type="DOUBLE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="starting_lng" type="DOUBLE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="end_lat" type="DOUBLE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="end_lng" type="DOUBLE">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="1765582587595-8" author="mmoya@PragmaInvest.com">
+    <createTable tableName="vehicles">
+      <column defaultValueComputed="uuid_generate_v4()" name="id" type="uuid">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_vehicles"/>
+      </column>
+      <column defaultValueComputed="now()" name="created_at" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by" type="VARCHAR(255)"/>
+      <column defaultValueComputed="now()" name="updated_at" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_by" type="VARCHAR(255)"/>
+      <column defaultValueNumeric="0" name="version" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column defaultValueBoolean="false" name="deleted" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="vehicle_number" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="model" type="VARCHAR(255)"/>
+      <column name="capacity" type="INT"/>
+    </createTable>
+  </changeSet>
+  <changeSet id="1765582587595-9" author="mmoya@PragmaInvest.com">
+    <addForeignKeyConstraint baseColumnNames="person_type_id" baseTableName="person"
+      constraintName="FK_PERSON_ON_PERSON_TYPE" referencedColumnNames="id"
+      referencedTableName="person_types"/>
+  </changeSet>
+  <changeSet id="1765582587595-10" author="mmoya@PragmaInvest.com">
+    <addForeignKeyConstraint baseColumnNames="driver_id" baseTableName="schedule_transportations"
+      constraintName="FK_SCHEDULE_TRANSPORTATIONS_ON_DRIVER" referencedColumnNames="id"
+      referencedTableName="person"/>
+  </changeSet>
+  <changeSet id="1765582587595-11" author="mmoya@PragmaInvest.com">
+    <addForeignKeyConstraint baseColumnNames="schedule_transportation_state_id"
+      baseTableName="schedule_transportations"
+      constraintName="FK_SCHEDULE_TRANSPORTATIONS_ON_SCHEDULE_TRANSPORTATION_STATE"
+      referencedColumnNames="id" referencedTableName="schedule_transportation_states"/>
+  </changeSet>
+  <changeSet id="1765582587595-12" author="mmoya@PragmaInvest.com">
+    <addForeignKeyConstraint baseColumnNames="transportation_request_id"
+      baseTableName="schedule_transportations"
+      constraintName="FK_SCHEDULE_TRANSPORTATIONS_ON_TRANSPORTATION_REQUEST"
+      referencedColumnNames="id" referencedTableName="transportation_requests"/>
+  </changeSet>
+  <changeSet id="1765582587595-13" author="mmoya@PragmaInvest.com">
+    <addForeignKeyConstraint baseColumnNames="vehicle_id" baseTableName="schedule_transportations"
+      constraintName="FK_SCHEDULE_TRANSPORTATIONS_ON_VEHICLE" referencedColumnNames="id"
+      referencedTableName="vehicles"/>
+  </changeSet>
+  <changeSet id="1765582587595-14" author="mmoya@PragmaInvest.com">
+    <addForeignKeyConstraint baseColumnNames="transportation_request_state_id"
+      baseTableName="transportation_requests"
+      constraintName="FK_TRANSPORTATION_REQUESTS_ON_TRANSPORTATION_REQUEST_STATE"
+      referencedColumnNames="id" referencedTableName="transportation_request_states"/>
+  </changeSet>
+
+</databaseChangeLog>
