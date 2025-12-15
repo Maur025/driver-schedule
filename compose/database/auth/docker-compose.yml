@@ -1,0 +1,25 @@
+services:
+
+  driver-schedule-auth-db:
+    image: ${POSTGRESQL_IMAGE}
+    restart: unless-stopped
+    hostname: driver-schedule-auth-db
+    container_name: driver-schedule-auth-db
+    ports:
+      - "5541:5432"
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - driver-schedule-auth-db:/var/lib/postgresql/data
+      - ./init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+      - ./dumps:/dumps
+    networks:
+      - compose-net
+
+volumes:
+  driver-schedule-auth-db:
+    name: driver-schedule-auth-db
+
+networks:
+  compose-net:
+    external: true
