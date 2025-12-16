@@ -1,6 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.controller;
 
 import com.kernotec.core.jpa.util.PageableUtil;
+import com.kernotec.core.rest.dto.response.MessageResponse;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
@@ -8,9 +9,13 @@ import com.kernotec.driverscheduleservice.jpa.entity.Vehicle;
 import com.kernotec.driverscheduleservice.jpa.service.VehicleService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.VehicleSpec;
 import com.kernotec.driverscheduleservice.rest.dto.response.VehicleResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.vehicle.VehicleResponseMapper;
+import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
+import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -32,6 +37,7 @@ public class VehicleController {
 
     private final VehicleService vehicleService;
     private final VehicleResponseMapper vehicleResponseMapper;
+    private final WebSocketHandler webSocketHandler;
 
     @Operation(summary = "find all vehicles")
     @GetMapping
@@ -76,6 +82,24 @@ public class VehicleController {
         return SingleResponse.<VehicleResponse>builder()
             .code(HttpStatus.OK.value())
             .data(vehicleResponseMapper.toResponse(vehicle))
+            .build();
+    }
+
+    @Operation(summary = "este api es de prueba para web socket")
+    @GetMapping("/test-websocket")
+    @ResponseStatus(HttpStatus.OK)
+    public MessageResponse testWebSocket() {
+        webSocketHandler.emitMessage(
+            WebSocketTopic.VEHICLE_CREATED, WebSocketSingleResponse.<Vehicle>builder()
+                .topic(WebSocketTopic.VEHICLE_CREATED)
+                .timestamp(ZonedDateTime.now())
+                .data(new Vehicle())
+                .build()
+        );
+
+        return MessageResponse.builder()
+            .code(HttpStatus.OK.value())
+            .message("Todo fue exitoso!")
             .build();
     }
 }

@@ -86,3 +86,9 @@ oauth2-config:
   host: ${OAUTH2_HOST:http://localhost:7801}
   realm: ${OAUTH2_REALM:driver-schedule-auth}
   secret-key: ${OAUTH2_JWT_SECRET:secret-key}
+
+# WEB SOCKET CONFIG
+web-socket-config:
+  broker-prefix: /topic
+  app-prefix: /app
+  endpoint: /ws-driver-schedule
