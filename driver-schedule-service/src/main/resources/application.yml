@@ -1,6 +1,6 @@
 # SERVER
 server:
-  port: 7801
+  port: ${SERVER_PORT_APP:7801}
 
 # DRIVER SCHEDULE
 kernotec:

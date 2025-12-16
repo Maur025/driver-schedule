@@ -1,0 +1,40 @@
+package com.kernotec.driverscheduleauth.rest.command;
+
+import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
+import com.kernotec.driverscheduleauth.jpa.enums.GrantTypeEnum;
+import com.kernotec.driverscheduleauth.rest.dto.request.OpenIdConnectTokenRequest;
+import com.kernotec.driverscheduleauth.rest.dto.response.OpenIdConnectTokenResponse;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@RequiredArgsConstructor
+@Service
+public class ConnectionTokenCmd extends AbstractTransactionalRequiredCommand<ConnectionTokenCmd.Request, OpenIdConnectTokenResponse> {
+
+    private final AuthLoginWithPasswordCmd authLoginWithPasswordCmd;
+    private final GenerateAccessFromRefreshTokenCmd generateAccessFromRefreshTokenCmd;
+
+    @Override
+    protected OpenIdConnectTokenResponse run(Request request) {
+        return switch (request.grantType){
+            case password -> authLoginWithPasswordCmd.withRequest(
+                    AuthLoginWithPasswordCmd.Request.builder()
+                        .tokenRequest(request.tokenRequest)
+                        .build())
+                .execute();
+            case refresh_token -> generateAccessFromRefreshTokenCmd.withRequest(
+                    GenerateAccessFromRefreshTokenCmd.Request.builder()
+                        .refreshToken(request.refreshToken)
+                        .build())
+                .execute();
+        };
+    }
+
+    @Builder
+    public record Request(GrantTypeEnum grantType, OpenIdConnectTokenRequest tokenRequest,
+                          String refreshToken)
+    {
+
+    }
+}

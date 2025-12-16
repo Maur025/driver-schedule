@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+  <include file="db/changelog/2025/12/15-01-changelog.xml"/>
+
+  <!-- Realm seed -->
+  <changeSet id="1765884294730-1" author="maur025">
+    <sqlFile path="data/realm/realm_seed.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+  <!-- Role seed -->
+  <changeSet id="1765884333789-1" author="maur025">
+    <sqlFile path="data/role/role_seed.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+</databaseChangeLog>

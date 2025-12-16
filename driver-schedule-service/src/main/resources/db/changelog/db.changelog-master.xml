@@ -24,4 +24,6 @@
     <sqlFile path="data/schedule/transportation/state/schedule_transportation_state_seed.sql"
       relativeToChangelogFile="true"/>
   </changeSet>
+
+  <include file="db/changelog/2025/12/15-01-changelog-4.xml"/>
 </databaseChangeLog>
