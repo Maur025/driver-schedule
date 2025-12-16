@@ -37,7 +37,7 @@ public class PersonTypeController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public PageResponse<PersonTypeResponse> findAll(@RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "0") Integer size,
+        @RequestParam(defaultValue = "20") Integer size,
         @RequestParam(defaultValue = "id") String sortBy,
         @RequestParam(defaultValue = "true") boolean descending)
     {

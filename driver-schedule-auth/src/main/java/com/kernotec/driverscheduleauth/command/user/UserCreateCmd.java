@@ -1,4 +1,4 @@
-package com.kernotec.driverscheduleauth.command;
+package com.kernotec.driverscheduleauth.command.user;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleauth.jpa.entity.User;

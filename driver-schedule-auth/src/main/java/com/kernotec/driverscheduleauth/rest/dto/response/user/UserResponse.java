@@ -21,7 +21,6 @@ public class UserResponse extends EntityResponse {
     private String name;
     private String lastName;
     private String username;
-    private String password;
     private ZonedDateTime createdOn;
 
     private UUID realmId;

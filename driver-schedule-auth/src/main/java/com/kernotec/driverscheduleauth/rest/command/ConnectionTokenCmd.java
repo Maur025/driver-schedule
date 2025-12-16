@@ -12,11 +12,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class ConnectionTokenCmd extends AbstractTransactionalRequiredCommand<ConnectionTokenCmd.Request, OpenIdConnectTokenResponse> {
 
+    private final AuthLoginWithPasswordCmd authLoginWithPasswordCmd;
+    private final GenerateAccessFromRefreshTokenCmd generateAccessFromRefreshTokenCmd;
+
     @Override
     protected OpenIdConnectTokenResponse run(Request request) {
         return switch (request.grantType){
-            case password -> {}
-            case refresh_token -> {}
+            case password -> authLoginWithPasswordCmd.withRequest(
+                    AuthLoginWithPasswordCmd.Request.builder()
+                        .tokenRequest(request.tokenRequest)
+                        .build())
+                .execute();
+            case refresh_token -> generateAccessFromRefreshTokenCmd.withRequest(
+                    GenerateAccessFromRefreshTokenCmd.Request.builder()
+                        .refreshToken(request.refreshToken)
+                        .build())
+                .execute();
         };
     }
 

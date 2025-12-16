@@ -38,7 +38,7 @@ public class RescheduleReasonController {
     @ResponseStatus(HttpStatus.OK)
     public PageResponse<RescheduleReasonResponse> findAll(
         @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "0") Integer size,
+        @RequestParam(defaultValue = "20") Integer size,
         @RequestParam(defaultValue = "createdAt") String sortBy,
         @RequestParam(defaultValue = "true") boolean descending)
     {
