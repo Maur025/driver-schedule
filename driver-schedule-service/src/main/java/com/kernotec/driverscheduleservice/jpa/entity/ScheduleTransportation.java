@@ -53,6 +53,15 @@ public class ScheduleTransportation extends BaseAuditEntity {
                 updatable = false)
     private TransportationRequest transportationRequest;
 
+    @Column(name = "person_requested_id", nullable = false)
+    private UUID personRequestedId;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "person_requested_id", referencedColumnName = "id", insertable = false,
+                updatable = false)
+    private Person personRequested;
+
+
     @Column(name = "schedule_transportation_state_id", nullable = false)
     private UUID scheduleTransportationStateId;
 
