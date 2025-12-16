@@ -16,10 +16,12 @@ import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AuthLoginWithPasswordCmd extends
@@ -44,13 +46,17 @@ public class AuthLoginWithPasswordCmd extends
             throw new UserException("login.failed", "", HttpStatus.BAD_REQUEST.value());
         }
 
+        log.info("access exp type: {}", authConfigProperties.getAccessTokenExpType());
         long accessExp = TimeMeasureUtil.getMillisecondsByTypeTime(
             authConfigProperties.getAccessTokenExp(), authConfigProperties.getAccessTokenExpType());
+        log.info("Access token exp milliseconds: {}", accessExp);
 
+        log.info("access exp type: {}", authConfigProperties.getRefreshTokenExpType());
         long refreshExp = TimeMeasureUtil.getMillisecondsByTypeTime(
             authConfigProperties.getRefreshTokenExp(),
             authConfigProperties.getRefreshTokenExpType()
         );
+        log.info("Refresh token exp milliseconds: {}", refreshExp);
 
         UUID refreshTokenId = UUID.randomUUID();
 

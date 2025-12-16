@@ -7,7 +7,9 @@ import com.kernotec.driverscheduleauth.jpa.entity.User;
 import com.nimbusds.jwt.JWTClaimsSet;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.Builder;
@@ -33,13 +35,19 @@ public class TokenJWTClaimSetBuildCmd extends
             .get(0)
             .url();
 
+        List<String> roles = new ArrayList<>();
+
+        for (var role : user.getRoles()) {
+            roles.add(role.getName());
+        }
+
         return new JWTClaimsSet.Builder().subject(user.getId()
                 .toString())
-            .claim("preferred_username", user.getUsername())
-            .claim("name", String.format("%s %s", user.getName(), user.getLastName()))
-            .claim("realm_access", Map.of("roles", user.getRoles()))
             .jwtID(request.refreshTokenId != null ? request.refreshTokenId
                 : String.valueOf(UUID.randomUUID()))
+            .claim("preferred_username", user.getUsername())
+            .claim("name", String.format("%s %s", user.getName(), user.getLastName()))
+            .claim("realm_access", Map.of("roles", roles))
             .claim(
                 "auth_time", Instant.now()
                     .getEpochSecond()
