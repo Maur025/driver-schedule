@@ -4,6 +4,7 @@ import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.driverscheduleauth.jpa.entity.Realm;
 import com.kernotec.driverscheduleauth.jpa.repository.RealmRepository;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,5 +23,9 @@ public class RealmService extends BaseServiceImpl<Realm, UUID> {
     @Override
     protected BaseRepository<Realm, UUID> repository() {
         return repository;
+    }
+
+    public Optional<Realm> findByName(String name) {
+        return repository.findByName(name);
     }
 }

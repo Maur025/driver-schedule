@@ -45,7 +45,7 @@ public class CancelReasonController {
     @ResponseStatus(HttpStatus.OK)
     public PageResponse<CancelReasonResponse> findAll(
         @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "0") Integer size,
+        @RequestParam(defaultValue = "20") Integer size,
         @RequestParam(defaultValue = "createdAt") String sortBy,
         @RequestParam(defaultValue = "true") boolean descending)
     {

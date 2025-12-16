@@ -3,6 +3,7 @@ package com.kernotec.driverscheduleauth.rest.dto.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.kernotec.driverscheduleauth.jpa.enums.TokenTypeEnum;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,7 +19,7 @@ public class OpenIdConnectTokenResponse {
     private String refreshToken;
 
     @JsonProperty("token_type")
-    private String tokenType;
+    private TokenTypeEnum tokenType;
 
     @JsonProperty("expires_in")
     private Long expiresIn;

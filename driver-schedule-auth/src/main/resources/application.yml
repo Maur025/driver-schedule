@@ -90,3 +90,4 @@ oauth2-config:
   refresh-token-exp: ${OAUTH2_JWT_REFRESH_TOKEN_EXP:86400}
   refresh-token-exp-type: ${OAUTH2_JWT_REFRESH_TOKEN_EXP_TYPE:seconds}
   refresh-token-secure: ${OATH2_JWT_REFRESH_TOKEN_SECURE:dev}
+  admin-password: ${OAUTH2_ADMIN_PASSWORD:admin-pass}
