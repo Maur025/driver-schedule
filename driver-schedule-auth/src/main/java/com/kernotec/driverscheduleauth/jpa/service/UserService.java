@@ -28,10 +28,15 @@ public class UserService extends BaseServiceImpl<User, UUID> {
     }
 
     public Optional<User> findByUsername(String username) {
-        return repository.findByUsername(username);
+        if (username == null) {
+            return Optional.empty();
+        }
+
+        return repository.findByUsernameIgnoreCase(username.strip()
+            .toLowerCase());
     }
 
-    public User findByUsernameThrow(String username){
+    public User findByUsernameThrow(String username) {
         return findByUsername(username).orElseThrow(
             () -> new UserException("login.failed", "", HttpStatus.BAD_REQUEST.value()));
     }

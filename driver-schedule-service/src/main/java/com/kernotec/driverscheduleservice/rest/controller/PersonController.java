@@ -7,6 +7,8 @@ import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.Person;
 import com.kernotec.driverscheduleservice.jpa.service.PersonService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.PersonSpec;
+import com.kernotec.driverscheduleservice.rest.command.person.ProcessPersonCreateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.dto.request.person.PersonCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.PersonResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.person.PersonResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -32,6 +36,7 @@ public class PersonController {
 
     private final PersonService personService;
     private final PersonResponseMapper personResponseMapper;
+    private final ProcessPersonCreateRequestCmd processPersonCreateRequestCmd;
 
     @Operation(summary = "find all persons")
     @GetMapping
@@ -76,6 +81,22 @@ public class PersonController {
         return SingleResponse.<PersonResponse>builder()
             .code(HttpStatus.OK.value())
             .data(personResponseMapper.toResponse(person))
+            .build();
+    }
+
+    @Operation(summary = "save person")
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public SingleResponse<PersonResponse> save(@RequestBody PersonCreateRequest request) {
+        UUID personId = processPersonCreateRequestCmd.withRequest(
+                ProcessPersonCreateRequestCmd.Request.builder()
+                    .personCreateRequest(request)
+                    .build())
+            .execute();
+
+        return SingleResponse.<PersonResponse>builder()
+            .code(HttpStatus.CREATED.value())
+            .data(personResponseMapper.toResponse(personId))
             .build();
     }
 }
