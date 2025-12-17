@@ -27,9 +27,6 @@ public class PersonUpdateCmd extends
         if (request.lastName != null) {
             person.setLastName(request.lastName);
         }
-        if (request.personTypeId != null) {
-            person.setPersonTypeId(request.personTypeId);
-        }
         if (request.phone != null) {
             person.setPhone(request.phone);
         }
@@ -39,9 +36,7 @@ public class PersonUpdateCmd extends
     }
 
     @Builder
-    public record Request(@NotNull UUID personId, String name, String lastName, UUID personTypeId,
-                          String phone)
-    {
+    public record Request(@NotNull UUID personId, String name, String lastName, String phone) {
 
     }
 }

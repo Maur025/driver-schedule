@@ -29,11 +29,6 @@
 
     <dependency>
       <groupId>com.kernotec</groupId>
-      <artifactId>core-swagger</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.kernotec</groupId>
       <artifactId>core-jpa</artifactId>
     </dependency>
 
@@ -54,6 +49,11 @@
 
     <dependency>
       <groupId>com.kernotec</groupId>
+      <artifactId>core-swagger</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.kernotec</groupId>
       <artifactId>core-test</artifactId>
     </dependency>
 
@@ -65,6 +65,17 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+      <version>${org.springdoc.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+      <version>${org.springdoc.version}</version>
     </dependency>
 
     <dependency>
@@ -98,5 +109,9 @@
       </properties>
     </profile>
   </profiles>
+
+  <properties>
+    <org.springdoc.version>2.2.0</org.springdoc.version>
+  </properties>
 
 </project>

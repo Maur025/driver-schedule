@@ -92,3 +92,10 @@ web-socket-config:
   broker-prefix: /topic
   app-prefix: /app
   endpoint: /ws-driver-schedule
+
+# MODULES CONFIG API
+modules-app:
+  app-auth:
+    scheme: ${MS_AUTH_SCHEME:http}
+    host: ${MS_AUTH_HOST:localhost}
+    port: ${SERVER_PORT_AUTH:7800}

@@ -2,11 +2,13 @@ package com.kernotec.driverscheduleauth.jpa.service;
 
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
+import com.kernotec.driverscheduleauth.exception.RoleException;
 import com.kernotec.driverscheduleauth.jpa.entity.Role;
 import com.kernotec.driverscheduleauth.jpa.repository.RoleRepository;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
@@ -30,5 +32,13 @@ public class RoleService extends BaseServiceImpl<Role, UUID> {
         String resource)
     {
         return repository.findByNameAndRealmIdAndResource(name, realmId, resource);
+    }
+
+    public Role findByNameAndRealmIdAndResourceThrow(String name, UUID realmId, String resource) {
+        return findByNameAndRealmIdAndResource(name, realmId, resource).orElseThrow(
+            () -> new RoleException(
+                "not.found", "'" + name + ":" + resource + "'",
+                HttpStatus.NOT_FOUND.value()
+            ));
     }
 }
