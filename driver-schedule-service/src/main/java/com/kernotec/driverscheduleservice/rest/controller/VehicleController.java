@@ -8,6 +8,10 @@ import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.Vehicle;
 import com.kernotec.driverscheduleservice.jpa.service.VehicleService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.VehicleSpec;
+import com.kernotec.driverscheduleservice.rest.command.vehicle.ProcessVehicleCreateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.command.vehicle.ProcessVehicleUpdateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleCreateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleUpdateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.VehicleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.vehicle.VehicleResponseMapper;
@@ -26,6 +30,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -41,6 +48,8 @@ public class VehicleController {
     private final VehicleService vehicleService;
     private final VehicleResponseMapper vehicleResponseMapper;
     private final WebSocketHandler webSocketHandler;
+    private final ProcessVehicleCreateRequestCmd processVehicleCreateRequestCmd;
+    private final ProcessVehicleUpdateRequestCmd processVehicleUpdateRequestCmd;
 
     @Operation(summary = "find all vehicles")
     @GetMapping
@@ -85,6 +94,40 @@ public class VehicleController {
         return SingleResponse.<VehicleResponse>builder()
             .code(HttpStatus.OK.value())
             .data(vehicleResponseMapper.toResponse(vehicle))
+            .build();
+    }
+
+    @Operation(summary = "save vehicle")
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public SingleResponse<VehicleResponse> save(@RequestBody VehicleCreateRequest request) {
+        UUID vehicleId = processVehicleCreateRequestCmd.withRequest(
+                ProcessVehicleCreateRequestCmd.Request.builder()
+                    .vehicleCreateRequest(request)
+                    .build())
+            .execute();
+
+        return SingleResponse.<VehicleResponse>builder()
+            .code(HttpStatus.CREATED.value())
+            .data(vehicleResponseMapper.toResponse(vehicleId))
+            .build();
+    }
+
+    @Operation(summary = "update vehicle")
+    @PutMapping("{vehicleId}")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<VehicleResponse> update(@PathVariable UUID vehicleId,
+        @RequestBody VehicleUpdateRequest request)
+    {
+        processVehicleUpdateRequestCmd.withRequest(ProcessVehicleUpdateRequestCmd.Request.builder()
+                .vehicleId(vehicleId)
+                .vehicleUpdateRequest(request)
+                .build())
+            .execute();
+
+        return SingleResponse.<VehicleResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("Vehicle updated successfully")
             .build();
     }
 
