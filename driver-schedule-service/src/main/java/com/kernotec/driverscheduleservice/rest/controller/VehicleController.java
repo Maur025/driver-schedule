@@ -19,9 +19,11 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @Tag(name = VehicleSpec.TAG_NAME, description = VehicleSpec.TAG_DESCRIPTION)
 @RequestMapping(path = VehicleSpec.BASE_PATH)
 @RestController
@@ -101,5 +104,11 @@ public class VehicleController {
             .code(HttpStatus.OK.value())
             .message("Todo fue exitoso!")
             .build();
+    }
+
+    @MessageMapping(WebSocketTopic.TEST_MESSAGE)
+    public void handleTestMessage(String message) {
+        log.info("FROM WEB SOCKET");
+        log.info("Received WebSocket message: {}", message);
     }
 }
