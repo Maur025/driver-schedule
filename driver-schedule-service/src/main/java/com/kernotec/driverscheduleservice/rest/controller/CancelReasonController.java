@@ -8,8 +8,8 @@ import com.kernotec.driverscheduleservice.command.cancel.reason.CancelReasonCrea
 import com.kernotec.driverscheduleservice.jpa.entity.CancelReason;
 import com.kernotec.driverscheduleservice.jpa.service.CancelReasonService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.CancelReasonSpec;
-import com.kernotec.driverscheduleservice.rest.command.ProcessCancelReasonCreateRequestCmd;
-import com.kernotec.driverscheduleservice.rest.dto.request.CancelReasonRequest;
+import com.kernotec.driverscheduleservice.rest.command.cancel.reason.ProcessCancelReasonCreateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.dto.request.cancel.reason.CancelReasonRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.CancelReasonResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.cancel.reason.CancelReasonResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;

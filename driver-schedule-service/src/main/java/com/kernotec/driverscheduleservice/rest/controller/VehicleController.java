@@ -1,29 +1,44 @@
 package com.kernotec.driverscheduleservice.rest.controller;
 
 import com.kernotec.core.jpa.util.PageableUtil;
+import com.kernotec.core.rest.dto.response.MessageResponse;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.Vehicle;
 import com.kernotec.driverscheduleservice.jpa.service.VehicleService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.VehicleSpec;
+import com.kernotec.driverscheduleservice.rest.command.vehicle.ProcessVehicleCreateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.command.vehicle.ProcessVehicleUpdateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleCreateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleUpdateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.VehicleResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.vehicle.VehicleResponseMapper;
+import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
+import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @Tag(name = VehicleSpec.TAG_NAME, description = VehicleSpec.TAG_DESCRIPTION)
 @RequestMapping(path = VehicleSpec.BASE_PATH)
 @RestController
@@ -32,6 +47,9 @@ public class VehicleController {
 
     private final VehicleService vehicleService;
     private final VehicleResponseMapper vehicleResponseMapper;
+    private final WebSocketHandler webSocketHandler;
+    private final ProcessVehicleCreateRequestCmd processVehicleCreateRequestCmd;
+    private final ProcessVehicleUpdateRequestCmd processVehicleUpdateRequestCmd;
 
     @Operation(summary = "find all vehicles")
     @GetMapping
@@ -77,5 +95,63 @@ public class VehicleController {
             .code(HttpStatus.OK.value())
             .data(vehicleResponseMapper.toResponse(vehicle))
             .build();
+    }
+
+    @Operation(summary = "save vehicle")
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public SingleResponse<VehicleResponse> save(@RequestBody VehicleCreateRequest request) {
+        UUID vehicleId = processVehicleCreateRequestCmd.withRequest(
+                ProcessVehicleCreateRequestCmd.Request.builder()
+                    .vehicleCreateRequest(request)
+                    .build())
+            .execute();
+
+        return SingleResponse.<VehicleResponse>builder()
+            .code(HttpStatus.CREATED.value())
+            .data(vehicleResponseMapper.toResponse(vehicleId))
+            .build();
+    }
+
+    @Operation(summary = "update vehicle")
+    @PutMapping("{vehicleId}")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<VehicleResponse> update(@PathVariable UUID vehicleId,
+        @RequestBody VehicleUpdateRequest request)
+    {
+        processVehicleUpdateRequestCmd.withRequest(ProcessVehicleUpdateRequestCmd.Request.builder()
+                .vehicleId(vehicleId)
+                .vehicleUpdateRequest(request)
+                .build())
+            .execute();
+
+        return SingleResponse.<VehicleResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("Vehicle updated successfully")
+            .build();
+    }
+
+    @Operation(summary = "este api es de prueba para web socket")
+    @GetMapping("/test-websocket")
+    @ResponseStatus(HttpStatus.OK)
+    public MessageResponse testWebSocket() {
+        webSocketHandler.emitMessage(
+            WebSocketTopic.VEHICLE_CREATED, WebSocketSingleResponse.<Vehicle>builder()
+                .topic(WebSocketTopic.VEHICLE_CREATED)
+                .timestamp(ZonedDateTime.now())
+                .data(new Vehicle())
+                .build()
+        );
+
+        return MessageResponse.builder()
+            .code(HttpStatus.OK.value())
+            .message("Todo fue exitoso!")
+            .build();
+    }
+
+    @MessageMapping(WebSocketTopic.TEST_MESSAGE)
+    public void handleTestMessage(String message) {
+        log.info("FROM WEB SOCKET");
+        log.info("Received WebSocket message: {}", message);
     }
 }
