@@ -13,6 +13,8 @@ public class WebSocketTopic {
 
     public static final String PERSON_UPDATED = BROKER_PREFIX + "/person.updated";
 
+    public static final String TEST_MESSAGE ="/test.message";
+
     private WebSocketTopic() {
     }
 }
