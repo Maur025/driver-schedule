@@ -1,19 +1,22 @@
-package com.kernotec.driverscheduleservice.rest.dto.request;
+package com.kernotec.driverscheduleservice.rest.dto.request.vehicle;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.request.BaseRequest;
-import java.util.UUID;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-@Setter
 @Getter
+@Setter
 @JsonInclude(Include.NON_NULL)
-public class CancelReasonRequest extends BaseRequest {
+public class VehicleCreateRequest extends BaseRequest {
 
-    private String reasonDescription;
-    private UUID scheduleTransportationId;
+    @NotNull
+    private String vehicleNumber;
+
+    private String model;
+    private Integer capacity;
 }
