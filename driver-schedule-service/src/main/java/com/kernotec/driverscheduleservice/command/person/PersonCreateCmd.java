@@ -25,7 +25,6 @@ public class PersonCreateCmd extends
         person.setLastName(request.lastName);
         person.setDocument(request.document);
         person.setUserId(request.userId);
-        person.setPersonTypeId(request.personTypeId);
         person.setPhone(request.phone);
 
         person = personService.save(person);
@@ -34,7 +33,7 @@ public class PersonCreateCmd extends
 
     @Builder
     public record Request(@NotNull String name, @NotNull String lastName, @NotNull String document,
-                          @NotNull UUID userId, @NotNull UUID personTypeId, String phone)
+                          @NotNull UUID userId, String phone)
     {
 
     }
