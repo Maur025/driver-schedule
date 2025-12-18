@@ -8,7 +8,9 @@ import com.kernotec.driverscheduleauth.jpa.entity.User;
 import com.kernotec.driverscheduleauth.jpa.service.UserService;
 import com.kernotec.driverscheduleauth.rest.ApiSpec.UserSpec;
 import com.kernotec.driverscheduleauth.rest.command.user.ProcessUserCreateRequestCmd;
+import com.kernotec.driverscheduleauth.rest.command.user.ProcessUserDeleteRequestCmd;
 import com.kernotec.driverscheduleauth.rest.dto.request.user.UserCreateRequest;
+import com.kernotec.driverscheduleauth.rest.dto.request.user.UserDeleteRequest;
 import com.kernotec.driverscheduleauth.rest.dto.response.user.UserResponse;
 import com.kernotec.driverscheduleauth.rest.mapper.user.UserResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +20,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +39,7 @@ public class UserController {
     private final UserService userService;
     private final UserResponseMapper userResponseMapper;
     private final ProcessUserCreateRequestCmd processUserCreateRequestCmd;
+    private final ProcessUserDeleteRequestCmd processUserDeleteRequestCmd;
 
     @Operation(summary = "find all users")
     @GetMapping
@@ -83,6 +87,24 @@ public class UserController {
 
         return SingleResponse.<UserResponse>builder()
             .code(HttpStatus.CREATED.value())
+            .data(userResponseMapper.toResponse(userId))
+            .build();
+    }
+
+    @Operation(summary = "delete user by id")
+    @DeleteMapping("{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<UserResponse> delete(@PathVariable UUID userId,
+        @RequestBody UserDeleteRequest request)
+    {
+        processUserDeleteRequestCmd.withRequest(ProcessUserDeleteRequestCmd.Request.builder()
+                .userId(userId)
+                .userDeleteRequest(request)
+                .build())
+            .execute();
+
+        return SingleResponse.<UserResponse>builder()
+            .code(HttpStatus.OK.value())
             .data(userResponseMapper.toResponse(userId))
             .build();
     }
