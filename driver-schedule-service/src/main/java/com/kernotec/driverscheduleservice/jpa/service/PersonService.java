@@ -7,7 +7,9 @@ import com.kernotec.driverscheduleservice.jpa.entity.Person;
 import com.kernotec.driverscheduleservice.jpa.repository.PersonRepository;
 import com.kernotec.driverscheduleservice.webflux.user.client.rest.UserServiceApiClient;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserCreateRequest;
+import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserDeleteRequest;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.response.UserCreateResponse;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,5 +35,15 @@ public class PersonService extends BaseServiceImpl<Person, UUID> {
         return userServiceApiClient.saveUser(request)
             .map(SingleResponse::getData)
             .block();
+    }
+
+    public UserCreateResponse deleteUserFromPerson(UUID userId, UserDeleteRequest request) {
+        return userServiceApiClient.deleteUser(userId, request)
+            .map(SingleResponse::getData)
+            .block();
+    }
+
+    public Optional<Person> findByDocument(String document) {
+        return repository.findByDocumentIgnoreCase(document);
     }
 }
