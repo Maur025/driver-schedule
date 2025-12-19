@@ -37,6 +37,7 @@ public class ProcessVehicleUpdateRequestCmd extends
                 .vehicleNumber(vehicleUpdateRequest.getVehicleNumber())
                 .model(vehicleUpdateRequest.getModel())
                 .capacity(vehicleUpdateRequest.getCapacity())
+                .vehicleTypeId(vehicleUpdateRequest.getVehicleTypeId())
                 .build())
             .execute();
 

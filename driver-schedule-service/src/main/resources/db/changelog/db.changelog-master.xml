@@ -27,4 +27,18 @@
 
   <include file="db/changelog/2025/12/15-01-changelog-4.xml"/>
   <include file="db/changelog/2025/12/17-01-changelog-14.xml"/>
+  <include file="db/changelog/2025/12/19-01-changelog-15.xml"/>
+  <include file="db/changelog/2025/12/19-01-changelog-15-1.xml"/>
+
+  <!-- vehicle tpe seed-->
+  <changeSet id="1766167073762-1" author="Maur025">
+    <sqlFile path="data/vehicle/type/vehicle_type_seed.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- vehicle, columnt type update -->
+  <changeSet id="1766167415440-1" author="Maur025">
+    <sqlFile path="data/vehicle/vehicle_update.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <include file="db/changelog/2025/12/19-01-changelog-15-2.xml"/>
 </databaseChangeLog>

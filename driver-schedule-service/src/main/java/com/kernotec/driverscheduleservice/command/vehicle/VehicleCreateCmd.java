@@ -23,6 +23,7 @@ public class VehicleCreateCmd extends
         var vehicle = new Vehicle();
 
         vehicle.setVehicleNumber(request.vehicleNumber);
+        vehicle.setVehicleTypeId(request.vehicleTypeId);
         vehicle.setModel(request.model);
         vehicle.setCapacity(request.capacity);
 
@@ -31,7 +32,9 @@ public class VehicleCreateCmd extends
     }
 
     @Builder
-    public record Request(@NotNull @NotBlank String vehicleNumber, String model, Integer capacity) {
+    public record Request(@NotNull @NotBlank String vehicleNumber, @NotNull UUID vehicleTypeId,
+                          String model, Integer capacity)
+    {
 
     }
 }
