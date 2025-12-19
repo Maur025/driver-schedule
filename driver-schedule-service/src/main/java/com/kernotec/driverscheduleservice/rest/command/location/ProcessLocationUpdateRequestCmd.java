@@ -24,16 +24,22 @@ public class ProcessLocationUpdateRequestCmd extends
     AbstractCommand<ProcessLocationUpdateRequestCmd.Request, Void>
 {
 
-    private final LocationUpdateCmd locationUpdateCmd;
     private final LocationService locationService;
-    private final WebSocketHandler webSocketHandler;
     private final LocationResponseMapper locationResponseMapper;
+
+    private final LocationUpdateCmd locationUpdateCmd;
+    private final WebSocketHandler webSocketHandler;
 
     @Override
     protected Void run(Request request) {
         LocationUpdateRequest locationUpdateRequest = request.locationUpdateRequest;
-        Coordinate coordinate = locationService.getCoordinateOfList(
-            locationUpdateRequest.getCoordinates());
+
+        Coordinate coordinate = null;
+
+        if (locationUpdateRequest.getCoordinates() != null) {
+            coordinate = locationService.getCoordinateOfList(
+                locationUpdateRequest.getCoordinates());
+        }
 
         locationUpdateCmd.withRequest(LocationUpdateCmd.Request.builder()
                 .locationId(request.locationId)
