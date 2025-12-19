@@ -36,6 +36,7 @@ public class ProcessVehicleCreateRequestCmd extends
                 .vehicleNumber(vehicleCreateRequest.getVehicleNumber())
                 .model(vehicleCreateRequest.getModel())
                 .capacity(vehicleCreateRequest.getCapacity())
+                .vehicleTypeId(vehicleCreateRequest.getVehicleTypeId())
                 .build())
             .execute();
 

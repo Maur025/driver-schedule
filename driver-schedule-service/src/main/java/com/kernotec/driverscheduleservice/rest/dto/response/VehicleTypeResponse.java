@@ -3,7 +3,6 @@ package com.kernotec.driverscheduleservice.rest.dto.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.response.data.EntityResponse;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,12 +11,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(Include.NON_NULL)
-public class VehicleResponse extends EntityResponse {
+public class VehicleTypeResponse extends EntityResponse {
 
-    private String vehicleNumber;
-    private String model;
-    private Integer capacity;
-
-    private UUID vehicleTypeId;
-    private VehicleTypeResponse vehicleType;
+    private String name;
+    private String code;
 }

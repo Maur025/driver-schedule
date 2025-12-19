@@ -63,6 +63,18 @@ public class LocationController {
             .build();
     }
 
+    @Operation(summary = "find location by id")
+    @GetMapping("{locationId}")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<LocationResponse> findById(@PathVariable UUID locationId) {
+        Location location = locationService.findByIdThrow(locationId);
+
+        return SingleResponse.<LocationResponse>builder()
+            .code(HttpStatus.OK.value())
+            .data(locationResponseMapper.toResponse(location))
+            .build();
+    }
+
     @Operation(summary = "save location")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

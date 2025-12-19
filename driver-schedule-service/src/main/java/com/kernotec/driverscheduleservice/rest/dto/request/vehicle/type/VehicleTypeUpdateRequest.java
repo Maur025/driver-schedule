@@ -1,9 +1,8 @@
-package com.kernotec.driverscheduleservice.rest.dto.request.vehicle;
+package com.kernotec.driverscheduleservice.rest.dto.request.vehicle.type;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.request.BaseRequest;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,10 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(Include.NON_NULL)
-public class VehicleUpdateRequest extends BaseRequest {
+public class VehicleTypeUpdateRequest extends BaseRequest {
 
-    private String vehicleNumber;
-    private String model;
-    private Integer capacity;
-    private UUID vehicleTypeId;
+    private String name;
 }
