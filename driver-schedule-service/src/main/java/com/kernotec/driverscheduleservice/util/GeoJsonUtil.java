@@ -14,6 +14,6 @@ public class GeoJsonUtil {
             return null;
         }
 
-        return List.of(coordinate.getLng(), coordinate.getLng());
+        return List.of(coordinate.getLng(), coordinate.getLat());
     }
 }

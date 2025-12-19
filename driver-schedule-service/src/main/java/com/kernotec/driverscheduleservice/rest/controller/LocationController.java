@@ -8,6 +8,7 @@ import com.kernotec.driverscheduleservice.jpa.entity.Location;
 import com.kernotec.driverscheduleservice.jpa.service.LocationService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.LocationSpec;
 import com.kernotec.driverscheduleservice.rest.command.location.ProcessLocationCreateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.command.location.ProcessLocationUpdateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.dto.request.location.LocationCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.location.LocationUpdateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.LocationResponse;
@@ -38,6 +39,7 @@ public class LocationController {
     private final LocationService locationService;
     private final LocationResponseMapper locationResponseMapper;
     private final ProcessLocationCreateRequestCmd processLocationCreateRequestCmd;
+    private final ProcessLocationUpdateRequestCmd processLocationUpdateRequestCmd;
 
     @Operation(summary = "find all locations")
     @GetMapping
@@ -83,6 +85,13 @@ public class LocationController {
     public SingleResponse<LocationResponse> update(@PathVariable UUID locationId,
         @RequestBody LocationUpdateRequest request)
     {
+        processLocationUpdateRequestCmd.withRequest(
+                ProcessLocationUpdateRequestCmd.Request.builder()
+                    .locationId(locationId)
+                    .locationUpdateRequest(request)
+                    .build())
+            .execute();
+
         return SingleResponse.<LocationResponse>builder()
             .code(HttpStatus.OK.value())
             .message("Location updated successfully")

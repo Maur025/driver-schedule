@@ -13,7 +13,6 @@ import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -40,23 +39,14 @@ public class ProcessLocationCreateRequestCmd extends
         {
             throw new LocationException("coordinate.empty", "", HttpStatus.BAD_REQUEST.value());
         }
-
-        if (locationCreateRequest.getCoordinates()
-            .size() < 2)
-        {
-            throw new LocationException("invalid.coordinate", "", HttpStatus.BAD_REQUEST.value());
-        }
     }
 
     @Override
     protected UUID run(Request request) {
         LocationCreateRequest locationCreateRequest = request.locationCreateRequest;
 
-        List<Double> coordRequestList = locationCreateRequest.getCoordinates();
-
-        var coordinate = new Coordinate();
-        coordinate.setLat(coordRequestList.get(1));
-        coordinate.setLng(coordRequestList.get(0));
+        Coordinate coordinate = locationService.getCoordinateOfList(
+            locationCreateRequest.getCoordinates());
 
         UUID locationId = locationCreateCmd.withRequest(LocationCreateCmd.Request.builder()
                 .name(locationCreateRequest.getName())

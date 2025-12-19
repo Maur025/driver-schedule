@@ -4,6 +4,7 @@ import com.kernotec.core.command.AbstractCommand;
 import com.kernotec.driverscheduleservice.command.location.LocationUpdateCmd;
 import com.kernotec.driverscheduleservice.jpa.entity.Location;
 import com.kernotec.driverscheduleservice.jpa.service.LocationService;
+import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
 import com.kernotec.driverscheduleservice.rest.dto.request.location.LocationUpdateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.LocationResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.WebSocketSingleResponse;
@@ -29,18 +30,16 @@ public class ProcessLocationUpdateRequestCmd extends
     private final LocationResponseMapper locationResponseMapper;
 
     @Override
-    protected void validate(Request request) {
-        LocationUpdateRequest locationUpdateRequest = request.locationUpdateRequest;
-
-        if (!locationUpdateRequest.getCoordinates().isEmpty()){
-        }
-    }
-
-    @Override
     protected Void run(Request request) {
         LocationUpdateRequest locationUpdateRequest = request.locationUpdateRequest;
+        Coordinate coordinate = locationService.getCoordinateOfList(
+            locationUpdateRequest.getCoordinates());
 
         locationUpdateCmd.withRequest(LocationUpdateCmd.Request.builder()
+                .locationId(request.locationId)
+                .name(locationUpdateRequest.getName())
+                .description(locationUpdateRequest.getDescription())
+                .coordinate(coordinate)
                 .build())
             .execute();
 
@@ -53,6 +52,7 @@ public class ProcessLocationUpdateRequestCmd extends
                 .data(locationResponseMapper.toResponse(location))
                 .build()
         );
+
         return null;
     }
 
