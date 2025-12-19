@@ -17,6 +17,12 @@ public class WebSocketTopic {
 
     public static final String LOCATION_UPDATED = BROKER_PREFIX + "/location.updated";
 
+    public static final String TRANSPORTATION_REQUEST_CREATED =
+        BROKER_PREFIX + "/transportation.request.created";
+
+    public static final String TRANSPORTATION_REQUEST_UPDATED =
+        BROKER_PREFIX + "/transportation.request.updated";
+
     public static final String TEST_MESSAGE = "/test.message";
 
     private WebSocketTopic() {

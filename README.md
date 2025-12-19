@@ -84,5 +84,5 @@ APP_CORS_ALLOWED_ORIGINS_AUTH=http://localhost:4200 # CORS allowed origins for a
 OAUTH2_ADMIN_PASSWORD=admin-pass                    # Admin password for initial setup
 
 MS_AUTH_SCHEME=http                                 # Auth microservice scheme (e.g., http, https)
-MS_AUTH_HOST=172.20.50.60                           # Auth microservice host (same as auth host defined)
+MS_AUTH_HOST=localhost                              # Auth microservice host (same as auth host defined)
 ```

@@ -16,5 +16,5 @@ public class LocationResponse extends EntityResponse {
 
     private String name;
     private String description;
-    private List<Double> coordinate;
+    private List<Double> coordinates;
 }
