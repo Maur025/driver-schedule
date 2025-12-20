@@ -7,7 +7,7 @@ import com.kernotec.driverscheduleservice.jpa.entity.PersonType;
 import com.kernotec.driverscheduleservice.jpa.service.PersonService;
 import com.kernotec.driverscheduleservice.jpa.service.PersonTypeService;
 import com.kernotec.driverscheduleservice.rest.dto.request.person.PersonCreateRequest;
-import com.kernotec.driverscheduleservice.rest.dto.response.WebSocketSingleResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.person.PersonResponseMapper;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;

@@ -1,6 +1,6 @@
 package com.kernotec.driverscheduleservice.web.socket;
 
-import com.kernotec.driverscheduleservice.rest.dto.response.WebSocketBaseResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketBaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
