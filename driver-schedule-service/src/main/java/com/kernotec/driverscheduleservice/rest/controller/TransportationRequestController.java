@@ -8,6 +8,8 @@ import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.TransportationRequestSpec;
 import com.kernotec.driverscheduleservice.rest.command.transportation.request.ProcessTransportationRequestCreateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.command.transportation.request.ProcessTransportationRequestRejectedCmd;
+import com.kernotec.driverscheduleservice.rest.dto.request.reject.reason.RejectReasonRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.transportation.request.TransportationRequestCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.TransportationRequestResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.transportation.request.TransportationRequestResponseMapper;
@@ -37,6 +39,7 @@ public class TransportationRequestController {
     private final TransportationRequestService transportationRequestService;
     private final TransportationRequestResponseMapper transportationRequestResponseMapper;
     private final ProcessTransportationRequestCreateRequestCmd processTransportationRequestCreateRequestCmd;
+    private final ProcessTransportationRequestRejectedCmd processTransportationRequestRejectedCmd;
 
     @Operation(summary = "find all transportation requests")
     @GetMapping
@@ -94,6 +97,25 @@ public class TransportationRequestController {
         return SingleResponse.<TransportationRequestResponse>builder()
             .code(HttpStatus.CREATED.value())
             .data(transportationRequestResponseMapper.toResponse(transportationRequestId))
+            .build();
+    }
+
+    @Operation(summary = "reject transportation request")
+    @PostMapping("{transportationRequestId}/rejected")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<TransportationRequestResponse> rejectedRequest(
+        @PathVariable UUID transportationRequestId, @RequestBody RejectReasonRequest request)
+    {
+        processTransportationRequestRejectedCmd.withRequest(
+                ProcessTransportationRequestRejectedCmd.Request.builder()
+                    .transportationRequestId(transportationRequestId)
+                    .rejectReasonRequest(request)
+                    .build())
+            .execute();
+
+        return SingleResponse.<TransportationRequestResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("Transportation request rejected successfully")
             .build();
     }
 }

@@ -23,6 +23,9 @@ public class WebSocketTopic {
     public static final String TRANSPORTATION_REQUEST_UPDATED =
         BROKER_PREFIX + "/transportation.request.updated";
 
+    public static final String TRANSPORTATION_REQUEST_REJECTED =
+        BROKER_PREFIX + "/transportation.request.rejected";
+
     public static final String TEST_MESSAGE = "/test.message";
 
     private WebSocketTopic() {
