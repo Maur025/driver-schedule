@@ -59,9 +59,6 @@ public class TransportationRequest extends BaseAuditEntity {
     @Column(name = "end_time", nullable = false)
     private ZonedDateTime endTime;
 
-    @Column(name = "requestedDate", nullable = false)
-    private ZonedDateTime requestedDate;
-
     @OptimisticLock(excluded = true)
     @Enumerated(EnumType.STRING)
     @Column(name = "trip_type", nullable = false)
@@ -74,6 +71,14 @@ public class TransportationRequest extends BaseAuditEntity {
     @JoinColumn(name = "transportation_request_state_id", referencedColumnName = "id",
                 insertable = false, updatable = false)
     private TransportationRequestState transportationRequestState;
+
+    @Column(name = "person_requested_id")
+    private UUID personRequestedId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_requested_id", referencedColumnName = "id", insertable = false,
+                updatable = false)
+    private Person personRequested;
 
     @ManyToMany
     @JoinTable(name = "reject_reasons",

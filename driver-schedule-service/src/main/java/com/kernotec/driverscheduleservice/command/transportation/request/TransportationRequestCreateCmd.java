@@ -31,9 +31,9 @@ public class TransportationRequestCreateCmd extends
         transportationRequest.setPassengers(request.passengers);
         transportationRequest.setStartTime(request.startTime);
         transportationRequest.setEndTime(request.endTime);
-        transportationRequest.setRequestedDate(request.requestedDate);
         transportationRequest.setTripType(request.tripType);
         transportationRequest.setTransportationRequestStateId(request.transportationRequestStateId);
+        transportationRequest.setPersonRequestedId(request.personRequestId);
 
         transportationRequest = transportationRequestService.save(transportationRequest);
         return transportationRequest.getId();
@@ -42,10 +42,9 @@ public class TransportationRequestCreateCmd extends
     @Builder
     public record Request(@NotNull Coordinate startingCoordinate, @NotNull Coordinate endCoordinate,
                           @NotNull String peopleNumber, @NotNull ZonedDateTime startTime,
-                          @NotNull ZonedDateTime endTime, @NotNull ZonedDateTime requestedDate,
-                          @NotNull TripTypeEnum tripType,
+                          @NotNull ZonedDateTime endTime, @NotNull TripTypeEnum tripType,
                           @NotNull UUID transportationRequestStateId, String passengers,
-                          String assets)
+                          String assets, @NotNull UUID personRequestId)
     {
 
     }

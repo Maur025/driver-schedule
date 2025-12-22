@@ -10,7 +10,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +44,11 @@ public class TokenJWTClaimSetBuildCmd extends
                 : String.valueOf(UUID.randomUUID()))
             .claim("preferred_username", user.getUsername())
             .claim("name", String.format("%s %s", user.getName(), user.getLastName()))
-            .claim("realm_access", Map.of("roles", roles))
+            .claim(
+                "roles", roles.stream()
+                    .map(role -> "ROLE_" + role)
+                    .toList()
+            )
             .claim(
                 "auth_time", Instant.now()
                     .getEpochSecond()

@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.request.BaseRequest;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
-import jakarta.validation.constraints.NotNull;
-import java.time.ZonedDateTime;
-import java.util.List;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,21 +13,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(Include.NON_NULL)
-public class TransportationRequestCreateRequest extends BaseRequest {
+public class TransportationRequestFilterRequest extends BaseRequest {
 
-    @NotNull
-    private List<Double> startingCoordinates;
-    @NotNull
-    private List<Double> endCoordinates;
-    @NotNull
-    private String peopleNumber;
-    @NotNull
-    private ZonedDateTime startTime;
-    @NotNull
-    private ZonedDateTime endTime;
-    @NotNull
+    private UUID transportationRequestStateId;
+    private UUID personRequestedId;
     private TripTypeEnum tripType;
-
-    private String passengers;
-    private String assets;
 }
