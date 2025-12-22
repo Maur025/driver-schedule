@@ -88,6 +88,6 @@ public record TransportationRequestSpecification(
         CriteriaBuilder cb)
     {
         return Optional.ofNullable(criteria.getTripType())
-            .map(tripType -> cb.equal(root.get("tripType"), String.valueOf(tripType)));
+            .map(tripType -> cb.equal(root.get("tripType"), tripType));
     }
 }
