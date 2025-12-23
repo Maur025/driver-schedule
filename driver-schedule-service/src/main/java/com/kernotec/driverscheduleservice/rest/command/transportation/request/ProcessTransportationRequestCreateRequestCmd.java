@@ -12,6 +12,7 @@ import com.kernotec.driverscheduleservice.rest.dto.request.transportation.reques
 import com.kernotec.driverscheduleservice.rest.dto.response.TransportationRequestResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.transportation.request.TransportationRequestResponseMapper;
+import com.kernotec.driverscheduleservice.util.AuthUtil;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
@@ -19,6 +20,7 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -35,6 +37,7 @@ public class ProcessTransportationRequestCreateRequestCmd extends
 
     private final TransportationRequestCreateCmd transportationRequestCreateCmd;
     private final WebSocketHandler webSocketHandler;
+    private final AuthUtil authUtil;
 
     @Override
     protected UUID run(Request request) {
@@ -49,6 +52,8 @@ public class ProcessTransportationRequestCreateRequestCmd extends
         UUID transportationRequestStateRequestedId = transportationRequestStateService.findIdByCodeThrow(
             TransportationRequestStateEnum.REQUESTED);
 
+        UUID personId = authUtil.getPersonIdFromAuthenticationThrow(request.authentication);
+
         UUID transportationRequestId = transportationRequestCreateCmd.withRequest(
                 TransportationRequestCreateCmd.Request.builder()
                     .startingCoordinate(startCoordinate)
@@ -56,11 +61,11 @@ public class ProcessTransportationRequestCreateRequestCmd extends
                     .peopleNumber(transportationRequestCreateRequest.getPeopleNumber())
                     .startTime(transportationRequestCreateRequest.getStartTime())
                     .endTime(transportationRequestCreateRequest.getEndTime())
-                    .requestedDate(transportationRequestCreateRequest.getRequestedDate())
                     .tripType(transportationRequestCreateRequest.getTripType())
                     .transportationRequestStateId(transportationRequestStateRequestedId)
                     .passengers(transportationRequestCreateRequest.getPassengers())
                     .assets(transportationRequestCreateRequest.getAssets())
+                    .personRequestId(personId)
                     .build())
             .execute();
 
@@ -81,7 +86,8 @@ public class ProcessTransportationRequestCreateRequestCmd extends
 
     @Builder
     public record Request(
-        @NotNull TransportationRequestCreateRequest transportationRequestCreateRequest)
+        @NotNull TransportationRequestCreateRequest transportationRequestCreateRequest,
+        @NotNull Authentication authentication)
     {
 
     }

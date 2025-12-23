@@ -61,7 +61,6 @@ public class ScheduleTransportation extends BaseAuditEntity {
                 updatable = false)
     private Person personRequested;
 
-
     @Column(name = "schedule_transportation_state_id", nullable = false)
     private UUID scheduleTransportationStateId;
 

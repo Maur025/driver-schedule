@@ -41,4 +41,6 @@
   </changeSet>
 
   <include file="db/changelog/2025/12/19-01-changelog-15-2.xml"/>
+  <include file="db/changelog/2025/12/22-01-changelog-16.xml"/>
+  <include file="db/changelog/2025/12/22-01-changelog-16-1.xml"/>
 </databaseChangeLog>

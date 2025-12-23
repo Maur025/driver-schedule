@@ -3,6 +3,7 @@ package com.kernotec.driverscheduleservice.rest.dto.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.response.data.EntityResponse;
+import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,5 @@ public class PersonResponse extends EntityResponse {
     private String phone;
     private UUID userId;
 
-    private UUID personTypeId;
-    private PersonTypeResponse personType;
+    private Set<PersonTypeResponse> personTypes;
 }

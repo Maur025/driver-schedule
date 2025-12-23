@@ -31,5 +31,8 @@ public class TransportationRequestResponse extends EntityResponse {
     private UUID transportationRequestStateId;
     private TransportationRequestStateResponse transportationRequestState;
 
+    private UUID personRequestedId;
+    private PersonResponse personRequested;
+
     private Set<ReasonResponse> rejectReasons;
 }

@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface PersonRepository extends BaseRepository<Person, UUID> {
 
     Optional<Person> findByDocumentIgnoreCase(String document);
+
+    Optional<Person> findByUserId(UUID userId);
 }
