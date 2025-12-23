@@ -59,10 +59,16 @@ public class TransportationRequest extends BaseAuditEntity {
     @Column(name = "end_time", nullable = false)
     private ZonedDateTime endTime;
 
+    @Column(name = "requested_date")
+    private ZonedDateTime requestedDate;
+
     @OptimisticLock(excluded = true)
     @Enumerated(EnumType.STRING)
     @Column(name = "trip_type", nullable = false)
     private TripTypeEnum tripType;
+
+    @Column(name = "is_short_notice", nullable = false, columnDefinition = "boolean default false")
+    private boolean isShortNotice = false;
 
     @Column(name = "transportation_request_state_id", nullable = false)
     private UUID transportationRequestStateId;

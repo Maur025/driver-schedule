@@ -34,6 +34,9 @@ public class TransportationRequestCreateCmd extends
         transportationRequest.setTripType(request.tripType);
         transportationRequest.setTransportationRequestStateId(request.transportationRequestStateId);
         transportationRequest.setPersonRequestedId(request.personRequestId);
+        transportationRequest.setRequestedDate(request.requestedDate);
+        transportationRequest.setShortNotice(
+            request.isShortNotice != null && request.isShortNotice);
 
         transportationRequest = transportationRequestService.save(transportationRequest);
         return transportationRequest.getId();
@@ -44,7 +47,8 @@ public class TransportationRequestCreateCmd extends
                           @NotNull String peopleNumber, @NotNull ZonedDateTime startTime,
                           @NotNull ZonedDateTime endTime, @NotNull TripTypeEnum tripType,
                           @NotNull UUID transportationRequestStateId, String passengers,
-                          String assets, @NotNull UUID personRequestId)
+                          String assets, @NotNull UUID personRequestId,
+                          @NotNull ZonedDateTime requestedDate, Boolean isShortNotice)
     {
 
     }

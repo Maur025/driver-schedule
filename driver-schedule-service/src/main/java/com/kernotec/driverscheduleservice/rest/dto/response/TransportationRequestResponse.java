@@ -27,6 +27,7 @@ public class TransportationRequestResponse extends EntityResponse {
     private ZonedDateTime endTime;
     private ZonedDateTime requestedDate;
     private TripTypeEnum tripType;
+    private boolean isShortNotice;
 
     private UUID transportationRequestStateId;
     private TransportationRequestStateResponse transportationRequestState;
