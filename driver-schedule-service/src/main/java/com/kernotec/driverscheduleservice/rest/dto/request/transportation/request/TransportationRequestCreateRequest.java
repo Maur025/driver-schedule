@@ -28,7 +28,10 @@ public class TransportationRequestCreateRequest extends BaseRequest {
     @NotNull
     private ZonedDateTime endTime;
     @NotNull
+    private ZonedDateTime requestedDate;
+    @NotNull
     private TripTypeEnum tripType;
+    private Boolean isShortNotice;
 
     private String passengers;
     private String assets;
