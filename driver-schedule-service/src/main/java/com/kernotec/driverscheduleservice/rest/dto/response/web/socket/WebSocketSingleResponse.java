@@ -1,4 +1,4 @@
-package com.kernotec.driverscheduleservice.rest.dto.response;
+package com.kernotec.driverscheduleservice.rest.dto.response.web.socket;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

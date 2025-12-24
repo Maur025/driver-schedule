@@ -18,8 +18,8 @@ import lombok.Setter;
 @JsonInclude(Include.NON_NULL)
 public class TransportationRequestResponse extends EntityResponse {
 
-    private List<Double> startingCoordinate;
-    private List<Double> endingCoordinate;
+    private List<Double> startingCoordinates;
+    private List<Double> endCoordinates;
     private String peopleNumber;
     private String assets;
     private String passengers;
@@ -27,11 +27,13 @@ public class TransportationRequestResponse extends EntityResponse {
     private ZonedDateTime endTime;
     private ZonedDateTime requestedDate;
     private TripTypeEnum tripType;
+    private boolean isShortNotice;
 
     private UUID transportationRequestStateId;
     private TransportationRequestStateResponse transportationRequestState;
 
+    private UUID personRequestedId;
+    private PersonResponse personRequested;
+
     private Set<ReasonResponse> rejectReasons;
-
-
 }

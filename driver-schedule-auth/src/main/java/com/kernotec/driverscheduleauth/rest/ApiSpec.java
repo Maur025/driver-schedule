@@ -54,4 +54,14 @@ public class ApiSpec {
         private RealmSpec() {
         }
     }
+
+    public static class AccountSpec {
+
+        public static final String BASE_PATH = DEFAULT_REALM_PATH + "/account";
+        public static final String TAG_NAME = "ACCOUNT";
+        public static final String TAG_DESCRIPTION = "User account management";
+
+        private AccountSpec() {
+        }
+    }
 }

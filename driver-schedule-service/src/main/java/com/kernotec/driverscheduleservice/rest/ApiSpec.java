@@ -123,4 +123,14 @@ public class ApiSpec {
         private VehicleSpec() {
         }
     }
+
+    public static final class VehicleTypeSpec {
+
+        public static final String BASE_PATH = ROOT_PATH + "/vehicle-types";
+        public static final String TAG_NAME = "VEHICLE TYPE";
+        public static final String TAG_DESCRIPTION = "Vehicle types management";
+
+        private VehicleTypeSpec() {
+        }
+    }
 }

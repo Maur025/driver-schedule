@@ -46,9 +46,6 @@ public class TransportationRequestUpdateCmd extends
         if (request.endTime != null) {
             transportationRequest.setEndTime(request.endTime);
         }
-        if (request.requestedDate != null) {
-            transportationRequest.setRequestedDate(request.requestedDate);
-        }
         if (request.tripType != null) {
             transportationRequest.setTripType(request.tripType);
         }
@@ -64,7 +61,7 @@ public class TransportationRequestUpdateCmd extends
     @Builder
     public record Request(@NotNull UUID transportationRequestId, Coordinate startingCoordinate,
                           Coordinate endCoordinate, String peopleNumber, ZonedDateTime startTime,
-                          ZonedDateTime endTime, ZonedDateTime requestedDate, TripTypeEnum tripType,
+                          ZonedDateTime endTime, TripTypeEnum tripType,
                           UUID transportationRequestStateId, String passengers, String assets)
     {
 

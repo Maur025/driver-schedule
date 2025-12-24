@@ -14,6 +14,7 @@ public class UserDto extends AuditEntityDto {
     private String name;
     private String lastName;
     private String username;
+    private String password;
     private ZonedDateTime createdOn;
 
     private UUID realmId;

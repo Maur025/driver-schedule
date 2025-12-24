@@ -5,6 +5,7 @@ import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.Person;
+import com.kernotec.driverscheduleservice.jpa.enums.PersonTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.service.PersonService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.PersonSpec;
 import com.kernotec.driverscheduleservice.rest.command.person.ProcessPersonCreateRequestCmd;
@@ -62,8 +63,10 @@ public class PersonController {
     @Operation(summary = "find persons without pagination")
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<PersonResponse> findAllWithoutPagination() {
-        List<Person> personList = personService.findAll();
+    public PageResponse<PersonResponse> findAllWithoutPagination(
+        @RequestParam(required = false) PersonTypeEnum personType)
+    {
+        List<Person> personList = personService.findAllByPersonType(personType);
 
         return PageResponse.<PersonResponse>builder()
             .code(HttpStatus.OK.value())
