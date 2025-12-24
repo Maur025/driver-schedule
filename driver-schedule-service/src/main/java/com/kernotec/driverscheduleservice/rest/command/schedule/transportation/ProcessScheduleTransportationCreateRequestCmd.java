@@ -4,7 +4,9 @@ import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.command.schedule.transportation.ScheduleTransportationCreateCmd;
 import com.kernotec.driverscheduleservice.command.transportation.request.TransportationRequestGetDtoCmd;
 import com.kernotec.driverscheduleservice.command.transportation.request.TransportationRequestUpdateCmd;
+import com.kernotec.driverscheduleservice.exception.ScheduleTransportationException;
 import com.kernotec.driverscheduleservice.jpa.dto.TransportationRequestDto;
+import com.kernotec.driverscheduleservice.jpa.dto.TransportationRequestStateDto;
 import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.enums.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.TransportationRequestStateEnum;
@@ -15,16 +17,16 @@ import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportati
 import com.kernotec.driverscheduleservice.rest.dto.response.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation.ScheduleTransportationResponseMapper;
+import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -34,14 +36,22 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
     AbstractTransactionalRequiredCommand<ProcessScheduleTransportationCreateRequestCmd.Request, UUID>
 {
 
+    private final ScheduleTransportationService scheduleTransportationService;
+    private final ScheduleTransportationStateService scheduleTransportationStateService;
+    private final TransportationRequestStateService transportationRequestStateService;
+
+    private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
+
     private final TransportationRequestGetDtoCmd transportationRequestGetDtoCmd;
     private final ScheduleTransportationCreateCmd scheduleTransportationCreateCmd;
-    private final ScheduleTransportationStateService scheduleTransportationStateService;
-    private final ScheduleTransportationService scheduleTransportationService;
-    private final WebSocketHandler webSocketHandler;
-    private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
-    private final TransportationRequestStateService transportationRequestStateService;
     private final TransportationRequestUpdateCmd transportationRequestUpdateCmd;
+    private final WebSocketHandler webSocketHandler;
+    private final ZonedDateTimeUtil zonedDateTimeUtil;
+
+    @Override
+    protected void validate(Request request) {
+
+    }
 
     @Override
     protected UUID run(Request request) {
@@ -53,6 +63,17 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
                         scheduleTransportationCreateRequest.getTransportationRequestId())
                     .build())
             .execute();
+
+        TransportationRequestStateDto transportationRequestStateDto = transportationRequestDto.getTransportationRequestState();
+
+        if (!transportationRequestStateDto.getCode()
+            .equals(String.valueOf(TransportationRequestStateEnum.REQUESTED)))
+        {
+            throw new ScheduleTransportationException(
+                "invalid.state.to.action", "'" + transportationRequestStateDto.getCode() + "'",
+                HttpStatus.BAD_REQUEST.value()
+            );
+        }
 
         UUID transportationRequestStateApprovedId = transportationRequestStateService.findIdByCodeThrow(
             TransportationRequestStateEnum.APPROVED);
@@ -67,23 +88,15 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
         UUID scheduledTransportationStateScheduledId = scheduleTransportationStateService.findIdByCodeThrow(
             ScheduleTransportationStateEnum.SCHEDULED);
 
-        ZonedDateTime requestedStartTime = scheduleTransportationCreateRequest.getRequestedStartTime();
-        ZonedDateTime requestedEndTime = scheduleTransportationCreateRequest.getRequestedEndTime();
+        ZonedDateTime scheduledFrom = zonedDateTimeUtil.getNewOfDateAndTime(
+            scheduleTransportationCreateRequest.getRequestedDate(),
+            scheduleTransportationCreateRequest.getRequestedStartTime()
+        );
 
-        LocalDate scheduledDateLocalDate = scheduleTransportationCreateRequest.getRequestedDate()
-            .toLocalDate();
-
-        LocalTime requestedStartLocalTime = requestedStartTime.toLocalTime();
-        LocalTime requestedEndLocalTime = requestedEndTime.toLocalTime();
-
-        var scheduledFrom = ZonedDateTime.of(
-            scheduledDateLocalDate, requestedStartLocalTime, requestedStartTime.getZone());
-
-        var scheduledTo = ZonedDateTime.of(
-            scheduledDateLocalDate, requestedEndLocalTime, requestedEndTime.getZone());
-
-        log.info("SCHEDULED FROM: {}", scheduledFrom);
-        log.info("SCHEDULED TO: {}", scheduledTo);
+        ZonedDateTime scheduledTo = zonedDateTimeUtil.getNewOfDateAndTime(
+            scheduleTransportationCreateRequest.getRequestedDate(),
+            scheduleTransportationCreateRequest.getRequestedEndTime()
+        );
 
         UUID scheduleTransportationId = scheduleTransportationCreateCmd.withRequest(
                 ScheduleTransportationCreateCmd.Request.builder()
