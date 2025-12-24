@@ -1,7 +1,9 @@
 package com.kernotec.driverscheduleservice.jpa.entity;
 
 import com.kernotec.core.jpa.entity.BaseAuditEntity;
+import com.kernotec.driverscheduleservice.util.SafeZoneDateTimeConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -24,10 +26,16 @@ import lombok.Setter;
 public class ScheduleTransportation extends BaseAuditEntity {
 
     @Column(name = "schedule_from", nullable = false)
+    @Convert(converter = SafeZoneDateTimeConverter.class)
     private ZonedDateTime scheduleFrom;
 
     @Column(name = "schedule_to", nullable = false)
+    @Convert(converter = SafeZoneDateTimeConverter.class)
     private ZonedDateTime scheduleTo;
+
+    @Column(name = "scheduled_date", nullable = false)
+    @Convert(converter = SafeZoneDateTimeConverter.class)
+    private ZonedDateTime scheduledDate;
 
     @Column(name = "vehicle_id", nullable = false)
     private UUID vehicleId;

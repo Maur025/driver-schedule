@@ -23,9 +23,13 @@ public class TransportationRequestDto extends AuditEntityDto {
     private ZonedDateTime endTime;
     private ZonedDateTime requestedDate;
     private TripTypeEnum tripType;
+    private boolean isShortNotice;
 
     private UUID transportationRequestStateId;
     private TransportationRequestStateDto transportationRequestState;
+
+    private UUID personRequestedId;
+    private PersonDto personRequested;
 
     private Set<ReasonDto> rejectReasons;
 }
