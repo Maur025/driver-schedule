@@ -7,8 +7,11 @@ import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.ScheduleTransportationSpec;
+import com.kernotec.driverscheduleservice.rest.command.schedule.transportation.ProcessScheduleTransportationCreateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation.ScheduleTransportationResponseMapper;
+import com.kernotec.driverscheduleservice.util.AppRoleUtil.IsRoleSchedulerOrAdmin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
@@ -18,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -32,6 +37,7 @@ public class ScheduleTransportationController {
 
     private final ScheduleTransportationService scheduleTransportationService;
     private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
+    private final ProcessScheduleTransportationCreateRequestCmd processScheduleTransportationCreateRequestCmd;
 
     @Operation(summary = "find all schedule transportations")
     @GetMapping
@@ -69,6 +75,25 @@ public class ScheduleTransportationController {
         return SingleResponse.<ScheduleTransportationResponse>builder()
             .code(HttpStatus.OK.value())
             .data(scheduleTransportationResponseMapper.toResponse(scheduleTransportation))
+            .build();
+    }
+
+    @Operation(summary = "save schedule transportation")
+    @PostMapping
+    @ResponseStatus(HttpStatus.OK)
+    @IsRoleSchedulerOrAdmin
+    public SingleResponse<ScheduleTransportationResponse> save(
+        @RequestBody ScheduleTransportationCreateRequest request)
+    {
+        UUID scheduleTransportationId = processScheduleTransportationCreateRequestCmd.withRequest(
+                ProcessScheduleTransportationCreateRequestCmd.Request.builder()
+                    .scheduleTransportationCreateRequest(request)
+                    .build())
+            .execute();
+
+        return SingleResponse.<ScheduleTransportationResponse>builder()
+            .code(HttpStatus.OK.value())
+            .data(scheduleTransportationResponseMapper.toResponse(scheduleTransportationId))
             .build();
     }
 }

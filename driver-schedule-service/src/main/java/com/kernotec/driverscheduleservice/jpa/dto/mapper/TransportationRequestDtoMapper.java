@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(uses = {PersonDtoFlatMapper.class})
 public interface TransportationRequestDtoMapper {
 
     TransportationRequestDto toDto(TransportationRequest transportationRequest);

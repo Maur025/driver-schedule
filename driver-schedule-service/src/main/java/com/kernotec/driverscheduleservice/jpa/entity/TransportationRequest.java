@@ -3,9 +3,11 @@ package com.kernotec.driverscheduleservice.jpa.entity;
 import com.kernotec.core.jpa.entity.BaseAuditEntity;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
+import com.kernotec.driverscheduleservice.util.SafeZoneDateTimeConverter;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -54,12 +56,15 @@ public class TransportationRequest extends BaseAuditEntity {
     private String passengers;
 
     @Column(name = "start_time", nullable = false)
+    @Convert(converter = SafeZoneDateTimeConverter.class)
     private ZonedDateTime startTime;
 
     @Column(name = "end_time", nullable = false)
+    @Convert(converter = SafeZoneDateTimeConverter.class)
     private ZonedDateTime endTime;
 
     @Column(name = "requested_date")
+    @Convert(converter = SafeZoneDateTimeConverter.class)
     private ZonedDateTime requestedDate;
 
     @OptimisticLock(excluded = true)

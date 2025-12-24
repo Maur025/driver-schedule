@@ -2,10 +2,14 @@ package com.kernotec.driverscheduleservice.jpa.service;
 
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
+import com.kernotec.driverscheduleservice.exception.ScheduleTransportationStateException;
 import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportationState;
+import com.kernotec.driverscheduleservice.jpa.enums.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.jpa.repository.ScheduleTransportationStateRepository;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
@@ -24,5 +28,22 @@ public class ScheduleTransportationStateService extends
     @Override
     protected BaseRepository<ScheduleTransportationState, UUID> repository() {
         return repository;
+    }
+
+    public Optional<ScheduleTransportationState> findByCode(ScheduleTransportationStateEnum code) {
+        return repository.findByCode(String.valueOf(code));
+    }
+
+    public ScheduleTransportationState findByCodeThrow(ScheduleTransportationStateEnum code)
+    {
+        return findByCode(code).orElseThrow(
+            () -> new ScheduleTransportationStateException(
+                "code.not.found", "'" + code + "'",
+                HttpStatus.NOT_FOUND.value()
+            ));
+    }
+
+    public UUID findIdByCodeThrow(ScheduleTransportationStateEnum code) {
+        return findByCodeThrow(code).getId();
     }
 }

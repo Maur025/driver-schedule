@@ -39,6 +39,7 @@ public class TransportationRequestService extends BaseServiceImpl<Transportation
         TransportationRequestSpecification transportationRequestSpecification = TransportationRequestSpecification.builder()
             .withTransportationRequestStateId(filterRequest.getTransportationRequestStateId())
             .withPersonRequestedId(filterRequest.getPersonRequestedId())
+            .withTransportationRequestState(filterRequest.getTransportationRequestState())
             .withTripType(filterRequest.getTripType());
 
         boolean isAdmin = authUtil.userContainsRole(authentication, PersonTypeEnum.ADMIN);

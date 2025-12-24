@@ -1,5 +1,7 @@
 package com.kernotec.driverscheduleauth.config;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,8 +34,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.csrf(AbstractHttpConfigurer::disable)
             .cors(configurer -> configurer.configurationSource(getCorsConfigurationSource()))
-            .authorizeHttpRequests(auth -> auth.anyRequest()
+            .authorizeHttpRequests(auth -> auth.requestMatchers(
+                    "/realms/driver-schedule-auth/account/**")
+                .authenticated()
+                .anyRequest()
                 .permitAll())
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))
             .build();
     }
 
