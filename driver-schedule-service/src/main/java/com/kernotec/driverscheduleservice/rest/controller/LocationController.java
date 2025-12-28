@@ -15,6 +15,7 @@ import com.kernotec.driverscheduleservice.rest.dto.response.LocationResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.location.LocationResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,11 +48,12 @@ public class LocationController {
     public PageResponse<LocationResponse> findAll(@RequestParam(defaultValue = "0") Integer page,
         @RequestParam(defaultValue = "10") Integer size,
         @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") Boolean descending)
+        @RequestParam(defaultValue = "true") Boolean descending,
+        @RequestParam(required = false) String keyword)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
 
-        Page<Location> locationPage = locationService.findAll(pageable);
+        Page<Location> locationPage = locationService.findAllByKeyword(keyword, pageable);
 
         return PageResponse.<LocationResponse>builder()
             .code(HttpStatus.OK.value())
@@ -60,6 +62,19 @@ public class LocationController {
                 .count(locationPage.getTotalElements())
                 .pages(locationPage.getTotalPages())
                 .build())
+            .build();
+    }
+
+    @Operation(summary = "find all without pagination")
+    @GetMapping("/all")
+    @ResponseStatus(HttpStatus.OK)
+    public PageResponse<LocationResponse> findAllWithoutPagination()
+    {
+        List<Location> locationList = locationService.findAll();
+
+        return PageResponse.<LocationResponse>builder()
+            .code(HttpStatus.OK.value())
+            .data(locationResponseMapper.toResponse(locationList))
             .build();
     }
 
