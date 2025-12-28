@@ -5,13 +5,18 @@ import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.Person;
+import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.enums.PersonTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.service.PersonService;
+import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.PersonSpec;
 import com.kernotec.driverscheduleservice.rest.command.person.ProcessPersonCreateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.dto.request.person.PersonCreateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.request.person.PersonScheduleConflictRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.PersonResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.PersonScheduleConflictResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.person.PersonResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation.ScheduleTransportationResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -38,6 +43,8 @@ public class PersonController {
     private final PersonService personService;
     private final PersonResponseMapper personResponseMapper;
     private final ProcessPersonCreateRequestCmd processPersonCreateRequestCmd;
+    private final ScheduleTransportationService scheduleTransportationService;
+    private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
 
     @Operation(summary = "find all persons")
     @GetMapping
@@ -100,6 +107,25 @@ public class PersonController {
         return SingleResponse.<PersonResponse>builder()
             .code(HttpStatus.CREATED.value())
             .data(personResponseMapper.toResponse(personId))
+            .build();
+    }
+
+    @Operation(summary = "find driver schedule conflicts")
+    @PostMapping("{driverId}/schedule-conflicts")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<PersonScheduleConflictResponse> findPersonScheduleConflicts(
+        @PathVariable UUID driverId, @RequestBody PersonScheduleConflictRequest request)
+    {
+        List<ScheduleTransportation> scheduleTransportationList = scheduleTransportationService.findConflictByDriverId(
+            driverId, request.getConflictValidationFrom(), request.getConflictValidationTo());
+
+        return SingleResponse.<PersonScheduleConflictResponse>builder()
+            .code(HttpStatus.OK.value())
+            .data(PersonScheduleConflictResponse.builder()
+                .hasConflict(!scheduleTransportationList.isEmpty())
+                .scheduleTransportationConflicts(
+                    scheduleTransportationResponseMapper.toResponse(scheduleTransportationList))
+                .build())
             .build();
     }
 }

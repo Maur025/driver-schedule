@@ -5,10 +5,13 @@ import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.driverscheduleservice.exception.LocationException;
 import com.kernotec.driverscheduleservice.jpa.entity.Location;
 import com.kernotec.driverscheduleservice.jpa.repository.LocationRepository;
+import com.kernotec.driverscheduleservice.jpa.specification.location.LocationSpecification;
 import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -42,5 +45,12 @@ public class LocationService extends BaseServiceImpl<Location, UUID> {
         coordinate.setLat(coords.get(1));
         coordinate.setLng(coords.get(0));
         return coordinate;
+    }
+
+    public Page<Location> findAllByKeyword(String keyword, Pageable pageable) {
+        return repository.findAll(
+            LocationSpecification.builder()
+                .withKeyword(keyword), pageable
+        );
     }
 }

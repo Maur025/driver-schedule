@@ -45,12 +45,23 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
     private final TransportationRequestGetDtoCmd transportationRequestGetDtoCmd;
     private final ScheduleTransportationCreateCmd scheduleTransportationCreateCmd;
     private final TransportationRequestUpdateCmd transportationRequestUpdateCmd;
+    private final ScheduleTransportationDateValidationCmd scheduleTransportationDateValidationCmd;
     private final WebSocketHandler webSocketHandler;
     private final ZonedDateTimeUtil zonedDateTimeUtil;
 
     @Override
     protected void validate(Request request) {
+        ScheduleTransportationCreateRequest scheduleTransportationCreateRequest = request.scheduleTransportationCreateRequest;
 
+        scheduleTransportationDateValidationCmd.withRequest(
+                ScheduleTransportationDateValidationCmd.Request.builder()
+                    .vehicleId(scheduleTransportationCreateRequest.getVehicleId())
+                    .driverId(scheduleTransportationCreateRequest.getDriverId())
+                    .requestedDate(scheduleTransportationCreateRequest.getRequestedDate())
+                    .requestedStartTime(scheduleTransportationCreateRequest.getRequestedStartTime())
+                    .requestedEndTime(scheduleTransportationCreateRequest.getRequestedEndTime())
+                    .build())
+            .execute();
     }
 
     @Override
