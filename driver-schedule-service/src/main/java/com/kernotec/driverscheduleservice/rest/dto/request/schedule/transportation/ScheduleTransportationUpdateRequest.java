@@ -20,4 +20,5 @@ public class ScheduleTransportationUpdateRequest extends BaseRequest {
     private ZonedDateTime requestedDate;
     private UUID vehicleId;
     private UUID driverId;
+    private String rescheduleReason;
 }
