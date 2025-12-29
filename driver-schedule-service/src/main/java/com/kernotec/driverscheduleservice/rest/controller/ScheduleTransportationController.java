@@ -10,6 +10,7 @@ import com.kernotec.driverscheduleservice.rest.ApiSpec.ScheduleTransportationSpe
 import com.kernotec.driverscheduleservice.rest.command.schedule.transportation.ProcessScheduleTransportationCreateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.schedule.transportation.ProcessScheduleTransportationUpdateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationCreateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationFilterRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationUpdateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation.ScheduleTransportationResponseMapper;
@@ -55,6 +56,31 @@ public class ScheduleTransportationController {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<ScheduleTransportation> scheduleTransportationPage = scheduleTransportationService.findAll(
             pageable);
+
+        return PageResponse.<ScheduleTransportationResponse>builder()
+            .code(HttpStatus.OK.value())
+            .data(scheduleTransportationResponseMapper.toResponse(
+                scheduleTransportationPage.getContent()))
+            .pagination(PaginationResponse.builder()
+                .count(scheduleTransportationPage.getTotalElements())
+                .pages(scheduleTransportationPage.getTotalPages())
+                .build())
+            .build();
+    }
+
+    @Operation(summary = "search schedule transportation")
+    @PostMapping("search")
+    @ResponseStatus(HttpStatus.OK)
+    public PageResponse<ScheduleTransportationResponse> findAllBySearch(
+        @RequestParam(defaultValue = "0") Integer page,
+        @RequestParam(defaultValue = "10") Integer size,
+        @RequestParam(defaultValue = "createdAt") String sortBy,
+        @RequestParam(defaultValue = "true") Boolean descending,
+        @RequestBody ScheduleTransportationFilterRequest request)
+    {
+        Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
+        Page<ScheduleTransportation> scheduleTransportationPage = scheduleTransportationService.findAllBySearch(
+            request, pageable);
 
         return PageResponse.<ScheduleTransportationResponse>builder()
             .code(HttpStatus.OK.value())
