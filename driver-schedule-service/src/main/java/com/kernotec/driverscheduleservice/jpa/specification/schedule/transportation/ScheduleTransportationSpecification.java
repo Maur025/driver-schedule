@@ -32,6 +32,7 @@ public record ScheduleTransportationSpecification(
         addConflictValidationFilter(root, cb).ifPresent(predicateList::add);
         addVehicleIdFilter(root, cb).ifPresent(predicateList::add);
         addDriverIdFilter(root, cb).ifPresent(predicateList::add);
+        addTransportationRequestIdFilter(root, cb).ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -55,10 +56,11 @@ public record ScheduleTransportationSpecification(
             return Optional.empty();
         }
 
-        return Optional.of(cb.and(
-            cb.lessThan(root.get("scheduleFrom"), to),
-            cb.greaterThan(root.get("scheduleTo"), from)
-        ));
+        return Optional.of(
+            cb.and(
+                cb.lessThan(root.get("scheduleFrom"), to),
+                cb.greaterThan(root.get("scheduleTo"), from)
+            ));
     }
 
     public ScheduleTransportationSpecification withVehicleId(UUID vehicleId) {
@@ -83,5 +85,22 @@ public record ScheduleTransportationSpecification(
     {
         return Optional.ofNullable(criteria.getDriverId())
             .map(driverId -> cb.equal(root.get("driverId"), driverId));
+    }
+
+    public ScheduleTransportationSpecification withTransportationRequestId(
+        UUID transportationRequestId)
+    {
+        this.criteria.setTransportationRequestId(transportationRequestId);
+        return this;
+    }
+
+    private Optional<Predicate> addTransportationRequestIdFilter(Root<ScheduleTransportation> root,
+        CriteriaBuilder cb)
+    {
+        return Optional.ofNullable(criteria.getTransportationRequestId())
+            .map(transportationRequestId -> cb.equal(
+                root.get("transportationRequestId"),
+                transportationRequestId
+            ));
     }
 }

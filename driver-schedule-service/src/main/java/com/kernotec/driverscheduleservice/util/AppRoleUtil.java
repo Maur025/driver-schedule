@@ -21,4 +21,11 @@ public class AppRoleUtil {
     public @interface IsRoleApplicant {
 
     }
+
+    @Target({ElementType.METHOD, ElementType.TYPE})
+    @Retention(RetentionPolicy.RUNTIME)
+    @PreAuthorize("hasAnyRole('APPLICANT','SCHEDULER')")
+    public @interface IsRoleApplicantOrScheduler {
+
+    }
 }
