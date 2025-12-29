@@ -5,15 +5,20 @@ import com.kernotec.core.rest.dto.response.MessageResponse;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
+import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.entity.Vehicle;
+import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.jpa.service.VehicleService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.VehicleSpec;
 import com.kernotec.driverscheduleservice.rest.command.vehicle.ProcessVehicleCreateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.vehicle.ProcessVehicleUpdateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleCreateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleScheduleConflictRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleUpdateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.VehicleResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.VehicleScheduleConflictResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
+import com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation.ScheduleTransportationResponseMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.vehicle.VehicleResponseMapper;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
@@ -46,10 +51,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class VehicleController {
 
     private final VehicleService vehicleService;
+    private final ScheduleTransportationService scheduleTransportationService;
+
     private final VehicleResponseMapper vehicleResponseMapper;
-    private final WebSocketHandler webSocketHandler;
+    private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
+
     private final ProcessVehicleCreateRequestCmd processVehicleCreateRequestCmd;
     private final ProcessVehicleUpdateRequestCmd processVehicleUpdateRequestCmd;
+    private final WebSocketHandler webSocketHandler;
 
     @Operation(summary = "find all vehicles")
     @GetMapping
@@ -153,5 +162,24 @@ public class VehicleController {
     public void handleTestMessage(String message) {
         log.info("FROM WEB SOCKET");
         log.info("Received WebSocket message: {}", message);
+    }
+
+    @Operation(summary = "find vehicle schedule conflicts")
+    @PostMapping("{vehicleId}/schedule-conflicts")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<VehicleScheduleConflictResponse> findVehicleScheduleConflicts(
+        @PathVariable UUID vehicleId, @RequestBody VehicleScheduleConflictRequest request)
+    {
+        List<ScheduleTransportation> scheduleTransportationList = scheduleTransportationService.findConflictByVehicleId(
+            vehicleId, request.getConflictValidationFrom(), request.getConflictValidationTo());
+
+        return SingleResponse.<VehicleScheduleConflictResponse>builder()
+            .code(HttpStatus.OK.value())
+            .data(VehicleScheduleConflictResponse.builder()
+                .hasConflict(!scheduleTransportationList.isEmpty())
+                .scheduleTransportationConflicts(
+                    scheduleTransportationResponseMapper.toResponse(scheduleTransportationList))
+                .build())
+            .build();
     }
 }
