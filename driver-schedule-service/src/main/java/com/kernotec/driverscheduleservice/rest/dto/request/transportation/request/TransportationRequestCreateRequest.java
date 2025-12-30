@@ -7,6 +7,7 @@ import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,4 +36,7 @@ public class TransportationRequestCreateRequest extends BaseRequest {
 
     private String passengers;
     private String assets;
+
+    private UUID locationStartId;
+    private UUID locationEndId;
 }

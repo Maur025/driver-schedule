@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.response.data.EntityResponse;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
@@ -18,7 +19,9 @@ import lombok.Setter;
 @JsonInclude(Include.NON_NULL)
 public class TransportationRequestResponse extends EntityResponse {
 
+    @Schema(description = "coordinate tuple in geoJson format [longitude, latitude]")
     private List<Double> startingCoordinates;
+    @Schema(description = "coordinate tuple in geoJson format [longitude, latitude]")
     private List<Double> endCoordinates;
     private String peopleNumber;
     private String assets;
@@ -36,4 +39,5 @@ public class TransportationRequestResponse extends EntityResponse {
     private PersonResponse personRequested;
 
     private Set<ReasonResponse> rejectReasons;
+    private List<RequestLocationResponse> requestLocations;
 }
