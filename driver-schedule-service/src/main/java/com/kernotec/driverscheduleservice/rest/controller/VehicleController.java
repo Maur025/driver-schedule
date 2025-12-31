@@ -20,6 +20,7 @@ import com.kernotec.driverscheduleservice.rest.dto.response.VehicleScheduleConfl
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation.ScheduleTransportationResponseMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.vehicle.VehicleResponseMapper;
+import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,6 +60,7 @@ public class VehicleController {
     private final ProcessVehicleCreateRequestCmd processVehicleCreateRequestCmd;
     private final ProcessVehicleUpdateRequestCmd processVehicleUpdateRequestCmd;
     private final WebSocketHandler webSocketHandler;
+    private final ZonedDateTimeUtil zonedDateTimeUtil;
 
     @Operation(summary = "find all vehicles")
     @GetMapping
@@ -170,8 +172,13 @@ public class VehicleController {
     public SingleResponse<VehicleScheduleConflictResponse> findVehicleScheduleConflicts(
         @PathVariable UUID vehicleId, @RequestBody VehicleScheduleConflictRequest request)
     {
+        ZonedDateTime from = zonedDateTimeUtil.getNewOfDateAndTime(
+            request.getRequestedDate(), request.getConflictValidationFrom());
+        ZonedDateTime to = zonedDateTimeUtil.getNewOfDateAndTime(
+            request.getRequestedDate(), request.getConflictValidationTo());
+
         List<ScheduleTransportation> scheduleTransportationList = scheduleTransportationService.findConflictByVehicleId(
-            vehicleId, request.getConflictValidationFrom(), request.getConflictValidationTo());
+            vehicleId, from, to, request.getZoneId(), request.getScheduleTransportationExcludeId());
 
         return SingleResponse.<VehicleScheduleConflictResponse>builder()
             .code(HttpStatus.OK.value())
