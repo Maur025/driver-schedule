@@ -32,6 +32,9 @@ public class WebSocketTopic {
     public static final String SCHEDULE_TRANSPORTATION_RESCHEDULED =
         BROKER_PREFIX + "/schedule.transportation.rescheduled";
 
+    public static final String SCHEDULE_TRANSPORTATION_CANCELLED =
+        BROKER_PREFIX + "/schedule.transportation.cancelled";
+
     public static final String TEST_MESSAGE = "/test.message";
 
     private WebSocketTopic() {

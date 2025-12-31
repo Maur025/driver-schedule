@@ -7,8 +7,10 @@ import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.ScheduleTransportationSpec;
+import com.kernotec.driverscheduleservice.rest.command.schedule.transportation.ProcessScheduleTransportationCancelRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.schedule.transportation.ProcessScheduleTransportationCreateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.schedule.transportation.ProcessScheduleTransportationUpdateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationCancelRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationFilterRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationUpdateRequest;
@@ -43,6 +45,7 @@ public class ScheduleTransportationController {
     private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
     private final ProcessScheduleTransportationCreateRequestCmd processScheduleTransportationCreateRequestCmd;
     private final ProcessScheduleTransportationUpdateRequestCmd processScheduleTransportationUpdateRequestCmd;
+    private final ProcessScheduleTransportationCancelRequestCmd processScheduleTransportationCancelRequestCmd;
 
     @Operation(summary = "find all schedule transportations")
     @GetMapping
@@ -145,6 +148,27 @@ public class ScheduleTransportationController {
         return SingleResponse.<ScheduleTransportationResponse>builder()
             .code(HttpStatus.OK.value())
             .message("Reschedule successful")
+            .build();
+    }
+
+    @Operation(summary = "cancel schedule transportation")
+    @PostMapping("{scheduleTransportationId}/cancelled")
+    @ResponseStatus(HttpStatus.OK)
+    @IsRoleSchedulerOrAdmin
+    public SingleResponse<ScheduleTransportationResponse> cancel(
+        @PathVariable UUID scheduleTransportationId,
+        @RequestBody ScheduleTransportationCancelRequest request)
+    {
+        processScheduleTransportationCancelRequestCmd.withRequest(
+                ProcessScheduleTransportationCancelRequestCmd.Request.builder()
+                    .scheduleTransportationId(scheduleTransportationId)
+                    .scheduleTransportationCancelRequest(request)
+                    .build())
+            .execute();
+
+        return SingleResponse.<ScheduleTransportationResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("Cancellation successful")
             .build();
     }
 }
