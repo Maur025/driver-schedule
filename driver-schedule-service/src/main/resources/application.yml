@@ -79,7 +79,12 @@ springdoc:
 # LOGGING
 logging:
   level:
-    root: ${LOGGING_LEVEL:INFO}
+    root: ${LOGGING_LEVEL:WARN}
+    #org.hibernate:
+    #sql: DEBUG
+    #orm.results: TRACE
+    #resource.jdbc.bind: TRACE
+    #type.descriptor.sql.BasicBinder: TRACE
 
 # OAUTH2 CONFIG
 oauth2-config:

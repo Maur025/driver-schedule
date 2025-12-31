@@ -53,6 +53,8 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
                     .requestedDate(scheduleTransportationUpdateRequest.getRequestedDate())
                     .requestedStartTime(scheduleTransportationUpdateRequest.getRequestedStartTime())
                     .requestedEndTime(scheduleTransportationUpdateRequest.getRequestedEndTime())
+                    .zoneId(scheduleTransportationUpdateRequest.getZoneId())
+                    .scheduleTransportationExcludeId(request.scheduleTransportationId)
                     .build())
             .execute();
     }

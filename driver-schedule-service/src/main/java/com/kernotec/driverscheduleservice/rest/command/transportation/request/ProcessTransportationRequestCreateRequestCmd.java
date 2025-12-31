@@ -43,6 +43,20 @@ public class ProcessTransportationRequestCreateRequestCmd extends
     private final WebSocketHandler webSocketHandler;
     private final AuthUtil authUtil;
     private final RequestLocationCreateCmd requestLocationCreateCmd;
+    private final TransportationRequestValidationCmd transportationRequestValidationCmd;
+
+    @Override
+    protected void validate(Request request) {
+        TransportationRequestCreateRequest transportationRequestCreateRequest = request.transportationRequestCreateRequest;
+
+        transportationRequestValidationCmd.withRequest(
+                TransportationRequestValidationCmd.Request.builder()
+                    .fromDate(transportationRequestCreateRequest.getStartTime())
+                    .toDate(transportationRequestCreateRequest.getEndTime())
+                    .requestedDate(transportationRequestCreateRequest.getRequestedDate())
+                    .build())
+            .execute();
+    }
 
     @Override
     protected UUID run(Request request) {
@@ -59,13 +73,21 @@ public class ProcessTransportationRequestCreateRequestCmd extends
 
         UUID personId = authUtil.getPersonIdFromAuthenticationThrow(request.authentication);
 
+        ZonedDateTime startTime = transportationRequestCreateRequest.getStartTime();
+        ZonedDateTime startTimeAdjust = startTime.withSecond(0)
+            .withNano(0);
+
+        ZonedDateTime endTime = transportationRequestCreateRequest.getEndTime();
+        ZonedDateTime endTimeAdjust = endTime.withSecond(0)
+            .withNano(0);
+
         UUID transportationRequestId = transportationRequestCreateCmd.withRequest(
                 TransportationRequestCreateCmd.Request.builder()
                     .startingCoordinate(startCoordinate)
                     .endCoordinate(endCoordinate)
                     .peopleNumber(transportationRequestCreateRequest.getPeopleNumber())
-                    .startTime(transportationRequestCreateRequest.getStartTime())
-                    .endTime(transportationRequestCreateRequest.getEndTime())
+                    .startTime(startTimeAdjust)
+                    .endTime(endTimeAdjust)
                     .requestedDate(transportationRequestCreateRequest.getRequestedDate())
                     .tripType(transportationRequestCreateRequest.getTripType())
                     .isShortNotice(transportationRequestCreateRequest.getIsShortNotice())
