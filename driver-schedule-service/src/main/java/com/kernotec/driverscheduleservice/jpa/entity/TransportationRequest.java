@@ -13,11 +13,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -76,6 +79,14 @@ public class TransportationRequest extends BaseAuditEntity {
 
     @Column(name = "is_short_notice", nullable = false, columnDefinition = "boolean default false")
     private boolean isShortNotice = false;
+
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+                    generator = "transportation_request_correlative_seq")
+    @SequenceGenerator(name = "transportation_request_correlative_seq",
+                       sequenceName = "transportation_request_correlative_seq_db",
+                       allocationSize = 1)
+    @Column(name = "correlative", nullable = false, insertable = false, updatable = false)
+    private Long correlative;
 
     @Column(name = "transportation_request_state_id", nullable = false)
     private UUID transportationRequestStateId;

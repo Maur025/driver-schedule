@@ -86,6 +86,30 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-websocket</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>${poi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>${poi.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>${open-csv.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-csv</artifactId>
+      <version>${commons-csv.version}</version>
+    </dependency>
+
   </dependencies>
 
   <parent>
@@ -116,6 +140,9 @@
 
   <properties>
     <org.springdoc.version>2.2.0</org.springdoc.version>
+    <poi.version>5.4.1</poi.version>
+    <open-csv.version>5.3</open-csv.version>
+    <commons-csv.version>1.8</commons-csv.version>
   </properties>
 
 </project>
