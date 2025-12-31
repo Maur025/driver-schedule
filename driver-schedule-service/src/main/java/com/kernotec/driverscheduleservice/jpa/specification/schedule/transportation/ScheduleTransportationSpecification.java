@@ -63,13 +63,13 @@ public record ScheduleTransportationSpecification(
 
         ZoneId clientZoneId = ZonedDateTimeUtil.getClientZoneId(criteria.getZoneId());
 
-        ZonedDateTime normalizedFrom = from.withZoneSameInstant(clientZoneId);
-        ZonedDateTime normalizedTo = to.withZoneSameInstant(clientZoneId);
+        ZonedDateTime fromWithClientZone = from.withZoneSameInstant(clientZoneId);
+        ZonedDateTime toWithClientZone = to.withZoneSameInstant(clientZoneId);
 
         return Optional.of(
             cb.and(
-                cb.lessThan(root.get("scheduleFrom"), normalizedTo),
-                cb.greaterThan(root.get("scheduleTo"), normalizedFrom)
+                cb.lessThan(root.get("scheduleFrom"), toWithClientZone),
+                cb.greaterThan(root.get("scheduleTo"), fromWithClientZone)
             ));
     }
 
