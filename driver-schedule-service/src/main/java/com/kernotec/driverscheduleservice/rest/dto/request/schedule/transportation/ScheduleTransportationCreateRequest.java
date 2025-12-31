@@ -28,4 +28,5 @@ public class ScheduleTransportationCreateRequest extends BaseRequest {
     private UUID vehicleId;
     @NotNull
     private UUID driverId;
+    private String zoneId;
 }

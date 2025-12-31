@@ -14,7 +14,7 @@ import com.kernotec.driverscheduleservice.rest.dto.request.transportation.reques
 import com.kernotec.driverscheduleservice.rest.dto.request.transportation.request.TransportationRequestFilterRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.TransportationRequestResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.transportation.request.TransportationRequestResponseMapper;
-import com.kernotec.driverscheduleservice.util.AppRoleUtil.IsRoleApplicant;
+import com.kernotec.driverscheduleservice.util.AppRoleUtil.IsRoleApplicantOrScheduler;
 import com.kernotec.driverscheduleservice.util.AppRoleUtil.IsRoleSchedulerOrAdmin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -119,7 +119,7 @@ public class TransportationRequestController {
     @Operation(summary = "save transportation request")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @IsRoleApplicant
+    @IsRoleApplicantOrScheduler
     public SingleResponse<TransportationRequestResponse> save(
         @RequestBody TransportationRequestCreateRequest request, Authentication authentication)
     {

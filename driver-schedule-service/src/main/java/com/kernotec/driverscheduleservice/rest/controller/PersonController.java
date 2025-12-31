@@ -17,8 +17,10 @@ import com.kernotec.driverscheduleservice.rest.dto.response.PersonResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.PersonScheduleConflictResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.person.PersonResponseMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation.ScheduleTransportationResponseMapper;
+import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -45,6 +47,7 @@ public class PersonController {
     private final ProcessPersonCreateRequestCmd processPersonCreateRequestCmd;
     private final ScheduleTransportationService scheduleTransportationService;
     private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
+    private final ZonedDateTimeUtil zonedDateTimeUtil;
 
     @Operation(summary = "find all persons")
     @GetMapping
@@ -116,8 +119,14 @@ public class PersonController {
     public SingleResponse<PersonScheduleConflictResponse> findPersonScheduleConflicts(
         @PathVariable UUID driverId, @RequestBody PersonScheduleConflictRequest request)
     {
+        ZonedDateTime from = zonedDateTimeUtil.getNewOfDateAndTime(
+            request.getRequestedDate(), request.getConflictValidationFrom());
+
+        ZonedDateTime to = zonedDateTimeUtil.getNewOfDateAndTime(
+            request.getRequestedDate(), request.getConflictValidationTo());
+
         List<ScheduleTransportation> scheduleTransportationList = scheduleTransportationService.findConflictByDriverId(
-            driverId, request.getConflictValidationFrom(), request.getConflictValidationTo());
+            driverId, from, to, request.getZoneId(), request.getScheduleTransportationExcludeId());
 
         return SingleResponse.<PersonScheduleConflictResponse>builder()
             .code(HttpStatus.OK.value())

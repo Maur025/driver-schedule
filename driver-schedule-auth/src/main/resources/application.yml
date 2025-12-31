@@ -91,3 +91,11 @@ oauth2-config:
   refresh-token-exp-type: ${OAUTH2_JWT_REFRESH_TOKEN_EXP_TYPE:seconds}
   refresh-token-secure: ${OATH2_JWT_REFRESH_TOKEN_SECURE:dev}
   admin-password: ${OAUTH2_ADMIN_PASSWORD:admin-pass}
+
+
+rate-limit-bucket-config:
+  capacity: ${RATE_LIMIT_BUCKET_CAPACITY:50}
+  refill-tokens: ${RATE_LIMIT_BUCKET_REFILL_TOKENS:10}
+  refill-period-in-seconds: ${RATE_LIMIT_BUCKET_REFILL_PERIOD:1}
+  bucket-cache-expire-in-minutes: ${RATE_LIMIT_BUCKET_CACHE_EXPIRE:60}
+  bucket-cache-max-size: ${RATE_LIMIT_BUCKET_CACHE_MAX_SIZE:10000}

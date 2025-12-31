@@ -2,7 +2,9 @@ package com.kernotec.driverscheduleauth.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import com.kernotec.driverscheduleauth.config.bucket.ThrottlingFilter;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,19 +13,18 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final DriverScheduleAuthProperties driverScheduleAuthProperties;
-
-    public SecurityConfig(DriverScheduleAuthProperties driverScheduleAuthProperties) {
-        this.driverScheduleAuthProperties = driverScheduleAuthProperties;
-    }
+    private final ThrottlingFilter throttlingFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -40,6 +41,7 @@ public class SecurityConfig {
                 .anyRequest()
                 .permitAll())
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))
+            .addFilterBefore(throttlingFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
     }
 

@@ -13,4 +13,7 @@ public class ScheduleTransportationSpecificationCriteria {
     private ZonedDateTime conflictValidationTo;
     private UUID vehicleId;
     private UUID driverId;
+    private UUID transportationRequestId;
+    private String zoneId;
+    private UUID scheduleTransportationExcludeId;
 }

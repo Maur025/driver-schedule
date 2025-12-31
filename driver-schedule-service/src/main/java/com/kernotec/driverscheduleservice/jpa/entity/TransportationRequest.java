@@ -17,8 +17,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
@@ -97,4 +99,7 @@ public class TransportationRequest extends BaseAuditEntity {
                                          referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "reason_id", referencedColumnName = "id"))
     private Set<Reason> rejectReasons;
+
+    @OneToMany(mappedBy = "transportationRequest", fetch = FetchType.LAZY)
+    private List<RequestLocation> requestLocations;
 }

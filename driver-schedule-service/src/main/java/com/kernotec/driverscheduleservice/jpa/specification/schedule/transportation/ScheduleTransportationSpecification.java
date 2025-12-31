@@ -2,17 +2,21 @@ package com.kernotec.driverscheduleservice.jpa.specification.schedule.transporta
 
 import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.specification.criteria.ScheduleTransportationSpecificationCriteria;
+import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 
+@Slf4j
 public record ScheduleTransportationSpecification(
     ScheduleTransportationSpecificationCriteria criteria) implements
     Specification<ScheduleTransportation>
@@ -32,16 +36,18 @@ public record ScheduleTransportationSpecification(
         addConflictValidationFilter(root, cb).ifPresent(predicateList::add);
         addVehicleIdFilter(root, cb).ifPresent(predicateList::add);
         addDriverIdFilter(root, cb).ifPresent(predicateList::add);
+        addTransportationRequestIdFilter(root, cb).ifPresent(predicateList::add);
+        addScheduleTransportationExcludeIdFilter(root, cb).ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
     }
 
-    public ScheduleTransportationSpecification withAvailabilityValidation(
-        ZonedDateTime availabilityValidationFrom, ZonedDateTime availabilityValidationTo)
+    public ScheduleTransportationSpecification withConflictValidation(
+        ZonedDateTime conflictValidationFrom, ZonedDateTime conflictValidationTo)
     {
-        this.criteria.setConflictValidationFrom(availabilityValidationFrom);
-        this.criteria.setConflictValidationTo(availabilityValidationTo);
+        this.criteria.setConflictValidationFrom(conflictValidationFrom);
+        this.criteria.setConflictValidationTo(conflictValidationTo);
         return this;
     }
 
@@ -55,10 +61,16 @@ public record ScheduleTransportationSpecification(
             return Optional.empty();
         }
 
-        return Optional.of(cb.and(
-            cb.lessThan(root.get("scheduleFrom"), to),
-            cb.greaterThan(root.get("scheduleTo"), from)
-        ));
+        ZoneId clientZoneId = ZonedDateTimeUtil.getClientZoneId(criteria.getZoneId());
+
+        ZonedDateTime fromWithClientZone = from.withZoneSameInstant(clientZoneId);
+        ZonedDateTime toWithClientZone = to.withZoneSameInstant(clientZoneId);
+
+        return Optional.of(
+            cb.and(
+                cb.lessThan(root.get("scheduleFrom"), toWithClientZone),
+                cb.greaterThan(root.get("scheduleTo"), fromWithClientZone)
+            ));
     }
 
     public ScheduleTransportationSpecification withVehicleId(UUID vehicleId) {
@@ -83,5 +95,44 @@ public record ScheduleTransportationSpecification(
     {
         return Optional.ofNullable(criteria.getDriverId())
             .map(driverId -> cb.equal(root.get("driverId"), driverId));
+    }
+
+    public ScheduleTransportationSpecification withTransportationRequestId(
+        UUID transportationRequestId)
+    {
+        this.criteria.setTransportationRequestId(transportationRequestId);
+        return this;
+    }
+
+    private Optional<Predicate> addTransportationRequestIdFilter(Root<ScheduleTransportation> root,
+        CriteriaBuilder cb)
+    {
+        return Optional.ofNullable(criteria.getTransportationRequestId())
+            .map(transportationRequestId -> cb.equal(
+                root.get("transportationRequestId"),
+                transportationRequestId
+            ));
+    }
+
+    public ScheduleTransportationSpecification withZoneId(String zoneId) {
+        this.criteria.setZoneId(zoneId);
+        return this;
+    }
+
+    public ScheduleTransportationSpecification withScheduleTransportationExcludeId(
+        UUID scheduleTransportationExcludeId)
+    {
+        this.criteria.setScheduleTransportationExcludeId(scheduleTransportationExcludeId);
+        return this;
+    }
+
+    private Optional<Predicate> addScheduleTransportationExcludeIdFilter(
+        Root<ScheduleTransportation> root, CriteriaBuilder cb)
+    {
+        return Optional.ofNullable(criteria.getScheduleTransportationExcludeId())
+            .map(scheduleTransportationExcludeId -> cb.notEqual(
+                root.get("id"),
+                scheduleTransportationExcludeId
+            ));
     }
 }

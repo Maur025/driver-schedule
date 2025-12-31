@@ -60,6 +60,7 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
                     .requestedDate(scheduleTransportationCreateRequest.getRequestedDate())
                     .requestedStartTime(scheduleTransportationCreateRequest.getRequestedStartTime())
                     .requestedEndTime(scheduleTransportationCreateRequest.getRequestedEndTime())
+                    .zoneId(scheduleTransportationCreateRequest.getZoneId())
                     .build())
             .execute();
     }
