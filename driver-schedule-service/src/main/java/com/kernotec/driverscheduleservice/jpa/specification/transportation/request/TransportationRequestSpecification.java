@@ -4,12 +4,14 @@ import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
 import com.kernotec.driverscheduleservice.jpa.enums.TransportationRequestStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.specification.criteria.TransportationRequestSpecificationCriteria;
+import com.kernotec.driverscheduleservice.util.CommonSpecification;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +58,10 @@ public record TransportationRequestSpecification(
         addPersonRequestedIdFilter(root, cb).ifPresent(predicateList::add);
         addTripTypeFilter(root, cb).ifPresent(predicateList::add);
         addTransportationRequestStateFilter(root, cb, joinMap).ifPresent(predicateList::add);
+        addSimpleDateFilter(root, cb).ifPresent(predicateList::add);
+        addDateRangeFilter(root, cb).ifPresent(predicateList::add);
+        addMonthDateFilter(root, cb).ifPresent(predicateList::add);
+        addYearDateFilter(root, cb).ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -133,4 +139,76 @@ public record TransportationRequestSpecification(
                 ));
     }
 
+    public TransportationRequestSpecification withZoneId(String zoneId) {
+        this.criteria.setZoneId(zoneId);
+        return this;
+    }
+
+    public TransportationRequestSpecification withSimpleDate(ZonedDateTime simpleDate) {
+        this.criteria.setSimpleDate(simpleDate);
+        return this;
+    }
+
+    private Optional<Predicate> addSimpleDateFilter(Root<TransportationRequest> root,
+        CriteriaBuilder cb)
+    {
+        return Optional.ofNullable(criteria.getSimpleDate())
+            .map(simpleDate -> CommonSpecification.simpleDatePredicate(
+                cb, root.get("createdAt"),
+                simpleDate, criteria.getZoneId()
+            ));
+    }
+
+    public TransportationRequestSpecification withDateRange(ZonedDateTime fromDate,
+        ZonedDateTime toDate)
+    {
+        this.criteria.setFromDate(fromDate);
+        this.criteria.setToDate(toDate);
+        return this;
+    }
+
+    private Optional<Predicate> addDateRangeFilter(Root<TransportationRequest> root,
+        CriteriaBuilder cb)
+    {
+        ZonedDateTime from = criteria.getFromDate();
+        ZonedDateTime to = criteria.getToDate();
+
+        if (from != null && to != null) {
+            return Optional.of(
+                CommonSpecification.dateRangePredicate(
+                    cb, root.get("createdAt"), from, to, criteria.getZoneId()));
+        }
+
+        return Optional.empty();
+    }
+
+    public TransportationRequestSpecification withMonthDate(ZonedDateTime monthDate) {
+        this.criteria.setMonthDate(monthDate);
+        return this;
+    }
+
+    private Optional<Predicate> addMonthDateFilter(Root<TransportationRequest> root,
+        CriteriaBuilder cb)
+    {
+        return Optional.ofNullable(criteria.getMonthDate())
+            .map(monthDate -> CommonSpecification.monthDatePredicate(
+                cb, root.get("createdAt"),
+                monthDate, criteria.getZoneId()
+            ));
+    }
+
+    public TransportationRequestSpecification withYearDate(ZonedDateTime yearDate) {
+        this.criteria.setYearDate(yearDate);
+        return this;
+    }
+
+    private Optional<Predicate> addYearDateFilter(Root<TransportationRequest> root,
+        CriteriaBuilder cb)
+    {
+        return Optional.ofNullable(criteria.getYearDate())
+            .map(yearDate -> CommonSpecification.yearDatePredicate(
+                cb, root.get("createdAt"),
+                yearDate, criteria.getZoneId()
+            ));
+    }
 }
