@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.response.data.AuditEntityResponse;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +29,7 @@ public class TransportationRequestResponse extends AuditEntityResponse {
     private String passengers;
     private ZonedDateTime startTime;
     private ZonedDateTime endTime;
-    private ZonedDateTime requestedDate;
+    private LocalDateTime requestedDate;
     private TripTypeEnum tripType;
     private boolean isShortNotice;
     private Long correlative;

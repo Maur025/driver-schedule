@@ -3,6 +3,7 @@ package com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportat
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.request.BaseRequest;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.Getter;
@@ -17,7 +18,7 @@ public class ScheduleTransportationUpdateRequest extends BaseRequest {
 
     private ZonedDateTime requestedStartTime;
     private ZonedDateTime requestedEndTime;
-    private ZonedDateTime requestedDate;
+    private LocalDateTime requestedDate;
     private UUID vehicleId;
     private UUID driverId;
     private String rescheduleReason;

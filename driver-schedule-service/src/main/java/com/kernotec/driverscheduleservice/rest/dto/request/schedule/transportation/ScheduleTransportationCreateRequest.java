@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.request.BaseRequest;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.Getter;
@@ -21,7 +22,7 @@ public class ScheduleTransportationCreateRequest extends BaseRequest {
     @NotNull
     private ZonedDateTime requestedEndTime;
     @NotNull
-    private ZonedDateTime requestedDate;
+    private LocalDateTime requestedDate;
     @NotNull
     private UUID transportationRequestId;
     @NotNull

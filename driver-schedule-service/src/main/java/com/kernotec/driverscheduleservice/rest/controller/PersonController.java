@@ -29,6 +29,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Tag(name = PersonSpec.TAG_NAME, description = PersonSpec.TAG_DESCRIPTION)
 @RequestMapping(path = PersonSpec.BASE_PATH)
 @RestController
@@ -131,10 +133,12 @@ public class PersonController {
         @PathVariable UUID driverId, @RequestBody PersonScheduleConflictRequest request)
     {
         ZonedDateTime from = zonedDateTimeUtil.getNewOfDateAndTime(
-            request.getRequestedDate(), request.getConflictValidationFrom());
+            request.getRequestedDate(), request.getConflictValidationFrom(), request.getZoneId());
 
         ZonedDateTime to = zonedDateTimeUtil.getNewOfDateAndTime(
-            request.getRequestedDate(), request.getConflictValidationTo());
+            request.getRequestedDate(), request.getConflictValidationTo(), request.getZoneId());
+
+        log.info("Finding schedule conflicts for driverId: {} from: {} to: {}", driverId, from, to);
 
         List<ScheduleTransportation> scheduleTransportationList = scheduleTransportationService.findConflictByDriverId(
             driverId, from, to, request.getZoneId(), request.getScheduleTransportationExcludeId());

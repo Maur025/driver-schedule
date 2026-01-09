@@ -4,6 +4,7 @@ import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationService;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.Builder;
@@ -29,6 +30,9 @@ public class ScheduleTransportationUpdateCmd extends
         if (request.scheduleTo != null) {
             scheduleTransportation.setScheduleTo(request.scheduleTo);
         }
+        if (request.requestedDate != null) {
+            scheduleTransportation.setScheduledDate(request.requestedDate);
+        }
         if (request.vehicleId != null) {
             scheduleTransportation.setVehicleId(request.vehicleId);
         }
@@ -46,8 +50,8 @@ public class ScheduleTransportationUpdateCmd extends
 
     @Builder
     public record Request(@NotNull UUID scheduleTransportationId, ZonedDateTime scheduleFrom,
-                          ZonedDateTime scheduleTo, UUID vehicleId, UUID driverId,
-                          UUID scheduleTransportationStateId)
+                          ZonedDateTime scheduleTo, LocalDateTime requestedDate, UUID vehicleId,
+                          UUID driverId, UUID scheduleTransportationStateId)
     {
 
     }

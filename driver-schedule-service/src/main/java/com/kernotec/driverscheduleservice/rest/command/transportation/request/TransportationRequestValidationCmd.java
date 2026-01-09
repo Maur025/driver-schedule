@@ -4,12 +4,15 @@ import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.exception.TransportationRequestException;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class TransportationRequestValidationCmd extends
@@ -20,10 +23,20 @@ public class TransportationRequestValidationCmd extends
 
     @Override
     protected Void run(Request request) {
+        log.info(
+            "requestedDate: {}, fromDate: {}, toDate: {}", request.requestedDate,
+            request.fromDate, request.toDate
+        );
+
         ZonedDateTime fromDateToSchedule = zonedDateTimeUtil.getNewOfDateAndTime(
-            request.requestedDate, request.fromDate);
+            request.requestedDate, request.fromDate, request.zoneId);
         ZonedDateTime toDateToSchedule = zonedDateTimeUtil.getNewOfDateAndTime(
-            request.requestedDate, request.toDate);
+            request.requestedDate, request.toDate, request.zoneId);
+
+        log.info(
+            "fromDateToSchedule: {}, toDateToSchedule: {}", fromDateToSchedule,
+            toDateToSchedule
+        );
 
         if (toDateToSchedule.isBefore(fromDateToSchedule) || toDateToSchedule.isEqual(
             fromDateToSchedule))
@@ -44,7 +57,7 @@ public class TransportationRequestValidationCmd extends
 
     @Builder
     public record Request(@NotNull ZonedDateTime fromDate, @NotNull ZonedDateTime toDate,
-                          @NotNull ZonedDateTime requestedDate)
+                          @NotNull LocalDateTime requestedDate, String zoneId)
     {
 
     }

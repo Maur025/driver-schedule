@@ -11,6 +11,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -34,8 +35,7 @@ public class ScheduleTransportation extends BaseAuditEntity {
     private ZonedDateTime scheduleTo;
 
     @Column(name = "scheduled_date", nullable = false)
-    @Convert(converter = SafeZoneDateTimeConverter.class)
-    private ZonedDateTime scheduledDate;
+    private LocalDateTime scheduledDate;
 
     @Column(name = "vehicle_id", nullable = false)
     private UUID vehicleId;

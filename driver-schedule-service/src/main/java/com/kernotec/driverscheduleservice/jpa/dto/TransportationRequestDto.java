@@ -3,6 +3,7 @@ package com.kernotec.driverscheduleservice.jpa.dto;
 import com.kernotec.core.jpa.dto.AuditEntityDto;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -21,7 +22,7 @@ public class TransportationRequestDto extends AuditEntityDto {
     private String passengers;
     private ZonedDateTime startTime;
     private ZonedDateTime endTime;
-    private ZonedDateTime requestedDate;
+    private LocalDate requestedDate;
     private TripTypeEnum tripType;
     private boolean isShortNotice;
 

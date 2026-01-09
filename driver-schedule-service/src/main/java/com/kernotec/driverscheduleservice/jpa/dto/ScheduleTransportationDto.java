@@ -1,6 +1,7 @@
 package com.kernotec.driverscheduleservice.jpa.dto;
 
 import com.kernotec.core.jpa.dto.AuditEntityDto;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -13,7 +14,7 @@ public class ScheduleTransportationDto extends AuditEntityDto {
 
     private ZonedDateTime scheduleFrom;
     private ZonedDateTime scheduleTo;
-    private ZonedDateTime scheduledDate;
+    private LocalDate scheduledDate;
 
     private UUID vehicleId;
     private VehicleDto vehicle;

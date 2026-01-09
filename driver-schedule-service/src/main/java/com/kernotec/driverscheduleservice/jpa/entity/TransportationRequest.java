@@ -22,6 +22,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
@@ -69,8 +70,7 @@ public class TransportationRequest extends BaseAuditEntity {
     private ZonedDateTime endTime;
 
     @Column(name = "requested_date")
-    @Convert(converter = SafeZoneDateTimeConverter.class)
-    private ZonedDateTime requestedDate;
+    private LocalDateTime requestedDate;
 
     @OptimisticLock(excluded = true)
     @Enumerated(EnumType.STRING)
