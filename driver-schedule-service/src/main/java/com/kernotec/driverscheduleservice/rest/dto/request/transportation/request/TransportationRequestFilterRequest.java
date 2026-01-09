@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.request.BaseRequest;
 import com.kernotec.driverscheduleservice.jpa.enums.TransportationRequestStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,4 +21,11 @@ public class TransportationRequestFilterRequest extends BaseRequest {
     private UUID transportationRequestStateId;
     private UUID personRequestedId;
     private TripTypeEnum tripType;
+
+    private ZonedDateTime simpleDate;
+    private ZonedDateTime fromDate;
+    private ZonedDateTime toDate;
+    private ZonedDateTime monthDate;
+    private ZonedDateTime yearDate;
+    private String zoneId;
 }

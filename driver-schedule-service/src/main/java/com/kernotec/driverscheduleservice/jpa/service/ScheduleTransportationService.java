@@ -69,7 +69,13 @@ public class ScheduleTransportationService extends BaseServiceImpl<ScheduleTrans
             ScheduleTransportationSpecification.builder()
                 .withTransportationRequestId(filterRequest.getTransportationRequestId())
                 .withDriverId(filterRequest.getDriverId())
-                .withVehicleId(filterRequest.getVehicleId()), pageable
+                .withVehicleId(filterRequest.getVehicleId())
+                .withScheduleTransportationState(filterRequest.getScheduleTransportationState())
+                .withZoneId(filterRequest.getZoneId())
+                .withSimpleDate(filterRequest.getSimpleDate())
+                .withDateRange(filterRequest.getFromDate(), filterRequest.getToDate())
+                .withMonthDate(filterRequest.getMonthDate())
+                .withYearDate(filterRequest.getYearDate()), pageable
         );
     }
 }

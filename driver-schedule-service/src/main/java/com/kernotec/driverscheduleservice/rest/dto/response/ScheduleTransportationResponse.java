@@ -2,7 +2,7 @@ package com.kernotec.driverscheduleservice.rest.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.kernotec.core.rest.dto.response.data.EntityResponse;
+import com.kernotec.core.rest.dto.response.data.AuditEntityResponse;
 import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -14,10 +14,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(Include.NON_NULL)
-public class ScheduleTransportationResponse extends EntityResponse {
+public class ScheduleTransportationResponse extends AuditEntityResponse {
 
     private ZonedDateTime scheduleFrom;
     private ZonedDateTime scheduleTo;
+    private ZonedDateTime scheduledDate;
 
     private UUID vehicleId;
     private VehicleResponse vehicle;
@@ -27,6 +28,9 @@ public class ScheduleTransportationResponse extends EntityResponse {
 
     private UUID transportationRequestId;
     private TransportationRequestResponse transportationRequest;
+
+    private UUID personRequestedId;
+    private PersonResponse personRequested;
 
     private UUID scheduleTransportationStateId;
     private ScheduleTransportationStateResponse scheduleTransportationState;

@@ -52,6 +52,10 @@ public class PersonService extends BaseServiceImpl<Person, UUID> {
         return repository.findByDocumentIgnoreCase(document);
     }
 
+    public List<Person> findAllByDocumentIn(List<String> documents) {
+        return repository.findAllByDocumentInIgnoreCase(documents);
+    }
+
     public Optional<Person> findByUserId(UUID userId) {
         return repository.findByUserId(userId);
     }
@@ -59,9 +63,7 @@ public class PersonService extends BaseServiceImpl<Person, UUID> {
     public Person findByUserIdThrow(UUID userId) {
         return findByUserId(userId).orElseThrow(
             () -> new PersonException(
-                "not.found.by.user.id", "'" + userId + "'",
-                HttpStatus.BAD_REQUEST.value()
-            ));
+                "not.found.by.user.id", "'" + userId + "'", HttpStatus.BAD_REQUEST.value()));
     }
 
     public List<Person> findAllByPersonType(PersonTypeEnum personType) {

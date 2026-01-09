@@ -2,7 +2,7 @@ package com.kernotec.driverscheduleservice.rest.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.kernotec.core.rest.dto.response.data.EntityResponse;
+import com.kernotec.core.rest.dto.response.data.AuditEntityResponse;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
@@ -17,7 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(Include.NON_NULL)
-public class TransportationRequestResponse extends EntityResponse {
+public class TransportationRequestResponse extends AuditEntityResponse {
 
     @Schema(description = "coordinate tuple in geoJson format [longitude, latitude]")
     private List<Double> startingCoordinates;
@@ -31,6 +31,7 @@ public class TransportationRequestResponse extends EntityResponse {
     private ZonedDateTime requestedDate;
     private TripTypeEnum tripType;
     private boolean isShortNotice;
+    private Long correlative;
 
     private UUID transportationRequestStateId;
     private TransportationRequestStateResponse transportationRequestState;

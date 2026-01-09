@@ -1,16 +1,22 @@
 package com.kernotec.driverscheduleservice.jpa.specification.schedule.transportation;
 
 import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
+import com.kernotec.driverscheduleservice.jpa.enums.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.jpa.specification.criteria.ScheduleTransportationSpecificationCriteria;
+import com.kernotec.driverscheduleservice.util.CommonSpecification;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -27,17 +33,39 @@ public record ScheduleTransportationSpecification(
             new ScheduleTransportationSpecificationCriteria());
     }
 
+    private Join<?, ?> getOrCreateScheduleTransportationStateJoin(
+        Map<ScheduleTransportationSpecificationJoinEnum, Join<?, ?>> joinMap, Root<?> root)
+    {
+        if (!joinMap.containsKey(
+            ScheduleTransportationSpecificationJoinEnum.SCHEDULE_TRANSPORTATION_STATE_JOIN))
+        {
+            joinMap.put(
+                ScheduleTransportationSpecificationJoinEnum.SCHEDULE_TRANSPORTATION_STATE_JOIN,
+                root.join("scheduleTransportationState", JoinType.INNER)
+            );
+        }
+
+        return joinMap.get(
+            ScheduleTransportationSpecificationJoinEnum.SCHEDULE_TRANSPORTATION_STATE_JOIN);
+    }
+
     @Override
     public Predicate toPredicate(Root<ScheduleTransportation> root, CriteriaQuery<?> query,
         CriteriaBuilder cb)
     {
         List<Predicate> predicateList = new ArrayList<>();
+        Map<ScheduleTransportationSpecificationJoinEnum, Join<?, ?>> joinMap = new HashMap<>();
 
         addConflictValidationFilter(root, cb).ifPresent(predicateList::add);
         addVehicleIdFilter(root, cb).ifPresent(predicateList::add);
         addDriverIdFilter(root, cb).ifPresent(predicateList::add);
         addTransportationRequestIdFilter(root, cb).ifPresent(predicateList::add);
         addScheduleTransportationExcludeIdFilter(root, cb).ifPresent(predicateList::add);
+        addScheduleTransportationStateFilter(root, cb, joinMap).ifPresent(predicateList::add);
+        addSimpleDateFilter(root, cb).ifPresent(predicateList::add);
+        addDateRangeFilter(root, cb).ifPresent(predicateList::add);
+        addMonthDateFilter(root, cb).ifPresent(predicateList::add);
+        addYearDateFilter(root, cb).ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -133,6 +161,95 @@ public record ScheduleTransportationSpecification(
             .map(scheduleTransportationExcludeId -> cb.notEqual(
                 root.get("id"),
                 scheduleTransportationExcludeId
+            ));
+    }
+
+    public ScheduleTransportationSpecification withScheduleTransportationState(
+        ScheduleTransportationStateEnum scheduleTransportationState)
+    {
+        this.criteria.setScheduleTransportationState(scheduleTransportationState);
+        return this;
+    }
+
+    private Optional<Predicate> addScheduleTransportationStateFilter(
+        Root<ScheduleTransportation> root, CriteriaBuilder cb,
+        Map<ScheduleTransportationSpecificationJoinEnum, Join<?, ?>> joinMap)
+    {
+        return Optional.ofNullable(criteria.getScheduleTransportationState())
+            .map(
+                scheduleTransportationState -> cb.equal(
+                    getOrCreateScheduleTransportationStateJoin(joinMap, root).get("code"),
+                    String.valueOf(scheduleTransportationState)
+                ));
+    }
+
+    public ScheduleTransportationSpecification withSimpleDate(ZonedDateTime simpleDate) {
+        this.criteria.setSimpleDate(simpleDate);
+        return this;
+    }
+
+    private Optional<Predicate> addSimpleDateFilter(Root<ScheduleTransportation> root,
+        CriteriaBuilder cb)
+    {
+        return Optional.ofNullable(criteria.getSimpleDate())
+            .map(simpleDate -> CommonSpecification.simpleDatePredicate(
+                cb, root.get("createdAt"),
+                simpleDate, criteria.getZoneId()
+            ));
+    }
+
+    public ScheduleTransportationSpecification withDateRange(ZonedDateTime fromDate,
+        ZonedDateTime toDate)
+    {
+        this.criteria.setFromDate(fromDate);
+        this.criteria.setToDate(toDate);
+        return this;
+    }
+
+    private Optional<Predicate> addDateRangeFilter(Root<ScheduleTransportation> root,
+        CriteriaBuilder cb)
+    {
+        ZonedDateTime from = criteria.getFromDate();
+        ZonedDateTime to = criteria.getToDate();
+
+        if (from != null && to != null) {
+            return Optional.of(
+                CommonSpecification.dateRangePredicate(
+                    cb, root.get("createdAt"), from, to,
+                    criteria.getZoneId()
+                ));
+        }
+
+        return Optional.empty();
+    }
+
+    public ScheduleTransportationSpecification withMonthDate(ZonedDateTime monthDate) {
+        this.criteria.setMonthDate(monthDate);
+        return this;
+    }
+
+    private Optional<Predicate> addMonthDateFilter(Root<ScheduleTransportation> root,
+        CriteriaBuilder cb)
+    {
+        return Optional.ofNullable(criteria.getMonthDate())
+            .map(monthDate -> CommonSpecification.monthDatePredicate(
+                cb, root.get("createdAt"),
+                monthDate, criteria.getZoneId()
+            ));
+    }
+
+    public ScheduleTransportationSpecification withYearDate(ZonedDateTime yearDate) {
+        this.criteria.setYearDate(yearDate);
+        return this;
+    }
+
+    private Optional<Predicate> addYearDateFilter(Root<ScheduleTransportation> root,
+        CriteriaBuilder cb)
+    {
+        return Optional.ofNullable(criteria.getYearDate())
+            .map(yearDate -> CommonSpecification.yearDatePredicate(
+                cb, root.get("createdAt"),
+                yearDate, criteria.getZoneId()
             ));
     }
 }

@@ -10,8 +10,12 @@ import com.kernotec.driverscheduleservice.jpa.entity.Vehicle;
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.jpa.service.VehicleService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.VehicleSpec;
+import com.kernotec.driverscheduleservice.rest.command.csv.imports.CsvImportCmd;
 import com.kernotec.driverscheduleservice.rest.command.vehicle.ProcessVehicleCreateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.vehicle.ProcessVehicleUpdateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.command.vehicle.VehicleCsvImportGetDtoCmd;
+import com.kernotec.driverscheduleservice.rest.command.vehicle.VehicleCsvImportSaveCmd;
+import com.kernotec.driverscheduleservice.rest.dto.VehicleCsvImportDto;
 import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleScheduleConflictRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleUpdateRequest;
@@ -33,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,8 +46,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Tag(name = VehicleSpec.TAG_NAME, description = VehicleSpec.TAG_DESCRIPTION)
@@ -61,6 +68,9 @@ public class VehicleController {
     private final ProcessVehicleUpdateRequestCmd processVehicleUpdateRequestCmd;
     private final WebSocketHandler webSocketHandler;
     private final ZonedDateTimeUtil zonedDateTimeUtil;
+    private final CsvImportCmd<VehicleCsvImportDto> csvImportCmd;
+    private final VehicleCsvImportGetDtoCmd vehicleCsvImportGetDtoCmd;
+    private final VehicleCsvImportSaveCmd vehicleCsvImportSaveCmd;
 
     @Operation(summary = "find all vehicles")
     @GetMapping
@@ -187,6 +197,33 @@ public class VehicleController {
                 .scheduleTransportationConflicts(
                     scheduleTransportationResponseMapper.toResponse(scheduleTransportationList))
                 .build())
+            .build();
+    }
+
+    @Operation(summary = "import vehicles of csv file")
+    @PostMapping(value = "imports/csv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public MessageResponse importVehiclesFromExcel(
+        @RequestPart(value = "file") MultipartFile multipartFile)
+    {
+        csvImportCmd.withRequest(CsvImportCmd.Request.<VehicleCsvImportDto>builder()
+                .excelFile(multipartFile)
+                .mapperCallback(csvData -> vehicleCsvImportGetDtoCmd.withRequest(
+                        VehicleCsvImportGetDtoCmd.Request.builder()
+                            .csvData(csvData)
+                            .build())
+                    .execute())
+                .saveCallback(dtoList -> vehicleCsvImportSaveCmd.withRequest(
+                        VehicleCsvImportSaveCmd.Request.builder()
+                            .vehicleCsvImportDtoList(dtoList)
+                            .build())
+                    .execute())
+                .build())
+            .execute();
+
+        return MessageResponse.builder()
+            .code(HttpStatus.OK.value())
+            .message("Vehicles imported successfully")
             .build();
     }
 }
