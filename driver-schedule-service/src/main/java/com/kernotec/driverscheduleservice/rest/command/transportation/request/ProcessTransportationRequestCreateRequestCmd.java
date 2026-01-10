@@ -54,6 +54,7 @@ public class ProcessTransportationRequestCreateRequestCmd extends
                     .fromDate(transportationRequestCreateRequest.getStartTime())
                     .toDate(transportationRequestCreateRequest.getEndTime())
                     .requestedDate(transportationRequestCreateRequest.getRequestedDate())
+                    .zoneId(transportationRequestCreateRequest.getZoneId())
                     .build())
             .execute();
     }
