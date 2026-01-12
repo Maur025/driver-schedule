@@ -23,20 +23,10 @@ public class TransportationRequestValidationCmd extends
 
     @Override
     protected Void run(Request request) {
-        log.info(
-            "requestedDate: {}, fromDate: {}, toDate: {}", request.requestedDate,
-            request.fromDate, request.toDate
-        );
-
         ZonedDateTime fromDateToSchedule = zonedDateTimeUtil.getNewOfDateAndTime(
             request.requestedDate, request.fromDate, request.zoneId);
         ZonedDateTime toDateToSchedule = zonedDateTimeUtil.getNewOfDateAndTime(
             request.requestedDate, request.toDate, request.zoneId);
-
-        log.info(
-            "fromDateToSchedule: {}, toDateToSchedule: {}", fromDateToSchedule,
-            toDateToSchedule
-        );
 
         if (toDateToSchedule.isBefore(fromDateToSchedule) || toDateToSchedule.isEqual(
             fromDateToSchedule))

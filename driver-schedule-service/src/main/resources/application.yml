@@ -96,6 +96,8 @@ oauth2-config:
 web-socket-config:
   broker-prefix: /topic
   app-prefix: /app
+  private-message-prefix: /queue
+  user-destination-prefix: /user
   endpoint: /ws-driver-schedule
 
 # MODULES CONFIG API
