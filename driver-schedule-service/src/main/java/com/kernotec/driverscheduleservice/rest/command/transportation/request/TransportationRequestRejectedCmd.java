@@ -42,8 +42,8 @@ public class TransportationRequestRejectedCmd extends
 
         TransportationRequestStateDto transportationRequestStateDto = transportationRequestDto.getTransportationRequestState();
 
-        if (!transportationRequestStateDto.getCode()
-            .equals(String.valueOf(TransportationRequestStateEnum.REQUESTED)))
+        if (!TransportationRequestStateEnum.REQUESTED.equals(
+            TransportationRequestStateEnum.fromValue(transportationRequestStateDto.getCode())))
         {
             throw new TransportationRequestException(
                 "state.invalid.to.reject",

@@ -111,6 +111,13 @@ public class TransportationRequest extends BaseAuditEntity {
                inverseJoinColumns = @JoinColumn(name = "reason_id", referencedColumnName = "id"))
     private Set<Reason> rejectReasons;
 
+    @ManyToMany
+    @JoinTable(name = "cancel_request_reasons",
+               joinColumns = @JoinColumn(name = "transportation_request_id",
+                                         referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "reason_id", referencedColumnName = "id"))
+    private Set<Reason> cancelReasons;
+
     @OneToMany(mappedBy = "transportationRequest", fetch = FetchType.LAZY)
     private List<RequestLocation> requestLocations;
 }

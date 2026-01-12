@@ -41,5 +41,6 @@ public class TransportationRequestResponse extends AuditEntityResponse {
     private PersonResponse personRequested;
 
     private Set<ReasonResponse> rejectReasons;
+    private Set<ReasonResponse> cancelReasons;
     private List<RequestLocationResponse> requestLocations;
 }
