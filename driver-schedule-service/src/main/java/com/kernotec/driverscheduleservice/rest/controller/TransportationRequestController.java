@@ -162,7 +162,7 @@ public class TransportationRequestController {
     @Operation(summary = "cancel transportation request")
     @PostMapping("{transportationRequestId}/cancelled")
     @ResponseStatus(HttpStatus.OK)
-    @IsRoleSchedulerOrAdmin
+    @IsRoleApplicantOrScheduler
     public SingleResponse<TransportationRequestResponse> cancelledRequest(
         @PathVariable UUID transportationRequestId, @RequestBody CancelRequestReasonRequest request)
     {
