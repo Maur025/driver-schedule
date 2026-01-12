@@ -61,7 +61,8 @@ public class TransportationRequestApproveCmd extends
         UUID transportationRequestStateRequestedId = transportationRequestStateService.findIdByCodeThrow(
             TransportationRequestStateEnum.REQUESTED);
 
-        UUID personId = authUtil.getPersonIdFromAuthenticationThrow(request.authentication);
+        UUID personId = getPersonId(
+            request.transportationRequestCreateRequest, request.authentication);
 
         ZonedDateTime startTime = transportationRequestCreateRequest.getStartTime();
         ZonedDateTime startTimeAdjust = startTime.withSecond(0)
@@ -99,6 +100,16 @@ public class TransportationRequestApproveCmd extends
         );
 
         return transportationRequestId;
+    }
+
+    private UUID getPersonId(TransportationRequestCreateRequest request,
+        Authentication authentication)
+    {
+        if (request.getPersonRequestedId() != null) {
+            return request.getPersonRequestedId();
+        }
+
+        return authUtil.getPersonIdFromAuthenticationThrow(authentication);
     }
 
     private void registryRequestLocation(UUID locationId, UUID transportationRequestId,
