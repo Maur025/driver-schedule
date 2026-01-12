@@ -47,4 +47,12 @@
   <include file="db/changelog/2025/12/23-01-changelog-18.xml"/>
   <include file="/db/changelog/2025/12/29-01-changelog-19.xml"/>
   <include file="db/changelog/2025/12/31-01-changelog-20.xml"/>
+
+  <!-- transportation request state - update seed, add cancelled -->
+  <changeSet id="1768233522818-1" author="Maur025">
+    <sqlFile path="data/transportation/request/state/transportation_request_state_seed_update1.sql"
+      relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <include file="db/changelog/2026/01/12-01-changelog-21.xml"/>
 </databaseChangeLog>
