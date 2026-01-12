@@ -13,14 +13,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -30,7 +27,9 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.OptimisticLock;
+import org.hibernate.generator.EventType;
 
 @NoArgsConstructor
 @Setter
@@ -80,11 +79,7 @@ public class TransportationRequest extends BaseAuditEntity {
     @Column(name = "is_short_notice", nullable = false, columnDefinition = "boolean default false")
     private boolean isShortNotice = false;
 
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-                    generator = "transportation_request_correlative_seq")
-    @SequenceGenerator(name = "transportation_request_correlative_seq",
-                       sequenceName = "transportation_request_correlative_seq_db",
-                       allocationSize = 1)
+    @Generated(event = EventType.INSERT)
     @Column(name = "correlative", nullable = false, insertable = false, updatable = false)
     private Long correlative;
 
@@ -120,4 +115,7 @@ public class TransportationRequest extends BaseAuditEntity {
 
     @OneToMany(mappedBy = "transportationRequest", fetch = FetchType.LAZY)
     private List<RequestLocation> requestLocations;
+
+    @OneToMany(mappedBy = "transportationRequest", fetch = FetchType.LAZY)
+    private Set<ScheduleTransportation> scheduleTransportations;
 }

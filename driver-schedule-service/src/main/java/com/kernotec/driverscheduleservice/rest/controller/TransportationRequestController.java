@@ -126,7 +126,7 @@ public class TransportationRequestController {
     public SingleResponse<TransportationRequestResponse> save(
         @RequestBody TransportationRequestCreateRequest request, Authentication authentication)
     {
-        UUID transportationRequestId = processTransportationRequestCreateRequestCmd.withRequest(
+        TransportationRequest transportationRequest = processTransportationRequestCreateRequestCmd.withRequest(
                 ProcessTransportationRequestCreateRequestCmd.Request.builder()
                     .transportationRequestCreateRequest(request)
                     .authentication(authentication)
@@ -135,7 +135,10 @@ public class TransportationRequestController {
 
         return SingleResponse.<TransportationRequestResponse>builder()
             .code(HttpStatus.CREATED.value())
-            .data(transportationRequestResponseMapper.toResponse(transportationRequestId))
+            .data(transportationRequestResponseMapper.toResponse(
+                transportationRequest.getId(),
+                transportationRequest.getCorrelative()
+            ))
             .build();
     }
 
