@@ -24,4 +24,6 @@ public class ScheduleTransportationSpecificationCriteria {
     private ZonedDateTime toDate;
     private ZonedDateTime monthDate;
     private ZonedDateTime yearDate;
+
+    private UUID userId;
 }

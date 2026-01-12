@@ -66,6 +66,7 @@ public record ScheduleTransportationSpecification(
         addDateRangeFilter(root, cb).ifPresent(predicateList::add);
         addMonthDateFilter(root, cb).ifPresent(predicateList::add);
         addYearDateFilter(root, cb).ifPresent(predicateList::add);
+        addPersonRequestedIdFilter(root, cb).ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -215,9 +216,7 @@ public record ScheduleTransportationSpecification(
         if (from != null && to != null) {
             return Optional.of(
                 CommonSpecification.dateRangePredicate(
-                    cb, root.get("createdAt"), from, to,
-                    criteria.getZoneId()
-                ));
+                    cb, root.get("createdAt"), from, to, criteria.getZoneId()));
         }
 
         return Optional.empty();
@@ -251,5 +250,17 @@ public record ScheduleTransportationSpecification(
                 cb, root.get("createdAt"),
                 yearDate, criteria.getZoneId()
             ));
+    }
+
+    public ScheduleTransportationSpecification withPersonRequestedId(UUID userId) {
+        this.criteria.setUserId(userId);
+        return this;
+    }
+
+    private Optional<Predicate> addPersonRequestedIdFilter(Root<ScheduleTransportation> root,
+        CriteriaBuilder cb)
+    {
+        return Optional.ofNullable(criteria.getUserId())
+            .map(userId -> cb.equal(root.get("personRequestedId"), userId));
     }
 }
