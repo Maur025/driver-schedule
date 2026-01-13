@@ -37,6 +37,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,11 +54,13 @@ import org.springframework.web.multipart.MultipartFile;
 public class PersonController {
 
     private final PersonService personService;
-    private final PersonResponseMapper personResponseMapper;
-    private final ProcessPersonCreateRequestCmd processPersonCreateRequestCmd;
     private final ScheduleTransportationService scheduleTransportationService;
-    private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
     private final ZonedDateTimeUtil zonedDateTimeUtil;
+
+    private final PersonResponseMapper personResponseMapper;
+    private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
+
+    private final ProcessPersonCreateRequestCmd processPersonCreateRequestCmd;
     private final CsvImportCmd<PersonCsvImportDto> csvImportCmd;
     private final PersonCsvImportGetDtoCmd personCsvImportGetDtoCmd;
     private final PersonCsvImportSaveCmd personCsvImportSaveCmd;
@@ -138,8 +141,6 @@ public class PersonController {
         ZonedDateTime to = zonedDateTimeUtil.getNewOfDateAndTime(
             request.getRequestedDate(), request.getConflictValidationTo(), request.getZoneId());
 
-        log.info("Finding schedule conflicts for driverId: {} from: {} to: {}", driverId, from, to);
-
         List<ScheduleTransportation> scheduleTransportationList = scheduleTransportationService.findConflictByDriverId(
             driverId, from, to, request.getZoneId(), request.getScheduleTransportationExcludeId());
 
@@ -176,6 +177,17 @@ public class PersonController {
         return MessageResponse.builder()
             .code(HttpStatus.OK.value())
             .message("Persons imported successfully")
+            .build();
+    }
+
+    @Operation(summary = "update person")
+    @PutMapping("{personId}")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<PersonResponse> updatePerson(@PathVariable UUID personId) {
+
+        return SingleResponse.<PersonResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("Person updated successfully")
             .build();
     }
 }

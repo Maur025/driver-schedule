@@ -9,8 +9,10 @@ import com.kernotec.driverscheduleauth.jpa.service.UserService;
 import com.kernotec.driverscheduleauth.rest.ApiSpec.UserSpec;
 import com.kernotec.driverscheduleauth.rest.command.user.ProcessUserCreateRequestCmd;
 import com.kernotec.driverscheduleauth.rest.command.user.ProcessUserDeleteRequestCmd;
+import com.kernotec.driverscheduleauth.rest.command.user.ProcessUserUpdateRequestCmd;
 import com.kernotec.driverscheduleauth.rest.dto.request.user.UserCreateRequest;
 import com.kernotec.driverscheduleauth.rest.dto.request.user.UserDeleteRequest;
+import com.kernotec.driverscheduleauth.rest.dto.request.user.UserUpdateRequest;
 import com.kernotec.driverscheduleauth.rest.dto.response.user.UserResponse;
 import com.kernotec.driverscheduleauth.rest.mapper.user.UserResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +43,7 @@ public class UserController {
     private final UserResponseMapper userResponseMapper;
     private final ProcessUserCreateRequestCmd processUserCreateRequestCmd;
     private final ProcessUserDeleteRequestCmd processUserDeleteRequestCmd;
+    private final ProcessUserUpdateRequestCmd processUserUpdateRequestCmd;
 
     @Operation(summary = "find all users")
     @GetMapping
@@ -106,6 +110,24 @@ public class UserController {
         return SingleResponse.<UserResponse>builder()
             .code(HttpStatus.OK.value())
             .data(userResponseMapper.toResponse(userId))
+            .build();
+    }
+
+    @Operation(summary = "update user")
+    @PatchMapping("{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<UserResponse> update(@PathVariable UUID userId,
+        @RequestBody UserUpdateRequest request)
+    {
+        processUserUpdateRequestCmd.withRequest(ProcessUserUpdateRequestCmd.Request.builder()
+                .userId(userId)
+                .userUpdateRequest(request)
+                .build())
+            .execute();
+
+        return SingleResponse.<UserResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("User updated successfully")
             .build();
     }
 }

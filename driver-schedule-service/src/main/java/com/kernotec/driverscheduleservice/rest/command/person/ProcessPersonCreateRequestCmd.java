@@ -1,6 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.command.person;
 
 import com.kernotec.core.command.AbstractCommand;
+import com.kernotec.driverscheduleservice.config.AuthConfigProperties;
 import com.kernotec.driverscheduleservice.exception.PersonException;
 import com.kernotec.driverscheduleservice.jpa.entity.Person;
 import com.kernotec.driverscheduleservice.jpa.entity.PersonType;
@@ -32,11 +33,14 @@ public class ProcessPersonCreateRequestCmd extends
     AbstractCommand<ProcessPersonCreateRequestCmd.Request, UUID>
 {
 
-    private final WebSocketHandler webSocketHandler;
-    private final PersonResponseMapper personResponseMapper;
     private final PersonService personService;
     private final PersonTypeService personTypeService;
+
+    private final PersonResponseMapper personResponseMapper;
+
     private final PersonCreateWithTypeCmd personCreateWithTypeCmd;
+    private final WebSocketHandler webSocketHandler;
+    private final AuthConfigProperties authConfigProperties;
 
     @Override
     protected void validate(Request request) {
@@ -76,8 +80,8 @@ public class ProcessPersonCreateRequestCmd extends
                 .lastName(personCreateRequest.getLastName())
                 .username(personCreateRequest.getUsername())
                 .password(personCreateRequest.getDocument())
-                .realmName("driver-schedule-auth")
-                .resource("driver-schedule")
+                .realmName(authConfigProperties.getRealm())
+                .resource(authConfigProperties.getResource())
                 .roles(personTypeNames)
                 .build());
 
