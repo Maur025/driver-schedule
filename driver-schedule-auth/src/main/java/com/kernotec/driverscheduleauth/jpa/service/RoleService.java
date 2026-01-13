@@ -5,6 +5,7 @@ import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.driverscheduleauth.exception.RoleException;
 import com.kernotec.driverscheduleauth.jpa.entity.Role;
 import com.kernotec.driverscheduleauth.jpa.repository.RoleRepository;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -40,5 +41,9 @@ public class RoleService extends BaseServiceImpl<Role, UUID> {
                 "not.found", "'" + name + ":" + resource + "'",
                 HttpStatus.NOT_FOUND.value()
             ));
+    }
+
+    public List<Role> findAllByRealmIdAndResource(UUID realmId, String resource) {
+        return repository.findAllByRealmIdAndResource(realmId, resource);
     }
 }

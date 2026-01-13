@@ -90,12 +90,15 @@ logging:
 oauth2-config:
   host: ${OAUTH2_HOST:http://localhost:7801}
   realm: ${OAUTH2_REALM:driver-schedule-auth}
+  resource: ${OAUTH2_RESOURCE:driver-schedule}
   secret-key: ${OAUTH2_JWT_SECRET:secret-key}
 
 # WEB SOCKET CONFIG
 web-socket-config:
   broker-prefix: /topic
   app-prefix: /app
+  private-message-prefix: /queue
+  user-destination-prefix: /user
   endpoint: /ws-driver-schedule
 
 # MODULES CONFIG API

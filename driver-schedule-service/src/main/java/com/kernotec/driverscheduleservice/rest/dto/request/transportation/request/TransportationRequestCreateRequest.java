@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.request.BaseRequest;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +30,7 @@ public class TransportationRequestCreateRequest extends BaseRequest {
     @NotNull
     private ZonedDateTime endTime;
     @NotNull
-    private ZonedDateTime requestedDate;
+    private LocalDateTime requestedDate;
     @NotNull
     private TripTypeEnum tripType;
     private Boolean isShortNotice;
@@ -39,4 +40,7 @@ public class TransportationRequestCreateRequest extends BaseRequest {
 
     private UUID locationStartId;
     private UUID locationEndId;
+    private String zoneId;
+
+    private UUID personRequestedId;
 }

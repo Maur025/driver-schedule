@@ -18,6 +18,7 @@ public interface TransportationRequestResponseFlatMapper {
              qualifiedByName = "mapToPositionGeoJson")
     @Mapping(target = "personRequested", ignore = true)
     @Mapping(target = "rejectReasons", ignore = true)
+    @Mapping(target = "scheduleTransportations", ignore = true)
     TransportationRequestResponse toResponse(TransportationRequest transportationRequest);
 
     TransportationRequestResponse toResponse(UUID id);

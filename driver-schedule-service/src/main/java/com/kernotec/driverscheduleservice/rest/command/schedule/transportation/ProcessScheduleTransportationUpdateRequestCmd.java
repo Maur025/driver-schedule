@@ -91,12 +91,14 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
 
         ZonedDateTime scheduledFrom = zonedDateTimeUtil.getNewOfDateAndTime(
             scheduleTransportationUpdateRequest.getRequestedDate(),
-            scheduleTransportationUpdateRequest.getRequestedStartTime()
+            scheduleTransportationUpdateRequest.getRequestedStartTime(),
+            scheduleTransportationUpdateRequest.getZoneId()
         );
 
         ZonedDateTime scheduledTo = zonedDateTimeUtil.getNewOfDateAndTime(
             scheduleTransportationUpdateRequest.getRequestedDate(),
-            scheduleTransportationUpdateRequest.getRequestedEndTime()
+            scheduleTransportationUpdateRequest.getRequestedEndTime(),
+            scheduleTransportationUpdateRequest.getZoneId()
         );
 
         scheduleTransportationUpdateCmd.withRequest(
@@ -104,6 +106,7 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
                     .scheduleTransportationId(request.scheduleTransportationId)
                     .scheduleFrom(scheduledFrom)
                     .scheduleTo(scheduledTo)
+                    .requestedDate(request.scheduleTransportationUpdateRequest.getRequestedDate())
                     .vehicleId(scheduleTransportationUpdateRequest.getVehicleId())
                     .driverId(scheduleTransportationUpdateRequest.getDriverId())
                     .scheduleTransportationStateId(scheduleTransportationStateRescheduledId)

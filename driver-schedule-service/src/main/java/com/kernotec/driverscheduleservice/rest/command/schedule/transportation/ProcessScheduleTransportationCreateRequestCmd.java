@@ -102,12 +102,14 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
 
         ZonedDateTime scheduledFrom = zonedDateTimeUtil.getNewOfDateAndTime(
             scheduleTransportationCreateRequest.getRequestedDate(),
-            scheduleTransportationCreateRequest.getRequestedStartTime()
+            scheduleTransportationCreateRequest.getRequestedStartTime(),
+            scheduleTransportationCreateRequest.getZoneId()
         );
 
         ZonedDateTime scheduledTo = zonedDateTimeUtil.getNewOfDateAndTime(
             scheduleTransportationCreateRequest.getRequestedDate(),
-            scheduleTransportationCreateRequest.getRequestedEndTime()
+            scheduleTransportationCreateRequest.getRequestedEndTime(),
+            scheduleTransportationCreateRequest.getZoneId()
         );
 
         UUID scheduleTransportationId = scheduleTransportationCreateCmd.withRequest(

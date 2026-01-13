@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRoleRepository extends BaseRepository<UserRole, UUID> {
 
+    void deleteAllByUserId(UUID userId);
 }

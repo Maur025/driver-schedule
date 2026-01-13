@@ -18,8 +18,12 @@ public class WebSocketBroker implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker(webSocketConfigProperties.getBrokerPrefix());
+        registry.enableSimpleBroker(
+            webSocketConfigProperties.getBrokerPrefix(),
+            webSocketConfigProperties.getPrivateMessagePrefix()
+        );
         registry.setApplicationDestinationPrefixes(webSocketConfigProperties.getAppPrefix());
+        registry.setUserDestinationPrefix(webSocketConfigProperties.getUserDestinationPrefix());
     }
 
     @Override

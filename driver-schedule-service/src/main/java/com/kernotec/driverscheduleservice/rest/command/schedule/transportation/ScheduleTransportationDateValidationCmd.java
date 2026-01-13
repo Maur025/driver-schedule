@@ -6,6 +6,7 @@ import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -29,12 +30,12 @@ public class ScheduleTransportationDateValidationCmd extends
     protected Void run(Request request) {
         ZonedDateTime scheduledFrom = zonedDateTimeUtil.getNewOfDateAndTime(
             request.requestedDate,
-            request.requestedStartTime
+            request.requestedStartTime, request.zoneId
         );
 
         ZonedDateTime scheduledTo = zonedDateTimeUtil.getNewOfDateAndTime(
             request.requestedDate,
-            request.requestedEndTime
+            request.requestedEndTime, request.zoneId
         );
 
         if (scheduledTo.isBefore(scheduledFrom) || scheduledTo.isEqual(scheduledFrom)) {
@@ -78,7 +79,7 @@ public class ScheduleTransportationDateValidationCmd extends
 
     @Builder
     public record Request(@NotNull UUID vehicleId, @NotNull UUID driverId,
-                          @NotNull ZonedDateTime requestedDate,
+                          @NotNull LocalDateTime requestedDate,
                           @NotNull ZonedDateTime requestedStartTime,
                           @NotNull ZonedDateTime requestedEndTime, String zoneId,
                           UUID scheduleTransportationExcludeId)

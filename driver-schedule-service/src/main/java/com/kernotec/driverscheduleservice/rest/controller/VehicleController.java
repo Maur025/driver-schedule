@@ -183,9 +183,9 @@ public class VehicleController {
         @PathVariable UUID vehicleId, @RequestBody VehicleScheduleConflictRequest request)
     {
         ZonedDateTime from = zonedDateTimeUtil.getNewOfDateAndTime(
-            request.getRequestedDate(), request.getConflictValidationFrom());
+            request.getRequestedDate(), request.getConflictValidationFrom(), request.getZoneId());
         ZonedDateTime to = zonedDateTimeUtil.getNewOfDateAndTime(
-            request.getRequestedDate(), request.getConflictValidationTo());
+            request.getRequestedDate(), request.getConflictValidationTo(), request.getZoneId());
 
         List<ScheduleTransportation> scheduleTransportationList = scheduleTransportationService.findConflictByVehicleId(
             vehicleId, from, to, request.getZoneId(), request.getScheduleTransportationExcludeId());

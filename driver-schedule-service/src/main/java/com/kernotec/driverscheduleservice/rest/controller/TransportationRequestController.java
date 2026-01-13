@@ -7,8 +7,10 @@ import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.TransportationRequestSpec;
+import com.kernotec.driverscheduleservice.rest.command.transportation.request.ProcessTransportationRequestCancelledCmd;
 import com.kernotec.driverscheduleservice.rest.command.transportation.request.ProcessTransportationRequestCreateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.transportation.request.ProcessTransportationRequestRejectedCmd;
+import com.kernotec.driverscheduleservice.rest.dto.request.cancel.request.reason.CancelRequestReasonRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.reject.reason.RejectReasonRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.transportation.request.TransportationRequestCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.transportation.request.TransportationRequestFilterRequest;
@@ -48,6 +50,7 @@ public class TransportationRequestController {
 
     private final ProcessTransportationRequestCreateRequestCmd processTransportationRequestCreateRequestCmd;
     private final ProcessTransportationRequestRejectedCmd processTransportationRequestRejectedCmd;
+    private final ProcessTransportationRequestCancelledCmd processTransportationRequestCancelledCmd;
 
     @Operation(summary = "find all transportation requests")
     @GetMapping
@@ -123,7 +126,7 @@ public class TransportationRequestController {
     public SingleResponse<TransportationRequestResponse> save(
         @RequestBody TransportationRequestCreateRequest request, Authentication authentication)
     {
-        UUID transportationRequestId = processTransportationRequestCreateRequestCmd.withRequest(
+        TransportationRequest transportationRequest = processTransportationRequestCreateRequestCmd.withRequest(
                 ProcessTransportationRequestCreateRequestCmd.Request.builder()
                     .transportationRequestCreateRequest(request)
                     .authentication(authentication)
@@ -132,7 +135,10 @@ public class TransportationRequestController {
 
         return SingleResponse.<TransportationRequestResponse>builder()
             .code(HttpStatus.CREATED.value())
-            .data(transportationRequestResponseMapper.toResponse(transportationRequestId))
+            .data(transportationRequestResponseMapper.toResponse(
+                transportationRequest.getId(),
+                transportationRequest.getCorrelative()
+            ))
             .build();
     }
 
@@ -153,6 +159,26 @@ public class TransportationRequestController {
         return SingleResponse.<TransportationRequestResponse>builder()
             .code(HttpStatus.OK.value())
             .message("Transportation request rejected successfully")
+            .build();
+    }
+
+    @Operation(summary = "cancel transportation request")
+    @PostMapping("{transportationRequestId}/cancelled")
+    @ResponseStatus(HttpStatus.OK)
+    @IsRoleApplicantOrScheduler
+    public SingleResponse<TransportationRequestResponse> cancelledRequest(
+        @PathVariable UUID transportationRequestId, @RequestBody CancelRequestReasonRequest request)
+    {
+        processTransportationRequestCancelledCmd.withRequest(
+                ProcessTransportationRequestCancelledCmd.Request.builder()
+                    .transportationRequestId(transportationRequestId)
+                    .cancelRequestReasonRequest(request)
+                    .build())
+            .execute();
+
+        return SingleResponse.<TransportationRequestResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("Transportation request cancelled successfully")
             .build();
     }
 }

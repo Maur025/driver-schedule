@@ -29,6 +29,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,6 +46,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Tag(name = PersonSpec.TAG_NAME, description = PersonSpec.TAG_DESCRIPTION)
 @RequestMapping(path = PersonSpec.BASE_PATH)
 @RestController
@@ -51,11 +54,13 @@ import org.springframework.web.multipart.MultipartFile;
 public class PersonController {
 
     private final PersonService personService;
-    private final PersonResponseMapper personResponseMapper;
-    private final ProcessPersonCreateRequestCmd processPersonCreateRequestCmd;
     private final ScheduleTransportationService scheduleTransportationService;
-    private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
     private final ZonedDateTimeUtil zonedDateTimeUtil;
+
+    private final PersonResponseMapper personResponseMapper;
+    private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
+
+    private final ProcessPersonCreateRequestCmd processPersonCreateRequestCmd;
     private final CsvImportCmd<PersonCsvImportDto> csvImportCmd;
     private final PersonCsvImportGetDtoCmd personCsvImportGetDtoCmd;
     private final PersonCsvImportSaveCmd personCsvImportSaveCmd;
@@ -131,10 +136,10 @@ public class PersonController {
         @PathVariable UUID driverId, @RequestBody PersonScheduleConflictRequest request)
     {
         ZonedDateTime from = zonedDateTimeUtil.getNewOfDateAndTime(
-            request.getRequestedDate(), request.getConflictValidationFrom());
+            request.getRequestedDate(), request.getConflictValidationFrom(), request.getZoneId());
 
         ZonedDateTime to = zonedDateTimeUtil.getNewOfDateAndTime(
-            request.getRequestedDate(), request.getConflictValidationTo());
+            request.getRequestedDate(), request.getConflictValidationTo(), request.getZoneId());
 
         List<ScheduleTransportation> scheduleTransportationList = scheduleTransportationService.findConflictByDriverId(
             driverId, from, to, request.getZoneId(), request.getScheduleTransportationExcludeId());
@@ -172,6 +177,17 @@ public class PersonController {
         return MessageResponse.builder()
             .code(HttpStatus.OK.value())
             .message("Persons imported successfully")
+            .build();
+    }
+
+    @Operation(summary = "update person")
+    @PutMapping("{personId}")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<PersonResponse> updatePerson(@PathVariable UUID personId) {
+
+        return SingleResponse.<PersonResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("Person updated successfully")
             .build();
     }
 }
