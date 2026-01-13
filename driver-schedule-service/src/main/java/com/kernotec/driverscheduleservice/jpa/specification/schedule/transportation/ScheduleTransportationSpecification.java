@@ -252,15 +252,15 @@ public record ScheduleTransportationSpecification(
             ));
     }
 
-    public ScheduleTransportationSpecification withPersonRequestedId(UUID userId) {
-        this.criteria.setUserId(userId);
+    public ScheduleTransportationSpecification withPersonRequestedId(UUID personRequestedId) {
+        this.criteria.setPersonRequestedId(personRequestedId);
         return this;
     }
 
     private Optional<Predicate> addPersonRequestedIdFilter(Root<ScheduleTransportation> root,
         CriteriaBuilder cb)
     {
-        return Optional.ofNullable(criteria.getUserId())
-            .map(userId -> cb.equal(root.get("personRequestedId"), userId));
+        return Optional.ofNullable(criteria.getPersonRequestedId())
+            .map(personRequestedId -> cb.equal(root.get("personRequestedId"), personRequestedId));
     }
 }
