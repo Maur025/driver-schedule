@@ -7,6 +7,7 @@ import com.kernotec.driverscheduleservice.webflux.config.ModuleAppProperties;
 import com.kernotec.driverscheduleservice.webflux.config.ModuleAppProperties.ServiceUri;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserCreateRequest;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserDeleteRequest;
+import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserUpdateRequest;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.response.UserCreateResponse;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -50,8 +51,7 @@ public class UserServiceApiClient extends AbstractApiClient {
             .doOnError(error -> log.error("Error saving user: ", error));
     }
 
-    public Mono<SingleResponse<UserCreateResponse>> deleteUser(UUID userId,
-        UserDeleteRequest request)
+    public Mono<Void> deleteUser(UUID userId, UserDeleteRequest request)
     {
         ServiceUri authAppConfig = moduleAppProperties.getAppAuth();
 
@@ -70,9 +70,32 @@ public class UserServiceApiClient extends AbstractApiClient {
                             .value(), body
                     )))
             )
-            .bodyToMono(new ParameterizedTypeReference<SingleResponse<UserCreateResponse>>() {
-            })
+            .bodyToMono(Void.class)
             .doOnNext(response -> log.info("delete user success"))
             .doOnError(error -> log.error("Error deleting user: ", error));
+    }
+
+    public Mono<Void> updateUser(UUID userId, UserUpdateRequest request)
+    {
+        ServiceUri authAppConfig = moduleAppProperties.getAppAuth();
+
+        return webClient.patch()
+            .uri(uriBuilder -> uriBuilder.scheme(authAppConfig.scheme())
+                .host(authAppConfig.host())
+                .port(authAppConfig.port())
+                .path("realms/users/{userId}")
+                .build(userId))
+            .bodyValue(request)
+            .retrieve()
+            .onStatus(
+                HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(String.class)
+                    .flatMap(body -> Mono.error(new DefaultException(
+                        clientResponse.statusCode()
+                            .value(), body
+                    )))
+            )
+            .bodyToMono(Void.class)
+            .doOnNext(response -> log.info("update user success"))
+            .doOnError(error -> log.error("Error updating user: ", error));
     }
 }

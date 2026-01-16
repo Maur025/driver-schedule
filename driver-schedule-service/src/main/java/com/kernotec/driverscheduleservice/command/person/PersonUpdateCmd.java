@@ -30,13 +30,18 @@ public class PersonUpdateCmd extends
         if (request.phone != null) {
             person.setPhone(request.phone);
         }
+        if (request.document != null) {
+            person.setDocument(request.document);
+        }
 
         personService.save(person);
         return null;
     }
 
     @Builder
-    public record Request(@NotNull UUID personId, String name, String lastName, String phone) {
+    public record Request(@NotNull UUID personId, String name, String lastName, String phone,
+                          String document)
+    {
 
     }
 }

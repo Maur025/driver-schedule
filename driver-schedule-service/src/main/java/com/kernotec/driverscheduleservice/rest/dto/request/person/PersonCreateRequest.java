@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.request.BaseRequest;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +23,7 @@ public class PersonCreateRequest extends BaseRequest {
     @NotNull
     private String document;
     @NotNull
-    private List<UUID> personTypeIds;
+    private Set<UUID> personTypeIds;
     @NotNull
     private String username;
 
