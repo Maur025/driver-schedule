@@ -23,4 +23,8 @@ public class UserRoleService extends BaseServiceImpl<UserRole, UUID> {
     protected BaseRepository<UserRole, UUID> repository() {
         return repository;
     }
+
+    public void deleteAllByUserId(UUID userId) {
+        repository.deleteAllByUserId(userId);
+    }
 }

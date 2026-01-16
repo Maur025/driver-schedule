@@ -11,6 +11,7 @@ import com.kernotec.driverscheduleservice.jpa.specification.person.PersonSpecifi
 import com.kernotec.driverscheduleservice.webflux.user.client.rest.UserServiceApiClient;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserCreateRequest;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserDeleteRequest;
+import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserUpdateRequest;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.response.UserCreateResponse;
 import java.util.List;
 import java.util.Optional;
@@ -42,14 +43,26 @@ public class PersonService extends BaseServiceImpl<Person, UUID> {
             .block();
     }
 
-    public UserCreateResponse deleteUserFromPerson(UUID userId, UserDeleteRequest request) {
-        return userServiceApiClient.deleteUser(userId, request)
-            .map(SingleResponse::getData)
+    public void deleteUserFromPerson(UUID userId, UserDeleteRequest request) {
+        userServiceApiClient.deleteUser(userId, request)
+            .block();
+    }
+
+    public void updateUserFromPerson(UUID userId, UserUpdateRequest request) {
+        userServiceApiClient.updateUser(userId, request)
             .block();
     }
 
     public Optional<Person> findByDocument(String document) {
         return repository.findByDocumentIgnoreCase(document);
+    }
+
+    public Optional<Person> findByDocument(String document, UUID excludePersonId) {
+        if (excludePersonId == null) {
+            return findByDocument(document);
+        }
+
+        return repository.findByDocumentIgnoreCaseAndIdNot(document, excludePersonId);
     }
 
     public List<Person> findAllByDocumentIn(List<String> documents) {
@@ -63,7 +76,9 @@ public class PersonService extends BaseServiceImpl<Person, UUID> {
     public Person findByUserIdThrow(UUID userId) {
         return findByUserId(userId).orElseThrow(
             () -> new PersonException(
-                "not.found.by.user.id", "'" + userId + "'", HttpStatus.BAD_REQUEST.value()));
+                "not.found.by.user.id", "'" + userId + "'",
+                HttpStatus.BAD_REQUEST.value()
+            ));
     }
 
     public List<Person> findAllByPersonType(PersonTypeEnum personType) {

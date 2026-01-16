@@ -14,5 +14,7 @@ public interface PersonRepository extends BaseRepository<Person, UUID> {
 
     List<Person> findAllByDocumentInIgnoreCase(List<String> documents);
 
+    Optional<Person> findByDocumentIgnoreCaseAndIdNot(String document, UUID id);
+
     Optional<Person> findByUserId(UUID userId);
 }

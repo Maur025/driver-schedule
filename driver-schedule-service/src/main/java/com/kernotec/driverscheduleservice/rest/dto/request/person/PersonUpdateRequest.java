@@ -3,7 +3,6 @@ package com.kernotec.driverscheduleservice.rest.dto.request.person;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.request.BaseRequest;
-import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
@@ -14,18 +13,11 @@ import lombok.Setter;
 @Setter
 @Getter
 @JsonInclude(Include.NON_NULL)
-public class PersonCreateRequest extends BaseRequest {
+public class PersonUpdateRequest extends BaseRequest {
 
-    @NotNull
     private String name;
-    @NotNull
     private String lastName;
-    @NotNull
     private String document;
-    @NotNull
     private Set<UUID> personTypeIds;
-    @NotNull
-    private String username;
-
     private String phone;
 }

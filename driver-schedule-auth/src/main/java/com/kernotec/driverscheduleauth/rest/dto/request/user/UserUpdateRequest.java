@@ -1,31 +1,22 @@
-package com.kernotec.driverscheduleservice.rest.dto.request.person;
+package com.kernotec.driverscheduleauth.rest.dto.request.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.request.BaseRequest;
-import jakarta.validation.constraints.NotNull;
 import java.util.Set;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-@Setter
 @Getter
+@Setter
 @JsonInclude(Include.NON_NULL)
-public class PersonCreateRequest extends BaseRequest {
+public class UserUpdateRequest extends BaseRequest {
 
-    @NotNull
     private String name;
-    @NotNull
     private String lastName;
-    @NotNull
-    private String document;
-    @NotNull
-    private Set<UUID> personTypeIds;
-    @NotNull
     private String username;
-
-    private String phone;
+    private Set<String> roles;
+    private String resource;
 }

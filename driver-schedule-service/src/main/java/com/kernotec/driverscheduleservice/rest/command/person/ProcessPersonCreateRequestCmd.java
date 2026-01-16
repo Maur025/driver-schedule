@@ -1,9 +1,8 @@
 package com.kernotec.driverscheduleservice.rest.command.person;
 
 import com.kernotec.core.command.AbstractCommand;
-import com.kernotec.driverscheduleservice.exception.PersonException;
+import com.kernotec.driverscheduleservice.config.AuthConfigProperties;
 import com.kernotec.driverscheduleservice.jpa.entity.Person;
-import com.kernotec.driverscheduleservice.jpa.entity.PersonType;
 import com.kernotec.driverscheduleservice.jpa.service.PersonService;
 import com.kernotec.driverscheduleservice.jpa.service.PersonTypeService;
 import com.kernotec.driverscheduleservice.rest.dto.request.person.PersonCreateRequest;
@@ -13,16 +12,14 @@ import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserCreateRequest;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.response.UserCreateResponse;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -32,43 +29,34 @@ public class ProcessPersonCreateRequestCmd extends
     AbstractCommand<ProcessPersonCreateRequestCmd.Request, UUID>
 {
 
-    private final WebSocketHandler webSocketHandler;
-    private final PersonResponseMapper personResponseMapper;
+    private final AuthConfigProperties authConfigProperties;
+
     private final PersonService personService;
     private final PersonTypeService personTypeService;
+
+    private final PersonResponseMapper personResponseMapper;
+
     private final PersonCreateWithTypeCmd personCreateWithTypeCmd;
+    private final PersonValidationCmd personValidationCmd;
+    private final WebSocketHandler webSocketHandler;
 
     @Override
     protected void validate(Request request) {
         PersonCreateRequest personCreateRequest = request.personCreateRequest;
 
-        if (personCreateRequest.getPersonTypeIds()
-            .isEmpty())
-        {
-            throw new PersonException("type.list.empty", "", HttpStatus.BAD_REQUEST.value());
-        }
-
-        Optional<Person> personOptional = personService.findByDocument(
-            personCreateRequest.getDocument());
-
-        if (personOptional.isPresent()) {
-            throw new PersonException(
-                "document.already.exists", "'" + personCreateRequest.getDocument() + "'",
-                HttpStatus.CONFLICT.value()
-            );
-        }
+        personValidationCmd.withRequest(PersonValidationCmd.Request.builder()
+                .personTypeIdSet(personCreateRequest.getPersonTypeIds())
+                .document(personCreateRequest.getDocument())
+                .build())
+            .execute();
     }
 
     @Override
     protected UUID run(Request request) {
         PersonCreateRequest personCreateRequest = request.personCreateRequest;
 
-        Set<String> personTypeNames = new HashSet<>();
-
-        for (UUID personTypeId : personCreateRequest.getPersonTypeIds()) {
-            PersonType personType = personTypeService.findByIdThrow(personTypeId);
-            personTypeNames.add(personType.getCode());
-        }
+        Set<String> personTypeCodes = personTypeService.getCodesOfPersonTypeIds(
+            personCreateRequest.getPersonTypeIds());
 
         UserCreateResponse userCreateResponse = personService.saveUserFromPerson(
             UserCreateRequest.builder()
@@ -76,9 +64,9 @@ public class ProcessPersonCreateRequestCmd extends
                 .lastName(personCreateRequest.getLastName())
                 .username(personCreateRequest.getUsername())
                 .password(personCreateRequest.getDocument())
-                .realmName("driver-schedule-auth")
-                .resource("driver-schedule")
-                .roles(personTypeNames)
+                .realmName(authConfigProperties.getRealm())
+                .resource(authConfigProperties.getResource())
+                .roles(personTypeCodes)
                 .build());
 
         UUID personId = personCreateWithTypeCmd.withRequest(
@@ -102,7 +90,7 @@ public class ProcessPersonCreateRequestCmd extends
     }
 
     @Builder
-    public record Request(@NotNull PersonCreateRequest personCreateRequest) {
+    public record Request(@NotNull @Valid PersonCreateRequest personCreateRequest) {
 
     }
 }

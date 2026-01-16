@@ -12,4 +12,6 @@ import org.springframework.context.annotation.Configuration;
 public class AuthConfigProperties {
 
     private String secretKey;
+    private String realm;
+    private String resource;
 }
