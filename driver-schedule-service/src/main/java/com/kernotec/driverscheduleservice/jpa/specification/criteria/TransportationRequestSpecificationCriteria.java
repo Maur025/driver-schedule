@@ -17,6 +17,7 @@ public class TransportationRequestSpecificationCriteria {
     private TripTypeEnum tripType;
     private String userId;
     private String zoneId;
+    private UUID onlyRecordsOfPersonId;
 
     private ZonedDateTime simpleDate;
     private ZonedDateTime fromDate;
