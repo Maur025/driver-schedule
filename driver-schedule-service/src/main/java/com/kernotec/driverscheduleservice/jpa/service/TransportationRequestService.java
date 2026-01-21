@@ -51,8 +51,8 @@ public class TransportationRequestService extends BaseServiceImpl<Transportation
         boolean isApplicant = authUtil.userContainsRole(authentication, PersonTypeEnum.APPLICANT);
 
         if (!isAdmin && isApplicant) {
-            transportationRequestSpecification.withUserId(
-                String.valueOf(authUtil.getUserIdFromAuthentication(authentication)));
+            transportationRequestSpecification.withOnlyRecordsOfPersonId(
+                authUtil.getPersonIdFromAuthenticationThrow(authentication));
         }
 
         return repository.findAll(transportationRequestSpecification, pageable);

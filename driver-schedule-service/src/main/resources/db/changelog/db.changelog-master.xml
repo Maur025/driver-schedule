@@ -55,4 +55,5 @@
   </changeSet>
 
   <include file="db/changelog/2026/01/12-01-changelog-21.xml"/>
+  <include file="db/changelog/2026/01/21-01-changelog-22.xml"/>
 </databaseChangeLog>
