@@ -56,4 +56,11 @@
 
   <include file="db/changelog/2026/01/12-01-changelog-21.xml"/>
   <include file="db/changelog/2026/01/21-01-changelog-22.xml"/>
+  <include file="db/changelog/2026/01/22-01-changelog-23.xml"/>
+  <include file="db/changelog/2026/01/22-01-changelog-24.xml"/>
+
+  <!-- contact category - initial seeder -->
+  <changeSet id="1769100646092-1" author="Maur025">
+    <sqlFile path="data/contact/category/contact_category_seed.sql" relativeToChangelogFile="true"/>
+  </changeSet>
 </databaseChangeLog>
