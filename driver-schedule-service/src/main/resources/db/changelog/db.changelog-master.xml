@@ -63,4 +63,11 @@
   <changeSet id="1769100646092-1" author="Maur025">
     <sqlFile path="data/contact/category/contact_category_seed.sql" relativeToChangelogFile="true"/>
   </changeSet>
+
+  <!-- persons|contacts - migrate phone numbers in contacts -->
+  <changeSet id="1769101892091-1" author="Maur025">
+    <sqlFile path="data/contact/contact_migrate.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <include file="db/changelog/2026/01/22-01-changelog-25.xml"/>
 </databaseChangeLog>

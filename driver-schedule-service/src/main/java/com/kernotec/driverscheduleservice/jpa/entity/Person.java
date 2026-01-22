@@ -32,9 +32,6 @@ public class Person extends BaseAuditEntity {
     @Column(name = "document", nullable = false)
     private String document;
 
-    @Column(name = "phone")
-    private String phone;
-
     @Column(name = "user_id", nullable = false)
     private UUID userId;
 
