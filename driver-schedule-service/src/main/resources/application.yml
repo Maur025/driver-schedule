@@ -111,4 +111,4 @@ modules-app:
   app-auth:
     scheme: ${MS_AUTH_SCHEME:http}
     host: ${MS_AUTH_HOST:localhost}
-    port: ${SERVER_PORT_AUTH:7800}
+    port: ${MS_AUTH_PORT:443}
