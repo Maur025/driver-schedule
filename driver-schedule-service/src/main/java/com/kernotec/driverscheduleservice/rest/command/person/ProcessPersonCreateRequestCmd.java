@@ -3,8 +3,11 @@ package com.kernotec.driverscheduleservice.rest.command.person;
 import com.kernotec.core.command.AbstractCommand;
 import com.kernotec.driverscheduleservice.config.AuthConfigProperties;
 import com.kernotec.driverscheduleservice.jpa.entity.Person;
+import com.kernotec.driverscheduleservice.jpa.enums.ContactCategoryEnum;
+import com.kernotec.driverscheduleservice.jpa.service.ContactCategoryService;
 import com.kernotec.driverscheduleservice.jpa.service.PersonService;
 import com.kernotec.driverscheduleservice.jpa.service.PersonTypeService;
+import com.kernotec.driverscheduleservice.rest.dto.request.contact.ContactCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.person.PersonCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.person.PersonResponseMapper;
@@ -15,6 +18,7 @@ import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.response.Us
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
@@ -39,6 +43,7 @@ public class ProcessPersonCreateRequestCmd extends
     private final PersonCreateWithTypeCmd personCreateWithTypeCmd;
     private final PersonValidationCmd personValidationCmd;
     private final WebSocketHandler webSocketHandler;
+    private final ContactCategoryService contactCategoryService;
 
     @Override
     protected void validate(Request request) {
@@ -87,6 +92,20 @@ public class ProcessPersonCreateRequestCmd extends
         );
 
         return personId;
+    }
+
+    private void registerContacts(List<ContactCreateRequest> contactCreateRequestList,
+        UUID personId)
+    {
+        if (contactCreateRequestList.isEmpty()) {
+            log.debug("No contacts to register");
+            return;
+        }
+
+        UUID contactCategoryId = contactCategoryService.findIdByCodeThrow(
+            ContactCategoryEnum.PHONE);
+
+
     }
 
     @Builder

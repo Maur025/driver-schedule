@@ -17,6 +17,7 @@ public class VehicleResponse extends EntityResponse {
     private String vehicleNumber;
     private String model;
     private Integer capacity;
+    private boolean isEnabled;
 
     private UUID vehicleTypeId;
     private VehicleTypeResponse vehicleType;

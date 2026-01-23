@@ -143,4 +143,24 @@ public class ApiSpec {
         private ReportSpec() {
         }
     }
+
+    public static final class ContactSpec {
+
+        public static final String BASE_PATH = ROOT_PATH + "/contacts";
+        public static final String TAG_NAME = "CONTACT";
+        public static final String TAG_DESCRIPTION = "Contact management";
+
+        private ContactSpec() {
+        }
+    }
+
+    public static final class ContactCategorySpec {
+
+        public static final String BASE_PATH = ROOT_PATH + "/contact-categories";
+        public static final String TAG_NAME = "CONTACT CATEGORY";
+        public static final String TAG_DESCRIPTION = "Contact Category management";
+
+        private ContactCategorySpec() {
+        }
+    }
 }

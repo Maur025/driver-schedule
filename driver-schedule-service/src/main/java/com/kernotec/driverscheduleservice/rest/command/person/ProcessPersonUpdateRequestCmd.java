@@ -91,7 +91,6 @@ public class ProcessPersonUpdateRequestCmd extends
                 .personId(request.personId)
                 .name(personUpdateRequest.getName())
                 .lastName(personUpdateRequest.getLastName())
-                .phone(personUpdateRequest.getPhone())
                 .document(personUpdateRequest.getDocument())
                 .build())
             .execute();
