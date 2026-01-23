@@ -62,6 +62,7 @@ public record TransportationRequestSpecification(
         addDateRangeFilter(root, cb).ifPresent(predicateList::add);
         addMonthDateFilter(root, cb).ifPresent(predicateList::add);
         addYearDateFilter(root, cb).ifPresent(predicateList::add);
+        addOnlyRecordsOfPersonIdFilter(root, cb).ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -209,6 +210,21 @@ public record TransportationRequestSpecification(
             .map(yearDate -> CommonSpecification.yearDatePredicate(
                 cb, root.get("createdAt"),
                 yearDate, criteria.getZoneId()
+            ));
+    }
+
+    public TransportationRequestSpecification withOnlyRecordsOfPersonId(UUID personId) {
+        this.criteria.setOnlyRecordsOfPersonId(personId);
+        return this;
+    }
+
+    private Optional<Predicate> addOnlyRecordsOfPersonIdFilter(Root<TransportationRequest> root,
+        CriteriaBuilder cb)
+    {
+        return Optional.ofNullable(criteria.getOnlyRecordsOfPersonId())
+            .map(onlyRecordsOfPersonId -> cb.equal(
+                root.get("personRequestedId"),
+                onlyRecordsOfPersonId
             ));
     }
 }

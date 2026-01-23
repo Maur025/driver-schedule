@@ -18,8 +18,8 @@ public class PersonResponse extends EntityResponse {
     private String name;
     private String lastName;
     private String document;
-    private String phone;
     private UUID userId;
 
     private Set<PersonTypeResponse> personTypes;
+    private Set<ContactResponse> contacts;
 }

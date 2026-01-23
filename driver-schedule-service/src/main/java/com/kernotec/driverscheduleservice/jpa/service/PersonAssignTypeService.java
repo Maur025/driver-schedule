@@ -23,4 +23,8 @@ public class PersonAssignTypeService extends BaseServiceImpl<PersonAssignType, U
     protected BaseRepository<PersonAssignType, UUID> repository() {
         return repository;
     }
+
+    public void deleteAllByPersonId(UUID personId) {
+        repository.deleteAllByPersonId(personId);
+    }
 }

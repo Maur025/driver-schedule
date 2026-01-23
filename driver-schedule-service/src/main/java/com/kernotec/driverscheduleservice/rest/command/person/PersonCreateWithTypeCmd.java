@@ -2,13 +2,17 @@ package com.kernotec.driverscheduleservice.rest.command.person;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.command.person.PersonCreateCmd;
-import com.kernotec.driverscheduleservice.command.person.assign.type.PersonAssignTypeCreateCmd;
+import com.kernotec.driverscheduleservice.command.person.assign.type.PersonAssignTypeManyCreateCmd;
+import com.kernotec.driverscheduleservice.config.AuthConfigProperties;
 import com.kernotec.driverscheduleservice.exception.PersonException;
+import com.kernotec.driverscheduleservice.jpa.entity.PersonAssignType;
 import com.kernotec.driverscheduleservice.jpa.service.PersonService;
+import com.kernotec.driverscheduleservice.rest.command.person.assign.type.PersonAssignTypeGetManyRequestCmd;
 import com.kernotec.driverscheduleservice.rest.dto.request.person.PersonCreateRequest;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserDeleteRequest;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.response.UserCreateResponse;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -23,10 +27,13 @@ public class PersonCreateWithTypeCmd extends
     AbstractTransactionalRequiredCommand<PersonCreateWithTypeCmd.Request, UUID>
 {
 
+    private final AuthConfigProperties authConfigProperties;
+
     private final PersonService personService;
 
     private final PersonCreateCmd personCreateCmd;
-    private final PersonAssignTypeCreateCmd personAssignTypeCreateCmd;
+    private final PersonAssignTypeGetManyRequestCmd personAssignTypeGetManyRequestCmd;
+    private final PersonAssignTypeManyCreateCmd personAssignTypeManyCreateCmd;
 
     @Override
     protected UUID run(Request request) {
@@ -39,17 +46,21 @@ public class PersonCreateWithTypeCmd extends
                     .lastName(personCreateRequest.getLastName())
                     .document(personCreateRequest.getDocument())
                     .userId(userCreateResponse.getId())
-                    .phone(personCreateRequest.getPhone())
                     .build())
                 .execute();
 
-            for (UUID personTypeId : personCreateRequest.getPersonTypeIds()) {
-                personAssignTypeCreateCmd.withRequest(PersonAssignTypeCreateCmd.Request.builder()
+            List<PersonAssignType> personAssignTypeListToSave = personAssignTypeGetManyRequestCmd.withRequest(
+                    PersonAssignTypeGetManyRequestCmd.Request.builder()
+                        .personTypeIdSet(personCreateRequest.getPersonTypeIds())
                         .personId(personId)
-                        .personTypeId(personTypeId)
                         .build())
-                    .execute();
-            }
+                .execute();
+
+            personAssignTypeManyCreateCmd.withRequest(
+                    PersonAssignTypeManyCreateCmd.Request.builder()
+                        .personAssignTypeList(personAssignTypeListToSave)
+                        .build())
+                .execute();
 
             return personId;
         } catch (Exception ex) {
@@ -58,7 +69,7 @@ public class PersonCreateWithTypeCmd extends
             personService.deleteUserFromPerson(
                 userCreateResponse.getId(), UserDeleteRequest.builder()
                     .userName(personCreateRequest.getUsername())
-                    .realmName("driver-schedule-auth")
+                    .realmName(authConfigProperties.getRealm())
                     .build()
             );
 

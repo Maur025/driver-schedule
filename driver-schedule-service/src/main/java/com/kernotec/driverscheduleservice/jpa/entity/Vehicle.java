@@ -28,6 +28,9 @@ public class Vehicle extends BaseAuditEntity {
     @Column(name = "capacity")
     private Integer capacity;
 
+    @Column(name = "is_enabled", nullable = false, columnDefinition = "boolean default true")
+    private boolean isEnabled;
+
     @Column(name = "vehicle_type_id", nullable = false)
     private UUID vehicleTypeId;
 

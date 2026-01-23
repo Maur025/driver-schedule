@@ -1,6 +1,8 @@
 package com.kernotec.driverscheduleservice.rest.command.transportation.request;
 
 import com.kernotec.core.command.AbstractCommand;
+import com.kernotec.driverscheduleservice.command.transportation.request.TransportationRequestGetDtoCmd;
+import com.kernotec.driverscheduleservice.jpa.dto.TransportationRequestDto;
 import com.kernotec.driverscheduleservice.jpa.entity.Reason;
 import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
 import com.kernotec.driverscheduleservice.jpa.service.ReasonService;
@@ -34,6 +36,7 @@ public class ProcessTransportationRequestRejectedCmd extends
 
     private final TransportationRequestRejectedCmd transportationRequestRejectedCmd;
     private final WebSocketHandler webSocketHandler;
+    private final TransportationRequestGetDtoCmd transportationRequestGetDtoCmd;
 
     @Override
     protected Void run(Request request) {
@@ -44,11 +47,47 @@ public class ProcessTransportationRequestRejectedCmd extends
                     .build())
             .execute();
 
+        emitSocketMessage(request.transportationRequestId);
+
+        return null;
+    }
+
+    private void emitSocketMessage(UUID transportationRequestId) {
+        TransportationRequestResponse transportationRequestResponse = getTransportationRequestResponseWithFix(
+            transportationRequestId);
+
+        var socketResponse = WebSocketSingleResponse.<TransportationRequestResponse>builder()
+            .timestamp(ZonedDateTime.now())
+            .data(transportationRequestResponse);
+
+        webSocketHandler.emitMessage(
+            WebSocketTopic.TRANSPORTATION_REQUEST_REJECTED,
+            socketResponse.topic(WebSocketTopic.TRANSPORTATION_REQUEST_REJECTED)
+                .build()
+        );
+
+        TransportationRequestDto transportationRequestDto = transportationRequestGetDtoCmd.withRequest(
+                TransportationRequestGetDtoCmd.Request.builder()
+                    .transportationRequestId(transportationRequestId)
+                    .build())
+            .execute();
+
+        webSocketHandler.emitMessageToUser(
+            transportationRequestDto.getPersonRequested()
+                .getUserId(), WebSocketTopic.TRANSPORTATION_REQUEST_REJECTED_TO_USER,
+            socketResponse.topic(WebSocketTopic.TRANSPORTATION_REQUEST_REJECTED_TO_USER)
+                .build()
+        );
+    }
+
+    private TransportationRequestResponse getTransportationRequestResponseWithFix(
+        UUID transportationRequestId)
+    {
         TransportationRequest transportationRequest = transportationRequestService.findByIdThrow(
-            request.transportationRequestId);
+            transportationRequestId);
 
         Set<Reason> reasonSet = reasonService.findRejectByTransportationRequestId(
-            request.transportationRequestId);
+            transportationRequestId);
 
         TransportationRequestResponse transportationRequestResponse = transportationRequestResponseMapper.toResponse(
             transportationRequest);
@@ -60,16 +99,7 @@ public class ProcessTransportationRequestRejectedCmd extends
                 reasonResponseMapper.toResponse(reasonSet));
         }
 
-        webSocketHandler.emitMessage(
-            WebSocketTopic.TRANSPORTATION_REQUEST_REJECTED,
-            WebSocketSingleResponse.<TransportationRequestResponse>builder()
-                .topic(WebSocketTopic.TRANSPORTATION_REQUEST_REJECTED)
-                .timestamp(ZonedDateTime.now())
-                .data(transportationRequestResponse)
-                .build()
-        );
-
-        return null;
+        return transportationRequestResponse;
     }
 
     @Builder

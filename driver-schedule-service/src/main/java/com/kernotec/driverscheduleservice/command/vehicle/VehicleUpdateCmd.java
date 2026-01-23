@@ -3,7 +3,6 @@ package com.kernotec.driverscheduleservice.command.vehicle;
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.jpa.entity.Vehicle;
 import com.kernotec.driverscheduleservice.jpa.service.VehicleService;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.Builder;
@@ -22,7 +21,7 @@ public class VehicleUpdateCmd extends
     protected Void run(Request request) {
         Vehicle vehicle = vehicleService.findByIdThrow(request.vehicleId);
 
-        if (request.vehicleNumber != null) {
+        if (request.vehicleNumber != null && !request.vehicleNumber.isBlank()) {
             vehicle.setVehicleNumber(request.vehicleNumber);
         }
         if (request.model != null) {
@@ -34,14 +33,17 @@ public class VehicleUpdateCmd extends
         if (request.vehicleTypeId != null) {
             vehicle.setVehicleTypeId(request.vehicleTypeId);
         }
+        if (request.isEnabled != null) {
+            vehicle.setEnabled(request.isEnabled);
+        }
 
         vehicleService.save(vehicle);
         return null;
     }
 
     @Builder
-    public record Request(@NotNull UUID vehicleId, @NotBlank String vehicleNumber, String model,
-                          Integer capacity, UUID vehicleTypeId)
+    public record Request(@NotNull UUID vehicleId, String vehicleNumber, String model,
+                          Integer capacity, UUID vehicleTypeId, Boolean isEnabled)
     {
 
     }

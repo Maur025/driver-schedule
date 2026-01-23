@@ -173,4 +173,11 @@ public class ScheduleTransportationController {
             .message("Cancellation successful")
             .build();
     }
+
+    @Operation(summary = "schedule transportation export voucher")
+    @GetMapping("{scheduleTransportationId}/voucher")
+    @ResponseStatus(HttpStatus.OK)
+    public void scheduleTransportationExportVoucher(@PathVariable UUID scheduleTransportationId) {
+
+    }
 }

@@ -126,19 +126,33 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
                     .build())
             .execute();
 
+        emitSocketMessage(scheduleTransportationId, transportationRequestDto);
+
+        return scheduleTransportationId;
+    }
+
+    private void emitSocketMessage(UUID scheduleTransportationId,
+        TransportationRequestDto transportationRequestDto)
+    {
         ScheduleTransportation scheduleTransportation = scheduleTransportationService.findByIdThrow(
             scheduleTransportationId);
 
+        var socketResponse = WebSocketSingleResponse.<ScheduleTransportationResponse>builder()
+            .timestamp(ZonedDateTime.now())
+            .data(scheduleTransportationResponseMapper.toResponse(scheduleTransportation));
+
         webSocketHandler.emitMessage(
             WebSocketTopic.SCHEDULE_TRANSPORTATION_CREATED,
-            WebSocketSingleResponse.<ScheduleTransportationResponse>builder()
-                .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_CREATED)
-                .timestamp(ZonedDateTime.now())
-                .data(scheduleTransportationResponseMapper.toResponse(scheduleTransportation))
+            socketResponse.topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_CREATED)
                 .build()
         );
 
-        return scheduleTransportationId;
+        webSocketHandler.emitMessageToUser(
+            transportationRequestDto.getPersonRequested()
+                .getUserId(), WebSocketTopic.SCHEDULE_TRANSPORTATION_CREATED_TO_USER,
+            socketResponse.topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_CREATED_TO_USER)
+                .build()
+        );
     }
 
     @Builder

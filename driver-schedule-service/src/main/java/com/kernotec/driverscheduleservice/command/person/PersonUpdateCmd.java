@@ -27,8 +27,8 @@ public class PersonUpdateCmd extends
         if (request.lastName != null) {
             person.setLastName(request.lastName);
         }
-        if (request.phone != null) {
-            person.setPhone(request.phone);
+        if (request.document != null) {
+            person.setDocument(request.document);
         }
 
         personService.save(person);
@@ -36,7 +36,7 @@ public class PersonUpdateCmd extends
     }
 
     @Builder
-    public record Request(@NotNull UUID personId, String name, String lastName, String phone) {
+    public record Request(@NotNull UUID personId, String name, String lastName, String document) {
 
     }
 }

@@ -82,17 +82,7 @@ public class ProcessScheduleTransportationCancelRequestCmd extends
             scheduleTransportationCancelRequest.getCancelReason()
         );
 
-        ScheduleTransportation scheduleTransportation = scheduleTransportationService.findByIdThrow(
-            request.scheduleTransportationId);
-
-        webSocketHandler.emitMessage(
-            WebSocketTopic.SCHEDULE_TRANSPORTATION_CANCELLED,
-            WebSocketSingleResponse.<ScheduleTransportationResponse>builder()
-                .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_CANCELLED)
-                .timestamp(ZonedDateTime.now())
-                .data(scheduleTransportationResponseMapper.toResponse(scheduleTransportation))
-                .build()
-        );
+        emitSocketMessage(request.scheduleTransportationId);
 
         return null;
     }
@@ -113,6 +103,35 @@ public class ProcessScheduleTransportationCancelRequestCmd extends
                 .scheduleTransportationId(scheduleTransportationId)
                 .build())
             .execute();
+    }
+
+    private void emitSocketMessage(UUID scheduleTransportationId)
+    {
+        ScheduleTransportation scheduleTransportation = scheduleTransportationService.findByIdThrow(
+            scheduleTransportationId);
+
+        var socketResponse = WebSocketSingleResponse.<ScheduleTransportationResponse>builder()
+            .timestamp(ZonedDateTime.now())
+            .data(scheduleTransportationResponseMapper.toResponse(scheduleTransportation));
+
+        webSocketHandler.emitMessage(
+            WebSocketTopic.SCHEDULE_TRANSPORTATION_CANCELLED,
+            socketResponse.topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_CANCELLED)
+                .build()
+        );
+
+        ScheduleTransportationDto scheduleTransportationDto = scheduleTransportationGetDtoCmd.withRequest(
+                ScheduleTransportationGetDtoCmd.Request.builder()
+                    .scheduleTransportationId(scheduleTransportationId)
+                    .build())
+            .execute();
+
+        webSocketHandler.emitMessageToUser(
+            scheduleTransportationDto.getPersonRequested()
+                .getUserId(), WebSocketTopic.SCHEDULE_TRANSPORTATION_CANCELLED_TO_USER,
+            socketResponse.topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_CANCELLED_TO_USER)
+                .build()
+        );
     }
 
     @Builder

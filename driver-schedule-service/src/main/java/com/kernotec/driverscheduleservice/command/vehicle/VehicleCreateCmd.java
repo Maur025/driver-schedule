@@ -26,6 +26,7 @@ public class VehicleCreateCmd extends
         vehicle.setVehicleTypeId(request.vehicleTypeId);
         vehicle.setModel(request.model);
         vehicle.setCapacity(request.capacity);
+        vehicle.setEnabled(request.isEnabled() != null && request.isEnabled());
 
         vehicle = vehicleService.save(vehicle);
         return vehicle.getId();
@@ -33,7 +34,7 @@ public class VehicleCreateCmd extends
 
     @Builder
     public record Request(@NotNull @NotBlank String vehicleNumber, @NotNull UUID vehicleTypeId,
-                          String model, Integer capacity)
+                          String model, Integer capacity, Boolean isEnabled)
     {
 
     }

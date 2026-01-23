@@ -30,9 +30,6 @@ public class WebSocketTopic {
     public static final String TRANSPORTATION_REQUEST_CANCELLED =
         BROKER_PREFIX + "/transportation.request.cancelled";
 
-    public static final String TRANSPORTATION_REQUEST_CANCELLED_TO_USER =
-        PRIVATE_MESSAGE_PREFIX + "/transportation.request.cancelled";
-
     public static final String SCHEDULE_TRANSPORTATION_CREATED =
         BROKER_PREFIX + "/schedule.transportation.created";
 

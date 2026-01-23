@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PersonAssignTypeRepository extends BaseRepository<PersonAssignType, UUID> {
 
+    void deleteAllByPersonId(UUID personId);
 }

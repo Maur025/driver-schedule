@@ -12,11 +12,13 @@ import com.kernotec.driverscheduleservice.jpa.service.VehicleService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.VehicleSpec;
 import com.kernotec.driverscheduleservice.rest.command.csv.imports.CsvImportCmd;
 import com.kernotec.driverscheduleservice.rest.command.vehicle.ProcessVehicleCreateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.command.vehicle.ProcessVehiclePatchRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.vehicle.ProcessVehicleUpdateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.vehicle.VehicleCsvImportGetDtoCmd;
 import com.kernotec.driverscheduleservice.rest.command.vehicle.VehicleCsvImportSaveCmd;
 import com.kernotec.driverscheduleservice.rest.dto.VehicleCsvImportDto;
 import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleCreateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehiclePatchRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleScheduleConflictRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleUpdateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.VehicleResponse;
@@ -40,6 +42,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -71,6 +74,7 @@ public class VehicleController {
     private final CsvImportCmd<VehicleCsvImportDto> csvImportCmd;
     private final VehicleCsvImportGetDtoCmd vehicleCsvImportGetDtoCmd;
     private final VehicleCsvImportSaveCmd vehicleCsvImportSaveCmd;
+    private final ProcessVehiclePatchRequestCmd processVehiclePatchRequestCmd;
 
     @Operation(summary = "find all vehicles")
     @GetMapping
@@ -224,6 +228,24 @@ public class VehicleController {
         return MessageResponse.builder()
             .code(HttpStatus.OK.value())
             .message("Vehicles imported successfully")
+            .build();
+    }
+
+    @Operation(summary = "patch update vehicle")
+    @PatchMapping("{vehicleId}")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<VehicleResponse> patchUpdate(@PathVariable UUID vehicleId,
+        @RequestBody VehiclePatchRequest request)
+    {
+        processVehiclePatchRequestCmd.withRequest(ProcessVehiclePatchRequestCmd.Request.builder()
+                .vehicleId(vehicleId)
+                .vehiclePatchRequest(request)
+                .build())
+            .execute();
+
+        return SingleResponse.<VehicleResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("Vehicle patched successfully")
             .build();
     }
 }

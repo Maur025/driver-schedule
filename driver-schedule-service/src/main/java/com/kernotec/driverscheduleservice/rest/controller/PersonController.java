@@ -15,9 +15,11 @@ import com.kernotec.driverscheduleservice.rest.command.csv.imports.CsvImportCmd;
 import com.kernotec.driverscheduleservice.rest.command.person.PersonCsvImportGetDtoCmd;
 import com.kernotec.driverscheduleservice.rest.command.person.PersonCsvImportSaveCmd;
 import com.kernotec.driverscheduleservice.rest.command.person.ProcessPersonCreateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.command.person.ProcessPersonUpdateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.dto.PersonCsvImportDto;
 import com.kernotec.driverscheduleservice.rest.dto.request.person.PersonCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.person.PersonScheduleConflictRequest;
+import com.kernotec.driverscheduleservice.rest.dto.request.person.PersonUpdateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.PersonResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.PersonScheduleConflictResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.person.PersonResponseMapper;
@@ -64,6 +66,7 @@ public class PersonController {
     private final CsvImportCmd<PersonCsvImportDto> csvImportCmd;
     private final PersonCsvImportGetDtoCmd personCsvImportGetDtoCmd;
     private final PersonCsvImportSaveCmd personCsvImportSaveCmd;
+    private final ProcessPersonUpdateRequestCmd processPersonUpdateRequestCmd;
 
     @Operation(summary = "find all persons")
     @GetMapping
@@ -183,7 +186,14 @@ public class PersonController {
     @Operation(summary = "update person")
     @PutMapping("{personId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<PersonResponse> updatePerson(@PathVariable UUID personId) {
+    public SingleResponse<PersonResponse> updatePerson(@PathVariable UUID personId,
+        @RequestBody PersonUpdateRequest request)
+    {
+        processPersonUpdateRequestCmd.withRequest(ProcessPersonUpdateRequestCmd.Request.builder()
+                .personId(personId)
+                .personUpdateRequest(request)
+                .build())
+            .execute();
 
         return SingleResponse.<PersonResponse>builder()
             .code(HttpStatus.OK.value())
