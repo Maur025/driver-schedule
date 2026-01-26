@@ -67,6 +67,7 @@ public record ScheduleTransportationSpecification(
         addMonthDateFilter(root, cb).ifPresent(predicateList::add);
         addYearDateFilter(root, cb).ifPresent(predicateList::add);
         addPersonRequestedIdFilter(root, cb).ifPresent(predicateList::add);
+        addScheduleTransportationStatesFilter(root, joinMap).ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -262,5 +263,24 @@ public record ScheduleTransportationSpecification(
     {
         return Optional.ofNullable(criteria.getPersonRequestedId())
             .map(personRequestedId -> cb.equal(root.get("personRequestedId"), personRequestedId));
+    }
+
+    public ScheduleTransportationSpecification withScheduleTransportationStates(
+        List<ScheduleTransportationStateEnum> scheduleTransportationStates)
+    {
+        this.criteria.setScheduleTransportationStates(scheduleTransportationStates);
+        return this;
+    }
+
+    private Optional<Predicate> addScheduleTransportationStatesFilter(
+        Root<ScheduleTransportation> root,
+        Map<ScheduleTransportationSpecificationJoinEnum, Join<?, ?>> joinMap)
+    {
+        return Optional.ofNullable(criteria.getScheduleTransportationStates())
+            .map(scheduleTransportationStates -> getOrCreateScheduleTransportationStateJoin(
+                joinMap, root).get("code")
+                .in(scheduleTransportationStates.stream()
+                    .map(String::valueOf)
+                    .toList()));
     }
 }
