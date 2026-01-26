@@ -2,8 +2,10 @@ package com.kernotec.driverscheduleservice.rest.command.schedule.transportation;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.command.schedule.transportation.ScheduleTransportationCreateCmd;
+import com.kernotec.driverscheduleservice.command.schedule.transportation.log.ScheduleTransportationLogCreateCmd;
 import com.kernotec.driverscheduleservice.command.transportation.request.TransportationRequestGetDtoCmd;
 import com.kernotec.driverscheduleservice.command.transportation.request.TransportationRequestUpdateCmd;
+import com.kernotec.driverscheduleservice.command.transportation.request.log.TransportationRequestLogCreateCmd;
 import com.kernotec.driverscheduleservice.exception.ScheduleTransportationException;
 import com.kernotec.driverscheduleservice.jpa.dto.TransportationRequestDto;
 import com.kernotec.driverscheduleservice.jpa.dto.TransportationRequestStateDto;
@@ -48,6 +50,8 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
     private final ScheduleTransportationDateValidationCmd scheduleTransportationDateValidationCmd;
     private final WebSocketHandler webSocketHandler;
     private final ZonedDateTimeUtil zonedDateTimeUtil;
+    private final ScheduleTransportationLogCreateCmd scheduleTransportationLogCreateCmd;
+    private final TransportationRequestLogCreateCmd transportationRequestLogCreateCmd;
 
     @Override
     protected void validate(Request request) {
@@ -97,6 +101,14 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
                 .build())
             .execute();
 
+        transportationRequestLogCreateCmd.withRequest(
+                TransportationRequestLogCreateCmd.Request.builder()
+                    .transportationRequestId(
+                        scheduleTransportationCreateRequest.getTransportationRequestId())
+                    .transportationRequestStateId(transportationRequestStateApprovedId)
+                    .build())
+            .execute();
+
         UUID scheduledTransportationStateScheduledId = scheduleTransportationStateService.findIdByCodeThrow(
             ScheduleTransportationStateEnum.SCHEDULED);
 
@@ -122,6 +134,13 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
                     .transportationRequestId(
                         scheduleTransportationCreateRequest.getTransportationRequestId())
                     .personRequestedId(transportationRequestDto.getPersonRequestedId())
+                    .scheduleTransportationStateId(scheduledTransportationStateScheduledId)
+                    .build())
+            .execute();
+
+        scheduleTransportationLogCreateCmd.withRequest(
+                ScheduleTransportationLogCreateCmd.Request.builder()
+                    .scheduleTransportationId(scheduleTransportationId)
                     .scheduleTransportationStateId(scheduledTransportationStateScheduledId)
                     .build())
             .execute();

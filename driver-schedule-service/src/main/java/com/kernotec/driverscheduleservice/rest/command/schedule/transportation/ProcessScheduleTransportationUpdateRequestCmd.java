@@ -5,6 +5,7 @@ import com.kernotec.driverscheduleservice.command.reason.ReasonCreateCmd;
 import com.kernotec.driverscheduleservice.command.reschedule.reason.RescheduleReasonCreateCmd;
 import com.kernotec.driverscheduleservice.command.schedule.transportation.ScheduleTransportationGetDtoCmd;
 import com.kernotec.driverscheduleservice.command.schedule.transportation.ScheduleTransportationUpdateCmd;
+import com.kernotec.driverscheduleservice.command.schedule.transportation.log.ScheduleTransportationLogCreateCmd;
 import com.kernotec.driverscheduleservice.exception.ScheduleTransportationException;
 import com.kernotec.driverscheduleservice.jpa.dto.ScheduleTransportationDto;
 import com.kernotec.driverscheduleservice.jpa.dto.ScheduleTransportationStateDto;
@@ -47,6 +48,7 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
     private final ReasonCreateCmd reasonCreateCmd;
     private final RescheduleReasonCreateCmd rescheduleReasonCreateCmd;
     private final ScheduleTransportationGetDtoCmd scheduleTransportationGetDtoCmd;
+    private final ScheduleTransportationLogCreateCmd scheduleTransportationLogCreateCmd;
 
     @Override
     protected void validate(Request request) {
@@ -109,6 +111,13 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
                     .requestedDate(request.scheduleTransportationUpdateRequest.getRequestedDate())
                     .vehicleId(scheduleTransportationUpdateRequest.getVehicleId())
                     .driverId(scheduleTransportationUpdateRequest.getDriverId())
+                    .scheduleTransportationStateId(scheduleTransportationStateRescheduledId)
+                    .build())
+            .execute();
+
+        scheduleTransportationLogCreateCmd.withRequest(
+                ScheduleTransportationLogCreateCmd.Request.builder()
+                    .scheduleTransportationId(request.scheduleTransportationId)
                     .scheduleTransportationStateId(scheduleTransportationStateRescheduledId)
                     .build())
             .execute();

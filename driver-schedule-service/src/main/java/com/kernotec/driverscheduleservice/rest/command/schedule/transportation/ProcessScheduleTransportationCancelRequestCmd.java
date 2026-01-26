@@ -5,6 +5,7 @@ import com.kernotec.driverscheduleservice.command.cancel.reason.CancelReasonCrea
 import com.kernotec.driverscheduleservice.command.reason.ReasonCreateCmd;
 import com.kernotec.driverscheduleservice.command.schedule.transportation.ScheduleTransportationGetDtoCmd;
 import com.kernotec.driverscheduleservice.command.schedule.transportation.ScheduleTransportationUpdateCmd;
+import com.kernotec.driverscheduleservice.command.schedule.transportation.log.ScheduleTransportationLogCreateCmd;
 import com.kernotec.driverscheduleservice.exception.ScheduleTransportationException;
 import com.kernotec.driverscheduleservice.jpa.dto.ScheduleTransportationDto;
 import com.kernotec.driverscheduleservice.jpa.dto.ScheduleTransportationStateDto;
@@ -42,6 +43,7 @@ public class ProcessScheduleTransportationCancelRequestCmd extends
     private final WebSocketHandler webSocketHandler;
     private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
     private final ScheduleTransportationService scheduleTransportationService;
+    private final ScheduleTransportationLogCreateCmd scheduleTransportationLogCreateCmd;
 
     @Override
     protected void validate(Request request) {
@@ -81,6 +83,13 @@ public class ProcessScheduleTransportationCancelRequestCmd extends
             request.scheduleTransportationId,
             scheduleTransportationCancelRequest.getCancelReason()
         );
+
+        scheduleTransportationLogCreateCmd.withRequest(
+                ScheduleTransportationLogCreateCmd.Request.builder()
+                    .scheduleTransportationId(request.scheduleTransportationId)
+                    .scheduleTransportationStateId(scheduleTransportationStateCancelledId)
+                    .build())
+            .execute();
 
         emitSocketMessage(request.scheduleTransportationId);
 
