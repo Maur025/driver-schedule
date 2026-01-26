@@ -79,7 +79,8 @@ public class ScheduleTransportationService extends BaseServiceImpl<ScheduleTrans
             .withSimpleDate(filterRequest.getSimpleDate())
             .withDateRange(filterRequest.getFromDate(), filterRequest.getToDate())
             .withMonthDate(filterRequest.getMonthDate())
-            .withYearDate(filterRequest.getYearDate());
+            .withYearDate(filterRequest.getYearDate())
+            .withScheduleTransportationStates(filterRequest.getScheduleTransportationStates());
 
         boolean isAdmin = authUtil.userContainsRole(authentication, PersonTypeEnum.ADMIN);
         boolean isApplicant = authUtil.userContainsRole(authentication, PersonTypeEnum.APPLICANT);
