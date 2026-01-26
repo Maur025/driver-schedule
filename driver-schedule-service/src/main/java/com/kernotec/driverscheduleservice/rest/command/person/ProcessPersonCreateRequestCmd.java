@@ -104,7 +104,7 @@ public class ProcessPersonCreateRequestCmd extends
     private void registerContacts(List<ContactCreateRequest> contactCreateRequestList,
         UUID personId)
     {
-        if (contactCreateRequestList.isEmpty()) {
+        if (contactCreateRequestList == null || contactCreateRequestList.isEmpty()) {
             log.debug("No contacts to register");
             return;
         }
