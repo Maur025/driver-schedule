@@ -1,8 +1,9 @@
 package com.kernotec.driverscheduleservice.rest.mapper.transportation.request;
 
+import com.kernotec.driverscheduleservice.audit.user.mapper.AuthUserDataResponseMapper;
 import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.TransportationRequestResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.person.PersonResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.person.PersonResponseWithContactMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation.ScheduleTransportationResponseToRequestMapper;
 import com.kernotec.driverscheduleservice.util.GeoJsonUtil;
 import java.util.List;
@@ -12,7 +13,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(uses = {GeoJsonUtil.class, ScheduleTransportationResponseToRequestMapper.class,
-    PersonResponseMapper.class})
+    PersonResponseWithContactMapper.class, AuthUserDataResponseMapper.class})
 public interface TransportationRequestResponseMapper {
 
     @Mapping(target = "startingCoordinates", source = "startingCoordinate",

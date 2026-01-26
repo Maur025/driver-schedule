@@ -5,6 +5,7 @@ import com.kernotec.driverscheduleservice.command.cancel.request.reason.CancelRe
 import com.kernotec.driverscheduleservice.command.reason.ReasonCreateCmd;
 import com.kernotec.driverscheduleservice.command.transportation.request.TransportationRequestGetDtoCmd;
 import com.kernotec.driverscheduleservice.command.transportation.request.TransportationRequestUpdateCmd;
+import com.kernotec.driverscheduleservice.command.transportation.request.log.TransportationRequestLogCreateCmd;
 import com.kernotec.driverscheduleservice.exception.TransportationRequestException;
 import com.kernotec.driverscheduleservice.jpa.dto.TransportationRequestDto;
 import com.kernotec.driverscheduleservice.jpa.dto.TransportationRequestStateDto;
@@ -42,6 +43,7 @@ public class ProcessTransportationRequestCancelledCmd extends
     private final TransportationRequestService transportationRequestService;
     private final WebSocketHandler webSocketHandler;
     private final TransportationRequestResponseMapper transportationRequestResponseMapper;
+    private final TransportationRequestLogCreateCmd transportationRequestLogCreateCmd;
 
     @Override
     protected void validate(Request request) {
@@ -80,6 +82,13 @@ public class ProcessTransportationRequestCancelledCmd extends
             request.transportationRequestId,
             cancelRequestReasonRequest.getReasonDescription()
         );
+
+        transportationRequestLogCreateCmd.withRequest(
+                TransportationRequestLogCreateCmd.Request.builder()
+                    .transportationRequestId(request.transportationRequestId)
+                    .transportationRequestStateId(transportationRequestStateCancelledId)
+                    .build())
+            .execute();
 
         TransportationRequest transportationRequest = transportationRequestService.findByIdThrow(
             request.transportationRequestId);

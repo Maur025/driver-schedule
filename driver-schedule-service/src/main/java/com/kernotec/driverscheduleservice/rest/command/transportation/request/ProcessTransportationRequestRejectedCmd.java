@@ -2,6 +2,7 @@ package com.kernotec.driverscheduleservice.rest.command.transportation.request;
 
 import com.kernotec.core.command.AbstractCommand;
 import com.kernotec.driverscheduleservice.command.transportation.request.TransportationRequestGetDtoCmd;
+import com.kernotec.driverscheduleservice.command.transportation.request.log.TransportationRequestLogCreateCmd;
 import com.kernotec.driverscheduleservice.jpa.dto.TransportationRequestDto;
 import com.kernotec.driverscheduleservice.jpa.entity.Reason;
 import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
@@ -37,6 +38,7 @@ public class ProcessTransportationRequestRejectedCmd extends
     private final TransportationRequestRejectedCmd transportationRequestRejectedCmd;
     private final WebSocketHandler webSocketHandler;
     private final TransportationRequestGetDtoCmd transportationRequestGetDtoCmd;
+    private final TransportationRequestLogCreateCmd transportationRequestLogCreateCmd;
 
     @Override
     protected Void run(Request request) {
@@ -47,15 +49,25 @@ public class ProcessTransportationRequestRejectedCmd extends
                     .build())
             .execute();
 
-        emitSocketMessage(request.transportationRequestId);
+        TransportationRequestResponse transportationRequestResponse = getTransportationRequestResponseWithFix(
+            request.transportationRequestId);
+
+        transportationRequestLogCreateCmd.withRequest(
+                TransportationRequestLogCreateCmd.Request.builder()
+                    .transportationRequestId(request.transportationRequestId)
+                    .transportationRequestStateId(
+                        transportationRequestResponse.getTransportationRequestStateId())
+                    .build())
+            .execute();
+
+        emitSocketMessage(request.transportationRequestId, transportationRequestResponse);
 
         return null;
     }
 
-    private void emitSocketMessage(UUID transportationRequestId) {
-        TransportationRequestResponse transportationRequestResponse = getTransportationRequestResponseWithFix(
-            transportationRequestId);
-
+    private void emitSocketMessage(UUID transportationRequestId,
+        TransportationRequestResponse transportationRequestResponse)
+    {
         var socketResponse = WebSocketSingleResponse.<TransportationRequestResponse>builder()
             .timestamp(ZonedDateTime.now())
             .data(transportationRequestResponse);
