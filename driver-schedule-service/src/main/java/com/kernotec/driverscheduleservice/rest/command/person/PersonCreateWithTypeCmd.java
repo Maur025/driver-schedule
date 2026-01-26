@@ -46,7 +46,6 @@ public class PersonCreateWithTypeCmd extends
                     .lastName(personCreateRequest.getLastName())
                     .document(personCreateRequest.getDocument())
                     .userId(userCreateResponse.getId())
-                    .phone(personCreateRequest.getPhone())
                     .build())
                 .execute();
 

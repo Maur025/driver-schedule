@@ -19,5 +19,4 @@ public class PersonUpdateRequest extends BaseRequest {
     private String lastName;
     private String document;
     private Set<UUID> personTypeIds;
-    private String phone;
 }

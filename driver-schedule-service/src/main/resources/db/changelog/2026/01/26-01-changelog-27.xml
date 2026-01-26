@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+  <changeSet id="1769445600647-1" author="mmoya@PragmaInvest.com">
+    <addColumn tableName="person">
+      <column name="created_by_user" type="jsonb"/>
+      <column name="updated_by_user" type="jsonb"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="1769445600647-2" author="mmoya@PragmaInvest.com">
+    <addColumn tableName="schedule_transportation_logs">
+      <column name="created_by_user" type="jsonb"/>
+      <column name="updated_by_user" type="jsonb"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="1769445600647-3" author="mmoya@PragmaInvest.com">
+    <addColumn tableName="schedule_transportations">
+      <column name="created_by_user" type="jsonb"/>
+      <column name="updated_by_user" type="jsonb"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="1769445600647-4" author="mmoya@PragmaInvest.com">
+    <addColumn tableName="transportation_request_logs">
+      <column name="created_by_user" type="jsonb"/>
+      <column name="updated_by_user" type="jsonb"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="1769445600647-5" author="mmoya@PragmaInvest.com">
+    <addColumn tableName="transportation_requests">
+      <column name="created_by_user" type="jsonb"/>
+      <column name="updated_by_user" type="jsonb"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="1769445600647-6" author="mmoya@PragmaInvest.com">
+    <addColumn tableName="vehicles">
+      <column name="created_by_user" type="jsonb"/>
+      <column name="updated_by_user" type="jsonb"/>
+    </addColumn>
+  </changeSet>
+
+</databaseChangeLog>

@@ -12,6 +12,7 @@ import org.mapstruct.Mapping;
 public interface PersonResponseFlatMapper {
 
     @Mapping(target = "personTypes", ignore = true)
+    @Mapping(target = "contacts", ignore = true)
     PersonResponse toResponse(Person person);
 
     PersonResponse toResponse(UUID id);

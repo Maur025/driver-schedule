@@ -1,6 +1,6 @@
 package com.kernotec.driverscheduleservice.jpa.entity;
 
-import com.kernotec.core.jpa.entity.BaseAuditEntity;
+import com.kernotec.driverscheduleservice.audit.user.BaseAuditEntityUser;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
 import com.kernotec.driverscheduleservice.util.SafeZoneDateTimeConverter;
@@ -36,7 +36,7 @@ import org.hibernate.generator.EventType;
 @Getter
 @Entity
 @Table(name = "transportation_requests")
-public class TransportationRequest extends BaseAuditEntity {
+public class TransportationRequest extends BaseAuditEntityUser {
 
     @Embedded
     @AttributeOverrides({@AttributeOverride(name = "lat", column = @Column(name = "starting_lat",
