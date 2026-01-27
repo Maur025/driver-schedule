@@ -33,7 +33,7 @@ public class ContactGetManyCreateRequestCmd extends
         for (ContactCreateRequest contactCreateRequest : request.contactCreateRequestList) {
             var contact = new Contact();
 
-            contact.setLabel(contactCreateRequest.getLabel());
+            contact.setLabelTypeId(contactCreateRequest.getLabelTypeId());
             contact.setValue(contactCreateRequest.getValue());
             contact.setContactCategoryId(request.contactCategoryId);
             contact.setPersonId(request.personId);

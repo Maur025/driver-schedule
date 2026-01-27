@@ -163,4 +163,14 @@ public class ApiSpec {
         private ContactCategorySpec() {
         }
     }
+
+    public static final class LabelTypeSpec {
+
+        public static final String BASE_PATH = ROOT_PATH + "/label-types";
+        public static final String TAG_NAME = "LABEL TYPE";
+        public static final String TAG_DESCRIPTION = "Label Type management";
+
+        private LabelTypeSpec() {
+        }
+    }
 }
