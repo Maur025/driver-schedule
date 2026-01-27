@@ -81,7 +81,7 @@ public class ContactController {
     {
         contactUpdateCmd.withRequest(ContactUpdateCmd.Request.builder()
                 .contactId(contactId)
-                .label(request.getLabel())
+                .labelTypeId(request.getLabelTypeId())
                 .value(request.getValue())
                 .build())
             .execute();

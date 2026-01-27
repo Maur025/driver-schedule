@@ -17,7 +17,7 @@ import lombok.Setter;
 public class ContactCreateRequest extends BaseRequest {
 
     @NotNull
-    private String label;
+    private UUID labelTypeId;
 
     @NotNull
     @Size(max = 512)

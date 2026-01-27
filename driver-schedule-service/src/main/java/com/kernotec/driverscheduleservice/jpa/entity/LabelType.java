@@ -13,22 +13,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-@Setter
 @Getter
+@Setter
 @Entity
-@Table(name = "contacts")
-public class Contact extends BaseAuditEntity {
+@Table(name = "label_types")
+public class LabelType extends BaseAuditEntity {
 
-    @Column(name = "value", nullable = false, length = 512)
-    private String value;
+    @Column(name = "name", nullable = false, length = 50)
+    private String name;
 
-    @Column(name = "label_type_id", nullable = false)
-    private UUID labelTypeId;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "label_type_id", referencedColumnName = "id", insertable = false,
-                updatable = false)
-    private LabelType labelType;
+    @Column(name = "code", nullable = false, length = 50)
+    private String code;
 
     @Column(name = "contact_category_id", nullable = false)
     private UUID contactCategoryId;
@@ -37,12 +32,4 @@ public class Contact extends BaseAuditEntity {
     @JoinColumn(name = "contact_category_id", referencedColumnName = "id", insertable = false,
                 updatable = false)
     private ContactCategory contactCategory;
-
-    @Column(name = "person_id", nullable = false)
-    private UUID personId;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "person_id", referencedColumnName = "id", insertable = false,
-                updatable = false)
-    private Person person;
 }

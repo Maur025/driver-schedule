@@ -77,13 +77,12 @@ public class ContactCategoryController {
         @RequestParam(required = false) String keyword)
     {
         Pageable pageable = PageableUtil.of(0, 500, "name", false);
-        List<ContactCategoryLookupResponse> contactCategoryList = contactCategoryService.findAllToLookup(
-                keyword, pageable)
-            .getContent();
+        Page<ContactCategoryLookupResponse> contactCategoryPage = contactCategoryService.findAllToLookup(
+            keyword, pageable);
 
         return LookupResponse.<List<ContactCategoryLookupResponse>>builder()
             .code(HttpStatus.OK.value())
-            .data(contactCategoryList)
+            .data(contactCategoryPage.getContent())
             .build();
     }
 }

@@ -61,8 +61,8 @@ WHERE st.id = '902e2f7c-dc42-4f2f-b71f-f1d62dcdfca8']]>
 		<band height="296" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<image>
-				<reportElement x="350" y="-48" width="189" height="137" uuid="66315a98-fa24-43ca-a005-db50551c9868"/>
-				<imageExpression><![CDATA["/home/mmoya@PragmaInvest.com/Descargas/KERNO BOOKING.jpg.jpeg"]]></imageExpression>
+				<reportElement x="296" y="0" width="190" height="77" uuid="66315a98-fa24-43ca-a005-db50551c9868"/>
+				<imageExpression><![CDATA["/home/mmoya@PragmaInvest.com/spring-project/driver-schedule/driver-schedule-service/src/main/resources/images/logo-kerno-booking.png"]]></imageExpression>
 			</image>
 			<frame>
 				<reportElement key="reason-description" x="0" y="236" width="486" height="60" uuid="df5ef133-ff46-4a0c-a0d0-cc8a03d442f5">

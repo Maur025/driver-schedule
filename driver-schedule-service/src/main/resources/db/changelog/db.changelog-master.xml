@@ -73,4 +73,20 @@
   <include file="db/changelog/2026/01/26-01-changelog-26.xml"/>
   <include file="db/changelog/2026/01/26-01-changelog-27.xml"/>
   <include file="db/changelog/2026/01/27-01-changelog-28.xml"/>
+  <include file="db/changelog/2026/01/27-01-changelog-29.xml"/>
+
+  <!-- label type - initial seeder -->
+  <changeSet id="1769548494321-1" author="Maur025">
+    <sqlFile path="data/label/type/label_type_seed.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+  <!-- label type - update Home to HOME in code -->
+  <changeSet id="1769548947901-1" author="Maur025">
+    <sqlFile path="data/label/type/label_type_update1.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+  <!-- contact - migrate label|String to label_type_id|UUID -->
+  <changeSet id="1769549353995-1" author="Maur025">
+    <sqlFile path="data/contact/contact_label_migrate.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <include file="db/changelog/2026/01/27-01-changelog-30.xml"/>
 </databaseChangeLog>

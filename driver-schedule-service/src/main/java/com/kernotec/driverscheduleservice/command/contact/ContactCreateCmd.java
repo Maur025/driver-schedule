@@ -21,7 +21,7 @@ public class ContactCreateCmd extends
     protected UUID run(Request request) {
         var contact = new Contact();
 
-        contact.setLabel(request.label);
+        contact.setLabelTypeId(request.labelTypeId);
         contact.setValue(request.value);
         contact.setContactCategoryId(request.contactCategoryId);
         contact.setPersonId(request.personId);
@@ -31,7 +31,7 @@ public class ContactCreateCmd extends
     }
 
     @Builder
-    public record Request(@NotNull String label, @NotNull String value,
+    public record Request(@NotNull UUID labelTypeId, @NotNull String value,
                           @NotNull UUID contactCategoryId, @NotNull UUID personId)
     {
 
