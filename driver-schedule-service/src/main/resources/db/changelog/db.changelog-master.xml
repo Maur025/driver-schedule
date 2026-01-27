@@ -72,4 +72,5 @@
   <include file="db/changelog/2026/01/22-01-changelog-25.xml"/>
   <include file="db/changelog/2026/01/26-01-changelog-26.xml"/>
   <include file="db/changelog/2026/01/26-01-changelog-27.xml"/>
+  <include file="db/changelog/2026/01/27-01-changelog-28.xml"/>
 </databaseChangeLog>

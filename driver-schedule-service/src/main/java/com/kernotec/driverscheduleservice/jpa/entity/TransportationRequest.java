@@ -83,6 +83,9 @@ public class TransportationRequest extends BaseAuditEntityUser {
     @Column(name = "correlative", nullable = false, insertable = false, updatable = false)
     private Long correlative;
 
+    @Column(name = "detail", length = 2048)
+    private String detail;
+
     @Column(name = "transportation_request_state_id", nullable = false)
     private UUID transportationRequestStateId;
 
