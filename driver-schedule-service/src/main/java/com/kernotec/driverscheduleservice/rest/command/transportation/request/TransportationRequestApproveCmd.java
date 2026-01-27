@@ -86,6 +86,7 @@ public class TransportationRequestApproveCmd extends
                     .passengers(transportationRequestCreateRequest.getPassengers())
                     .assets(transportationRequestCreateRequest.getAssets())
                     .personRequestId(personId)
+                    .detail(transportationRequestCreateRequest.getDetail())
                     .build())
             .execute();
 

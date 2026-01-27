@@ -43,4 +43,5 @@ public class TransportationRequestCreateRequest extends BaseRequest {
     private String zoneId;
 
     private UUID personRequestedId;
+    private String detail;
 }
