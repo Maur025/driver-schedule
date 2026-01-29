@@ -24,6 +24,9 @@ public class Reason extends BaseAuditEntity {
     @Column(name = "value")
     private String value;
 
+    @Column(name = "code")
+    private String code;
+
     @Column(name = "reason_description", length = 1500)
     private String reasonDescription;
 

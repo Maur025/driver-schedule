@@ -9,6 +9,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,6 +40,12 @@ public class RequestCoord extends BaseAuditEntity {
     @Column(name = "distanceKilometers")
     private Double distanceKilometers;
 
+    @Column(name = "wait_time_minutes")
+    private Double waitTimeMinutes;
+
+    @Column(name = "estimated_arrival_time")
+    private ZonedDateTime estimatedArrivalTime;
+
     @Column(name = "transportation_request_id", nullable = false)
     private UUID transportationRequestId;
 
@@ -50,7 +57,7 @@ public class RequestCoord extends BaseAuditEntity {
     @Column(name = "location_id")
     private UUID locationId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id", referencedColumnName = "id", insertable = false,
                 updatable = false)
     private Location location;

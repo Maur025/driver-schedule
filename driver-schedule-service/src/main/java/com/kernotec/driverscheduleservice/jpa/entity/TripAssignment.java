@@ -34,4 +34,12 @@ public class TripAssignment extends BaseAuditEntityUser {
     @JoinColumn(name = "driver_id", referencedColumnName = "id", insertable = false,
                 updatable = false)
     private Person driver;
+
+    @Column(name = "schedule_transportation_id", nullable = false)
+    private UUID scheduleTransportationId;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "schedule_transportation_id", referencedColumnName = "id",
+                insertable = false, updatable = false)
+    private ScheduleTransportation scheduleTransportation;
 }
