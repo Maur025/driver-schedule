@@ -5,7 +5,11 @@ import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,4 +29,18 @@ public class Location extends BaseAuditEntity {
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "icon")
+    private String icon;
+
+    @Column(name = "color")
+    private String color;
+
+    @Column(name = "place_category_id")
+    private UUID placeCategoryId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "place_category_id", referencedColumnName = "id", insertable = false,
+                updatable = false)
+    private PlaceCategory placeCategory;
 }

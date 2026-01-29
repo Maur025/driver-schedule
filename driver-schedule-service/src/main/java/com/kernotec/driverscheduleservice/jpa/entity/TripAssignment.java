@@ -1,0 +1,37 @@
+package com.kernotec.driverscheduleservice.jpa.entity;
+
+import com.kernotec.driverscheduleservice.audit.user.BaseAuditEntityUser;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import java.util.UUID;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@NoArgsConstructor
+@Getter
+@Setter
+@Entity
+@Table(name = "trip_assignments")
+public class TripAssignment extends BaseAuditEntityUser {
+
+    @Column(name = "vehicle_id", nullable = false)
+    private UUID vehicleId;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "vehicle_id", referencedColumnName = "id", insertable = false,
+                updatable = false)
+    private Vehicle vehicle;
+
+    @Column(name = "driver_id", nullable = false)
+    private UUID driverId;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "driver_id", referencedColumnName = "id", insertable = false,
+                updatable = false)
+    private Person driver;
+}

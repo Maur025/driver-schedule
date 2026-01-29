@@ -86,6 +86,9 @@ public class TransportationRequest extends BaseAuditEntityUser {
     @Column(name = "detail", length = 2048)
     private String detail;
 
+    @Column(name = "is_asset_pickup", nullable = false, columnDefinition = "boolean default false")
+    private boolean isAssetPickup = false;
+
     @Column(name = "transportation_request_state_id", nullable = false)
     private UUID transportationRequestStateId;
 
