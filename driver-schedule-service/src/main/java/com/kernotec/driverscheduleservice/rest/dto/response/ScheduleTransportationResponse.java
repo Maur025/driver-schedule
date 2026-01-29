@@ -2,7 +2,7 @@ package com.kernotec.driverscheduleservice.rest.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.kernotec.core.rest.dto.response.data.AuditEntityResponse;
+import com.kernotec.driverscheduleservice.audit.user.dto.response.AuditEntityUserResponse;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Set;
@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(Include.NON_NULL)
-public class ScheduleTransportationResponse extends AuditEntityResponse {
+public class ScheduleTransportationResponse extends AuditEntityUserResponse {
 
     private ZonedDateTime scheduleFrom;
     private ZonedDateTime scheduleTo;

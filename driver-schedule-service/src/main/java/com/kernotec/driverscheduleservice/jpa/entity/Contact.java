@@ -19,11 +19,16 @@ import lombok.Setter;
 @Table(name = "contacts")
 public class Contact extends BaseAuditEntity {
 
-    @Column(name = "label", nullable = false)
-    private String label;
-
     @Column(name = "value", nullable = false, length = 512)
     private String value;
+
+    @Column(name = "label_type_id", nullable = false)
+    private UUID labelTypeId;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "label_type_id", referencedColumnName = "id", insertable = false,
+                updatable = false)
+    private LabelType labelType;
 
     @Column(name = "contact_category_id", nullable = false)
     private UUID contactCategoryId;

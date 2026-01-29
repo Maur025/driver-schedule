@@ -1,6 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.command.transportation.request;
 
 import com.kernotec.core.command.AbstractCommand;
+import com.kernotec.driverscheduleservice.command.transportation.request.log.TransportationRequestLogCreateCmd;
 import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestService;
 import com.kernotec.driverscheduleservice.rest.dto.request.transportation.request.TransportationRequestCreateRequest;
@@ -31,6 +32,7 @@ public class ProcessTransportationRequestCreateRequestCmd extends
 
     private final TransportationRequestApproveCmd transportationRequestApproveCmd;
     private final WebSocketHandler webSocketHandler;
+    private final TransportationRequestLogCreateCmd transportationRequestLogCreateCmd;
 
     @Override
     protected TransportationRequest run(Request request) {
@@ -43,6 +45,14 @@ public class ProcessTransportationRequestCreateRequestCmd extends
 
         TransportationRequest transportationRequest = transportationRequestService.findByIdThrow(
             transportationRequestId);
+
+        transportationRequestLogCreateCmd.withRequest(
+                TransportationRequestLogCreateCmd.Request.builder()
+                    .transportationRequestId(transportationRequestId)
+                    .transportationRequestStateId(
+                        transportationRequest.getTransportationRequestStateId())
+                    .build())
+            .execute();
 
         webSocketHandler.emitMessage(
             WebSocketTopic.TRANSPORTATION_REQUEST_CREATED,

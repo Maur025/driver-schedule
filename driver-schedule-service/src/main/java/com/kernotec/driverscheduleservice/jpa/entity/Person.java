@@ -1,6 +1,6 @@
 package com.kernotec.driverscheduleservice.jpa.entity;
 
-import com.kernotec.core.jpa.entity.BaseAuditEntity;
+import com.kernotec.driverscheduleservice.audit.user.BaseAuditEntityUser;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,7 +21,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "person")
-public class Person extends BaseAuditEntity {
+public class Person extends BaseAuditEntityUser {
 
     @Column(name = "name", nullable = false)
     private String name;

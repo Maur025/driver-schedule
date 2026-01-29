@@ -14,8 +14,10 @@ import lombok.Setter;
 @JsonInclude(Include.NON_NULL)
 public class ContactResponse extends EntityResponse {
 
-    private String label;
     private String value;
+
+    private UUID labelTypeId;
+    private LabelTypeResponse labelType;
 
     private UUID contactCategoryId;
     private ContactCategoryResponse contactCategory;

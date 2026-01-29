@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+  <changeSet id="1769443969899-1" author="mmoya@PragmaInvest.com">
+    <createTable tableName="schedule_transportation_logs">
+      <column defaultValueComputed="uuid_generate_v4()" name="id" type="uuid">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_schedule_transportation_logs"/>
+      </column>
+      <column defaultValueComputed="now()" name="created_at" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by" type="VARCHAR(255)"/>
+      <column defaultValueComputed="now()" name="updated_at" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_by" type="VARCHAR(255)"/>
+      <column defaultValueNumeric="0" name="version" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column defaultValueBoolean="false" name="deleted" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="schedule_transportation_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="schedule_transportation_state_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="1769443969899-2" author="mmoya@PragmaInvest.com">
+    <createTable tableName="transportation_request_logs">
+      <column defaultValueComputed="uuid_generate_v4()" name="id" type="uuid">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_transportation_request_logs"/>
+      </column>
+      <column defaultValueComputed="now()" name="created_at" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by" type="VARCHAR(255)"/>
+      <column defaultValueComputed="now()" name="updated_at" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_by" type="VARCHAR(255)"/>
+      <column defaultValueNumeric="0" name="version" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column defaultValueBoolean="false" name="deleted" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="transportation_request_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="transportation_request_state_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="1769443969899-3" author="mmoya@PragmaInvest.com">
+    <addForeignKeyConstraint baseColumnNames="schedule_transportation_state_id"
+      baseTableName="schedule_transportation_logs"
+      constraintName="FK_SCHEDULETRANSPORTATIONLOGS_ON_SCHEDULETRANSPORTATIONSTATE"
+      referencedColumnNames="id" referencedTableName="schedule_transportation_states"/>
+  </changeSet>
+  <changeSet id="1769443969899-4" author="mmoya@PragmaInvest.com">
+    <addForeignKeyConstraint baseColumnNames="schedule_transportation_id"
+      baseTableName="schedule_transportation_logs"
+      constraintName="FK_SCHEDULE_TRANSPORTATION_LOGS_ON_SCHEDULE_TRANSPORTATION"
+      referencedColumnNames="id" referencedTableName="schedule_transportations"/>
+  </changeSet>
+  <changeSet id="1769443969899-5" author="mmoya@PragmaInvest.com">
+    <addForeignKeyConstraint baseColumnNames="transportation_request_id"
+      baseTableName="transportation_request_logs"
+      constraintName="FK_TRANSPORTATION_REQUEST_LOGS_ON_TRANSPORTATION_REQUEST"
+      referencedColumnNames="id" referencedTableName="transportation_requests"/>
+  </changeSet>
+  <changeSet id="1769443969899-6" author="mmoya@PragmaInvest.com">
+    <addForeignKeyConstraint baseColumnNames="transportation_request_state_id"
+      baseTableName="transportation_request_logs"
+      constraintName="FK_TRANSPORTATION_REQUEST_LOGS_ON_TRANSPORTATION_REQUEST_STATE"
+      referencedColumnNames="id" referencedTableName="transportation_request_states"/>
+  </changeSet>
+
+</databaseChangeLog>

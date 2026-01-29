@@ -11,7 +11,12 @@ import org.mapstruct.Mapping;
 @Mapper
 public interface VehicleResponseFlatMapper {
 
-    @Mapping(target = "vehicleType", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "createdByUser", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "updatedBy", ignore = true)
+    @Mapping(target = "updatedByUser", ignore = true)
     VehicleResponse toResponse(Vehicle vehicle);
 
     VehicleResponse toResponse(UUID id);

@@ -2,6 +2,7 @@ package com.kernotec.driverscheduleservice.jpa.specification.criteria;
 
 import com.kernotec.driverscheduleservice.jpa.enums.ScheduleTransportationStateEnum;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,7 @@ public class ScheduleTransportationSpecificationCriteria {
     private String zoneId;
     private UUID scheduleTransportationExcludeId;
     private ScheduleTransportationStateEnum scheduleTransportationState;
+    private List<ScheduleTransportationStateEnum> scheduleTransportationStates;
 
     private ZonedDateTime simpleDate;
     private ZonedDateTime fromDate;

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.request.BaseRequest;
 import com.kernotec.driverscheduleservice.jpa.enums.ScheduleTransportationStateEnum;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ public class ScheduleTransportationFilterRequest extends BaseRequest {
     private UUID driverId;
     private UUID vehicleId;
     private ScheduleTransportationStateEnum scheduleTransportationState;
+    private List<ScheduleTransportationStateEnum> scheduleTransportationStates;
 
     private ZonedDateTime simpleDate;
     private ZonedDateTime fromDate;

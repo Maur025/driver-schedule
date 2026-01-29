@@ -54,7 +54,7 @@ public class WebSocketInterceptor implements ChannelInterceptor {
 
             log.info("WebSocket connection authenticated for user: {}", auth.getName());
         } catch (Exception ex) {
-            log.error("Token validation failed: {}", ex.getMessage());
+            log.error("Token validation failed: {}", ex.getMessage(), ex);
             throw new MessageDeliveryException("Token validation failed");
         }
 

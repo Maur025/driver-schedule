@@ -21,8 +21,8 @@ public class ContactUpdateCmd extends
     protected Void run(Request request) {
         Contact contact = contactService.findByIdThrow(request.contactId);
 
-        if (request.label != null) {
-            contact.setLabel(request.label);
+        if (request.labelTypeId != null) {
+            contact.setLabelTypeId(request.labelTypeId);
         }
         if (request.value != null) {
             contact.setValue(request.value);
@@ -36,7 +36,7 @@ public class ContactUpdateCmd extends
     }
 
     @Builder
-    public record Request(@NotNull UUID contactId, String label, String value,
+    public record Request(@NotNull UUID contactId, UUID labelTypeId, String value,
                           UUID contactCategoryId)
     {
 
