@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+  <changeSet id="1769799603849-1" author="mmoya@PragmaInvest.com">
+    <dropForeignKeyConstraint baseTableName="request_locations"
+      constraintName="fk_request_locations_on_location"/>
+  </changeSet>
+  <changeSet id="1769799603849-2" author="mmoya@PragmaInvest.com">
+    <dropForeignKeyConstraint baseTableName="request_locations"
+      constraintName="fk_request_locations_on_transportation_request"/>
+  </changeSet>
+  <changeSet id="1769799603849-3" author="mmoya@PragmaInvest.com">
+    <dropTable cascadeConstraints="true" tableName="request_locations"/>
+  </changeSet>
+
+</databaseChangeLog>

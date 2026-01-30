@@ -1,9 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.command.transportation.request;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverscheduleservice.command.request.location.RequestLocationCreateCmd;
 import com.kernotec.driverscheduleservice.command.transportation.request.TransportationRequestCreateCmd;
-import com.kernotec.driverscheduleservice.jpa.enums.LocationTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.TransportationRequestStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.LocationService;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestStateService;
@@ -32,7 +30,6 @@ public class TransportationRequestApproveCmd extends
 
     private final TransportationRequestValidationCmd transportationRequestValidationCmd;
     private final TransportationRequestCreateCmd transportationRequestCreateCmd;
-    private final RequestLocationCreateCmd requestLocationCreateCmd;
 
     @Override
     protected void validate(Request request) {
@@ -90,7 +87,7 @@ public class TransportationRequestApproveCmd extends
                     .build())
             .execute();
 
-        registryRequestLocation(
+        /*registryRequestLocation(
             transportationRequestCreateRequest.getLocationStartId(), transportationRequestId,
             LocationTypeEnum.START
         );
@@ -98,7 +95,7 @@ public class TransportationRequestApproveCmd extends
         registryRequestLocation(
             transportationRequestCreateRequest.getLocationEndId(), transportationRequestId,
             LocationTypeEnum.END
-        );
+        );*/
 
         return transportationRequestId;
     }
@@ -113,7 +110,7 @@ public class TransportationRequestApproveCmd extends
         return authUtil.getPersonIdFromAuthenticationThrow(authentication);
     }
 
-    private void registryRequestLocation(UUID locationId, UUID transportationRequestId,
+/*    private void registryRequestLocation(UUID locationId, UUID transportationRequestId,
         LocationTypeEnum locationType)
     {
         if (locationId == null || transportationRequestId == null) {
@@ -127,7 +124,7 @@ public class TransportationRequestApproveCmd extends
                 .locationType(locationType)
                 .build())
             .execute();
-    }
+    }*/
 
     @Builder
     public record Request(

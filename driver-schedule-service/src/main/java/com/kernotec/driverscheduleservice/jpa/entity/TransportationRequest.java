@@ -21,7 +21,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
@@ -118,9 +117,6 @@ public class TransportationRequest extends BaseAuditEntityUser {
                                          referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "reason_id", referencedColumnName = "id"))
     private Set<Reason> cancelReasons;
-
-    @OneToMany(mappedBy = "transportationRequest", fetch = FetchType.LAZY)
-    private List<RequestLocation> requestLocations;
 
     @OneToMany(mappedBy = "transportationRequest", fetch = FetchType.LAZY)
     private Set<ScheduleTransportation> scheduleTransportations;
