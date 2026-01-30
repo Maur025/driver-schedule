@@ -113,4 +113,18 @@
     <sqlFile path="data/schedule/transportation/state/schedule_transportation_state_update1.sql"
       relativeToChangelogFile="true"/>
   </changeSet>
+
+  <include file="db/changelog/2026/01/30-01-changelog-34.xml"/>
+
+  <!-- reason - delete all old reasons to new structure -->
+  <changeSet id="1769788455777-1" author="Maur025">
+    <sqlFile path="data/reason/reason_delete_all_reasons.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- reason - new data as parameter -->
+  <changeSet id="1769789804124-1" author="Maur025">
+    <sqlFile path="data/reason/reason_seed.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <include file="db/changelog/2026/01/30-01-changelog-35.xml"/>
 </databaseChangeLog>
