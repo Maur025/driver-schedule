@@ -109,8 +109,6 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
                     .scheduleFrom(scheduledFrom)
                     .scheduleTo(scheduledTo)
                     .requestedDate(request.scheduleTransportationUpdateRequest.getRequestedDate())
-                    .vehicleId(scheduleTransportationUpdateRequest.getVehicleId())
-                    .driverId(scheduleTransportationUpdateRequest.getDriverId())
                     .scheduleTransportationStateId(scheduleTransportationStateRescheduledId)
                     .build())
             .execute();

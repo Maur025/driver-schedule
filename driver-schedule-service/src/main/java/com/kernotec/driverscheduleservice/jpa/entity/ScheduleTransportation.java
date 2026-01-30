@@ -37,22 +37,6 @@ public class ScheduleTransportation extends BaseAuditEntityUser {
     @Column(name = "scheduled_date", nullable = false)
     private LocalDateTime scheduledDate;
 
-    @Column(name = "vehicle_id", nullable = false)
-    private UUID vehicleId;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "vehicle_id", referencedColumnName = "id", insertable = false,
-                updatable = false)
-    private Vehicle vehicle;
-
-    @Column(name = "driver_id", nullable = false)
-    private UUID driverId;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "driver_id", referencedColumnName = "id", insertable = false,
-                updatable = false)
-    private Person driver;
-
     @Column(name = "transportation_request_id", nullable = false)
     private UUID transportationRequestId;
 

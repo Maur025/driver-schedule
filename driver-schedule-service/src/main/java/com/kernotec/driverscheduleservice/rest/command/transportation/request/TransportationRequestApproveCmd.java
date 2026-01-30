@@ -71,8 +71,6 @@ public class TransportationRequestApproveCmd extends
 
         UUID transportationRequestId = transportationRequestCreateCmd.withRequest(
                 TransportationRequestCreateCmd.Request.builder()
-                    .startingCoordinate(startCoordinate)
-                    .endCoordinate(endCoordinate)
                     .peopleNumber(transportationRequestCreateRequest.getPeopleNumber())
                     .startTime(startTimeAdjust)
                     .endTime(endTimeAdjust)

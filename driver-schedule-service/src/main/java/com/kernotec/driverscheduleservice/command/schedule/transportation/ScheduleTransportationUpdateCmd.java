@@ -33,12 +33,6 @@ public class ScheduleTransportationUpdateCmd extends
         if (request.requestedDate != null) {
             scheduleTransportation.setScheduledDate(request.requestedDate);
         }
-        if (request.vehicleId != null) {
-            scheduleTransportation.setVehicleId(request.vehicleId);
-        }
-        if (request.driverId != null) {
-            scheduleTransportation.setDriverId(request.driverId);
-        }
         if (request.scheduleTransportationStateId != null) {
             scheduleTransportation.setScheduleTransportationStateId(
                 request.scheduleTransportationStateId);
@@ -50,8 +44,8 @@ public class ScheduleTransportationUpdateCmd extends
 
     @Builder
     public record Request(@NotNull UUID scheduleTransportationId, ZonedDateTime scheduleFrom,
-                          ZonedDateTime scheduleTo, LocalDateTime requestedDate, UUID vehicleId,
-                          UUID driverId, UUID scheduleTransportationStateId)
+                          ZonedDateTime scheduleTo, LocalDateTime requestedDate,
+                          UUID scheduleTransportationStateId)
     {
 
     }
