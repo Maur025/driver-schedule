@@ -21,7 +21,7 @@ public class ReasonCreateCmd extends
     protected UUID run(Request request) {
         var reason = new Reason();
 
-        reason.setReasonDescription(request.reasonDescription);
+        // reason.setReasonDescription(request.reasonDescription);
 
         reason = reasonService.save(reason);
         return reason.getId();

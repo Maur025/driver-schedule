@@ -22,7 +22,7 @@ public class ReasonUpdateCmd extends
         Reason reason = reasonService.findByIdThrow(request.reasonId);
 
         if (request.reasonDescription != null) {
-            reason.setReasonDescription(request.reasonDescription);
+            // reason.setReasonDescription(request.reasonDescription);
         }
 
         reasonService.save(reason);

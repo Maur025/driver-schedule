@@ -19,6 +19,9 @@ import lombok.Setter;
 @Table(name = "cancel_reasons")
 public class CancelReason extends BaseAuditEntity {
 
+    @Column(name = "other_reason", length = 1500)
+    private String otherReason;
+
     @Column(name = "reason_id", nullable = false)
     private UUID reasonId;
 
@@ -30,7 +33,7 @@ public class CancelReason extends BaseAuditEntity {
     @Column(name = "schedule_transportation_id", nullable = false)
     private UUID scheduleTransportationId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "schedule_transportation_id", referencedColumnName = "id",
                 insertable = false, updatable = false)
     private ScheduleTransportation scheduleTransportation;

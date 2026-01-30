@@ -21,19 +21,16 @@ import lombok.Setter;
 @Table(name = "reasons")
 public class Reason extends BaseAuditEntity {
 
-    @Column(name = "value")
+    @Column(name = "value", nullable = false)
     private String value;
 
-    @Column(name = "code")
+    @Column(name = "code", nullable = false)
     private String code;
 
-    @Column(name = "reason_description", length = 1500)
-    private String reasonDescription;
-
-    @Column(name = "reason_type_id")
+    @Column(name = "reason_type_id", nullable = false)
     private UUID reasonTypeId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "reason_type_id", referencedColumnName = "id", insertable = false,
                 updatable = false)
     private ReasonType reasonType;

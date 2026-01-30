@@ -86,3 +86,27 @@ OAUTH2_ADMIN_PASSWORD=admin-pass                    # Admin password for initial
 MS_AUTH_SCHEME=http                                 # Auth microservice scheme (e.g., http, https)
 MS_AUTH_HOST=localhost                              # Auth microservice host (same as auth host defined)
 ```
+
+## Database Structure
+
+The database structure is the follow:
+
+### Person Entity
+
+![Person Entity Diagram](driver-schedule-service/docs/person.png)
+
+### Reason Entity
+
+![Reason Entity Diagram](driver-schedule-service/docs/reason.png)
+
+### Schedule Transportation Entity
+
+![Schedule Transportation Entity Diagram](driver-schedule-service/docs/schedule-transportation.png)
+
+### Transportation Request Entity
+
+![Transportation Request Entity Diagram](driver-schedule-service/docs/transportation-request.png)
+
+### Trip Entity
+
+![Trip Entity Diagram](driver-schedule-service/docs/trip.png)
