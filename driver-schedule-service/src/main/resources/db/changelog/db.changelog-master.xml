@@ -127,4 +127,15 @@
   </changeSet>
 
   <include file="db/changelog/2026/01/30-01-changelog-35.xml"/>
+
+  <!-- location - update locations with place category default -->
+  <changeSet id="1769798614186-1" author="Maur025">
+    <sqlFile path="data/location/location_update_all_with_default.sql"
+      relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <include file="db/changelog/2026/01/30-01-changelog-36.xml"/>
+  <include file="db/changelog/2026/01/30-01-changelog-37.xml"/>
+  <include file="db/changelog/2026/01/30-01-changelog-38.xml"/>
+  <include file="db/changelog/2026/01/30-01-changelog-39.xml"/>
 </databaseChangeLog>

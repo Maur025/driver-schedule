@@ -2,13 +2,9 @@ package com.kernotec.driverscheduleservice.jpa.entity;
 
 import com.kernotec.driverscheduleservice.audit.user.BaseAuditEntityUser;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
-import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
 import com.kernotec.driverscheduleservice.util.SafeZoneDateTimeConverter;
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -21,7 +17,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
@@ -37,19 +32,6 @@ import org.hibernate.generator.EventType;
 @Entity
 @Table(name = "transportation_requests")
 public class TransportationRequest extends BaseAuditEntityUser {
-
-    @Embedded
-    @AttributeOverrides({@AttributeOverride(name = "lat", column = @Column(name = "starting_lat",
-                                                                           nullable = false)),
-        @AttributeOverride(name = "lng",
-                           column = @Column(name = "starting_lng", nullable = false))})
-    private Coordinate startingCoordinate;
-
-    @Embedded
-    @AttributeOverrides(
-        {@AttributeOverride(name = "lat", column = @Column(name = "end_lat", nullable = false)),
-            @AttributeOverride(name = "lng", column = @Column(name = "end_lng", nullable = false))})
-    private Coordinate endCoordinate;
 
     @Column(name = "people_number", nullable = false)
     private String peopleNumber;
@@ -118,9 +100,6 @@ public class TransportationRequest extends BaseAuditEntityUser {
                                          referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "reason_id", referencedColumnName = "id"))
     private Set<Reason> cancelReasons;
-
-    @OneToMany(mappedBy = "transportationRequest", fetch = FetchType.LAZY)
-    private List<RequestLocation> requestLocations;
 
     @OneToMany(mappedBy = "transportationRequest", fetch = FetchType.LAZY)
     private Set<ScheduleTransportation> scheduleTransportations;

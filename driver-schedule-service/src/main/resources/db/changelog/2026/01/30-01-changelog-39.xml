@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+  <changeSet id="1769800728085-1" author="mmoya@PragmaInvest.com">
+    <dropForeignKeyConstraint baseTableName="schedule_transportations"
+      constraintName="fk_schedule_transportations_on_driver"/>
+  </changeSet>
+  <changeSet id="1769800728085-2" author="mmoya@PragmaInvest.com">
+    <dropForeignKeyConstraint baseTableName="schedule_transportations"
+      constraintName="fk_schedule_transportations_on_vehicle"/>
+  </changeSet>
+  <changeSet id="1769800728085-3" author="mmoya@PragmaInvest.com">
+    <dropColumn columnName="driver_id" tableName="schedule_transportations"/>
+
+    <dropColumn columnName="vehicle_id" tableName="schedule_transportations"/>
+  </changeSet>
+
+</databaseChangeLog>

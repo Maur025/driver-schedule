@@ -36,10 +36,10 @@ public class Location extends BaseAuditEntity {
     @Column(name = "color")
     private String color;
 
-    @Column(name = "place_category_id")
+    @Column(name = "place_category_id", nullable = false)
     private UUID placeCategoryId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "place_category_id", referencedColumnName = "id", insertable = false,
                 updatable = false)
     private PlaceCategory placeCategory;

@@ -57,7 +57,7 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
     protected void validate(Request request) {
         ScheduleTransportationCreateRequest scheduleTransportationCreateRequest = request.scheduleTransportationCreateRequest;
 
-        scheduleTransportationDateValidationCmd.withRequest(
+        /*scheduleTransportationDateValidationCmd.withRequest(
                 ScheduleTransportationDateValidationCmd.Request.builder()
                     .vehicleId(scheduleTransportationCreateRequest.getVehicleId())
                     .driverId(scheduleTransportationCreateRequest.getDriverId())
@@ -66,7 +66,7 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
                     .requestedEndTime(scheduleTransportationCreateRequest.getRequestedEndTime())
                     .zoneId(scheduleTransportationCreateRequest.getZoneId())
                     .build())
-            .execute();
+            .execute();*/
     }
 
     @Override
@@ -129,8 +129,6 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
                     .scheduleFrom(scheduledFrom)
                     .scheduleTo(scheduledTo)
                     .scheduledDate(scheduleTransportationCreateRequest.getRequestedDate())
-                    .vehicleId(scheduleTransportationCreateRequest.getVehicleId())
-                    .driverId(scheduleTransportationCreateRequest.getDriverId())
                     .transportationRequestId(
                         scheduleTransportationCreateRequest.getTransportationRequestId())
                     .personRequestedId(transportationRequestDto.getPersonRequestedId())

@@ -25,9 +25,5 @@ public class ScheduleTransportationCreateRequest extends BaseRequest {
     private LocalDateTime requestedDate;
     @NotNull
     private UUID transportationRequestId;
-    @NotNull
-    private UUID vehicleId;
-    @NotNull
-    private UUID driverId;
     private String zoneId;
 }
