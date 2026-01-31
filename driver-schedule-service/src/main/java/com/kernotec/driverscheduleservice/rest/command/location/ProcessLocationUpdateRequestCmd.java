@@ -6,7 +6,7 @@ import com.kernotec.driverscheduleservice.jpa.entity.Location;
 import com.kernotec.driverscheduleservice.jpa.service.LocationService;
 import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
 import com.kernotec.driverscheduleservice.rest.dto.request.location.LocationUpdateRequest;
-import com.kernotec.driverscheduleservice.rest.dto.response.LocationResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.location.LocationResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.location.LocationResponseMapper;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;

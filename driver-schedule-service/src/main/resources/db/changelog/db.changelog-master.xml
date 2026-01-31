@@ -89,4 +89,53 @@
   </changeSet>
 
   <include file="db/changelog/2026/01/27-01-changelog-30.xml"/>
+  <include file="db/changelog/2026/01/28-01-changelog-31.xml"/>
+  <include file="db/changelog/2026/01/29-01-changelog-32.xml"/>
+  <include file="db/changelog/2026/01/29-01-changelog-33.xml"/>
+
+  <!-- place category - initial seed -->
+  <changeSet id="1769723160821-1" author="Maur025">
+    <sqlFile path="data/place/category/place_category_seed.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- trip state - initial seed -->
+  <changeSet id="1769723471916-1" author="Maur025">
+    <sqlFile path="data/trip/state/trip_state_seed.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- reason type - initial seed -->
+  <changeSet id="1769723786783-1" author="Maur025">
+    <sqlFile path="data/reason/type/reason_type_seed.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- schedule transportation state - update new state finalized -->
+  <changeSet id="1769725112878-1" author="Maur025">
+    <sqlFile path="data/schedule/transportation/state/schedule_transportation_state_update1.sql"
+      relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <include file="db/changelog/2026/01/30-01-changelog-34.xml"/>
+
+  <!-- reason - delete all old reasons to new structure -->
+  <changeSet id="1769788455777-1" author="Maur025">
+    <sqlFile path="data/reason/reason_delete_all_reasons.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- reason - new data as parameter -->
+  <changeSet id="1769789804124-1" author="Maur025">
+    <sqlFile path="data/reason/reason_seed.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <include file="db/changelog/2026/01/30-01-changelog-35.xml"/>
+
+  <!-- location - update locations with place category default -->
+  <changeSet id="1769798614186-1" author="Maur025">
+    <sqlFile path="data/location/location_update_all_with_default.sql"
+      relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <include file="db/changelog/2026/01/30-01-changelog-36.xml"/>
+  <include file="db/changelog/2026/01/30-01-changelog-37.xml"/>
+  <include file="db/changelog/2026/01/30-01-changelog-38.xml"/>
+  <include file="db/changelog/2026/01/30-01-changelog-39.xml"/>
 </databaseChangeLog>

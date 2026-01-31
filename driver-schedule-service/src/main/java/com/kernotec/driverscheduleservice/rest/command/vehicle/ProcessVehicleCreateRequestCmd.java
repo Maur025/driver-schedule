@@ -5,7 +5,7 @@ import com.kernotec.driverscheduleservice.command.vehicle.VehicleCreateCmd;
 import com.kernotec.driverscheduleservice.jpa.entity.Vehicle;
 import com.kernotec.driverscheduleservice.jpa.service.VehicleService;
 import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleCreateRequest;
-import com.kernotec.driverscheduleservice.rest.dto.response.VehicleResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.vehicle.VehicleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.vehicle.VehicleResponseMapper;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;

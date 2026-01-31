@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation;
 
 import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
-import com.kernotec.driverscheduleservice.rest.dto.response.ScheduleTransportationResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.ScheduleTransportationResponse;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -11,8 +11,6 @@ import org.mapstruct.Mapping;
 @Mapper
 public interface ScheduleTransportationResponseToRequestMapper {
 
-    @Mapping(target = "vehicle", ignore = true)
-    @Mapping(target = "driver", ignore = true)
     @Mapping(target = "transportationRequest", ignore = true)
     @Mapping(target = "cancelReasons", ignore = true)
     @Mapping(target = "rescheduleReasons", ignore = true)

@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.mapper.reschedule.reason;
 
 import com.kernotec.driverscheduleservice.jpa.entity.RescheduleReason;
-import com.kernotec.driverscheduleservice.rest.dto.response.RescheduleReasonResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.reschedule.reason.RescheduleReasonResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation.ScheduleTransportationResponseFlatMapper;
 import java.util.List;
 import java.util.Set;

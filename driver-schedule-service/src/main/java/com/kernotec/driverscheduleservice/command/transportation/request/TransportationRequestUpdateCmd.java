@@ -4,7 +4,6 @@ import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestService;
-import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -25,12 +24,6 @@ public class TransportationRequestUpdateCmd extends
         TransportationRequest transportationRequest = transportationRequestService.findByIdThrow(
             request.transportationRequestId);
 
-        if (request.startingCoordinate != null) {
-            transportationRequest.setStartingCoordinate(request.startingCoordinate);
-        }
-        if (request.endCoordinate != null) {
-            transportationRequest.setEndCoordinate(request.endCoordinate);
-        }
         if (request.peopleNumber != null) {
             transportationRequest.setPeopleNumber(request.peopleNumber);
         }
@@ -59,9 +52,8 @@ public class TransportationRequestUpdateCmd extends
     }
 
     @Builder
-    public record Request(@NotNull UUID transportationRequestId, Coordinate startingCoordinate,
-                          Coordinate endCoordinate, String peopleNumber, ZonedDateTime startTime,
-                          ZonedDateTime endTime, TripTypeEnum tripType,
+    public record Request(@NotNull UUID transportationRequestId, String peopleNumber,
+                          ZonedDateTime startTime, ZonedDateTime endTime, TripTypeEnum tripType,
                           UUID transportationRequestStateId, String passengers, String assets)
     {
 

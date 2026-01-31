@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.mapper.vehicle.type;
 
 import com.kernotec.driverscheduleservice.jpa.entity.VehicleType;
-import com.kernotec.driverscheduleservice.rest.dto.response.VehicleTypeResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.vehicle.type.VehicleTypeResponse;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;

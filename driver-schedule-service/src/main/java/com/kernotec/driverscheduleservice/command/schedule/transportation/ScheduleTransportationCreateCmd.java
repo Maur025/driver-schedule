@@ -26,8 +26,6 @@ public class ScheduleTransportationCreateCmd extends
         scheduleTransportation.setScheduleFrom(request.scheduleFrom);
         scheduleTransportation.setScheduleTo(request.scheduleTo);
         scheduleTransportation.setScheduledDate(request.scheduledDate);
-        scheduleTransportation.setVehicleId(request.vehicleId);
-        scheduleTransportation.setDriverId(request.driverId);
         scheduleTransportation.setTransportationRequestId(request.transportationRequestId);
         scheduleTransportation.setPersonRequestedId(request.personRequestedId);
         scheduleTransportation.setScheduleTransportationStateId(
@@ -39,9 +37,8 @@ public class ScheduleTransportationCreateCmd extends
 
     @Builder
     public record Request(@NotNull ZonedDateTime scheduleFrom, @NotNull ZonedDateTime scheduleTo,
-                          @NotNull LocalDateTime scheduledDate, @NotNull UUID vehicleId,
-                          @NotNull UUID driverId, @NotNull UUID transportationRequestId,
-                          @NotNull UUID personRequestedId,
+                          @NotNull LocalDateTime scheduledDate,
+                          @NotNull UUID transportationRequestId, @NotNull UUID personRequestedId,
                           @NotNull UUID scheduleTransportationStateId)
     {
 

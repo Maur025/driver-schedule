@@ -13,7 +13,7 @@ import com.kernotec.driverscheduleservice.jpa.service.PersonService;
 import com.kernotec.driverscheduleservice.jpa.service.PersonTypeService;
 import com.kernotec.driverscheduleservice.rest.command.person.assign.type.PersonAssignTypeGetManyRequestCmd;
 import com.kernotec.driverscheduleservice.rest.dto.request.person.PersonUpdateRequest;
-import com.kernotec.driverscheduleservice.rest.dto.response.PersonResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.person.PersonResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.person.PersonResponseMapper;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;

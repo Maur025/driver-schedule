@@ -19,6 +19,9 @@ import lombok.Setter;
 @Table(name = "cancel_request_reasons")
 public class CancelRequestReason extends BaseAuditEntity {
 
+    @Column(name = "other_reason", length = 1500)
+    private String otherReason;
+
     @Column(name = "reason_id", nullable = false)
     private UUID reasonId;
 

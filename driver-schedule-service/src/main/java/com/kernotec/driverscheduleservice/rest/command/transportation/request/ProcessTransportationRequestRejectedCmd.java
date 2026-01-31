@@ -9,7 +9,7 @@ import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
 import com.kernotec.driverscheduleservice.jpa.service.ReasonService;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestService;
 import com.kernotec.driverscheduleservice.rest.dto.request.reject.reason.RejectReasonRequest;
-import com.kernotec.driverscheduleservice.rest.dto.response.TransportationRequestResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.transportation.request.TransportationRequestResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.reason.ReasonResponseMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.transportation.request.TransportationRequestResponseMapper;

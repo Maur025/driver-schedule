@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+  <changeSet id="1769788289295-1" author="mmoya@PragmaInvest.com">
+    <addColumn tableName="cancel_reasons">
+      <column name="other_reason" type="VARCHAR(1500)"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="1769788289295-2" author="mmoya@PragmaInvest.com">
+    <addColumn tableName="cancel_request_reasons">
+      <column name="other_reason" type="VARCHAR(1500)"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="1769788289295-3" author="mmoya@PragmaInvest.com">
+    <addColumn tableName="reject_reasons">
+      <column name="other_reason" type="VARCHAR(1500)"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="1769788289295-4" author="mmoya@PragmaInvest.com">
+    <addColumn tableName="reschedule_reasons">
+      <column name="other_reason" type="VARCHAR(1500)"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="1769788289295-5" author="mmoya@PragmaInvest.com">
+    <dropColumn columnName="reason_description" tableName="reasons"/>
+  </changeSet>
+
+</databaseChangeLog>
