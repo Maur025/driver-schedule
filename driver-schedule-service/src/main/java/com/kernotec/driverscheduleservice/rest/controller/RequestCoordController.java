@@ -6,7 +6,7 @@ import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.RequestCoord;
 import com.kernotec.driverscheduleservice.jpa.service.RequestCoordService;
-import com.kernotec.driverscheduleservice.rest.ApiSpec.RequestCoorSpec;
+import com.kernotec.driverscheduleservice.rest.ApiSpec.RequestCoordSpec;
 import com.kernotec.driverscheduleservice.rest.dto.response.request.coord.RequestCoordResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.request.coord.RequestCoordResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = RequestCoorSpec.TAG_NAME, description = RequestCoorSpec.TAG_DESCRIPTION)
-@RequestMapping(path = RequestCoorSpec.BASE_PATH)
+@Tag(name = RequestCoordSpec.TAG_NAME, description = RequestCoordSpec.TAG_DESCRIPTION)
+@RequestMapping(path = RequestCoordSpec.BASE_PATH)
 @AllArgsConstructor
 @RestController
 public class RequestCoordController {

@@ -5,8 +5,11 @@ import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.Reason;
+import com.kernotec.driverscheduleservice.jpa.enums.ReasonTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.service.ReasonService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.ReasonSpec;
+import com.kernotec.driverscheduleservice.rest.dto.response.LookupResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.reason.ReasonLookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.reason.ReasonResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.reason.ReasonResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,18 +57,6 @@ public class ReasonController {
             .build();
     }
 
-    @Operation(summary = "find reasons without pagination")
-    @GetMapping("/all")
-    @ResponseStatus(HttpStatus.OK)
-    public PageResponse<ReasonResponse> findAllWithoutPagination() {
-        List<Reason> reasonList = reasonService.findAll();
-
-        return PageResponse.<ReasonResponse>builder()
-            .code(HttpStatus.OK.value())
-            .data(reasonResponseMapper.toResponse(reasonList))
-            .build();
-    }
-
     @Operation(summary = "find by id")
     @GetMapping("{reasonId}")
     @ResponseStatus(HttpStatus.OK)
@@ -76,6 +67,25 @@ public class ReasonController {
         return SingleResponse.<ReasonResponse>builder()
             .code(HttpStatus.OK.value())
             .data(reasonResponseMapper.toResponse(reason))
+            .build();
+    }
+
+    @Operation(summary = "find all to lookup")
+    @GetMapping("lookup")
+    @ResponseStatus(HttpStatus.OK)
+    public LookupResponse<List<ReasonLookupResponse>> findAllToLookup(
+        @RequestParam(required = false) String keyword,
+        @RequestParam(required = false) UUID reasonTypeId,
+        @RequestParam(required = false) ReasonTypeEnum reasonType)
+
+    {
+        Pageable pageable = PageableUtil.of(0, 500, "value", false);
+        Page<ReasonLookupResponse> reasonLookupResponsePage = reasonService.findAllToLookup(
+            keyword, reasonTypeId, reasonType, pageable);
+
+        return LookupResponse.<List<ReasonLookupResponse>>builder()
+            .code(HttpStatus.OK.value())
+            .data(reasonLookupResponsePage.getContent())
             .build();
     }
 }

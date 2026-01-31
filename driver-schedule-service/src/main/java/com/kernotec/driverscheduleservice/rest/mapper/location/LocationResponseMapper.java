@@ -12,7 +12,10 @@ import org.mapstruct.Mapping;
 @Mapper(uses = {GeoJsonUtil.class})
 public interface LocationResponseMapper {
 
-    @Mapping(target = "coords", source = "coordinate", qualifiedByName = "mapToPositionGeoJson")
+    @Mapping(target = "coordinates", source = "coordinate",
+             qualifiedByName = "mapToPositionGeoJson")
+    @Mapping(target = "longitude", source = "coordinate.lng")
+    @Mapping(target = "latitude", source = "coordinate.lat")
     LocationResponse toResponse(Location location);
 
     LocationResponse toResponse(UUID id);

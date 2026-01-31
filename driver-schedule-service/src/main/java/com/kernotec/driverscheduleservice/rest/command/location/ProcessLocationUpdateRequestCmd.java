@@ -46,6 +46,9 @@ public class ProcessLocationUpdateRequestCmd extends
                 .name(locationUpdateRequest.getName())
                 .description(locationUpdateRequest.getDescription())
                 .coordinate(coordinate)
+                .icon(locationUpdateRequest.getIcon())
+                .color(locationUpdateRequest.getColor())
+                .placeCategoryId(locationUpdateRequest.getPlaceCategoryId())
                 .build())
             .execute();
 
