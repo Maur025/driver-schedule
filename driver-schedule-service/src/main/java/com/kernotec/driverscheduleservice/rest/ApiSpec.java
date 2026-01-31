@@ -243,4 +243,24 @@ public class ApiSpec {
         private TripStateSpec() {
         }
     }
+
+    public static final class TransportationRequestLogSpec {
+
+        public static final String BASE_PATH = ROOT_PATH + "/transportation-request-logs";
+        public static final String TAG_NAME = "TRANSPORTATION REQUEST LOG";
+        public static final String TAG_DESCRIPTION = "Transportation Request Log management";
+
+        private TransportationRequestLogSpec() {
+        }
+    }
+
+    public static final class ScheduleTransportationLogSpec {
+
+        public static final String BASE_PATH = ROOT_PATH + "/schedule-transportation-logs";
+        public static final String TAG_NAME = "SCHEDULE TRANSPORTATION LOG";
+        public static final String TAG_DESCRIPTION = "Schedule Transportation Log management";
+
+        private ScheduleTransportationLogSpec() {
+        }
+    }
 }
