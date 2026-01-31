@@ -31,6 +31,15 @@ public class LocationUpdateCmd extends
         if (request.description != null) {
             location.setDescription(request.description);
         }
+        if (request.icon != null) {
+            location.setIcon(request.icon);
+        }
+        if (request.color != null) {
+            location.setColor(request.color);
+        }
+        if (request.placeCategoryId != null) {
+            location.setPlaceCategoryId(request.placeCategoryId);
+        }
 
         locationService.save(location);
         return null;
@@ -38,7 +47,7 @@ public class LocationUpdateCmd extends
 
     @Builder
     public record Request(@NotNull UUID locationId, Coordinate coordinate, String name,
-                          String description)
+                          String description, String icon, String color, UUID placeCategoryId)
     {
 
     }

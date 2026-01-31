@@ -11,6 +11,7 @@ import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocket
 import com.kernotec.driverscheduleservice.rest.mapper.location.LocationResponseMapper;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -52,6 +53,9 @@ public class ProcessLocationCreateRequestCmd extends
                 .name(locationCreateRequest.getName())
                 .description(locationCreateRequest.getDescription())
                 .coordinate(coordinate)
+                .icon(locationCreateRequest.getIcon())
+                .color(locationCreateRequest.getColor())
+                .placeCategoryId(locationCreateRequest.getPlaceCategoryId())
                 .build())
             .execute();
 
@@ -69,7 +73,7 @@ public class ProcessLocationCreateRequestCmd extends
     }
 
     @Builder
-    public record Request(@NotNull LocationCreateRequest locationCreateRequest) {
+    public record Request(@NotNull @Valid LocationCreateRequest locationCreateRequest) {
 
     }
 }

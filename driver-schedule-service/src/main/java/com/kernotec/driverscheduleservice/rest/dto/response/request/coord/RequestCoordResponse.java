@@ -20,7 +20,7 @@ public class RequestCoordResponse extends EntityResponse {
 
     private Double longitude;
     private Double latitude;
-    private List<Double> coords;
+    private List<Double> coordinates;
 
     private Integer index;
     private String description;

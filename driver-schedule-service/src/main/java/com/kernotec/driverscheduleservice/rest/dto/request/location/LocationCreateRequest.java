@@ -6,6 +6,7 @@ import com.kernotec.core.rest.dto.request.BaseRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,4 +25,9 @@ public class LocationCreateRequest extends BaseRequest {
     private String name;
 
     private String description;
+    private String icon;
+    private String color;
+
+    @NotNull
+    private UUID placeCategoryId;
 }

@@ -194,13 +194,13 @@ public class ApiSpec {
         }
     }
 
-    public static final class RequestCoorSpec {
+    public static final class RequestCoordSpec {
 
-        public static final String BASE_PATH = ROOT_PATH + "/request-coors";
-        public static final String TAG_NAME = "REQUEST COOR";
-        public static final String TAG_DESCRIPTION = "Request Coor management";
+        public static final String BASE_PATH = ROOT_PATH + "/request-coords";
+        public static final String TAG_NAME = "REQUEST COORD";
+        public static final String TAG_DESCRIPTION = "Request Coord management";
 
-        private RequestCoorSpec() {
+        private RequestCoordSpec() {
         }
     }
 
