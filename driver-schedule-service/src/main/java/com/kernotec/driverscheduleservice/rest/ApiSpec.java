@@ -173,4 +173,74 @@ public class ApiSpec {
         private LabelTypeSpec() {
         }
     }
+
+    public static final class PlaceCategorySpec {
+
+        public static final String BASE_PATH = ROOT_PATH + "/place-categories";
+        public static final String TAG_NAME = "PLACE CATEGORY";
+        public static final String TAG_DESCRIPTION = "Place Category management";
+
+        private PlaceCategorySpec() {
+        }
+    }
+
+    public static final class ReasonTypeSpec {
+
+        public static final String BASE_PATH = ROOT_PATH + "/reason-types";
+        public static final String TAG_NAME = "REASON TYPE";
+        public static final String TAG_DESCRIPTION = "Reason Type management";
+
+        private ReasonTypeSpec() {
+        }
+    }
+
+    public static final class RequestCoorSpec {
+
+        public static final String BASE_PATH = ROOT_PATH + "/request-coors";
+        public static final String TAG_NAME = "REQUEST COOR";
+        public static final String TAG_DESCRIPTION = "Request Coor management";
+
+        private RequestCoorSpec() {
+        }
+    }
+
+    public static final class TripAssignmentSpec {
+
+        public static final String BASE_PATH = ROOT_PATH + "/trip-assignments";
+        public static final String TAG_NAME = "TRIP ASSIGNMENT";
+        public static final String TAG_DESCRIPTION = "Trip Assignment management";
+
+        private TripAssignmentSpec() {
+        }
+    }
+
+    public static final class TripSpec {
+
+        public static final String BASE_PATH = ROOT_PATH + "/trips";
+        public static final String TAG_NAME = "TRIP";
+        public static final String TAG_DESCRIPTION = "Trip management";
+
+        private TripSpec() {
+        }
+    }
+
+    public static final class TripLogSpec {
+
+        public static final String BASE_PATH = ROOT_PATH + "/trip-logs";
+        public static final String TAG_NAME = "TRIP LOG";
+        public static final String TAG_DESCRIPTION = "Trip Log management";
+
+        private TripLogSpec() {
+        }
+    }
+
+    public static final class TripStateSpec {
+
+        public static final String BASE_PATH = ROOT_PATH + "/trip-states";
+        public static final String TAG_NAME = "TRIP STATE";
+        public static final String TAG_DESCRIPTION = "Trip State management";
+
+        private TripStateSpec() {
+        }
+    }
 }

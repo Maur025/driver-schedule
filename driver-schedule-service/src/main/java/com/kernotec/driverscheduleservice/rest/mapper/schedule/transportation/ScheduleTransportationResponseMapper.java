@@ -2,16 +2,15 @@ package com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation;
 
 import com.kernotec.driverscheduleservice.audit.user.mapper.AuthUserDataResponseMapper;
 import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
-import com.kernotec.driverscheduleservice.rest.dto.response.ScheduleTransportationResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.person.PersonResponseWithContactMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.transportation.request.TransportationRequestResponseFlatMapper;
-import com.kernotec.driverscheduleservice.rest.mapper.vehicle.VehicleResponseFlatMapper;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import org.mapstruct.Mapper;
 
-@Mapper(uses = {VehicleResponseFlatMapper.class, PersonResponseWithContactMapper.class,
+@Mapper(uses = {PersonResponseWithContactMapper.class,
     TransportationRequestResponseFlatMapper.class, AuthUserDataResponseMapper.class})
 public interface ScheduleTransportationResponseMapper {
 

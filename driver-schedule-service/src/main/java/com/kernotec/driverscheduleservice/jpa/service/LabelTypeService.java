@@ -4,7 +4,7 @@ import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.driverscheduleservice.jpa.entity.LabelType;
 import com.kernotec.driverscheduleservice.jpa.repository.LabelTypeRepository;
-import com.kernotec.driverscheduleservice.rest.dto.response.LabelTypeLookupResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.label.type.LabelTypeLookupResponse;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

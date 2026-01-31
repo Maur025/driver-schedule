@@ -10,7 +10,7 @@ import com.kernotec.driverscheduleservice.jpa.service.CancelReasonService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.CancelReasonSpec;
 import com.kernotec.driverscheduleservice.rest.command.cancel.reason.ProcessCancelReasonCreateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.dto.request.cancel.reason.CancelReasonRequest;
-import com.kernotec.driverscheduleservice.rest.dto.response.CancelReasonResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.cancel.reason.CancelReasonResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.cancel.reason.CancelReasonResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

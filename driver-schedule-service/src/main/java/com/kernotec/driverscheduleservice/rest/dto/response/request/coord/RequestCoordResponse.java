@@ -1,0 +1,38 @@
+package com.kernotec.driverscheduleservice.rest.dto.response.request.coord;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.kernotec.core.rest.dto.response.data.EntityResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.location.LocationResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.transportation.request.TransportationRequestResponse;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.UUID;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@NoArgsConstructor
+@Getter
+@Setter
+@JsonInclude(Include.NON_NULL)
+public class RequestCoordResponse extends EntityResponse {
+
+    private Double longitude;
+    private Double latitude;
+    private List<Double> coords;
+
+    private Integer index;
+    private String description;
+    private String locationName;
+    private Double durationMinutes;
+    private Double distanceKilometers;
+    private Double waitTimeMinutes;
+    private ZonedDateTime estimatedArrivalTime;
+
+    private UUID transportationRequestId;
+    private TransportationRequestResponse transportationRequest;
+
+    private UUID locationId;
+    private LocationResponse location;
+}

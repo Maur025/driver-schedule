@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.mapper.label.type;
 
 import com.kernotec.driverscheduleservice.jpa.entity.LabelType;
-import com.kernotec.driverscheduleservice.rest.dto.response.LabelTypeResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.label.type.LabelTypeResponse;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;

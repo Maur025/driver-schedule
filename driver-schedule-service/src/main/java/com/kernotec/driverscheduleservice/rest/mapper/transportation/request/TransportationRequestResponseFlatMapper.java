@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.mapper.transportation.request;
 
 import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
-import com.kernotec.driverscheduleservice.rest.dto.response.TransportationRequestResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.transportation.request.TransportationRequestResponse;
 import com.kernotec.driverscheduleservice.util.GeoJsonUtil;
 import java.util.List;
 import java.util.Set;

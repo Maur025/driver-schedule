@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.mapper.person;
 
 import com.kernotec.driverscheduleservice.jpa.entity.Person;
-import com.kernotec.driverscheduleservice.rest.dto.response.PersonResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.person.PersonResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.contact.ContactResponseFlatMapper;
 import java.util.List;
 import java.util.Set;

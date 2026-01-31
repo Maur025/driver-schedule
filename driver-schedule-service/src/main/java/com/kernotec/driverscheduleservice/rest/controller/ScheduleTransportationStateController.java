@@ -7,7 +7,7 @@ import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportationState;
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationStateService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.ScheduleTransportationStateSpec;
-import com.kernotec.driverscheduleservice.rest.dto.response.ScheduleTransportationStateResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.state.ScheduleTransportationStateResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation.state.ScheduleTransportationStateResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

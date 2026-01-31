@@ -7,7 +7,7 @@ import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.PersonType;
 import com.kernotec.driverscheduleservice.jpa.service.PersonTypeService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.PersonTypeSpec;
-import com.kernotec.driverscheduleservice.rest.dto.response.PersonTypeResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.person.type.PersonTypeResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.person.type.PersonTypeResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

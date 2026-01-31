@@ -16,7 +16,7 @@ import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationServ
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationStateService;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestStateService;
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationCreateRequest;
-import com.kernotec.driverscheduleservice.rest.dto.response.ScheduleTransportationResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation.ScheduleTransportationResponseMapper;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;

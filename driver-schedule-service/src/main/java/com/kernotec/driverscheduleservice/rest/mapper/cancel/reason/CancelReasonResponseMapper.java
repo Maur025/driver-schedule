@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.mapper.cancel.reason;
 
 import com.kernotec.driverscheduleservice.jpa.entity.CancelReason;
-import com.kernotec.driverscheduleservice.rest.dto.response.CancelReasonResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.cancel.reason.CancelReasonResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation.ScheduleTransportationResponseFlatMapper;
 import java.util.List;
 import java.util.Set;

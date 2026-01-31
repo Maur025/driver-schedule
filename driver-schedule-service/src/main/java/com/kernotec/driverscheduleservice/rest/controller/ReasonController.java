@@ -7,7 +7,7 @@ import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.Reason;
 import com.kernotec.driverscheduleservice.jpa.service.ReasonService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.ReasonSpec;
-import com.kernotec.driverscheduleservice.rest.dto.response.ReasonResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.reason.ReasonResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.reason.ReasonResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
