@@ -13,7 +13,7 @@ import com.kernotec.driverscheduleservice.rest.command.contact.ContactGetManyCre
 import com.kernotec.driverscheduleservice.rest.dto.request.contact.ContactCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.person.PersonCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.person.PersonResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.response.person.PersonResponseMapper;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserCreateRequest;

@@ -29,25 +29,29 @@ public class TransportationRequestCreateCmd extends
         transportationRequest.setPassengers(request.passengers);
         transportationRequest.setStartTime(request.startTime);
         transportationRequest.setEndTime(request.endTime);
-        transportationRequest.setTripType(request.tripType);
-        transportationRequest.setTransportationRequestStateId(request.transportationRequestStateId);
-        transportationRequest.setPersonRequestedId(request.personRequestId);
         transportationRequest.setRequestedDate(request.requestedDate);
+        transportationRequest.setTripType(request.tripType);
         transportationRequest.setShortNotice(
             request.isShortNotice != null && request.isShortNotice);
         transportationRequest.setDetail(request.detail);
+        transportationRequest.setAssetPickup(
+            request.isAssetPickup != null && request.isAssetPickup);
+        transportationRequest.setEstimatedTotalDistanceKm(request.estimatedTotalDistanceKm);
+        transportationRequest.setEstimatedTotalDurationMin(request.estimatedTotalDurationMin);
+        transportationRequest.setTransportationRequestStateId(request.transportationRequestStateId);
+        transportationRequest.setPersonRequestedId(request.personRequestId);
 
         transportationRequest = transportationRequestService.save(transportationRequest);
         return transportationRequest.getId();
     }
 
     @Builder
-    public record Request(@NotNull String peopleNumber, @NotNull ZonedDateTime startTime,
-                          @NotNull ZonedDateTime endTime, @NotNull TripTypeEnum tripType,
-                          @NotNull UUID transportationRequestStateId, String passengers,
-                          String assets, @NotNull UUID personRequestId,
-                          @NotNull LocalDateTime requestedDate, Boolean isShortNotice,
-                          String detail)
+    public record Request(@NotNull String peopleNumber, String assets, String passengers,
+                          @NotNull ZonedDateTime startTime, @NotNull ZonedDateTime endTime,
+                          @NotNull LocalDateTime requestedDate, @NotNull TripTypeEnum tripType,
+                          Boolean isShortNotice, String detail, Boolean isAssetPickup,
+                          Double estimatedTotalDistanceKm, Double estimatedTotalDurationMin,
+                          @NotNull UUID transportationRequestStateId, @NotNull UUID personRequestId)
     {
 
     }

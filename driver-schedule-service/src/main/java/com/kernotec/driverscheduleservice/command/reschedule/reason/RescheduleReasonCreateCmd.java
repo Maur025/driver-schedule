@@ -21,6 +21,7 @@ public class RescheduleReasonCreateCmd extends
     protected UUID run(Request request) {
         var rescheduleReason = new RescheduleReason();
 
+        rescheduleReason.setOtherReason(request.otherReason);
         rescheduleReason.setReasonId(request.reasonId);
         rescheduleReason.setScheduleTransportationId(request.scheduleTransportationId);
 
@@ -29,7 +30,9 @@ public class RescheduleReasonCreateCmd extends
     }
 
     @Builder
-    public record Request(@NotNull UUID reasonId, @NotNull UUID scheduleTransportationId) {
+    public record Request(String otherReason, @NotNull UUID reasonId,
+                          @NotNull UUID scheduleTransportationId)
+    {
 
     }
 }

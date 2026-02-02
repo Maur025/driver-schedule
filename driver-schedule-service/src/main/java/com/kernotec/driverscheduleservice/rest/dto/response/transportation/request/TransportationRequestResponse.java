@@ -33,6 +33,8 @@ public class TransportationRequestResponse extends AuditEntityUserResponse {
     private Long correlative;
     private String detail;
     private boolean isAssetPickup;
+    private Double estimatedTotalDistanceKm;
+    private Double estimatedTotalDurationMin;
 
     private UUID transportationRequestStateId;
     private TransportationRequestStateResponse transportationRequestState;

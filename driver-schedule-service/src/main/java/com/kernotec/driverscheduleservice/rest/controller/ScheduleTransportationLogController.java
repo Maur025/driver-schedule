@@ -8,7 +8,7 @@ import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportationLog;
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationLogService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.ScheduleTransportationLogSpec;
 import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.log.ScheduleTransportationLogResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation.log.ScheduleTransportationLogResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.response.schedule.transportation.log.ScheduleTransportationLogResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;

@@ -3,6 +3,8 @@ package com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportat
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.request.BaseRequest;
+import jakarta.validation.constraints.NotNull;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,5 +15,7 @@ import lombok.Setter;
 @JsonInclude(Include.NON_NULL)
 public class ScheduleTransportationCancelRequest extends BaseRequest {
 
-    private String cancelReason;
+    @NotNull
+    private UUID reasonId;
+    private String otherReason;
 }

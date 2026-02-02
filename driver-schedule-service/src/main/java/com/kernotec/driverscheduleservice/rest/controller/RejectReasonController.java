@@ -8,7 +8,7 @@ import com.kernotec.driverscheduleservice.jpa.entity.RejectReason;
 import com.kernotec.driverscheduleservice.jpa.service.RejectReasonService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.RejectReasonSpec;
 import com.kernotec.driverscheduleservice.rest.dto.response.reject.reason.RejectReasonResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.reject.reason.RejectReasonResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.response.reject.reason.RejectReasonResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;

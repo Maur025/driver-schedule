@@ -8,7 +8,7 @@ import com.kernotec.driverscheduleservice.jpa.entity.TripLog;
 import com.kernotec.driverscheduleservice.jpa.service.TripLogService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.TripLogSpec;
 import com.kernotec.driverscheduleservice.rest.dto.response.trip.log.TripLogResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.trip.log.TripLogResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.response.trip.log.TripLogResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;

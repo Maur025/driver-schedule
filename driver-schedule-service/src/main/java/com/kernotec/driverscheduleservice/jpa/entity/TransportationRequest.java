@@ -71,6 +71,12 @@ public class TransportationRequest extends BaseAuditEntityUser {
     @Column(name = "is_asset_pickup", nullable = false, columnDefinition = "boolean default false")
     private boolean isAssetPickup = false;
 
+    @Column(name = "estimated_total_distance_km")
+    private Double estimatedTotalDistanceKm;
+
+    @Column(name = "estimated_total_duration_min")
+    private Double estimatedTotalDurationMin;
+
     @Column(name = "transportation_request_state_id", nullable = false)
     private UUID transportationRequestStateId;
 

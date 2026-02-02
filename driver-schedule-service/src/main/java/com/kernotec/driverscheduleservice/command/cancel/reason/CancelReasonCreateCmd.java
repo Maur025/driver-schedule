@@ -21,6 +21,7 @@ public class CancelReasonCreateCmd extends
     protected UUID run(Request request) {
         var cancelReason = new CancelReason();
 
+        cancelReason.setOtherReason(request.otherReason);
         cancelReason.setReasonId(request.reasonId);
         cancelReason.setScheduleTransportationId(request.scheduleTransportationId);
 
@@ -29,7 +30,9 @@ public class CancelReasonCreateCmd extends
     }
 
     @Builder
-    public record Request(@NotNull UUID reasonId, @NotNull UUID scheduleTransportationId) {
+    public record Request(String otherReason, @NotNull UUID reasonId,
+                          @NotNull UUID scheduleTransportationId)
+    {
 
     }
 }
