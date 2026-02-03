@@ -136,8 +136,8 @@ public class TransportationRequestController {
         return SingleResponse.<TransportationRequestResponse>builder()
             .code(HttpStatus.CREATED.value())
             .data(transportationRequestResponseMapper.toResponse(
-                transportationRequest.getId(),
-                transportationRequest.getCorrelative()
+                transportationRequest.getId(), transportationRequest.getCorrelative(),
+                transportationRequest.getCode()
             ))
             .build();
     }

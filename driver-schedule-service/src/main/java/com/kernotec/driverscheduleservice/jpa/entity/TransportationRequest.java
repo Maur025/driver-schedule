@@ -3,6 +3,7 @@ package com.kernotec.driverscheduleservice.jpa.entity;
 import com.kernotec.driverscheduleservice.audit.user.BaseAuditEntityUser;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
 import com.kernotec.driverscheduleservice.util.SafeZoneDateTimeConverter;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -17,6 +18,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
@@ -77,6 +79,13 @@ public class TransportationRequest extends BaseAuditEntityUser {
     @Column(name = "estimated_total_duration_min")
     private Double estimatedTotalDurationMin;
 
+    @Column(name = "code", length = 30, unique = true)
+    private String code;
+
+    @Column(name = "was_requested_by_scheduler", nullable = false,
+            columnDefinition = "boolean default false")
+    private boolean wasRequestedByScheduler = false;
+
     @Column(name = "transportation_request_state_id", nullable = false)
     private UUID transportationRequestStateId;
 
@@ -109,4 +118,8 @@ public class TransportationRequest extends BaseAuditEntityUser {
 
     @OneToMany(mappedBy = "transportationRequest", fetch = FetchType.LAZY)
     private Set<ScheduleTransportation> scheduleTransportations;
+
+    @OneToMany(mappedBy = "transportationRequest", fetch = FetchType.LAZY,
+               cascade = CascadeType.ALL)
+    private List<RequestCoord> requestCoords;
 }

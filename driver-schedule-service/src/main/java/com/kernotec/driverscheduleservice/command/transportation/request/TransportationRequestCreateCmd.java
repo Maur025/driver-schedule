@@ -2,8 +2,10 @@ package com.kernotec.driverscheduleservice.command.transportation.request;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
+import com.kernotec.driverscheduleservice.jpa.enums.GenerateCodeEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestService;
+import com.kernotec.driverscheduleservice.util.CodeGeneratorUtil;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -19,6 +21,7 @@ public class TransportationRequestCreateCmd extends
 {
 
     private final TransportationRequestService transportationRequestService;
+    private final CodeGeneratorUtil codeGeneratorUtil;
 
     @Override
     protected UUID run(Request request) {
@@ -38,11 +41,31 @@ public class TransportationRequestCreateCmd extends
             request.isAssetPickup != null && request.isAssetPickup);
         transportationRequest.setEstimatedTotalDistanceKm(request.estimatedTotalDistanceKm);
         transportationRequest.setEstimatedTotalDurationMin(request.estimatedTotalDurationMin);
+        transportationRequest.setWasRequestedByScheduler(request.wasRequestedByScheduler);
+        transportationRequest.setCode(codeGeneratorUtil.generateCodeApp(getGenerateCodeEnum(
+            transportationRequest.isAssetPickup(),
+            transportationRequest.isWasRequestedByScheduler()
+        )));
         transportationRequest.setTransportationRequestStateId(request.transportationRequestStateId);
         transportationRequest.setPersonRequestedId(request.personRequestId);
 
         transportationRequest = transportationRequestService.save(transportationRequest);
         return transportationRequest.getId();
+    }
+
+
+    private GenerateCodeEnum getGenerateCodeEnum(boolean isAssetPickup,
+        boolean wasRequestedByScheduler)
+    {
+        if (isAssetPickup) {
+            return GenerateCodeEnum.ASSET_PICKUP;
+        }
+
+        if (wasRequestedByScheduler) {
+            return GenerateCodeEnum.REQUEST_BY_SCHEDULER;
+        }
+
+        return GenerateCodeEnum.REQUEST;
     }
 
     @Builder
@@ -51,6 +74,7 @@ public class TransportationRequestCreateCmd extends
                           @NotNull LocalDateTime requestedDate, @NotNull TripTypeEnum tripType,
                           Boolean isShortNotice, String detail, Boolean isAssetPickup,
                           Double estimatedTotalDistanceKm, Double estimatedTotalDurationMin,
+                          @NotNull Boolean wasRequestedByScheduler,
                           @NotNull UUID transportationRequestStateId, @NotNull UUID personRequestId)
     {
 

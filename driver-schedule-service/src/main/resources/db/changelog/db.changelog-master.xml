@@ -140,4 +140,22 @@
   <include file="db/changelog/2026/01/30-01-changelog-39.xml"/>
   <include file="db/changelog/2026/02/02-01-changelog-40.xml"/>
   <include file="db/changelog/2026/02/02-01-changelog-41.xml"/>
+
+  <!-- place category - update, change code PLAZA by SQUARE -->
+  <changeSet id="1770128172512-1" author="Maur025">
+    <sqlFile path="data/place/category/place_category_update1.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- place category - add other value -->
+  <changeSet id="1770129950962-1" author="Maur025">
+    <sqlFile path="data/place/category/place_category_update2.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- place category - add public_entity and institution -->
+  <changeSet id="1770130995578-1" author="Maur025">
+    <sqlFile path="data/place/category/place_category_update3.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <include file="/db/changelog/2026/02/03-01-changelog-42.xml"/>
+  <include file="db/changelog/2026/02/03-01-changelog-43.xml"/>
 </databaseChangeLog>

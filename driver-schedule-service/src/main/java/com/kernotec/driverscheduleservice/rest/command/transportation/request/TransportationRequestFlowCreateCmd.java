@@ -83,6 +83,8 @@ public class TransportationRequestFlowCreateCmd extends
                         transportationRequestCreateRequest.getEstimatedTotalDistanceKm())
                     .estimatedTotalDurationMin(
                         transportationRequestCreateRequest.getEstimatedTotalDurationMin())
+                    .wasRequestedByScheduler(
+                        transportationRequestCreateRequest.getPersonRequestedId() != null)
                     .transportationRequestStateId(transportationRequestStateRequestedId)
                     .personRequestId(personId)
                     .build())
