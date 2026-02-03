@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TripAssignmentRepository extends BaseRepository<TripAssignment, UUID> {
 
+    void deleteAllByScheduleTransportationId(UUID scheduleTransportationId);
 }

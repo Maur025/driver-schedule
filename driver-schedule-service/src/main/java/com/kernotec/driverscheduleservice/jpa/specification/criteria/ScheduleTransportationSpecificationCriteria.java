@@ -28,4 +28,7 @@ public class ScheduleTransportationSpecificationCriteria {
     private ZonedDateTime yearDate;
 
     private UUID personRequestedId;
+
+    private List<UUID> vehicleIds;
+    private List<UUID> driverIds;
 }

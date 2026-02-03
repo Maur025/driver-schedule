@@ -3,9 +3,12 @@ package com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportat
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.request.BaseRequest;
+import com.kernotec.driverscheduleservice.rest.dto.request.trip.assignment.TripAssignmentCreateRequest;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,4 +29,8 @@ public class ScheduleTransportationCreateRequest extends BaseRequest {
     @NotNull
     private UUID transportationRequestId;
     private String zoneId;
+
+    @NotNull
+    @NotEmpty
+    private List<TripAssignmentCreateRequest> tripAssignments;
 }

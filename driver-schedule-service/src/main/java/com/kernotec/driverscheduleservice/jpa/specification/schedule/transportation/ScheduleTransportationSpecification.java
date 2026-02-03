@@ -49,6 +49,21 @@ public record ScheduleTransportationSpecification(
             ScheduleTransportationSpecificationJoinEnum.SCHEDULE_TRANSPORTATION_STATE_JOIN);
     }
 
+    private Join<?, ?> getOrCreateTripAssignmentJoin(
+        Map<ScheduleTransportationSpecificationJoinEnum, Join<?, ?>> joinMap, Root<?> root)
+    {
+        if (!joinMap.containsKey(
+            ScheduleTransportationSpecificationJoinEnum.TRIP_ASSIGNMENT_JOIN))
+        {
+            joinMap.put(
+                ScheduleTransportationSpecificationJoinEnum.TRIP_ASSIGNMENT_JOIN,
+                root.join("tripAssignments", JoinType.INNER)
+            );
+        }
+
+        return joinMap.get(ScheduleTransportationSpecificationJoinEnum.TRIP_ASSIGNMENT_JOIN);
+    }
+
     @Override
     public Predicate toPredicate(Root<ScheduleTransportation> root, CriteriaQuery<?> query,
         CriteriaBuilder cb)
@@ -57,8 +72,8 @@ public record ScheduleTransportationSpecification(
         Map<ScheduleTransportationSpecificationJoinEnum, Join<?, ?>> joinMap = new HashMap<>();
 
         addConflictValidationFilter(root, cb).ifPresent(predicateList::add);
-        addVehicleIdFilter(root, cb).ifPresent(predicateList::add);
-        addDriverIdFilter(root, cb).ifPresent(predicateList::add);
+        addVehicleIdFilter(root, cb, joinMap).ifPresent(predicateList::add);
+        addDriverIdFilter(root, cb, joinMap).ifPresent(predicateList::add);
         addTransportationRequestIdFilter(root, cb).ifPresent(predicateList::add);
         addScheduleTransportationExcludeIdFilter(root, cb).ifPresent(predicateList::add);
         addScheduleTransportationStateFilter(root, cb, joinMap).ifPresent(predicateList::add);
@@ -68,6 +83,8 @@ public record ScheduleTransportationSpecification(
         addYearDateFilter(root, cb).ifPresent(predicateList::add);
         addPersonRequestedIdFilter(root, cb).ifPresent(predicateList::add);
         addScheduleTransportationStatesFilter(root, joinMap).ifPresent(predicateList::add);
+        addVehicleIdsFilter(root, joinMap).ifPresent(predicateList::add);
+        addDriverIdsFilter(root, joinMap).ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -109,10 +126,25 @@ public record ScheduleTransportationSpecification(
     }
 
     private Optional<Predicate> addVehicleIdFilter(Root<ScheduleTransportation> root,
-        CriteriaBuilder cb)
+        CriteriaBuilder cb, Map<ScheduleTransportationSpecificationJoinEnum, Join<?, ?>> joinMap)
     {
         return Optional.ofNullable(criteria.getVehicleId())
-            .map(vehicleId -> cb.equal(root.get("vehicleId"), vehicleId));
+            .map(
+                vehicleId -> cb.equal(
+                    getOrCreateTripAssignmentJoin(joinMap, root).get("vehicleId"), vehicleId));
+    }
+
+    public ScheduleTransportationSpecification withVehicleIds(List<UUID> vehicleIds) {
+        this.criteria.setVehicleIds(vehicleIds);
+        return this;
+    }
+
+    private Optional<Predicate> addVehicleIdsFilter(Root<ScheduleTransportation> root,
+        Map<ScheduleTransportationSpecificationJoinEnum, Join<?, ?>> joinMap)
+    {
+        return Optional.ofNullable(criteria.getVehicleIds())
+            .map(vehicleIds -> getOrCreateTripAssignmentJoin(joinMap, root).get("vehicleId")
+                .in(vehicleIds));
     }
 
     public ScheduleTransportationSpecification withDriverId(UUID driverId) {
@@ -121,10 +153,26 @@ public record ScheduleTransportationSpecification(
     }
 
     private Optional<Predicate> addDriverIdFilter(Root<ScheduleTransportation> root,
-        CriteriaBuilder cb)
+        CriteriaBuilder cb, Map<ScheduleTransportationSpecificationJoinEnum, Join<?, ?>> joinMap)
     {
         return Optional.ofNullable(criteria.getDriverId())
-            .map(driverId -> cb.equal(root.get("driverId"), driverId));
+            .map(driverId -> cb.equal(
+                getOrCreateTripAssignmentJoin(joinMap, root).get("driverId"),
+                driverId
+            ));
+    }
+
+    public ScheduleTransportationSpecification withDriverIds(List<UUID> driverIds) {
+        this.criteria.setDriverIds(driverIds);
+        return this;
+    }
+
+    private Optional<Predicate> addDriverIdsFilter(Root<ScheduleTransportation> root,
+        Map<ScheduleTransportationSpecificationJoinEnum, Join<?, ?>> joinMap)
+    {
+        return Optional.ofNullable(criteria.getDriverIds())
+            .map(driverIds -> getOrCreateTripAssignmentJoin(joinMap, root).get("driverId")
+                .in(driverIds));
     }
 
     public ScheduleTransportationSpecification withTransportationRequestId(
@@ -217,7 +265,9 @@ public record ScheduleTransportationSpecification(
         if (from != null && to != null) {
             return Optional.of(
                 CommonSpecification.dateRangePredicate(
-                    cb, root.get("createdAt"), from, to, criteria.getZoneId()));
+                    cb, root.get("createdAt"), from, to,
+                    criteria.getZoneId()
+                ));
         }
 
         return Optional.empty();

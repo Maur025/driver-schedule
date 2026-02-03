@@ -2,6 +2,7 @@ package com.kernotec.driverscheduleservice.jpa.entity;
 
 import com.kernotec.driverscheduleservice.audit.user.BaseAuditEntityUser;
 import com.kernotec.driverscheduleservice.util.SafeZoneDateTimeConverter;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -10,9 +11,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
@@ -74,4 +77,8 @@ public class ScheduleTransportation extends BaseAuditEntityUser {
                                          referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "reason_id", referencedColumnName = "id"))
     private Set<Reason> rescheduleReasons;
+
+    @OneToMany(mappedBy = "scheduleTransportation", fetch = FetchType.LAZY,
+               cascade = CascadeType.ALL)
+    private List<TripAssignment> tripAssignments;
 }

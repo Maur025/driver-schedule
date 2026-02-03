@@ -4,6 +4,7 @@ import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.enums.PersonTypeEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.jpa.repository.ScheduleTransportationRepository;
 import com.kernotec.driverscheduleservice.jpa.specification.schedule.transportation.ScheduleTransportationSpecification;
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationFilterRequest;
@@ -44,10 +45,18 @@ public class ScheduleTransportationService extends BaseServiceImpl<ScheduleTrans
             .withScheduleTransportationExcludeId(scheduleTransportationExcludeId));
     }
 
-    public List<ScheduleTransportation> findConflictByVehicleId(UUID vehicleId, ZonedDateTime from,
-        ZonedDateTime to, String zoneId)
+    public List<ScheduleTransportation> findConflictByVehicleIds(List<UUID> vehicleIds,
+        ZonedDateTime from, ZonedDateTime to, String zoneId, UUID scheduleTransportationExcludeId)
     {
-        return findConflictByVehicleId(vehicleId, from, to, zoneId, null);
+        return repository.findAll(ScheduleTransportationSpecification.builder()
+            .withConflictValidation(from, to)
+            .withVehicleIds(vehicleIds)
+            .withZoneId(zoneId)
+            .withScheduleTransportationExcludeId(scheduleTransportationExcludeId)
+            .withScheduleTransportationStates(List.of(
+                ScheduleTransportationStateEnum.SCHEDULED,
+                ScheduleTransportationStateEnum.RESCHEDULED
+            )));
     }
 
     public List<ScheduleTransportation> findConflictByDriverId(UUID driverId, ZonedDateTime from,
@@ -60,10 +69,18 @@ public class ScheduleTransportationService extends BaseServiceImpl<ScheduleTrans
             .withScheduleTransportationExcludeId(scheduleTransportationExcludeId));
     }
 
-    public List<ScheduleTransportation> findConflictByDriverId(UUID driverId, ZonedDateTime from,
-        ZonedDateTime to, String zoneId)
+    public List<ScheduleTransportation> findConflictByDriverIds(List<UUID> driverIds,
+        ZonedDateTime from, ZonedDateTime to, String zoneId, UUID scheduleTransportationExcludeId)
     {
-        return findConflictByDriverId(driverId, from, to, zoneId, null);
+        return repository.findAll(ScheduleTransportationSpecification.builder()
+            .withConflictValidation(from, to)
+            .withDriverIds(driverIds)
+            .withZoneId(zoneId)
+            .withScheduleTransportationExcludeId(scheduleTransportationExcludeId)
+            .withScheduleTransportationStates(List.of(
+                ScheduleTransportationStateEnum.SCHEDULED,
+                ScheduleTransportationStateEnum.RESCHEDULED
+            )));
     }
 
     public Page<ScheduleTransportation> findAllBySearch(
@@ -84,9 +101,15 @@ public class ScheduleTransportationService extends BaseServiceImpl<ScheduleTrans
 
         boolean isAdmin = authUtil.userContainsRole(authentication, PersonTypeEnum.ADMIN);
         boolean isApplicant = authUtil.userContainsRole(authentication, PersonTypeEnum.APPLICANT);
+        boolean isDriver = authUtil.userContainsRole(authentication, PersonTypeEnum.DRIVER);
 
         if (!isAdmin && isApplicant) {
             scheduleTransportationSpecification.withPersonRequestedId(
+                authUtil.getPersonIdFromAuthenticationThrow(authentication));
+        }
+
+        if (!isAdmin && isDriver) {
+            scheduleTransportationSpecification.withDriverId(
                 authUtil.getPersonIdFromAuthenticationThrow(authentication));
         }
 

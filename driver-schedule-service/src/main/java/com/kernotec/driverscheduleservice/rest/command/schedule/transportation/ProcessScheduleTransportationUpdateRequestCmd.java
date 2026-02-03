@@ -12,16 +12,20 @@ import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.enums.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationStateService;
+import com.kernotec.driverscheduleservice.jpa.service.TripAssignmentService;
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationUpdateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.request.trip.assignment.TripAssignmentCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.response.schedule.transportation.ScheduleTransportationResponseMapper;
+import com.kernotec.driverscheduleservice.util.ScheduleTransportationUtil;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +52,8 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
     private final ScheduleTransportationLogCreateCmd scheduleTransportationLogCreateCmd;
     private final ZonedDateTimeUtil zonedDateTimeUtil;
     private final WebSocketHandler webSocketHandler;
+    private final TripAssignmentService tripAssignmentService;
+    private final ScheduleTransportationUtil scheduleTransportationUtil;
 
     @Override
     protected void validate(Request request) {
@@ -61,7 +67,9 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
 
         ScheduleTransportationStateDto scheduleTransportationStateDto = scheduleTransportationDto.getScheduleTransportationState();
 
-        if (ScheduleTransportationStateEnum.CANCELLED.equals(
+        if (!ScheduleTransportationStateEnum.RESCHEDULED.equals(
+            ScheduleTransportationStateEnum.fromValue(scheduleTransportationStateDto.getCode()))
+            || !ScheduleTransportationStateEnum.SCHEDULED.equals(
             ScheduleTransportationStateEnum.fromValue(scheduleTransportationStateDto.getCode())))
         {
             throw new ScheduleTransportationException(
@@ -70,10 +78,20 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
             );
         }
 
+        List<UUID> vehicleIds = scheduleTransportationUpdateRequest.getTripAssignments()
+            .stream()
+            .map(TripAssignmentCreateRequest::getVehicleId)
+            .toList();
+
+        List<UUID> driverIds = scheduleTransportationUpdateRequest.getTripAssignments()
+            .stream()
+            .map(TripAssignmentCreateRequest::getDriverId)
+            .toList();
+
         scheduleTransportationDateValidationCmd.withRequest(
                 ScheduleTransportationDateValidationCmd.Request.builder()
-                    .vehicleId(scheduleTransportationUpdateRequest.getVehicleId())
-                    .driverId(scheduleTransportationUpdateRequest.getDriverId())
+                    .vehicleIdList(vehicleIds)
+                    .driverIdList(driverIds)
                     .requestedDate(scheduleTransportationUpdateRequest.getRequestedDate())
                     .requestedStartTime(scheduleTransportationUpdateRequest.getRequestedStartTime())
                     .requestedEndTime(scheduleTransportationUpdateRequest.getRequestedEndTime())
@@ -111,6 +129,13 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
                     .scheduleTransportationStateId(scheduleTransportationStateRescheduledId)
                     .build())
             .execute();
+
+        tripAssignmentService.deleteAllByScheduleTransportationId(request.scheduleTransportationId);
+
+        scheduleTransportationUtil.registryTripAssignments(
+            scheduleTransportationUpdateRequest.getTripAssignments(),
+            request.scheduleTransportationId
+        );
 
         scheduleTransportationLogCreateCmd.withRequest(
                 ScheduleTransportationLogCreateCmd.Request.builder()
