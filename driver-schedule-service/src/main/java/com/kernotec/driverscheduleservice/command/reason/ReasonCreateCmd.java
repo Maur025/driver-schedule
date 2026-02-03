@@ -21,14 +21,16 @@ public class ReasonCreateCmd extends
     protected UUID run(Request request) {
         var reason = new Reason();
 
-        // reason.setReasonDescription(request.reasonDescription);
+        reason.setValue(request.value);
+        reason.setCode(request.code);
+        reason.setReasonTypeId(request.reasonTypeId);
 
         reason = reasonService.save(reason);
         return reason.getId();
     }
 
     @Builder
-    public record Request(@NotNull String reasonDescription) {
+    public record Request(@NotNull String value, @NotNull String code, @NotNull UUID reasonTypeId) {
 
     }
 }

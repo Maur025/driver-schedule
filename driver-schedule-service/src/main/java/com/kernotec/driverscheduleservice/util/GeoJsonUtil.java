@@ -1,10 +1,13 @@
 package com.kernotec.driverscheduleservice.util;
 
 import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
+import com.kernotec.driverscheduleservice.rest.dto.request.request.coord.RequestCoordCreateRequest;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class GeoJsonUtil {
 
@@ -15,5 +18,19 @@ public class GeoJsonUtil {
         }
 
         return List.of(coordinate.getLng(), coordinate.getLat());
+    }
+
+    @Named("mapFromSplitToCoordinateObject")
+    public Coordinate mapFromSplitToCoordinateObject(RequestCoordCreateRequest request) {
+        if (request == null) {
+            return null;
+        }
+
+        var coordinate = new Coordinate();
+
+        coordinate.setLng(request.getLongitude());
+        coordinate.setLat(request.getLatitude());
+
+        return coordinate;
     }
 }

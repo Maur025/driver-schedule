@@ -21,6 +21,7 @@ public class RejectReasonCreateCmd extends
     protected UUID run(Request request) {
         var rejectReason = new RejectReason();
 
+        rejectReason.setOtherReason(request.otherReason);
         rejectReason.setReasonId(request.reasonId);
         rejectReason.setTransportationRequestId(request.transportationRequestId);
 
@@ -29,7 +30,9 @@ public class RejectReasonCreateCmd extends
     }
 
     @Builder
-    public record Request(@NotNull UUID reasonId, @NotNull UUID transportationRequestId) {
+    public record Request(String otherReason, @NotNull UUID reasonId,
+                          @NotNull UUID transportationRequestId)
+    {
 
     }
 }

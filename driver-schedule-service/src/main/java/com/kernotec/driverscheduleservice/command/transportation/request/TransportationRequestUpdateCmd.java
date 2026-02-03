@@ -5,6 +5,7 @@ import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestService;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.Builder;
@@ -39,8 +40,26 @@ public class TransportationRequestUpdateCmd extends
         if (request.endTime != null) {
             transportationRequest.setEndTime(request.endTime);
         }
+        if (request.requestedDate != null) {
+            transportationRequest.setRequestedDate(request.requestedDate);
+        }
         if (request.tripType != null) {
             transportationRequest.setTripType(request.tripType);
+        }
+        if (request.isShortNotice != null) {
+            transportationRequest.setShortNotice(request.isShortNotice);
+        }
+        if (request.detail != null) {
+            transportationRequest.setDetail(request.detail);
+        }
+        if (request.isAssetPickup != null) {
+            transportationRequest.setAssetPickup(request.isAssetPickup);
+        }
+        if (request.estimatedTotalDistanceKm != null) {
+            transportationRequest.setEstimatedTotalDistanceKm(request.estimatedTotalDistanceKm);
+        }
+        if (request.estimatedTotalDurationMin != null) {
+            transportationRequest.setEstimatedTotalDurationMin(request.estimatedTotalDurationMin);
         }
         if (request.transportationRequestStateId != null) {
             transportationRequest.setTransportationRequestStateId(
@@ -52,9 +71,11 @@ public class TransportationRequestUpdateCmd extends
     }
 
     @Builder
-    public record Request(@NotNull UUID transportationRequestId, String peopleNumber,
-                          ZonedDateTime startTime, ZonedDateTime endTime, TripTypeEnum tripType,
-                          UUID transportationRequestStateId, String passengers, String assets)
+    public record Request(@NotNull UUID transportationRequestId, String peopleNumber, String assets,
+                          String passengers, ZonedDateTime startTime, ZonedDateTime endTime,
+                          LocalDateTime requestedDate, TripTypeEnum tripType, Boolean isShortNotice,
+                          String detail, Boolean isAssetPickup, Double estimatedTotalDistanceKm,
+                          Double estimatedTotalDurationMin, UUID transportationRequestStateId)
     {
 
     }

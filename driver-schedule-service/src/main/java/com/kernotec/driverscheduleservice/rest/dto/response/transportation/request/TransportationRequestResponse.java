@@ -6,10 +6,12 @@ import com.kernotec.driverscheduleservice.audit.user.dto.response.AuditEntityUse
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
 import com.kernotec.driverscheduleservice.rest.dto.response.person.PersonResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.reason.ReasonResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.request.coord.RequestCoordResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.transportation.request.state.TransportationRequestStateResponse;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
@@ -33,6 +35,10 @@ public class TransportationRequestResponse extends AuditEntityUserResponse {
     private Long correlative;
     private String detail;
     private boolean isAssetPickup;
+    private Double estimatedTotalDistanceKm;
+    private Double estimatedTotalDurationMin;
+    private String code;
+    private boolean wasRequestedByScheduler;
 
     private UUID transportationRequestStateId;
     private TransportationRequestStateResponse transportationRequestState;
@@ -43,4 +49,6 @@ public class TransportationRequestResponse extends AuditEntityUserResponse {
     private Set<ReasonResponse> rejectReasons;
     private Set<ReasonResponse> cancelReasons;
     private Set<ScheduleTransportationResponse> scheduleTransportations;
+
+    private List<RequestCoordResponse> requestCoords;
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.request.BaseRequest;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
+import com.kernotec.driverscheduleservice.rest.dto.request.request.coord.RequestCoordCreateRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -20,11 +22,9 @@ import lombok.Setter;
 public class TransportationRequestCreateRequest extends BaseRequest {
 
     @NotNull
-    private List<Double> startingCoordinates;
-    @NotNull
-    private List<Double> endCoordinates;
-    @NotNull
     private String peopleNumber;
+    private String assets;
+    private String passengers;
     @NotNull
     private ZonedDateTime startTime;
     @NotNull
@@ -34,14 +34,14 @@ public class TransportationRequestCreateRequest extends BaseRequest {
     @NotNull
     private TripTypeEnum tripType;
     private Boolean isShortNotice;
+    private String detail;
+    private Boolean isAssetPickup;
+    private Double estimatedTotalDistanceKm;
+    private Double estimatedTotalDurationMin;
+    private UUID personRequestedId;
 
-    private String passengers;
-    private String assets;
-
-    private UUID locationStartId;
-    private UUID locationEndId;
     private String zoneId;
 
-    private UUID personRequestedId;
-    private String detail;
+    @NotNull
+    private List<@Valid RequestCoordCreateRequest> requestCoords;
 }

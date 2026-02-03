@@ -15,7 +15,7 @@ import com.kernotec.driverscheduleservice.rest.command.person.assign.type.Person
 import com.kernotec.driverscheduleservice.rest.dto.request.person.PersonUpdateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.person.PersonResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.person.PersonResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.response.person.PersonResponseMapper;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserUpdateRequest;

@@ -11,10 +11,11 @@ import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestServi
 import com.kernotec.driverscheduleservice.rest.dto.request.reject.reason.RejectReasonRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.transportation.request.TransportationRequestResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.reason.ReasonResponseMapper;
-import com.kernotec.driverscheduleservice.rest.mapper.transportation.request.TransportationRequestResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.response.reason.ReasonResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.response.transportation.request.TransportationRequestResponseMapper;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.Set;
@@ -116,7 +117,7 @@ public class ProcessTransportationRequestRejectedCmd extends
 
     @Builder
     public record Request(@NotNull UUID transportationRequestId,
-                          @NotNull RejectReasonRequest rejectReasonRequest)
+                          @NotNull @Valid RejectReasonRequest rejectReasonRequest)
     {
 
     }

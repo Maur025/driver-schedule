@@ -15,7 +15,7 @@ import com.kernotec.driverscheduleservice.rest.dto.request.reject.reason.RejectR
 import com.kernotec.driverscheduleservice.rest.dto.request.transportation.request.TransportationRequestCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.transportation.request.TransportationRequestFilterRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.transportation.request.TransportationRequestResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.transportation.request.TransportationRequestResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.response.transportation.request.TransportationRequestResponseMapper;
 import com.kernotec.driverscheduleservice.util.AppRoleUtil.IsRoleApplicantOrScheduler;
 import com.kernotec.driverscheduleservice.util.AppRoleUtil.IsRoleSchedulerOrAdmin;
 import io.swagger.v3.oas.annotations.Operation;
@@ -136,8 +136,8 @@ public class TransportationRequestController {
         return SingleResponse.<TransportationRequestResponse>builder()
             .code(HttpStatus.CREATED.value())
             .data(transportationRequestResponseMapper.toResponse(
-                transportationRequest.getId(),
-                transportationRequest.getCorrelative()
+                transportationRequest.getId(), transportationRequest.getCorrelative(),
+                transportationRequest.getCode()
             ))
             .build();
     }

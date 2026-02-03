@@ -2500,10 +2500,10 @@
     {
       "id": "ZVH-r1owQG_pp0Gw3XEqL",
       "type": "rectangle",
-      "x": 2054.8070373535156,
+      "x": 2051.1840209960938,
       "y": 494.6745071411133,
-      "width": 514.7536010742189,
-      "height": 737.6883850097657,
+      "width": 522.0979309082032,
+      "height": 883.9339904785155,
       "angle": 0,
       "strokeColor": "#e03131",
       "backgroundColor": "transparent",
@@ -2519,11 +2519,11 @@
         "type": 3
       },
       "seed": 2096853341,
-      "version": 207,
-      "versionNonce": 1390168477,
+      "version": 253,
+      "versionNonce": 54171400,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1769709951654,
+      "updated": 1770132761823,
       "link": null,
       "locked": false
     },
@@ -2570,7 +2570,7 @@
       "x": 2084.2825622558594,
       "y": 550.7236099243164,
       "width": 439.7395935058594,
-      "height": 650,
+      "height": 800,
       "angle": 0,
       "strokeColor": "#e03131",
       "backgroundColor": "transparent",
@@ -2584,8 +2584,8 @@
       "index": "b02",
       "roundness": null,
       "seed": 1195972125,
-      "version": 683,
-      "versionNonce": 69526771,
+      "version": 829,
+      "versionNonce": 677851000,
       "isDeleted": false,
       "boundElements": [
         {
@@ -2593,16 +2593,16 @@
           "type": "arrow"
         }
       ],
-      "updated": 1769710172386,
+      "updated": 1770132757023,
       "link": null,
       "locked": false,
-      "text": "- OFFICE (Oficina)\n- BANK (Banco)\n- BASE (Base)\n- MARKET (Mercado)\n- HOSPITAL (Hospital)\n- RESTAURANT (Restaurante)\n- SCHOOL (Escuela)\n- HOME (Casa)\n- TOWN_HALL (Alcaldía)\n- POLICE_STATION (Comisaría)\n- EMBASSY (Embajada)\n- CLINIC (Clínica)\n- PHARMACY (Farmacia)\n- VET (Veterinaria)\n- STORE (Tienda)\n- SUPERMARKET (Supermercado)\n- HARDWARE_STORE (Ferretería)\n- MECHANICAL_WORKSHOP (Taller Mecánico)\n- HOTEL (Hotel)\n- BUS_TERMINAL (Terminal)\n- AIRPORT (Aeropuerto)\n- GAS_STATION (Gasolinera)\n- PARKING (Estacionamiento)\n- CHURCH (Iglesia)\n- SQUARE (Plaza)\n- STADIUM (Estadio)",
+      "text": "- OFFICE (Oficina)\n- BANK (Banco)\n- BASE (Base)\n- MARKET (Mercado)\n- HOSPITAL (Hospital)\n- RESTAURANT (Restaurante)\n- SCHOOL (Escuela)\n- HOME (Casa)\n- TOWN_HALL (Alcaldía)\n- POLICE_STATION (Comisaría)\n- EMBASSY (Embajada)\n- CLINIC (Clínica)\n- PHARMACY (Farmacia)\n- VET (Veterinaria)\n- STORE (Tienda)\n- SUPERMARKET (Supermercado)\n- HARDWARE_STORE (Ferretería)\n- MECHANICAL_WORKSHOP (Taller Mecánico)\n- HOTEL (Hotel)\n- BUS_TERMINAL (Terminal)\n- AIRPORT (Aeropuerto)\n- GAS_STATION (Gasolinera)\n- PARKING (Estacionamiento)\n- CHURCH (Iglesia)\n- SQUARE (Plaza)\n- STADIUM (Estadio)\n- OTHER (Otro)\n- INSTITUTION (Institución)\n- PUBLIC_ENTITY (Entidad Publica)\n- CABLE_CAR (Teleférico)\n- CINEMA (Cine)\n- PARK (Parque)",
       "fontSize": 20,
       "fontFamily": 5,
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "- OFFICE (Oficina)\n- BANK (Banco)\n- BASE (Base)\n- MARKET (Mercado)\n- HOSPITAL (Hospital)\n- RESTAURANT (Restaurante)\n- SCHOOL (Escuela)\n- HOME (Casa)\n- TOWN_HALL (Alcaldía)\n- POLICE_STATION (Comisaría)\n- EMBASSY (Embajada)\n- CLINIC (Clínica)\n- PHARMACY (Farmacia)\n- VET (Veterinaria)\n- STORE (Tienda)\n- SUPERMARKET (Supermercado)\n- HARDWARE_STORE (Ferretería)\n- MECHANICAL_WORKSHOP (Taller Mecánico)\n- HOTEL (Hotel)\n- BUS_TERMINAL (Terminal)\n- AIRPORT (Aeropuerto)\n- GAS_STATION (Gasolinera)\n- PARKING (Estacionamiento)\n- CHURCH (Iglesia)\n- SQUARE (Plaza)\n- STADIUM (Estadio)",
+      "originalText": "- OFFICE (Oficina)\n- BANK (Banco)\n- BASE (Base)\n- MARKET (Mercado)\n- HOSPITAL (Hospital)\n- RESTAURANT (Restaurante)\n- SCHOOL (Escuela)\n- HOME (Casa)\n- TOWN_HALL (Alcaldía)\n- POLICE_STATION (Comisaría)\n- EMBASSY (Embajada)\n- CLINIC (Clínica)\n- PHARMACY (Farmacia)\n- VET (Veterinaria)\n- STORE (Tienda)\n- SUPERMARKET (Supermercado)\n- HARDWARE_STORE (Ferretería)\n- MECHANICAL_WORKSHOP (Taller Mecánico)\n- HOTEL (Hotel)\n- BUS_TERMINAL (Terminal)\n- AIRPORT (Aeropuerto)\n- GAS_STATION (Gasolinera)\n- PARKING (Estacionamiento)\n- CHURCH (Iglesia)\n- SQUARE (Plaza)\n- STADIUM (Estadio)\n- OTHER (Otro)\n- INSTITUTION (Institución)\n- PUBLIC_ENTITY (Entidad Publica)\n- CABLE_CAR (Teleférico)\n- CINEMA (Cine)\n- PARK (Parque)",
       "autoResize": true,
       "lineHeight": 1.25
     },
@@ -2610,9 +2610,9 @@
       "id": "PAElqZYLn2JxMMf6kqvxp",
       "type": "arrow",
       "x": 2054.8070373535156,
-      "y": 631.4777908325195,
+      "y": 650.1133710421049,
       "width": 127.06146377342952,
-      "height": 11.28591901467064,
+      "height": 29.921499224255967,
       "angle": 0,
       "strokeColor": "#e03131",
       "backgroundColor": "transparent",
@@ -2626,11 +2626,11 @@
       "index": "b03",
       "roundness": null,
       "seed": 1563544915,
-      "version": 32,
-      "versionNonce": 2043327709,
+      "version": 178,
+      "versionNonce": 734167160,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1769710172391,
+      "updated": 1770132757023,
       "link": null,
       "locked": false,
       "points": [
@@ -2644,11 +2644,11 @@
         ],
         [
           -51.28303745814719,
-          -11.28591901467064
+          -29.921499224255967
         ],
         [
           -127.06146377342952,
-          -11.28591901467064
+          -29.921499224255967
         ]
       ],
       "lastCommittedPoint": null,

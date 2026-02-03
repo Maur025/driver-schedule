@@ -2,7 +2,6 @@ package com.kernotec.driverscheduleservice.rest.command.schedule.transportation;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.command.cancel.reason.CancelReasonCreateCmd;
-import com.kernotec.driverscheduleservice.command.reason.ReasonCreateCmd;
 import com.kernotec.driverscheduleservice.command.schedule.transportation.ScheduleTransportationGetDtoCmd;
 import com.kernotec.driverscheduleservice.command.schedule.transportation.ScheduleTransportationUpdateCmd;
 import com.kernotec.driverscheduleservice.command.schedule.transportation.log.ScheduleTransportationLogCreateCmd;
@@ -16,9 +15,10 @@ import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationStat
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationCancelRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation.ScheduleTransportationResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.response.schedule.transportation.ScheduleTransportationResponseMapper;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -35,15 +35,16 @@ public class ProcessScheduleTransportationCancelRequestCmd extends
     AbstractTransactionalRequiredCommand<ProcessScheduleTransportationCancelRequestCmd.Request, Void>
 {
 
+    private final ScheduleTransportationStateService scheduleTransportationStateService;
+    private final ScheduleTransportationService scheduleTransportationService;
+
+    private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
+
     private final ScheduleTransportationGetDtoCmd scheduleTransportationGetDtoCmd;
     private final ScheduleTransportationUpdateCmd scheduleTransportationUpdateCmd;
-    private final ScheduleTransportationStateService scheduleTransportationStateService;
-    private final ReasonCreateCmd reasonCreateCmd;
     private final CancelReasonCreateCmd cancelReasonCreateCmd;
-    private final WebSocketHandler webSocketHandler;
-    private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
-    private final ScheduleTransportationService scheduleTransportationService;
     private final ScheduleTransportationLogCreateCmd scheduleTransportationLogCreateCmd;
+    private final WebSocketHandler webSocketHandler;
 
     @Override
     protected void validate(Request request) {
@@ -79,10 +80,12 @@ public class ProcessScheduleTransportationCancelRequestCmd extends
                     .build())
             .execute();
 
-        registryCancelReason(
-            request.scheduleTransportationId,
-            scheduleTransportationCancelRequest.getCancelReason()
-        );
+        cancelReasonCreateCmd.withRequest(CancelReasonCreateCmd.Request.builder()
+                .reasonId(scheduleTransportationCancelRequest.getReasonId())
+                .scheduleTransportationId(request.scheduleTransportationId)
+                .otherReason(scheduleTransportationCancelRequest.getOtherReason())
+                .build())
+            .execute();
 
         scheduleTransportationLogCreateCmd.withRequest(
                 ScheduleTransportationLogCreateCmd.Request.builder()
@@ -94,24 +97,6 @@ public class ProcessScheduleTransportationCancelRequestCmd extends
         emitSocketMessage(request.scheduleTransportationId);
 
         return null;
-    }
-
-    private void registryCancelReason(UUID scheduleTransportationId, String cancelReason) {
-        if (cancelReason == null) {
-            log.debug("No cancel reason provided, skipping reason registry.");
-            return;
-        }
-
-        UUID reasonId = reasonCreateCmd.withRequest(ReasonCreateCmd.Request.builder()
-                .reasonDescription(cancelReason)
-                .build())
-            .execute();
-
-        cancelReasonCreateCmd.withRequest(CancelReasonCreateCmd.Request.builder()
-                .reasonId(reasonId)
-                .scheduleTransportationId(scheduleTransportationId)
-                .build())
-            .execute();
     }
 
     private void emitSocketMessage(UUID scheduleTransportationId)
@@ -145,7 +130,7 @@ public class ProcessScheduleTransportationCancelRequestCmd extends
 
     @Builder
     public record Request(@NotNull UUID scheduleTransportationId,
-                          @NotNull ScheduleTransportationCancelRequest scheduleTransportationCancelRequest)
+                          @NotNull @Valid ScheduleTransportationCancelRequest scheduleTransportationCancelRequest)
     {
 
     }

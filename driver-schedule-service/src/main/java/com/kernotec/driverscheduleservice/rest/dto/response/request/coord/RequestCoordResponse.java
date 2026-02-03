@@ -29,6 +29,7 @@ public class RequestCoordResponse extends EntityResponse {
     private Double distanceKilometers;
     private Double waitTimeMinutes;
     private ZonedDateTime estimatedArrivalTime;
+    private String locationDescription;
 
     private UUID transportationRequestId;
     private TransportationRequestResponse transportationRequest;
