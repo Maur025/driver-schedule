@@ -10,6 +10,7 @@ import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocket
 import com.kernotec.driverscheduleservice.rest.mapper.response.transportation.request.TransportationRequestResponseMapper;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -69,7 +70,7 @@ public class ProcessTransportationRequestCreateRequestCmd extends
 
     @Builder
     public record Request(
-        @NotNull TransportationRequestCreateRequest transportationRequestCreateRequest,
+        @NotNull @Valid TransportationRequestCreateRequest transportationRequestCreateRequest,
         @NotNull Authentication authentication)
     {
 

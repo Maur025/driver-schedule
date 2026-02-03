@@ -50,27 +50,27 @@ public class ScheduleTransportationDateValidationCmd extends
                 "invalid.range.date", "", HttpStatus.BAD_REQUEST.value());
         }
 
-        List<ScheduleTransportation> vehicleConflictList = scheduleTransportationService.findConflictByVehicleId(
-            request.vehicleId, scheduledFrom, scheduledTo, request.zoneId,
+        List<ScheduleTransportation> vehicleConflictList = scheduleTransportationService.findConflictByVehicleIds(
+            request.vehicleIdList, scheduledFrom, scheduledTo, request.zoneId,
             request.scheduleTransportationExcludeId
         );
 
         if (!vehicleConflictList.isEmpty()) {
             throw new ScheduleTransportationException(
-                "vehicle.conflict",
-                "'" + request.vehicleId + "'", HttpStatus.CONFLICT.value()
+                "vehicle.conflict", "",
+                HttpStatus.CONFLICT.value()
             );
         }
 
-        List<ScheduleTransportation> driverConflictList = scheduleTransportationService.findConflictByDriverId(
-            request.driverId, scheduledFrom, scheduledTo, request.zoneId,
+        List<ScheduleTransportation> driverConflictList = scheduleTransportationService.findConflictByDriverIds(
+            request.driverIdList, scheduledFrom, scheduledTo, request.zoneId,
             request.scheduleTransportationExcludeId
         );
 
         if (!driverConflictList.isEmpty()) {
             throw new ScheduleTransportationException(
-                "driver.conflict",
-                "'" + request.driverId + "'", HttpStatus.CONFLICT.value()
+                "driver.conflict", "",
+                HttpStatus.CONFLICT.value()
             );
         }
 
@@ -78,7 +78,7 @@ public class ScheduleTransportationDateValidationCmd extends
     }
 
     @Builder
-    public record Request(@NotNull UUID vehicleId, @NotNull UUID driverId,
+    public record Request(@NotNull List<UUID> vehicleIdList, @NotNull List<UUID> driverIdList,
                           @NotNull LocalDateTime requestedDate,
                           @NotNull ZonedDateTime requestedStartTime,
                           @NotNull ZonedDateTime requestedEndTime, String zoneId,

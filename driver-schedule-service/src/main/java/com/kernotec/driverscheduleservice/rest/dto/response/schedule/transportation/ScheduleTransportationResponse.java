@@ -7,8 +7,10 @@ import com.kernotec.driverscheduleservice.rest.dto.response.person.PersonRespons
 import com.kernotec.driverscheduleservice.rest.dto.response.reason.ReasonResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.state.ScheduleTransportationStateResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.transportation.request.TransportationRequestResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.trip.assignment.TripAssignmentResponse;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
@@ -36,4 +38,5 @@ public class ScheduleTransportationResponse extends AuditEntityUserResponse {
 
     private Set<ReasonResponse> cancelReasons;
     private Set<ReasonResponse> rescheduleReasons;
+    private List<TripAssignmentResponse> tripAssignments;
 }

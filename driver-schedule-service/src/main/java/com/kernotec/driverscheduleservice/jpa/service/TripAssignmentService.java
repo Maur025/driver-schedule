@@ -23,4 +23,8 @@ public class TripAssignmentService extends BaseServiceImpl<TripAssignment, UUID>
     protected BaseRepository<TripAssignment, UUID> repository() {
         return repository;
     }
+
+    public void deleteAllByScheduleTransportationId(UUID scheduleTransportationId) {
+        repository.deleteAllByScheduleTransportationId(scheduleTransportationId);
+    }
 }
