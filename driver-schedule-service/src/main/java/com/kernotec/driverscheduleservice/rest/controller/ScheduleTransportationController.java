@@ -174,6 +174,19 @@ public class ScheduleTransportationController {
             .build();
     }
 
+    @Operation(summary = "end schedule transportation")
+    @PostMapping("{scheduleTransportationId}/finalized")
+    @ResponseStatus(HttpStatus.OK)
+    @IsRoleSchedulerOrAdmin
+    public SingleResponse<ScheduleTransportationResponse> finalize(
+        @PathVariable UUID scheduleTransportationId)
+    {
+        return SingleResponse.<ScheduleTransportationResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("Finalization successful")
+            .build();
+    }
+
     @Operation(summary = "schedule transportation export voucher")
     @GetMapping("{scheduleTransportationId}/voucher")
     @ResponseStatus(HttpStatus.OK)

@@ -20,6 +20,8 @@ import com.kernotec.driverscheduleservice.rest.dto.PersonCsvImportDto;
 import com.kernotec.driverscheduleservice.rest.dto.request.person.PersonCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.person.PersonScheduleConflictRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.person.PersonUpdateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.response.LookupResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.person.PersonLookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.person.PersonResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.person.PersonScheduleConflictResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.response.person.PersonResponseMapper;
@@ -100,6 +102,24 @@ public class PersonController {
         return PageResponse.<PersonResponse>builder()
             .code(HttpStatus.OK.value())
             .data(personResponseMapper.toResponse(personList))
+            .build();
+    }
+
+    @Operation(summary = "find persons to lookup")
+    @GetMapping("lookup")
+    @ResponseStatus(HttpStatus.OK)
+    public LookupResponse<List<PersonLookupResponse>> findAllToLookup(
+        @RequestParam(required = false) String keyword,
+        @RequestParam(required = false) PersonTypeEnum personType)
+    {
+        Pageable pageable = PageableUtil.of(0, 500, "lastName", false);
+
+        Page<PersonLookupResponse> personLookupResponsePage = personService.findAllToLookup(
+            keyword, personType, pageable);
+
+        return LookupResponse.<List<PersonLookupResponse>>builder()
+            .code(HttpStatus.OK.value())
+            .data(personLookupResponsePage.getContent())
             .build();
     }
 
