@@ -8,6 +8,7 @@ import com.kernotec.driverscheduleservice.jpa.entity.Person;
 import com.kernotec.driverscheduleservice.jpa.enums.PersonTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.repository.PersonRepository;
 import com.kernotec.driverscheduleservice.jpa.specification.person.PersonSpecification;
+import com.kernotec.driverscheduleservice.rest.dto.response.person.PersonLookupResponse;
 import com.kernotec.driverscheduleservice.webflux.user.client.rest.UserServiceApiClient;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserCreateRequest;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserDeleteRequest;
@@ -17,6 +18,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -76,13 +79,19 @@ public class PersonService extends BaseServiceImpl<Person, UUID> {
     public Person findByUserIdThrow(UUID userId) {
         return findByUserId(userId).orElseThrow(
             () -> new PersonException(
-                "not.found.by.user.id", "'" + userId + "'",
-                HttpStatus.BAD_REQUEST.value()
-            ));
+                "not.found.by.user.id", "'" + userId + "'", HttpStatus.BAD_REQUEST.value()));
     }
 
     public List<Person> findAllByPersonType(PersonTypeEnum personType) {
         return repository.findAll(PersonSpecification.builder()
             .withPersonType(personType));
+    }
+
+    public Page<PersonLookupResponse> findAllToLookup(String keyword, PersonTypeEnum personType,
+        Pageable pageable)
+    {
+        String personTypeStr = personType != null ? personType.toString() : null;
+
+        return repository.findAllToLookup(keyword, personTypeStr, pageable);
     }
 }

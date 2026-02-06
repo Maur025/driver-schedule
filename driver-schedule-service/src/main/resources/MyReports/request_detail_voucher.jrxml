@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.5.final using JasperReports Library version 6.21.5-74d586df47b25dbd05bd0957999819196e59934a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="request_detail_voucher" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="612" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="0db32a49-91f4-4868-af4f-0f0c5948f42e">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="PASSENGERS" class="java.lang.String"/>
+	<parameter name="ASSETS" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="150" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<frame>
+				<reportElement x="0" y="0" width="486" height="150" uuid="b3ee003a-ece1-4f05-8978-71c5e48654db">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="26" width="162" height="22" forecolor="#000000" backcolor="#F7BF8C" uuid="35712c9d-1385-4a8d-83df-618697fd937b">
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					</reportElement>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="OpenSans" size="8" isBold="false"/>
+						<paragraph leftIndent="3"/>
+					</textElement>
+					<text><![CDATA[SECCIÓN]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="162" y="26" width="324" height="22" forecolor="#000000" backcolor="#F7BF8C" uuid="4c8e71c8-30d7-434f-aaea-2760bee386e8">
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="OpenSans" size="8" isBold="false"/>
+					</textElement>
+					<text><![CDATA[NOMBRES/DESCRIPCIÓN]]></text>
+				</staticText>
+				<frame>
+					<reportElement key="allocated-resources-detail" x="0" y="48" width="486" height="40" uuid="22457444-9d50-4117-85ea-0e35376fb642">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineColor="#B8B8B8"/>
+						<bottomPen lineWidth="0.25" lineColor="#B8B8B8"/>
+					</box>
+					<staticText>
+						<reportElement x="0" y="10" width="162" height="14" uuid="941bdd31-1d92-4acc-85ac-da8b0e442303">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="OpenSans" size="10" isBold="true"/>
+							<paragraph leftIndent="3"/>
+						</textElement>
+						<text><![CDATA[Pasajeros]]></text>
+					</staticText>
+					<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+						<reportElement x="162" y="10" width="324" height="14" forecolor="#666666" uuid="e7583bca-be9c-4431-a407-ba7d0682fc9c">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="OpenSans" size="10" isBold="false"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$P{PASSENGERS} == null ||  $P{PASSENGERS}.isBlank() ? "N/A": $P{PASSENGERS}]]></textFieldExpression>
+					</textField>
+				</frame>
+				<staticText>
+					<reportElement x="0" y="0" width="486" height="26" forecolor="#666666" uuid="3452ffa3-7fe5-48a2-b74e-568fd2fbc3b4">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="OpenSans" size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DETALLE DE SOLICITUD]]></text>
+				</staticText>
+				<frame>
+					<reportElement key="allocated-resources-detail" x="0" y="88" width="486" height="40" uuid="9ff70e98-8650-4589-94cb-d2c100939227">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineColor="#B8B8B8"/>
+						<bottomPen lineWidth="0.25" lineColor="#B8B8B8"/>
+					</box>
+					<staticText>
+						<reportElement x="0" y="10" width="162" height="14" uuid="f0c12a62-76a0-4544-9958-60bd2048330e">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="OpenSans" size="10" isBold="true"/>
+							<paragraph leftIndent="3"/>
+						</textElement>
+						<text><![CDATA[Materiales a transportar]]></text>
+					</staticText>
+					<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+						<reportElement x="162" y="10" width="324" height="14" forecolor="#666666" uuid="9bf07c9c-c21c-4bf3-bab2-84c4e8865eb3">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="OpenSans" size="10" isBold="false"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$P{ASSETS} == null || $P{ASSETS}.isBlank() ? "N/A":$P{ASSETS}]]></textFieldExpression>
+					</textField>
+				</frame>
+			</frame>
+		</band>
+	</summary>
+</jasperReport>

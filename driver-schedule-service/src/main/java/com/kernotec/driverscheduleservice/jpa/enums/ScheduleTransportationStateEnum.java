@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.jpa.enums;
 
 public enum ScheduleTransportationStateEnum {
-    SCHEDULED, CANCELLED, RESCHEDULED;
+    SCHEDULED, CANCELLED, RESCHEDULED, FINALIZED;
 
     public static ScheduleTransportationStateEnum fromValue(String value) {
         if (value == null) {

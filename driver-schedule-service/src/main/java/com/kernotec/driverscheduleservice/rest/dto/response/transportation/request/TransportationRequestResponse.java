@@ -51,4 +51,6 @@ public class TransportationRequestResponse extends AuditEntityUserResponse {
     private Set<ScheduleTransportationResponse> scheduleTransportations;
 
     private List<RequestCoordResponse> requestCoords;
+
+    private String voucherUrl;
 }
