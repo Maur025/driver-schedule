@@ -1,7 +1,6 @@
 package com.kernotec.driverscheduleservice.rest.command.schedule.transportation;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverscheduleservice.command.reason.ReasonCreateCmd;
 import com.kernotec.driverscheduleservice.command.reschedule.reason.RescheduleReasonCreateCmd;
 import com.kernotec.driverscheduleservice.command.schedule.transportation.ScheduleTransportationGetDtoCmd;
 import com.kernotec.driverscheduleservice.command.schedule.transportation.ScheduleTransportationUpdateCmd;
@@ -13,15 +12,20 @@ import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.enums.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationStateService;
+import com.kernotec.driverscheduleservice.jpa.service.TripAssignmentService;
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationUpdateRequest;
-import com.kernotec.driverscheduleservice.rest.dto.response.ScheduleTransportationResponse;
+import com.kernotec.driverscheduleservice.rest.dto.request.trip.assignment.TripAssignmentCreateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation.ScheduleTransportationResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.response.schedule.transportation.ScheduleTransportationResponseMapper;
+import com.kernotec.driverscheduleservice.util.ScheduleTransportationUtil;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -43,12 +47,13 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
 
     private final ScheduleTransportationDateValidationCmd scheduleTransportationDateValidationCmd;
     private final ScheduleTransportationUpdateCmd scheduleTransportationUpdateCmd;
-    private final WebSocketHandler webSocketHandler;
-    private final ZonedDateTimeUtil zonedDateTimeUtil;
-    private final ReasonCreateCmd reasonCreateCmd;
     private final RescheduleReasonCreateCmd rescheduleReasonCreateCmd;
     private final ScheduleTransportationGetDtoCmd scheduleTransportationGetDtoCmd;
     private final ScheduleTransportationLogCreateCmd scheduleTransportationLogCreateCmd;
+    private final ZonedDateTimeUtil zonedDateTimeUtil;
+    private final WebSocketHandler webSocketHandler;
+    private final TripAssignmentService tripAssignmentService;
+    private final ScheduleTransportationUtil scheduleTransportationUtil;
 
     @Override
     protected void validate(Request request) {
@@ -62,7 +67,9 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
 
         ScheduleTransportationStateDto scheduleTransportationStateDto = scheduleTransportationDto.getScheduleTransportationState();
 
-        if (ScheduleTransportationStateEnum.CANCELLED.equals(
+        if (!ScheduleTransportationStateEnum.RESCHEDULED.equals(
+            ScheduleTransportationStateEnum.fromValue(scheduleTransportationStateDto.getCode()))
+            || !ScheduleTransportationStateEnum.SCHEDULED.equals(
             ScheduleTransportationStateEnum.fromValue(scheduleTransportationStateDto.getCode())))
         {
             throw new ScheduleTransportationException(
@@ -71,10 +78,20 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
             );
         }
 
+        List<UUID> vehicleIds = scheduleTransportationUpdateRequest.getTripAssignments()
+            .stream()
+            .map(TripAssignmentCreateRequest::getVehicleId)
+            .toList();
+
+        List<UUID> driverIds = scheduleTransportationUpdateRequest.getTripAssignments()
+            .stream()
+            .map(TripAssignmentCreateRequest::getDriverId)
+            .toList();
+
         scheduleTransportationDateValidationCmd.withRequest(
                 ScheduleTransportationDateValidationCmd.Request.builder()
-                    .vehicleId(scheduleTransportationUpdateRequest.getVehicleId())
-                    .driverId(scheduleTransportationUpdateRequest.getDriverId())
+                    .vehicleIdList(vehicleIds)
+                    .driverIdList(driverIds)
                     .requestedDate(scheduleTransportationUpdateRequest.getRequestedDate())
                     .requestedStartTime(scheduleTransportationUpdateRequest.getRequestedStartTime())
                     .requestedEndTime(scheduleTransportationUpdateRequest.getRequestedEndTime())
@@ -113,6 +130,13 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
                     .build())
             .execute();
 
+        tripAssignmentService.deleteAllByScheduleTransportationId(request.scheduleTransportationId);
+
+        scheduleTransportationUtil.registryTripAssignments(
+            scheduleTransportationUpdateRequest.getTripAssignments(),
+            request.scheduleTransportationId
+        );
+
         scheduleTransportationLogCreateCmd.withRequest(
                 ScheduleTransportationLogCreateCmd.Request.builder()
                     .scheduleTransportationId(request.scheduleTransportationId)
@@ -120,35 +144,16 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
                     .build())
             .execute();
 
-        registerRescheduleReason(
-            request.scheduleTransportationId,
-            scheduleTransportationUpdateRequest.getRescheduleReason()
-        );
+        rescheduleReasonCreateCmd.withRequest(RescheduleReasonCreateCmd.Request.builder()
+                .reasonId(scheduleTransportationUpdateRequest.getReasonId())
+                .scheduleTransportationId(request.scheduleTransportationId)
+                .otherReason(scheduleTransportationUpdateRequest.getOtherReason())
+                .build())
+            .execute();
 
         emitSocketMessage(request.scheduleTransportationId);
 
         return null;
-    }
-
-    private void registerRescheduleReason(UUID scheduleTransportationId, String rescheduleReason) {
-        if (rescheduleReason == null || rescheduleReason.isBlank()
-            || scheduleTransportationId == null)
-        {
-            log.debug(
-                "No reschedule reason provided or scheduleTransportationId is null, skipping registration.");
-            return;
-        }
-
-        UUID reasonId = reasonCreateCmd.withRequest(ReasonCreateCmd.Request.builder()
-                .reasonDescription(rescheduleReason)
-                .build())
-            .execute();
-
-        rescheduleReasonCreateCmd.withRequest(RescheduleReasonCreateCmd.Request.builder()
-                .reasonId(reasonId)
-                .scheduleTransportationId(scheduleTransportationId)
-                .build())
-            .execute();
     }
 
     private void emitSocketMessage(UUID scheduleTransportationId) {
@@ -181,7 +186,7 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
 
     @Builder
     public record Request(@NotNull UUID scheduleTransportationId,
-                          @NotNull ScheduleTransportationUpdateRequest scheduleTransportationUpdateRequest)
+                          @NotNull @Valid ScheduleTransportationUpdateRequest scheduleTransportationUpdateRequest)
     {
 
     }

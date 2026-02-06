@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.5.final using JasperReports Library version 6.21.5-74d586df47b25dbd05bd0957999819196e59934a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="header_voucher" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="612" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="bdda1ae4-299d-415d-a7b7-875a4f97fc74">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="539"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="449"/>
+	<parameter name="CREATE_AT_FORMAT" class="java.lang.String">
+		<defaultValueExpression><![CDATA["ENE 1, 2026 - 09:15 AM"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="DATE_FROM_FORMAT" class="java.lang.String">
+		<defaultValueExpression><![CDATA["ENE 1, 2026 - 09:15 AM"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="DATE_TO_FORMAT" class="java.lang.String">
+		<defaultValueExpression><![CDATA["ENE 1, 2026 - 09:15 AM"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REQUESTED_BY" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Person 1"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REQUESTED_FOR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Person 2"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REQUESTED_FOR_CONTACT" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["45466 - 1160"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="TRIP_TYPE" class="java.lang.String">
+		<defaultValueExpression><![CDATA["N/A"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SHORT_NOTICE" class="java.lang.String">
+		<defaultValueExpression><![CDATA["N/A"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="NUMBER_PASSENGERS" class="java.lang.String">
+		<defaultValueExpression><![CDATA["3"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ASSET_PICKUP" class="java.lang.String">
+		<defaultValueExpression><![CDATA["N/A"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="WAS_REQUESTED_BY_SCHEDULER" class="java.lang.Boolean">
+		<defaultValueExpression><![CDATA[false]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="144" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<frame>
+				<reportElement key="header-data" x="0" y="0" width="162" height="144" uuid="9f441fc6-547b-41bf-8c2a-d00f15f0e561">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<staticText>
+					<reportElement x="0" y="26" width="162" height="10" forecolor="#666666" uuid="227faa24-67b2-4473-bf97-3752dea3af4a">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="Roboto" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CREACIÓN]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="0" y="36" width="162" height="22" uuid="c700a3c4-97a8-4dc9-b7fa-115d3319f867">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="OpenSans" size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{CREATE_AT_FORMAT}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="12" y="0" width="150" height="26" forecolor="#666666" uuid="cb56e070-f88d-47f8-8430-98d40fedcb72">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="OpenSans" size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TIEMPOS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="58" width="162" height="10" forecolor="#666666" uuid="dcbca90e-6aa4-4d9f-ab8b-978719e54e52">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="Roboto" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[INICIO]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="0" y="68" width="162" height="22" uuid="30e96b1e-f456-40db-b70b-f11981f058c2">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="OpenSans" size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{DATE_FROM_FORMAT}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="90" width="162" height="10" forecolor="#666666" uuid="98ef336b-a688-497c-8f51-4bb574db1a20">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="Roboto" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[FIN]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="0" y="100" width="162" height="22" uuid="afc74f0f-9c6b-4768-899d-0c96db64a2a4">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="OpenSans" size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{DATE_TO_FORMAT}]]></textFieldExpression>
+				</textField>
+				<image hAlign="Center" vAlign="Middle" isLazy="true">
+					<reportElement x="0" y="2" width="9" height="9" forecolor="#555555" uuid="90c452fc-2aad-40c7-9572-f7fa74860c6e">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<imageExpression><![CDATA["/home/mmoya@PragmaInvest.com/Descargas/iconos (2)/clock.png"]]></imageExpression>
+				</image>
+			</frame>
+			<frame>
+				<reportElement key="header-data" x="162" y="0" width="162" height="144" uuid="1339a2bf-5f6d-4730-a55c-e3418d41cab3">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<staticText>
+					<reportElement x="0" y="26" width="162" height="10" isRemoveLineWhenBlank="true" forecolor="#666666" uuid="96540af7-e1a9-4716-9034-314fe1bfbf0e">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<printWhenExpression><![CDATA[$P{WAS_REQUESTED_BY_SCHEDULER}]]></printWhenExpression>
+					</reportElement>
+					<textElement>
+						<font fontName="Roboto" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SOLICITADO POR]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="0" y="36" width="162" height="36" isRemoveLineWhenBlank="true" uuid="7bec1365-8ddb-4cb3-894c-feb944a44eea">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<printWhenExpression><![CDATA[$P{WAS_REQUESTED_BY_SCHEDULER}]]></printWhenExpression>
+					</reportElement>
+					<textElement>
+						<font fontName="OpenSans" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{REQUESTED_BY}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="12" y="0" width="150" height="26" forecolor="#666666" uuid="b5d9c338-ec9d-4a06-a580-f84c3a535c8c">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="OpenSans" size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PERSONAS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" x="0" y="72" width="162" height="10" forecolor="#666666" uuid="5df5e6e5-cf44-4826-b26f-21bb131fd8dc">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="Roboto" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SOLICITADO PARA]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="0" y="82" width="162" height="14" uuid="4136d872-53a4-4a75-add2-1e7e156c88b0">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="OpenSans" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{REQUESTED_FOR}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="12" y="96" width="150" height="22" forecolor="#555555" uuid="07d45a71-3d15-4668-b90a-88b81d361f78">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="OpenSans" size="8" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{REQUESTED_FOR_CONTACT}]]></textFieldExpression>
+				</textField>
+				<image hAlign="Center" vAlign="Middle" isLazy="true">
+					<reportElement x="0" y="2" width="9" height="9" forecolor="#555555" uuid="025500ca-25d1-4eaa-899d-998d2e5c1b02">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<imageExpression><![CDATA["/home/mmoya@PragmaInvest.com/Descargas/iconos (2)/users.png"]]></imageExpression>
+				</image>
+				<image hAlign="Center" vAlign="Middle" isLazy="true">
+					<reportElement x="0" y="98" width="9" height="9" forecolor="#555555" uuid="8211ff44-540a-434a-bf2c-594dc5b39bf3">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<imageExpression><![CDATA["/home/mmoya@PragmaInvest.com/Descargas/iconos (2)/phone.png"]]></imageExpression>
+				</image>
+			</frame>
+			<frame>
+				<reportElement key="header-data" x="324" y="0" width="162" height="144" uuid="2b851189-bb89-4994-bad0-e85edd6c319d">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<staticText>
+					<reportElement x="0" y="26" width="81" height="10" forecolor="#666666" uuid="b5ea4731-32aa-47ef-a83d-b10b749c36ef">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="Roboto" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TIPO DE VIAJE]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="0" y="36" width="81" height="36" uuid="c92b9dc4-5916-41d7-8180-89402e993e84">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="OpenSans" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{TRIP_TYPE}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="12" y="0" width="150" height="26" forecolor="#666666" uuid="a7253c33-113a-4cce-9354-38bb29da1253">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="OpenSans" size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DETALLE DE SOLICITUD]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="72" width="81" height="10" forecolor="#666666" uuid="699b6d31-8a69-4683-b46f-b62b40a82670">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="Roboto" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PASAJEROS]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="0" y="82" width="81" height="36" uuid="e6e893f9-b801-4cc8-accd-ab5f40d7f721">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="OpenSans" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{NUMBER_PASSENGERS}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="81" y="26" width="81" height="10" forecolor="#666666" uuid="38f7d3ed-0fe8-4a01-a41a-d9dab1a97a1a">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="Roboto" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ANTICIPACIÓN]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="81" y="36" width="81" height="36" uuid="e363d064-caba-4488-8394-64630ac97d35">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="OpenSans" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{SHORT_NOTICE}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="81" y="72" width="81" height="10" forecolor="#666666" uuid="6ae758de-2773-4d39-8b80-9812c899282d">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="Roboto" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ENCOMIENDA]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="81" y="82" width="81" height="36" uuid="7c3b5b2a-eb98-4741-a377-59807e05c4fc">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="OpenSans" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{ASSET_PICKUP}]]></textFieldExpression>
+				</textField>
+				<image hAlign="Center" vAlign="Middle" isLazy="true">
+					<reportElement x="0" y="2" width="9" height="9" forecolor="#555555" uuid="8d2135ee-0ea0-4092-a6c9-7f0758d79cb9">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<imageExpression><![CDATA["/home/mmoya@PragmaInvest.com/Descargas/iconos (2)/box.png"]]></imageExpression>
+				</image>
+			</frame>
+		</band>
+	</title>
+</jasperReport>

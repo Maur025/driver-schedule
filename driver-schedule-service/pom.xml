@@ -175,6 +175,12 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports</artifactId>
+      <version>${jasperreports.version}</version>
+    </dependency>
+
   </dependencies>
 
   <parent>
@@ -209,6 +215,7 @@
     <open-csv.version>5.3</open-csv.version>
     <commons-csv.version>1.8</commons-csv.version>
     <kotlin.version>2.2.20</kotlin.version>
+    <jasperreports.version>6.21.5</jasperreports.version>
   </properties>
 
 </project>

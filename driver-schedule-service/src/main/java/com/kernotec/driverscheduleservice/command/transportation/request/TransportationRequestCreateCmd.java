@@ -2,8 +2,10 @@ package com.kernotec.driverscheduleservice.command.transportation.request;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
+import com.kernotec.driverscheduleservice.jpa.enums.GenerateCodeEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestService;
+import com.kernotec.driverscheduleservice.util.CodeGeneratorUtil;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -19,6 +21,7 @@ public class TransportationRequestCreateCmd extends
 {
 
     private final TransportationRequestService transportationRequestService;
+    private final CodeGeneratorUtil codeGeneratorUtil;
 
     @Override
     protected UUID run(Request request) {
@@ -29,25 +32,50 @@ public class TransportationRequestCreateCmd extends
         transportationRequest.setPassengers(request.passengers);
         transportationRequest.setStartTime(request.startTime);
         transportationRequest.setEndTime(request.endTime);
-        transportationRequest.setTripType(request.tripType);
-        transportationRequest.setTransportationRequestStateId(request.transportationRequestStateId);
-        transportationRequest.setPersonRequestedId(request.personRequestId);
         transportationRequest.setRequestedDate(request.requestedDate);
+        transportationRequest.setTripType(request.tripType);
         transportationRequest.setShortNotice(
             request.isShortNotice != null && request.isShortNotice);
         transportationRequest.setDetail(request.detail);
+        transportationRequest.setAssetPickup(
+            request.isAssetPickup != null && request.isAssetPickup);
+        transportationRequest.setEstimatedTotalDistanceKm(request.estimatedTotalDistanceKm);
+        transportationRequest.setEstimatedTotalDurationMin(request.estimatedTotalDurationMin);
+        transportationRequest.setWasRequestedByScheduler(request.wasRequestedByScheduler);
+        transportationRequest.setCode(codeGeneratorUtil.generateCodeApp(getGenerateCodeEnum(
+            transportationRequest.isAssetPickup(),
+            transportationRequest.isWasRequestedByScheduler()
+        )));
+        transportationRequest.setTransportationRequestStateId(request.transportationRequestStateId);
+        transportationRequest.setPersonRequestedId(request.personRequestId);
 
         transportationRequest = transportationRequestService.save(transportationRequest);
         return transportationRequest.getId();
     }
 
+
+    private GenerateCodeEnum getGenerateCodeEnum(boolean isAssetPickup,
+        boolean wasRequestedByScheduler)
+    {
+        if (isAssetPickup) {
+            return GenerateCodeEnum.ASSET_PICKUP;
+        }
+
+        if (wasRequestedByScheduler) {
+            return GenerateCodeEnum.REQUEST_BY_SCHEDULER;
+        }
+
+        return GenerateCodeEnum.REQUEST;
+    }
+
     @Builder
-    public record Request(@NotNull String peopleNumber, @NotNull ZonedDateTime startTime,
-                          @NotNull ZonedDateTime endTime, @NotNull TripTypeEnum tripType,
-                          @NotNull UUID transportationRequestStateId, String passengers,
-                          String assets, @NotNull UUID personRequestId,
-                          @NotNull LocalDateTime requestedDate, Boolean isShortNotice,
-                          String detail)
+    public record Request(@NotNull String peopleNumber, String assets, String passengers,
+                          @NotNull ZonedDateTime startTime, @NotNull ZonedDateTime endTime,
+                          @NotNull LocalDateTime requestedDate, @NotNull TripTypeEnum tripType,
+                          Boolean isShortNotice, String detail, Boolean isAssetPickup,
+                          Double estimatedTotalDistanceKm, Double estimatedTotalDurationMin,
+                          @NotNull Boolean wasRequestedByScheduler,
+                          @NotNull UUID transportationRequestStateId, @NotNull UUID personRequestId)
     {
 
     }

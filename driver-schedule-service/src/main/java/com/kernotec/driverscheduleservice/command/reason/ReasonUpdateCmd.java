@@ -21,8 +21,14 @@ public class ReasonUpdateCmd extends
     protected Void run(Request request) {
         Reason reason = reasonService.findByIdThrow(request.reasonId);
 
-        if (request.reasonDescription != null) {
-            // reason.setReasonDescription(request.reasonDescription);
+        if (request.value != null) {
+            reason.setValue(request.value);
+        }
+        if (request.code != null) {
+            reason.setCode(request.code);
+        }
+        if (request.reasonTypeId != null) {
+            reason.setReasonTypeId(request.reasonTypeId);
         }
 
         reasonService.save(reason);
@@ -30,7 +36,7 @@ public class ReasonUpdateCmd extends
     }
 
     @Builder
-    public record Request(@NotNull UUID reasonId, String reasonDescription) {
+    public record Request(@NotNull UUID reasonId, String value, String code, UUID reasonTypeId) {
 
     }
 }

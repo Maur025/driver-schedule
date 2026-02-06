@@ -2,7 +2,7 @@ package com.kernotec.driverscheduleservice.jpa.repository;
 
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.driverscheduleservice.jpa.entity.ContactCategory;
-import com.kernotec.driverscheduleservice.rest.dto.response.ContactCategoryLookupResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.contact.category.ContactCategoryLookupResponse;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;

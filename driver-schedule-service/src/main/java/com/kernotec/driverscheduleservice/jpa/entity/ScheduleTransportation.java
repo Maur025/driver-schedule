@@ -2,18 +2,18 @@ package com.kernotec.driverscheduleservice.jpa.entity;
 
 import com.kernotec.driverscheduleservice.audit.user.BaseAuditEntityUser;
 import com.kernotec.driverscheduleservice.util.SafeZoneDateTimeConverter;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -61,17 +61,15 @@ public class ScheduleTransportation extends BaseAuditEntityUser {
                 insertable = false, updatable = false)
     private ScheduleTransportationState scheduleTransportationState;
 
-    @ManyToMany
-    @JoinTable(name = "cancel_reasons",
-               joinColumns = @JoinColumn(name = "schedule_transportation_id",
-                                         referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "reason_id", referencedColumnName = "id"))
-    private Set<Reason> cancelReasons;
+    @OneToMany(mappedBy = "scheduleTransportation", fetch = FetchType.LAZY,
+               cascade = CascadeType.ALL)
+    private List<CancelReason> cancelReasons;
 
-    @ManyToMany
-    @JoinTable(name = "reschedule_reasons",
-               joinColumns = @JoinColumn(name = "schedule_transportation_id",
-                                         referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "reason_id", referencedColumnName = "id"))
-    private Set<Reason> rescheduleReasons;
+    @OneToMany(mappedBy = "scheduleTransportation", fetch = FetchType.LAZY,
+               cascade = CascadeType.ALL)
+    private List<RescheduleReason> rescheduleReasons;
+
+    @OneToMany(mappedBy = "scheduleTransportation", fetch = FetchType.LAZY,
+               cascade = CascadeType.ALL)
+    private List<TripAssignment> tripAssignments;
 }

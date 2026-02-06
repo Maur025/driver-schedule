@@ -46,6 +46,9 @@ public class RequestCoord extends BaseAuditEntity {
     @Column(name = "estimated_arrival_time")
     private ZonedDateTime estimatedArrivalTime;
 
+    @Column(name = "location_description", length = 512)
+    private String locationDescription;
+
     @Column(name = "transportation_request_id", nullable = false)
     private UUID transportationRequestId;
 

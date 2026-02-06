@@ -1,7 +1,6 @@
 package com.kernotec.driverscheduleservice.rest.command.transportation.request;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverscheduleservice.command.reason.ReasonCreateCmd;
 import com.kernotec.driverscheduleservice.command.reject.reason.RejectReasonCreateCmd;
 import com.kernotec.driverscheduleservice.command.transportation.request.TransportationRequestGetDtoCmd;
 import com.kernotec.driverscheduleservice.command.transportation.request.TransportationRequestUpdateCmd;
@@ -29,7 +28,6 @@ public class TransportationRequestRejectedCmd extends
     private final TransportationRequestGetDtoCmd transportationRequestGetDtoCmd;
     private final TransportationRequestStateService transportationRequestStateService;
     private final TransportationRequestUpdateCmd transportationRequestUpdateCmd;
-    private final ReasonCreateCmd reasonCreateCmd;
     private final RejectReasonCreateCmd rejectReasonCreateCmd;
 
     @Override
@@ -65,22 +63,10 @@ public class TransportationRequestRejectedCmd extends
                 .build())
             .execute();
 
-        if (rejectReasonRequest.getReasonDescription() == null
-            || rejectReasonRequest.getReasonDescription()
-            .isBlank())
-        {
-            log.debug("No reject reason description provided, skipping reason creation.");
-            return null;
-        }
-
-        UUID reasonId = reasonCreateCmd.withRequest(ReasonCreateCmd.Request.builder()
-                .reasonDescription(rejectReasonRequest.getReasonDescription())
-                .build())
-            .execute();
-
         rejectReasonCreateCmd.withRequest(RejectReasonCreateCmd.Request.builder()
                 .transportationRequestId(request.transportationRequestId)
-                .reasonId(reasonId)
+                .reasonId(rejectReasonRequest.getReasonId())
+                .otherReason(rejectReasonRequest.getOtherReason())
                 .build())
             .execute();
 

@@ -2,7 +2,7 @@ package com.kernotec.driverscheduleservice.jpa.repository;
 
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.driverscheduleservice.jpa.entity.LabelType;
-import com.kernotec.driverscheduleservice.rest.dto.response.LabelTypeLookupResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.label.type.LabelTypeLookupResponse;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

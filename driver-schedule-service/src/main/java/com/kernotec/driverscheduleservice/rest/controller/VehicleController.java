@@ -21,11 +21,11 @@ import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleCreate
 import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehiclePatchRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleScheduleConflictRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleUpdateRequest;
-import com.kernotec.driverscheduleservice.rest.dto.response.VehicleResponse;
-import com.kernotec.driverscheduleservice.rest.dto.response.VehicleScheduleConflictResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.vehicle.VehicleResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.vehicle.VehicleScheduleConflictResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation.ScheduleTransportationResponseMapper;
-import com.kernotec.driverscheduleservice.rest.mapper.vehicle.VehicleResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.response.schedule.transportation.ScheduleTransportationResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.response.vehicle.VehicleResponseMapper;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;

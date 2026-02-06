@@ -6,6 +6,7 @@ import com.kernotec.driverscheduleservice.command.schedule.transportation.log.Sc
 import com.kernotec.driverscheduleservice.command.transportation.request.TransportationRequestGetDtoCmd;
 import com.kernotec.driverscheduleservice.command.transportation.request.TransportationRequestUpdateCmd;
 import com.kernotec.driverscheduleservice.command.transportation.request.log.TransportationRequestLogCreateCmd;
+import com.kernotec.driverscheduleservice.command.trip.assignment.TripAssignmentManyCreateCmd;
 import com.kernotec.driverscheduleservice.exception.ScheduleTransportationException;
 import com.kernotec.driverscheduleservice.jpa.dto.TransportationRequestDto;
 import com.kernotec.driverscheduleservice.jpa.dto.TransportationRequestStateDto;
@@ -16,14 +17,18 @@ import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationServ
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationStateService;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestStateService;
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationCreateRequest;
-import com.kernotec.driverscheduleservice.rest.dto.response.ScheduleTransportationResponse;
+import com.kernotec.driverscheduleservice.rest.dto.request.trip.assignment.TripAssignmentCreateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.schedule.transportation.ScheduleTransportationResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.request.trip.assignment.TripAssignmentEntityMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.response.schedule.transportation.ScheduleTransportationResponseMapper;
+import com.kernotec.driverscheduleservice.util.ScheduleTransportationUtil;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -52,21 +57,34 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
     private final ZonedDateTimeUtil zonedDateTimeUtil;
     private final ScheduleTransportationLogCreateCmd scheduleTransportationLogCreateCmd;
     private final TransportationRequestLogCreateCmd transportationRequestLogCreateCmd;
+    private final TripAssignmentEntityMapper tripAssignmentEntityMapper;
+    private final TripAssignmentManyCreateCmd tripAssignmentManyCreateCmd;
+    private final ScheduleTransportationUtil scheduleTransportationUtil;
 
     @Override
     protected void validate(Request request) {
         ScheduleTransportationCreateRequest scheduleTransportationCreateRequest = request.scheduleTransportationCreateRequest;
 
-        /*scheduleTransportationDateValidationCmd.withRequest(
+        List<UUID> vehicleIds = scheduleTransportationCreateRequest.getTripAssignments()
+            .stream()
+            .map(TripAssignmentCreateRequest::getVehicleId)
+            .toList();
+
+        List<UUID> driverIds = scheduleTransportationCreateRequest.getTripAssignments()
+            .stream()
+            .map(TripAssignmentCreateRequest::getDriverId)
+            .toList();
+
+        scheduleTransportationDateValidationCmd.withRequest(
                 ScheduleTransportationDateValidationCmd.Request.builder()
-                    .vehicleId(scheduleTransportationCreateRequest.getVehicleId())
-                    .driverId(scheduleTransportationCreateRequest.getDriverId())
+                    .vehicleIdList(vehicleIds)
+                    .driverIdList(driverIds)
                     .requestedDate(scheduleTransportationCreateRequest.getRequestedDate())
                     .requestedStartTime(scheduleTransportationCreateRequest.getRequestedStartTime())
                     .requestedEndTime(scheduleTransportationCreateRequest.getRequestedEndTime())
                     .zoneId(scheduleTransportationCreateRequest.getZoneId())
                     .build())
-            .execute();*/
+            .execute();
     }
 
     @Override
@@ -136,6 +154,9 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
                     .build())
             .execute();
 
+        scheduleTransportationUtil.registryTripAssignments(
+            scheduleTransportationCreateRequest.getTripAssignments(), scheduleTransportationId);
+
         scheduleTransportationLogCreateCmd.withRequest(
                 ScheduleTransportationLogCreateCmd.Request.builder()
                     .scheduleTransportationId(scheduleTransportationId)
@@ -147,6 +168,7 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
 
         return scheduleTransportationId;
     }
+
 
     private void emitSocketMessage(UUID scheduleTransportationId,
         TransportationRequestDto transportationRequestDto)

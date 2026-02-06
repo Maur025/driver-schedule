@@ -25,14 +25,17 @@ public class LocationCreateCmd extends
         location.setCoordinate(request.coordinate);
         location.setName(request.name);
         location.setDescription(request.description);
+        location.setIcon(request.icon);
+        location.setColor(request.color);
+        location.setPlaceCategoryId(request.placeCategoryId);
 
         location = locationService.save(location);
         return location.getId();
     }
 
     @Builder
-    public record Request(@NotNull Coordinate coordinate, @NotNull String name,
-                          String description)
+    public record Request(@NotNull Coordinate coordinate, @NotNull String name, String description,
+                          String icon, String color, @NotNull UUID placeCategoryId)
     {
 
     }

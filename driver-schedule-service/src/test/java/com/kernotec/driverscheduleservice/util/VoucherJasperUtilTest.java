@@ -1,0 +1,192 @@
+package com.kernotec.driverscheduleservice.util;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.sql.Timestamp;
+import java.util.TimeZone;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+@Slf4j
+class VoucherJasperUtilTest {
+
+    @BeforeAll
+    static void setUp() {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    }
+
+    @Test
+    @DisplayName("should return a date string formated for voucher")
+    void shouldReturnADateStringFormatedForVoucher() {
+        String formattedDate = VoucherJasperUtil.formatDateToVoucher(
+            Timestamp.valueOf("2026-02-03 21:10:00.000"), "America/La_Paz");
+
+        log.info("Formatted Date: {}", formattedDate);
+
+        assertNotNull(formattedDate);
+        assertEquals("Feb 03, 2026 - 05:10 PM", formattedDate);
+    }
+
+    @Test
+    @DisplayName("should return full name with 2 parameters")
+    void shouldReturnFullNameWith2Parameters() {
+        String name = "John";
+        String lastName = "Doe";
+
+        String fullName = VoucherJasperUtil.getPersonFullName(name, lastName);
+
+        log.info("Full Name: {}", fullName);
+
+        assertNotNull(fullName);
+        assertEquals(name + " " + lastName, fullName);
+    }
+
+    @Test
+    @DisplayName("should return only name when lastname is null")
+    void shoulReturnOnlyNameWhenLastNameIsNull() {
+        String name = "John";
+
+        String fullName = VoucherJasperUtil.getPersonFullName(name, null);
+
+        log.info("Only Name: {}", fullName);
+
+        assertNotNull(fullName);
+        assertEquals(name, fullName);
+    }
+
+    @Test
+    @DisplayName("should return a string corresponding to ONE WAY enum")
+    void shouldReturnAStringCorrespondingToOneWayEnum() {
+        String tripTypeString = VoucherJasperUtil.getRequestTripType("ONE_WAY");
+
+        log.info("Trip Type String: {}", tripTypeString);
+
+        assertNotNull(tripTypeString);
+        assertEquals("Solo Ida", tripTypeString);
+    }
+
+    @Test
+    @DisplayName("should return na with invalid parameter")
+    void shouldReturnNullWithInvalidParameter() {
+        String withAdvance = VoucherJasperUtil.getRequestWithAdvance(null);
+
+        assertEquals("N/A", withAdvance);
+    }
+
+    @Test
+    @DisplayName("should return no in request with short notice")
+    void shouldReturnNoInRequestWithShortNotice() {
+        String withAdvance = VoucherJasperUtil.getRequestWithAdvance(true);
+
+        log.info("With Advance: {}", withAdvance);
+
+        assertEquals("No", withAdvance);
+    }
+
+    @Test
+    @DisplayName("should return yes in request without advance")
+    void shouldReturnYesInRequestWithoutAdvance() {
+        String withAdvance = VoucherJasperUtil.getRequestWithAdvance(false);
+
+        log.info("Without Advance: {}", withAdvance);
+
+        assertEquals("Sí", withAdvance);
+    }
+
+    @Test
+    @DisplayName("should return na with invalid parameter in pickup")
+    void shouldReturnNullWithInvalidParameterInPickup() {
+        String assetPickup = VoucherJasperUtil.getRequestAssetPickup(null);
+
+        assertEquals("N/A", assetPickup);
+    }
+
+    @Test
+    @DisplayName("should return yes in request with asset pickup")
+    void shouldReturnNoInRequestWithAssetPickup() {
+        String assetPickup = VoucherJasperUtil.getRequestAssetPickup(true);
+
+        log.info("With asset pickup: {}", assetPickup);
+
+        assertEquals("Sí", assetPickup);
+    }
+
+    @Test
+    @DisplayName("should return yes in request without asset pickup")
+    void shouldReturnYesInRequestWithoutAssetPickup() {
+        String assetPickup = VoucherJasperUtil.getRequestAssetPickup(false);
+
+        log.info("Without asset pickup: {}", assetPickup);
+
+        assertEquals("No", assetPickup);
+    }
+
+    @Test
+    @DisplayName("should return false when all parameters are null")
+    void shouldReturnFalseWhenAllParametersAreNull() {
+        boolean showRequestReasonMessage = VoucherJasperUtil.isShowRequestReasonMessage(
+            null, null, null);
+
+        assertFalse(showRequestReasonMessage);
+    }
+
+    @Test
+    @DisplayName("should return false when state equal to REQUESTED")
+    void shouldReturnFalseWhenStateEqualToRequested() {
+        boolean showRequestReasonMessage = VoucherJasperUtil.isShowRequestReasonMessage(
+            "REQUESTED", 45L, 20L);
+
+        assertFalse(showRequestReasonMessage);
+    }
+
+    @Test
+    @DisplayName("should return false when both counts are less than 1")
+    void shouldReturnFalseWhenBothCountsAreLessThan1() {
+        boolean showRequestReasonMessage = VoucherJasperUtil.isShowRequestReasonMessage(
+            "CANCELLED", 0L, 0L);
+
+        assertFalse(showRequestReasonMessage);
+    }
+
+    @Test
+    @DisplayName("should return true when any count is greater than 0")
+    void shouldReturnTrueWhenAnyCountIsGreaterThan0() {
+        boolean showRequestReasonMessage = VoucherJasperUtil.isShowRequestReasonMessage(
+            "CANCELLED", 1L, 0L);
+
+        assertTrue(showRequestReasonMessage);
+    }
+
+    @Test
+    @DisplayName("should return dateTime combined in America/La_Paz timezone")
+    void shouldReturnDateTimeCombinedInAmericaLa_PazTimezone() {
+        Timestamp timestampDate = Timestamp.valueOf("2026-02-04 01:06:00.000");
+        Timestamp timestampTime = Timestamp.valueOf("2026-02-03 21:10:00.000");
+
+        String dateTimeStr = VoucherJasperUtil.getDateWithConcatDateAndTime(
+            timestampDate, timestampTime, "America/La_Paz");
+
+        log.info("Combined DateTime String: {}", dateTimeStr);
+
+        assertEquals("Feb 04, 2026 - 05:10 PM", dateTimeStr);
+    }
+
+    @Test
+    @DisplayName("should return phone numbers of strig array")
+    void shouldReturnPhoneNumbersOfStringArray() {
+        String stringArray = """
+            [{"id" : "64de5a01-401a-4458-a0c3-1a5fc427836f", "value" : "77889997", "label" : "MOBILE"}, {"id" : "c1828e60-9ab4-480d-9781-cf39f17383b6", "value" : "558987779", "label" : "MAIN"}, {"id" : "45388e2e-8445-4720-bd05-6172ead04b6c", "value" : "1616", "label" : "WORK"}]
+            """;
+
+        String phoneNumbers = VoucherJasperUtil.getPersonPhoneContacts(stringArray);
+
+        log.info("Phone Numbers: {}", phoneNumbers);
+
+        assertEquals("77889997 - 1616", phoneNumbers);
+    }
+}

@@ -1,0 +1,20 @@
+package com.kernotec.driverscheduleservice.rest.mapper.response.reject.reason;
+
+import com.kernotec.driverscheduleservice.jpa.entity.RejectReason;
+import com.kernotec.driverscheduleservice.rest.dto.response.reject.reason.RejectReasonResponse;
+import com.kernotec.driverscheduleservice.rest.mapper.response.reason.ReasonResponseFlatMapper;
+import java.util.List;
+import java.util.Set;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+@Mapper(uses = {ReasonResponseFlatMapper.class})
+public interface RejectReasonWithReasonResponseMapper {
+
+    @Mapping(target = "transportationRequest", ignore = true)
+    RejectReasonResponse toResponse(RejectReason rejectReason);
+
+    List<RejectReasonResponse> toResponse(List<RejectReason> rejectReasonList);
+
+    Set<RejectReasonResponse> toResponse(Set<RejectReason> rejectReasonSet);
+}

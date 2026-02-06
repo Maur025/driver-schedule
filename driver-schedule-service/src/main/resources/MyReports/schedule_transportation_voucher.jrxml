@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.5.final using JasperReports Library version 6.21.5-74d586df47b25dbd05bd0957999819196e59934a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="schedule_transportation_voucher" pageWidth="612" pageHeight="792" columnWidth="486" leftMargin="70" rightMargin="56" topMargin="56" bottomMargin="56" uuid="2a492174-3ca5-49aa-8641-1e5788daea71">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="driver-schedule-service"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.sql.tables">
+		<![CDATA[c2NoZWR1bGVfdHJhbnNwb3J0YXRpb25zICwxNSwxNSxiNDdhZTE5YS1lMGQyLTQ5NDYtODAzYy01
+MGU1ZmI4N2MzMzQ7]]>
+	</property>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="528"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="460"/>
+	<parameter name="SCHEDULE_TRANSPORTATION_ID" class="java.lang.String">
+		<defaultValueExpression><![CDATA["f84bc7fb-1641-4d29-b1da-bb0b220ff42a"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT *
+FROM schedule_transportations st
+WHERE st.id = $P{SCHEDULE_TRANSPORTATION_ID}::uuid]]>
+	</queryString>
+	<field name="id" class="java.util.UUID">
+		<property name="com.jaspersoft.studio.field.name" value="id"/>
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="schedule_transportations"/>
+	</field>
+	<field name="created_at" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="created_at"/>
+		<property name="com.jaspersoft.studio.field.label" value="created_at"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="schedule_transportations"/>
+	</field>
+	<field name="created_by" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="created_by"/>
+		<property name="com.jaspersoft.studio.field.label" value="created_by"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="schedule_transportations"/>
+	</field>
+	<field name="updated_at" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="updated_at"/>
+		<property name="com.jaspersoft.studio.field.label" value="updated_at"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="schedule_transportations"/>
+	</field>
+	<field name="updated_by" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="updated_by"/>
+		<property name="com.jaspersoft.studio.field.label" value="updated_by"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="schedule_transportations"/>
+	</field>
+	<field name="version" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="version"/>
+		<property name="com.jaspersoft.studio.field.label" value="version"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="schedule_transportations"/>
+	</field>
+	<field name="deleted" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.name" value="deleted"/>
+		<property name="com.jaspersoft.studio.field.label" value="deleted"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="schedule_transportations"/>
+	</field>
+	<field name="schedule_from" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="schedule_from"/>
+		<property name="com.jaspersoft.studio.field.label" value="schedule_from"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="schedule_transportations"/>
+	</field>
+	<field name="schedule_to" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="schedule_to"/>
+		<property name="com.jaspersoft.studio.field.label" value="schedule_to"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="schedule_transportations"/>
+	</field>
+	<field name="transportation_request_id" class="java.util.UUID">
+		<property name="com.jaspersoft.studio.field.name" value="transportation_request_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="transportation_request_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="schedule_transportations"/>
+	</field>
+	<field name="schedule_transportation_state_id" class="java.util.UUID">
+		<property name="com.jaspersoft.studio.field.name" value="schedule_transportation_state_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="schedule_transportation_state_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="schedule_transportations"/>
+	</field>
+	<field name="person_requested_id" class="java.util.UUID">
+		<property name="com.jaspersoft.studio.field.name" value="person_requested_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="person_requested_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="schedule_transportations"/>
+	</field>
+	<field name="scheduled_date" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="scheduled_date"/>
+		<property name="com.jaspersoft.studio.field.label" value="scheduled_date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="schedule_transportations"/>
+	</field>
+	<field name="created_by_user" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="created_by_user"/>
+		<property name="com.jaspersoft.studio.field.label" value="created_by_user"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="schedule_transportations"/>
+	</field>
+	<field name="updated_by_user" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="updated_by_user"/>
+		<property name="com.jaspersoft.studio.field.label" value="updated_by_user"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="schedule_transportations"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="224" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<subreport>
+				<reportElement x="0" y="0" width="486" height="80" uuid="30dfafbe-c2e3-480e-8c85-e74e0539190e">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["title_voucher.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="0" y="80" width="486" height="144" uuid="b79b5db4-7da6-4387-84b0-c4618f0cbef7">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["header_voucher.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<detail>
+		<band height="340" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<subreport>
+				<reportElement x="0" y="0" width="486" height="110" uuid="1ca41cc9-e997-46d0-a0b8-33324b6a5f46">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["resource_assignment_voucher.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="0" y="110" width="486" height="150" uuid="2b896e2c-a5b5-4bcf-a5ee-8352cff0ea99">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["request_detail_voucher.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="0" y="260" width="486" height="80" uuid="bce08ac0-9070-4587-85e3-6a808e82fa11">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["request_additional_detail_voucher.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

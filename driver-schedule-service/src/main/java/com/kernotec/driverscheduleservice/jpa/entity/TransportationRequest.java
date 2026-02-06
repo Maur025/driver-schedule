@@ -3,6 +3,7 @@ package com.kernotec.driverscheduleservice.jpa.entity;
 import com.kernotec.driverscheduleservice.audit.user.BaseAuditEntityUser;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
 import com.kernotec.driverscheduleservice.util.SafeZoneDateTimeConverter;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -10,13 +11,12 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
@@ -71,6 +71,19 @@ public class TransportationRequest extends BaseAuditEntityUser {
     @Column(name = "is_asset_pickup", nullable = false, columnDefinition = "boolean default false")
     private boolean isAssetPickup = false;
 
+    @Column(name = "estimated_total_distance_km")
+    private Double estimatedTotalDistanceKm;
+
+    @Column(name = "estimated_total_duration_min")
+    private Double estimatedTotalDurationMin;
+
+    @Column(name = "code", length = 30, unique = true)
+    private String code;
+
+    @Column(name = "was_requested_by_scheduler", nullable = false,
+            columnDefinition = "boolean default false")
+    private boolean wasRequestedByScheduler = false;
+
     @Column(name = "transportation_request_state_id", nullable = false)
     private UUID transportationRequestStateId;
 
@@ -87,20 +100,18 @@ public class TransportationRequest extends BaseAuditEntityUser {
                 updatable = false)
     private Person personRequested;
 
-    @ManyToMany
-    @JoinTable(name = "reject_reasons",
-               joinColumns = @JoinColumn(name = "transportation_request_id",
-                                         referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "reason_id", referencedColumnName = "id"))
-    private Set<Reason> rejectReasons;
+    @OneToMany(mappedBy = "transportationRequest", fetch = FetchType.LAZY,
+               cascade = CascadeType.ALL)
+    private List<RejectReason> rejectReasons;
 
-    @ManyToMany
-    @JoinTable(name = "cancel_request_reasons",
-               joinColumns = @JoinColumn(name = "transportation_request_id",
-                                         referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "reason_id", referencedColumnName = "id"))
-    private Set<Reason> cancelReasons;
+    @OneToMany(mappedBy = "transportationRequest", fetch = FetchType.LAZY,
+               cascade = CascadeType.ALL)
+    private List<CancelRequestReason> cancelReasons;
 
     @OneToMany(mappedBy = "transportationRequest", fetch = FetchType.LAZY)
     private Set<ScheduleTransportation> scheduleTransportations;
+
+    @OneToMany(mappedBy = "transportationRequest", fetch = FetchType.LAZY,
+               cascade = CascadeType.ALL)
+    private List<RequestCoord> requestCoords;
 }

@@ -5,11 +5,12 @@ import com.kernotec.driverscheduleservice.command.transportation.request.log.Tra
 import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestService;
 import com.kernotec.driverscheduleservice.rest.dto.request.transportation.request.TransportationRequestCreateRequest;
-import com.kernotec.driverscheduleservice.rest.dto.response.TransportationRequestResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.transportation.request.TransportationRequestResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.transportation.request.TransportationRequestResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.response.transportation.request.TransportationRequestResponseMapper;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -30,14 +31,14 @@ public class ProcessTransportationRequestCreateRequestCmd extends
 
     private final TransportationRequestResponseMapper transportationRequestResponseMapper;
 
-    private final TransportationRequestApproveCmd transportationRequestApproveCmd;
+    private final TransportationRequestFlowCreateCmd transportationRequestFlowCreateCmd;
     private final WebSocketHandler webSocketHandler;
     private final TransportationRequestLogCreateCmd transportationRequestLogCreateCmd;
 
     @Override
     protected TransportationRequest run(Request request) {
-        UUID transportationRequestId = transportationRequestApproveCmd.withRequest(
-                TransportationRequestApproveCmd.Request.builder()
+        UUID transportationRequestId = transportationRequestFlowCreateCmd.withRequest(
+                TransportationRequestFlowCreateCmd.Request.builder()
                     .transportationRequestCreateRequest(request.transportationRequestCreateRequest)
                     .authentication(request.authentication)
                     .build())
@@ -69,7 +70,7 @@ public class ProcessTransportationRequestCreateRequestCmd extends
 
     @Builder
     public record Request(
-        @NotNull TransportationRequestCreateRequest transportationRequestCreateRequest,
+        @NotNull @Valid TransportationRequestCreateRequest transportationRequestCreateRequest,
         @NotNull Authentication authentication)
     {
 

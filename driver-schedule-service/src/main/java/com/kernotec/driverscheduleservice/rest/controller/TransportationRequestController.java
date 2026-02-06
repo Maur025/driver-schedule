@@ -4,22 +4,28 @@ import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
+import com.kernotec.driverscheduleservice.config.KernotecApiDefinition;
 import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestService;
+import com.kernotec.driverscheduleservice.report.jpa.enums.ReportDispositionEnum;
+import com.kernotec.driverscheduleservice.report.rest.command.pdf.PdfExportCmd;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.TransportationRequestSpec;
 import com.kernotec.driverscheduleservice.rest.command.transportation.request.ProcessTransportationRequestCancelledCmd;
 import com.kernotec.driverscheduleservice.rest.command.transportation.request.ProcessTransportationRequestCreateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.transportation.request.ProcessTransportationRequestRejectedCmd;
+import com.kernotec.driverscheduleservice.rest.command.transportation.request.VoucherTransportationRequestPdfExportCmd;
 import com.kernotec.driverscheduleservice.rest.dto.request.cancel.request.reason.CancelRequestReasonRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.reject.reason.RejectReasonRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.transportation.request.TransportationRequestCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.transportation.request.TransportationRequestFilterRequest;
-import com.kernotec.driverscheduleservice.rest.dto.response.TransportationRequestResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.transportation.request.TransportationRequestResponseMapper;
+import com.kernotec.driverscheduleservice.rest.dto.response.transportation.request.TransportationRequestResponse;
+import com.kernotec.driverscheduleservice.rest.mapper.response.transportation.request.TransportationRequestResponseMapper;
 import com.kernotec.driverscheduleservice.util.AppRoleUtil.IsRoleApplicantOrScheduler;
 import com.kernotec.driverscheduleservice.util.AppRoleUtil.IsRoleSchedulerOrAdmin;
+import com.kernotec.driverscheduleservice.util.VoucherJasperUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +57,11 @@ public class TransportationRequestController {
     private final ProcessTransportationRequestCreateRequestCmd processTransportationRequestCreateRequestCmd;
     private final ProcessTransportationRequestRejectedCmd processTransportationRequestRejectedCmd;
     private final ProcessTransportationRequestCancelledCmd processTransportationRequestCancelledCmd;
+    private final PdfExportCmd pdfExportCmd;
+    private final VoucherTransportationRequestPdfExportCmd voucherTransportationRequestPdfExportCmd;
+
+    private final KernotecApiDefinition kernotecApiDefinition;
+    private final VoucherJasperUtil voucherJasperUtil;
 
     @Operation(summary = "find all transportation requests")
     @GetMapping
@@ -133,11 +144,14 @@ public class TransportationRequestController {
                     .build())
             .execute();
 
+        String uri = voucherJasperUtil.getVoucherUrl(
+            "/transportation-requests/{id}/voucher", transportationRequest.getId());
+
         return SingleResponse.<TransportationRequestResponse>builder()
             .code(HttpStatus.CREATED.value())
             .data(transportationRequestResponseMapper.toResponse(
-                transportationRequest.getId(),
-                transportationRequest.getCorrelative()
+                transportationRequest.getId(), transportationRequest.getCorrelative(),
+                transportationRequest.getCode(), uri
             ))
             .build();
     }
@@ -180,5 +194,28 @@ public class TransportationRequestController {
             .code(HttpStatus.OK.value())
             .message("Transportation request cancelled successfully")
             .build();
+    }
+
+    @Operation(summary = "transportation request export voucher")
+    @GetMapping("{transportationRequestId}/voucher")
+    @ResponseStatus(HttpStatus.OK)
+    public void transportationRequestExportVoucher(@PathVariable UUID transportationRequestId,
+        @RequestParam(defaultValue = "America/La_Paz") String zoneId,
+        @RequestParam(defaultValue = "inline") ReportDispositionEnum disposition,
+        HttpServletResponse response)
+    {
+        pdfExportCmd.withRequest(PdfExportCmd.Request.builder()
+                .response(response)
+                .disposition(disposition)
+                .fileName("request-voucher")
+                .callbackGetReportBytes(() -> voucherTransportationRequestPdfExportCmd.withRequest(
+                        VoucherTransportationRequestPdfExportCmd.Request.builder()
+                            .transportationRequestId(transportationRequestId)
+                            .zoneId(zoneId)
+                            .build())
+                    .execute())
+                .build())
+            .execute();
+
     }
 }
