@@ -14,14 +14,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReasonRepository extends BaseRepository<Reason, UUID> {
 
-    @Query("""
+/*    @Query("""
         SELECT DISTINCT r
         FROM Reason r
         JOIN r.transportationRejectedRequests tr
         WHERE tr.id = :transportationRequestId
         """)
     Set<Reason> findRejectByTransportationRequestId(
-        @Param("transportationRequestId") UUID transportationRequestId);
+        @Param("transportationRequestId") UUID transportationRequestId);*/
 
     @Query("""
         SELECT r.id as id, r.value as value

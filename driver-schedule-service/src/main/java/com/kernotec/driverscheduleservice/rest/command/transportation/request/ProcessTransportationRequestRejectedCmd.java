@@ -4,7 +4,6 @@ import com.kernotec.core.command.AbstractCommand;
 import com.kernotec.driverscheduleservice.command.transportation.request.TransportationRequestGetDtoCmd;
 import com.kernotec.driverscheduleservice.command.transportation.request.log.TransportationRequestLogCreateCmd;
 import com.kernotec.driverscheduleservice.jpa.dto.TransportationRequestDto;
-import com.kernotec.driverscheduleservice.jpa.entity.Reason;
 import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
 import com.kernotec.driverscheduleservice.jpa.service.ReasonService;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestService;
@@ -18,7 +17,6 @@ import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
-import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -93,14 +91,15 @@ public class ProcessTransportationRequestRejectedCmd extends
         );
     }
 
+    /* TODO: Review util, remove because reason structure changed */
     private TransportationRequestResponse getTransportationRequestResponseWithFix(
         UUID transportationRequestId)
     {
         TransportationRequest transportationRequest = transportationRequestService.findByIdThrow(
             transportationRequestId);
 
-        Set<Reason> reasonSet = reasonService.findRejectByTransportationRequestId(
-            transportationRequestId);
+        /*Set<Reason> reasonSet = reasonService.findRejectByTransportationRequestId(
+            transportationRequestId);*/
 
         TransportationRequestResponse transportationRequestResponse = transportationRequestResponseMapper.toResponse(
             transportationRequest);
@@ -108,8 +107,8 @@ public class ProcessTransportationRequestRejectedCmd extends
         if (transportationRequestResponse.getRejectReasons()
             .isEmpty())
         {
-            transportationRequestResponse.setRejectReasons(
-                reasonResponseMapper.toResponse(reasonSet));
+            /*transportationRequestResponse.setRejectReasons(
+                reasonResponseMapper.toResponse(reasonSet));*/
         }
 
         return transportationRequestResponse;

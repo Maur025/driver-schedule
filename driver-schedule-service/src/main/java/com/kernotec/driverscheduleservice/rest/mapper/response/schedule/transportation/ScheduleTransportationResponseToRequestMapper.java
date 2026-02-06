@@ -14,6 +14,8 @@ public interface ScheduleTransportationResponseToRequestMapper {
     @Mapping(target = "transportationRequest", ignore = true)
     @Mapping(target = "cancelReasons", ignore = true)
     @Mapping(target = "rescheduleReasons", ignore = true)
+    @Mapping(target = "personRequested", ignore = true)
+    @Mapping(target = "tripAssignments", ignore = true)
     ScheduleTransportationResponse toResponse(ScheduleTransportation scheduleTransportation);
 
     ScheduleTransportationResponse toResponse(UUID id);

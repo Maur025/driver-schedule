@@ -11,8 +11,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -102,19 +100,13 @@ public class TransportationRequest extends BaseAuditEntityUser {
                 updatable = false)
     private Person personRequested;
 
-    @ManyToMany
-    @JoinTable(name = "reject_reasons",
-               joinColumns = @JoinColumn(name = "transportation_request_id",
-                                         referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "reason_id", referencedColumnName = "id"))
-    private Set<Reason> rejectReasons;
+    @OneToMany(mappedBy = "transportationRequest", fetch = FetchType.LAZY,
+               cascade = CascadeType.ALL)
+    private List<RejectReason> rejectReasons;
 
-    @ManyToMany
-    @JoinTable(name = "cancel_request_reasons",
-               joinColumns = @JoinColumn(name = "transportation_request_id",
-                                         referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "reason_id", referencedColumnName = "id"))
-    private Set<Reason> cancelReasons;
+    @OneToMany(mappedBy = "transportationRequest", fetch = FetchType.LAZY,
+               cascade = CascadeType.ALL)
+    private List<CancelRequestReason> cancelReasons;
 
     @OneToMany(mappedBy = "transportationRequest", fetch = FetchType.LAZY)
     private Set<ScheduleTransportation> scheduleTransportations;

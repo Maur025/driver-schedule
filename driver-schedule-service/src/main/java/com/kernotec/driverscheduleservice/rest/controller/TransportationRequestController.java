@@ -22,6 +22,7 @@ import com.kernotec.driverscheduleservice.rest.dto.response.transportation.reque
 import com.kernotec.driverscheduleservice.rest.mapper.response.transportation.request.TransportationRequestResponseMapper;
 import com.kernotec.driverscheduleservice.util.AppRoleUtil.IsRoleApplicantOrScheduler;
 import com.kernotec.driverscheduleservice.util.AppRoleUtil.IsRoleSchedulerOrAdmin;
+import com.kernotec.driverscheduleservice.util.VoucherJasperUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,7 +41,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
 @Tag(name = TransportationRequestSpec.TAG_NAME,
@@ -61,6 +61,7 @@ public class TransportationRequestController {
     private final VoucherTransportationRequestPdfExportCmd voucherTransportationRequestPdfExportCmd;
 
     private final KernotecApiDefinition kernotecApiDefinition;
+    private final VoucherJasperUtil voucherJasperUtil;
 
     @Operation(summary = "find all transportation requests")
     @GetMapping
@@ -143,13 +144,8 @@ public class TransportationRequestController {
                     .build())
             .execute();
 
-        String uri = UriComponentsBuilder.fromHttpUrl(kernotecApiDefinition.getServers()
-                .get(0)
-                .getUrl())
-            .path("/api/driver-schedule/transportation-requests/{id}/voucher")
-            .queryParam("disposition", "inline")
-            .buildAndExpand(transportationRequest.getId())
-            .toUriString();
+        String uri = voucherJasperUtil.getVoucherUrl(
+            "/transportation-requests/{id}/voucher", transportationRequest.getId());
 
         return SingleResponse.<TransportationRequestResponse>builder()
             .code(HttpStatus.CREATED.value())
