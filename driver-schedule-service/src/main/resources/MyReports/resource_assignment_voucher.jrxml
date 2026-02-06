@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.5.final using JasperReports Library version 6.21.5-74d586df47b25dbd05bd0957999819196e59934a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resource_assignment_voucher" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="612" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8e4e4b29-62f2-4e80-91f4-98009f67aea0">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="110" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<frame>
+				<reportElement x="0" y="0" width="486" height="110" uuid="791dcf2f-7841-4917-850a-a91b3cb80391">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<staticText>
+					<reportElement x="0" y="26" width="166" height="18" forecolor="#666666" uuid="060f8a0e-5068-4528-8af3-3e627269e102">
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Top">
+						<font fontName="OpenSans" size="8" isBold="false"/>
+					</textElement>
+					<text><![CDATA[CONDUCTOR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="166" y="26" width="110" height="18" forecolor="#666666" uuid="75d82a92-fcf2-44aa-b835-dc5285374af4">
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Top">
+						<font fontName="OpenSans" size="8" isBold="false"/>
+					</textElement>
+					<text><![CDATA[CONTACTO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="276" y="26" width="130" height="18" forecolor="#666666" uuid="0db428a1-fb18-44fa-b3af-c1676f098a73">
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Top">
+						<font fontName="OpenSans" size="8" isBold="false"/>
+					</textElement>
+					<text><![CDATA[VEHÍCULO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="406" y="26" width="80" height="18" forecolor="#666666" uuid="fdd7a82f-c81d-4086-b76e-4f7e7b0a2a60">
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font fontName="OpenSans" size="8" isBold="false"/>
+					</textElement>
+					<text><![CDATA[PLACA]]></text>
+				</staticText>
+				<frame>
+					<reportElement key="allocated-resources-detail" x="0" y="44" width="486" height="40" uuid="a1777b84-f4c2-43a7-b71e-2dbc2bd3b906">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineColor="#B8B8B8"/>
+						<bottomPen lineWidth="0.25" lineColor="#B8B8B8"/>
+					</box>
+					<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+						<reportElement x="0" y="10" width="166" height="14" uuid="b28ae38c-2882-45cb-8f12-e827901f63a9">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="OpenSans" size="10" isBold="true"/>
+						</textElement>
+						<textFieldExpression><![CDATA["Mauro Eduardo Moya Palli"]]></textFieldExpression>
+					</textField>
+					<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+						<reportElement x="166" y="10" width="110" height="14" uuid="3c403c06-8669-458f-b458-4bce181819b0">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="OpenSans" size="10" isBold="false"/>
+						</textElement>
+						<textFieldExpression><![CDATA["+ 591 65651462"]]></textFieldExpression>
+					</textField>
+					<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+						<reportElement x="276" y="10" width="130" height="14" uuid="883521a8-210e-4473-b88c-78a69c57b690">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="OpenSans" size="10" isBold="false"/>
+						</textElement>
+						<textFieldExpression><![CDATA["Toyota Hilux 2024"]]></textFieldExpression>
+					</textField>
+					<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+						<reportElement x="406" y="10" width="80" height="14" uuid="5274a300-75d2-4d1d-be25-01a11459c67f">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						</reportElement>
+						<textElement textAlignment="Right">
+							<font fontName="OpenSans" size="10" isBold="true"/>
+						</textElement>
+						<textFieldExpression><![CDATA["ABC-1234"]]></textFieldExpression>
+					</textField>
+				</frame>
+				<staticText>
+					<reportElement x="0" y="0" width="486" height="26" forecolor="#666666" uuid="d824f59b-e9ea-4d5b-8472-0e62e89d1a50">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="OpenSans" size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[RECURSOS ASIGNADOS]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</summary>
+</jasperReport>

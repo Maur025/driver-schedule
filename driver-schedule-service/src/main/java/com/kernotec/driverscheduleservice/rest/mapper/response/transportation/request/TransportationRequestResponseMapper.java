@@ -19,7 +19,8 @@ public interface TransportationRequestResponseMapper {
 
     TransportationRequestResponse toResponse(TransportationRequest transportationRequest);
 
-    TransportationRequestResponse toResponse(UUID id, Long correlative, String code);
+    TransportationRequestResponse toResponse(UUID id, Long correlative, String code,
+        String voucherUrl);
 
     List<TransportationRequestResponse> toResponse(
         List<TransportationRequest> transportationRequestList);

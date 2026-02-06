@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<fontFamilies>
+  <fontFamily name="Roboto">
+    <normal>fonts/roboto/Roboto-Regular.ttf</normal>
+    <bold>fonts/roboto/Roboto-Bold.ttf</bold>
+    <italic>fonts/roboto/Roboto-Italic.ttf</italic>
+    <boldItalic>fonts/roboto/Roboto-BoldItalic.ttf</boldItalic>
+    <pdfEncoding>Identity-H</pdfEncoding>
+    <pdfEmbedded>true</pdfEmbedded>
+  </fontFamily>
+
+  <fontFamily name="OpenSans">
+    <normal>fonts/open/sans/OpenSans-Regular.ttf</normal>
+    <bold>fonts/open/sans/OpenSans-Bold.ttf</bold>
+    <italic>fonts/open/sans/OpenSans-Italic.ttf</italic>
+    <boldItalic>fonts/open/sans/OpenSans-BoldItalic.ttf</boldItalic>
+    <pdfEncoding>Identity-H</pdfEncoding>
+    <pdfEmbedded>true</pdfEmbedded>
+  </fontFamily>
+</fontFamilies>
