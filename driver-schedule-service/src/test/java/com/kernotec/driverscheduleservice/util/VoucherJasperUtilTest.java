@@ -175,4 +175,18 @@ class VoucherJasperUtilTest {
 
         assertEquals("Feb 04, 2026 - 05:10 PM", dateTimeStr);
     }
+
+    @Test
+    @DisplayName("should return phone numbers of strig array")
+    void shouldReturnPhoneNumbersOfStringArray() {
+        String stringArray = """
+            [{"id" : "64de5a01-401a-4458-a0c3-1a5fc427836f", "value" : "77889997", "label" : "MOBILE"}, {"id" : "c1828e60-9ab4-480d-9781-cf39f17383b6", "value" : "558987779", "label" : "MAIN"}, {"id" : "45388e2e-8445-4720-bd05-6172ead04b6c", "value" : "1616", "label" : "WORK"}]
+            """;
+
+        String phoneNumbers = VoucherJasperUtil.getPersonPhoneContacts(stringArray);
+
+        log.info("Phone Numbers: {}", phoneNumbers);
+
+        assertEquals("77889997 - 1616", phoneNumbers);
+    }
 }

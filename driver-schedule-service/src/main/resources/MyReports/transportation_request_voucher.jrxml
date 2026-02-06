@@ -12,13 +12,13 @@
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="509"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="479"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="630"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="358"/>
 	<import value="java.time.LocalDate"/>
 	<import value="java.time.LocalDateTime"/>
 	<import value="com.kernotec.driverscheduleservice.util.VoucherJasperUtil"/>
 	<parameter name="TRANSPORTATION_REQUEST_ID" class="java.lang.String">
-		<defaultValueExpression><![CDATA["ed5fcf37-caa2-4f39-87f1-b0826fd1971f"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["2cad4136-633c-4c8b-bfa4-2534d4c2dc8f"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="MAIN_TITLE" class="java.lang.String">
 		<defaultValueExpression><![CDATA["Comprobante de Solicitud"]]></defaultValueExpression>
@@ -27,11 +27,32 @@
 		<defaultValueExpression><![CDATA["America/La_Paz"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT tr.created_at, tr.created_by_user, tr.people_number, tr.assets, tr.passengers,
-tr.start_time, tr.end_time, tr.trip_type, tr.is_short_notice, tr.requested_date, tr.correlative, tr.detail, 
-tr.is_asset_pickup, tr.code as request_code, tr.was_requested_by_scheduler, trs.code as request_status,
-preq.name as person_req_name, preq.last_name as person_req_lastname, COUNT(rrr.id) as reject_reasons_count,
-COUNT(crrr.id) as cancel_request_reasons_count
+		<![CDATA[SELECT tr.created_at,
+tr.created_by_user,
+tr.people_number,
+tr.assets,
+tr.passengers,
+tr.start_time,
+tr.end_time,
+tr.trip_type,
+tr.is_short_notice,
+tr.requested_date,
+tr.correlative,
+tr.detail, 
+tr.is_asset_pickup,
+tr.code as request_code,
+tr.was_requested_by_scheduler,
+trs.code as request_status,
+preq.name as person_req_name,
+preq.last_name as person_req_lastname,
+COUNT(DISTINCT rrr.id) as reject_reasons_count,
+COUNT(DISTINCT crrr.id) as cancel_request_reasons_count,
+COALESCE ((SELECT json_agg(json_build_object('id',c.id ,'value', c.value, 'label',lt.code))::TEXT
+FROM contacts c 
+LEFT JOIN label_types lt ON lt.id = c.label_type_id 
+INNER JOIN contact_categories cc ON cc.id = c.contact_category_id 
+WHERE c.person_id = preq.id and cc.code = 'PHONE' 
+), '[]') as contacts_list
 FROM transportation_requests tr
 INNER JOIN transportation_request_states trs ON trs.id = tr.transportation_request_state_id
 INNER JOIN person preq ON preq.id = tr.person_requested_id
@@ -40,7 +61,11 @@ LEFT JOIN reasons rrr ON rrr.id = rr.reason_id
 LEFT JOIN cancel_request_reasons crr ON crr.transportation_request_id = tr.id
 LEFT JOIN reasons crrr ON crrr.id = crr.reason_id
 WHERE tr.id = $P{TRANSPORTATION_REQUEST_ID}::uuid
-GROUP BY tr.id, trs.code, preq.name, preq.last_name]]>
+GROUP BY tr.id,
+trs.code,
+preq.id,
+preq.name,
+preq.last_name;]]>
 	</queryString>
 	<field name="created_at" class="java.sql.Timestamp">
 		<property name="com.jaspersoft.studio.field.name" value="created_at"/>
@@ -140,6 +165,10 @@ GROUP BY tr.id, trs.code, preq.name, preq.last_name]]>
 		<property name="com.jaspersoft.studio.field.name" value="cancel_request_reasons_count"/>
 		<property name="com.jaspersoft.studio.field.label" value="cancel_request_reasons_count"/>
 	</field>
+	<field name="contacts_list" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="contacts_list"/>
+		<property name="com.jaspersoft.studio.field.label" value="contacts_list"/>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -194,6 +223,9 @@ GROUP BY tr.id, trs.code, preq.name, preq.last_name]]>
 				</subreportParameter>
 				<subreportParameter name="DATE_TO_FORMAT">
 					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getDateWithConcatDateAndTime($F{requested_date},$F{end_time},$P{ZONE_ID})]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REQUESTED_FOR_CONTACT">
+					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getPersonPhoneContacts($F{contacts_list})]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA["header_voucher.jasper"]]></subreportExpression>

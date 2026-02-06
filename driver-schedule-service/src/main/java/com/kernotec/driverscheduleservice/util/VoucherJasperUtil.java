@@ -1,8 +1,13 @@
 package com.kernotec.driverscheduleservice.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kernotec.driverscheduleservice.config.KernotecApiDefinition;
+import com.kernotec.driverscheduleservice.jpa.enums.LabelTypeCodeEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.TransportationRequestStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
+import com.kernotec.driverscheduleservice.util.dto.VoucherContactDto;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -10,6 +15,8 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,8 +50,7 @@ public class VoucherJasperUtil {
 
         ZoneId clientZoneId = ZonedDateTimeUtil.getClientZoneId(zoneId);
 
-        ZonedDateTime zonedDateTime = timestamp.toInstant()
-            .atZone(clientZoneId);
+        var zonedDateTime = ZonedDateTime.ofInstant(timestamp.toInstant(), clientZoneId);
 
         System.out.println("Zoned date time in parameter: " + zonedDateTime);
 
@@ -135,6 +141,44 @@ public class VoucherJasperUtil {
 
         return combinedDateTime.format(
             DateTimeFormatter.ofPattern("MMM dd, yyyy - hh:mm a", Locale.ENGLISH));
+    }
+
+    public static String getPersonPhoneContacts(String phoneContactsStr) {
+        if (phoneContactsStr == null || phoneContactsStr.isBlank() || phoneContactsStr.equals(
+            "[]"))
+        {
+            return "N/A";
+        }
+
+        List<VoucherContactDto> voucherContactDtoList = getObjectFromString(
+            phoneContactsStr, new TypeReference<>() {
+            }
+        );
+
+        List<String> phoneValues = new ArrayList<>();
+
+        for (VoucherContactDto voucherContactDto : voucherContactDtoList) {
+            LabelTypeCodeEnum code = LabelTypeCodeEnum.fromValue(voucherContactDto.getLabel());
+
+            if (!LabelTypeCodeEnum.MOBILE.equals(code) && !LabelTypeCodeEnum.WORK.equals(code)) {
+                continue;
+            }
+
+            phoneValues.add(voucherContactDto.getValue());
+        }
+
+        return String.join(" - ", phoneValues);
+    }
+
+    private static <O> O getObjectFromString(String value, TypeReference<O> typeReference) {
+        var objectMapper = new ObjectMapper();
+
+        try {
+            return objectMapper.readValue(value, typeReference);
+        } catch (JsonProcessingException ex) {
+            log.error("Error parsing string to object. String value: {}", value, ex);
+            throw new RuntimeException(ex);
+        }
     }
 
     public String getVoucherUrl(String resource, Object... uriVariables) {
