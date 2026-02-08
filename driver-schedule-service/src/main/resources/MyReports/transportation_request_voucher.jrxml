@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.21.5.final using JasperReports Library version 6.21.5-74d586df47b25dbd05bd0957999819196e59934a  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="transportation_request_voucher" pageWidth="612" pageHeight="792" columnWidth="486" leftMargin="70" rightMargin="56" topMargin="56" bottomMargin="56" uuid="1776627e-4d24-4a70-9b44-f8fb8b3d1e38">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="driver-schedule-service"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="schedule-service"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
@@ -18,7 +18,7 @@
 	<import value="java.time.LocalDateTime"/>
 	<import value="com.kernotec.driverscheduleservice.util.VoucherJasperUtil"/>
 	<parameter name="TRANSPORTATION_REQUEST_ID" class="java.lang.String">
-		<defaultValueExpression><![CDATA["2cad4136-633c-4c8b-bfa4-2534d4c2dc8f"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["a7ed23fa-a3cd-4b91-9e9e-af9febb53646"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="MAIN_TITLE" class="java.lang.String">
 		<defaultValueExpression><![CDATA["Comprobante de Solicitud"]]></defaultValueExpression>
@@ -26,6 +26,11 @@
 	<parameter name="ZONE_ID" class="java.lang.String">
 		<defaultValueExpression><![CDATA["America/La_Paz"]]></defaultValueExpression>
 	</parameter>
+	<parameter name="TITLE_LOGO_IMG" class="java.lang.Object"/>
+	<parameter name="CLOCK_ICON_IMG" class="java.lang.Object"/>
+	<parameter name="USERS_ICON_IMG" class="java.lang.Object"/>
+	<parameter name="BOX_ICON_IMG" class="java.lang.Object"/>
+	<parameter name="PHONE_ICON_IMG" class="java.lang.Object"/>
 	<queryString>
 		<![CDATA[SELECT tr.created_at,
 tr.created_by_user,
@@ -192,6 +197,9 @@ preq.last_name;]]>
 				<subreportParameter name="SHOW_REASON_MESSAGE">
 					<subreportParameterExpression><![CDATA[VoucherJasperUtil.isShowRequestReasonMessage($F{request_status},$F{cancel_request_reasons_count},$F{reject_reasons_count} )]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="TITLE_LOGO_IMG">
+					<subreportParameterExpression><![CDATA[$P{TITLE_LOGO_IMG}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportExpression><![CDATA["title_voucher.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
@@ -226,6 +234,18 @@ preq.last_name;]]>
 				</subreportParameter>
 				<subreportParameter name="REQUESTED_FOR_CONTACT">
 					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getPersonPhoneContacts($F{contacts_list})]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="PHONE_ICON_IMG">
+					<subreportParameterExpression><![CDATA[$P{PHONE_ICON_IMG}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="CLOCK_ICON_IMG">
+					<subreportParameterExpression><![CDATA[$P{CLOCK_ICON_IMG}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="USERS_ICON_IMG">
+					<subreportParameterExpression><![CDATA[$P{USERS_ICON_IMG}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="BOX_ICON_IMG">
+					<subreportParameterExpression><![CDATA[$P{BOX_ICON_IMG}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA["header_voucher.jasper"]]></subreportExpression>

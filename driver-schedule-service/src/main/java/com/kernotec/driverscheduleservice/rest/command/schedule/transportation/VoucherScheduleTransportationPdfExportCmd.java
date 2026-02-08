@@ -1,4 +1,4 @@
-package com.kernotec.driverscheduleservice.rest.command.transportation.request;
+package com.kernotec.driverscheduleservice.rest.command.schedule.transportation;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.util.ResourceUtil;
@@ -20,28 +20,27 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class VoucherTransportationRequestPdfExportCmd extends
-    AbstractTransactionalRequiredCommand<VoucherTransportationRequestPdfExportCmd.Request, byte[]>
+public class VoucherScheduleTransportationPdfExportCmd extends
+    AbstractTransactionalRequiredCommand<VoucherScheduleTransportationPdfExportCmd.Request, byte[]>
 {
 
-    private final DataSource dataSource;
     private final VoucherJasperUtil voucherJasperUtil;
+    private final DataSource dataSource;
 
     @Override
     protected byte[] run(Request request) {
-
         Map<String, Object> params = voucherJasperUtil.getCommonParams(request.zoneId);
-        params.put("TRANSPORTATION_REQUEST_ID", request.transportationRequestId.toString());
+        params.put("SCHEDULE_TRANSPORTATION_ID", request.scheduleTransportationId.toString());
 
         try (Connection connection = dataSource.getConnection()) {
             String jasperFilePath = ResourceUtil.getAbsolutePath(
-                "MyReports/transportation_request_voucher.jasper");
+                "MyReports/schedule_transportation_voucher.jasper");
 
             return JasperRunManager.runReportToPdf(jasperFilePath, params, connection);
         } catch (SQLException | IOException | JRException ex) {
             log.error(
-                "Error while exporting transportation request PDF for transportation request with id {} and zone id {}",
-                request.transportationRequestId(), request.zoneId(), ex
+                "Error while exporting schedule transportation PDF for schedule transportation with id {} and zone id {}",
+                request.scheduleTransportationId(), request.zoneId(), ex
             );
 
             throw new RuntimeException(ex);
@@ -49,7 +48,7 @@ public class VoucherTransportationRequestPdfExportCmd extends
     }
 
     @Builder
-    public record Request(@NotNull UUID transportationRequestId, @NotNull String zoneId) {
+    public record Request(@NotNull UUID scheduleTransportationId, @NotNull String zoneId) {
 
     }
 }
