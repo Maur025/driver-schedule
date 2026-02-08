@@ -46,6 +46,10 @@
 	<parameter name="WAS_REQUESTED_BY_SCHEDULER" class="java.lang.Boolean">
 		<defaultValueExpression><![CDATA[false]]></defaultValueExpression>
 	</parameter>
+	<parameter name="CLOCK_ICON_IMG" class="java.lang.Object"/>
+	<parameter name="USERS_ICON_IMG" class="java.lang.Object"/>
+	<parameter name="BOX_ICON_IMG" class="java.lang.Object"/>
+	<parameter name="PHONE_ICON_IMG" class="java.lang.Object"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -136,7 +140,7 @@
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<imageExpression><![CDATA["/home/mmoya@PragmaInvest.com/Descargas/iconos (2)/clock.png"]]></imageExpression>
+					<imageExpression><![CDATA[$P{CLOCK_ICON_IMG}]]></imageExpression>
 				</image>
 			</frame>
 			<frame>
@@ -211,14 +215,14 @@
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<imageExpression><![CDATA["/home/mmoya@PragmaInvest.com/Descargas/iconos (2)/users.png"]]></imageExpression>
+					<imageExpression><![CDATA[$P{USERS_ICON_IMG}]]></imageExpression>
 				</image>
 				<image hAlign="Center" vAlign="Middle" isLazy="true">
 					<reportElement x="0" y="98" width="9" height="9" forecolor="#555555" uuid="8211ff44-540a-434a-bf2c-594dc5b39bf3">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<imageExpression><![CDATA["/home/mmoya@PragmaInvest.com/Descargas/iconos (2)/phone.png"]]></imageExpression>
+					<imageExpression><![CDATA[$P{PHONE_ICON_IMG}]]></imageExpression>
 				</image>
 			</frame>
 			<frame>
@@ -322,7 +326,7 @@
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
-					<imageExpression><![CDATA["/home/mmoya@PragmaInvest.com/Descargas/iconos (2)/box.png"]]></imageExpression>
+					<imageExpression><![CDATA[$P{BOX_ICON_IMG}]]></imageExpression>
 				</image>
 			</frame>
 		</band>

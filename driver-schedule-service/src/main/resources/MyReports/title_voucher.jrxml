@@ -14,6 +14,7 @@
 	<parameter name="SHOW_REASON_MESSAGE" class="java.lang.Boolean">
 		<defaultValueExpression><![CDATA[false]]></defaultValueExpression>
 	</parameter>
+	<parameter name="TITLE_LOGO_IMG" class="java.lang.Object"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -91,7 +92,7 @@
 				</rectangle>
 				<image>
 					<reportElement x="46" y="30" width="116" height="40" uuid="3a8172bf-bea2-42ec-a47a-5b7007876f8a"/>
-					<imageExpression><![CDATA["/home/mmoya@PragmaInvest.com/spring-project/driver-schedule/driver-schedule-service/src/main/resources/images/logo-kerno-booking.png"]]></imageExpression>
+					<imageExpression><![CDATA[$P{TITLE_LOGO_IMG}]]></imageExpression>
 				</image>
 				<textField>
 					<reportElement x="12" y="3" width="145" height="14" forecolor="#555555" uuid="68fb9986-b32c-4fe1-abf2-0b938247abc4">

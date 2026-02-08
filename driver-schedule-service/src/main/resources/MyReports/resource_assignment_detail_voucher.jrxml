@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.5.final using JasperReports Library version 6.21.5-74d586df47b25dbd05bd0957999819196e59934a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resource_assignment_detail_voucher" pageWidth="612" pageHeight="792" columnWidth="612" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e8f0e8f6-6d58-438f-a9fb-e88163dc0029">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="schedule-service"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<import value="com.kernotec.driverscheduleservice.util.VoucherJasperUtil"/>
+	<parameter name="SCHEDULE_TRANSPORTATION_ID" class="java.lang.String">
+		<defaultValueExpression><![CDATA["f19dfc57-daed-4aaf-9d30-4babd6454790"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select p.name as driver_name,
+p.last_name as driver_last_name,
+v.model as vehicle_model,
+v.vehicle_number,
+coalesce((
+select json_agg(json_build_object('id',c.id, 'value', c.value, 'label', lt.code ))::TEXT
+from contacts c
+inner join label_types lt on lt.id = c.label_type_id
+left join contact_categories cc on cc.id = c.contact_category_id
+where c.person_id = p.id and cc.code = 'PHONE'
+),'[]') as driver_phone_lisT
+from trip_assignments ta
+inner join person p on p.id = ta.driver_id
+inner join vehicles v on v.id = ta.vehicle_id 
+where ta.schedule_transportation_id =  $P{SCHEDULE_TRANSPORTATION_ID}::uuid;]]>
+	</queryString>
+	<field name="driver_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="driver_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="driver_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="person"/>
+	</field>
+	<field name="driver_last_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="driver_last_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="driver_last_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="person"/>
+	</field>
+	<field name="vehicle_model" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="vehicle_model"/>
+		<property name="com.jaspersoft.studio.field.label" value="vehicle_model"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="vehicles"/>
+	</field>
+	<field name="vehicle_number" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="vehicle_number"/>
+		<property name="com.jaspersoft.studio.field.label" value="vehicle_number"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="vehicles"/>
+	</field>
+	<field name="driver_phone_list" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="driver_phone_list"/>
+		<property name="com.jaspersoft.studio.field.label" value="driver_phone_list"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="40" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="0" y="10" width="166" height="14" uuid="dca50578-df66-4442-beaf-24aed0f0de54">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="OpenSans" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[VoucherJasperUtil.getPersonFullName($F{driver_name},$F{driver_last_name})]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="166" y="10" width="110" height="14" uuid="777e3659-5e83-4648-98ff-15230c350cf3">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="OpenSans" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[VoucherJasperUtil.getPersonPhoneContacts($F{driver_phone_list})]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="276" y="10" width="130" height="14" uuid="3b23e562-c188-4cfe-9434-10beaf23f821">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="OpenSans" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vehicle_model}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="406" y="10" width="80" height="14" uuid="80c04472-4403-47c3-969d-9943877654bb">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="OpenSans" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vehicle_number}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
