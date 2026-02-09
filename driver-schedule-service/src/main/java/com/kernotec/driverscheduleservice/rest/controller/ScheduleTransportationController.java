@@ -6,10 +6,13 @@ import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationService;
+import com.kernotec.driverscheduleservice.report.jpa.enums.ReportDispositionEnum;
+import com.kernotec.driverscheduleservice.report.rest.command.pdf.PdfExportCmd;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.ScheduleTransportationSpec;
 import com.kernotec.driverscheduleservice.rest.command.schedule.transportation.ProcessScheduleTransportationCancelRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.schedule.transportation.ProcessScheduleTransportationCreateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.schedule.transportation.ProcessScheduleTransportationUpdateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.command.schedule.transportation.VoucherScheduleTransportationPdfExportCmd;
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationCancelRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationFilterRequest;
@@ -19,6 +22,7 @@ import com.kernotec.driverscheduleservice.rest.mapper.response.schedule.transpor
 import com.kernotec.driverscheduleservice.util.AppRoleUtil.IsRoleSchedulerOrAdmin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -48,6 +52,8 @@ public class ScheduleTransportationController {
     private final ProcessScheduleTransportationCreateRequestCmd processScheduleTransportationCreateRequestCmd;
     private final ProcessScheduleTransportationUpdateRequestCmd processScheduleTransportationUpdateRequestCmd;
     private final ProcessScheduleTransportationCancelRequestCmd processScheduleTransportationCancelRequestCmd;
+    private final PdfExportCmd pdfExportCmd;
+    private final VoucherScheduleTransportationPdfExportCmd voucherScheduleTransportationPdfExportCmd;
 
     @Operation(summary = "find all schedule transportations")
     @GetMapping
@@ -190,7 +196,22 @@ public class ScheduleTransportationController {
     @Operation(summary = "schedule transportation export voucher")
     @GetMapping("{scheduleTransportationId}/voucher")
     @ResponseStatus(HttpStatus.OK)
-    public void scheduleTransportationExportVoucher(@PathVariable UUID scheduleTransportationId) {
-
+    public void scheduleTransportationExportVoucher(@PathVariable UUID scheduleTransportationId,
+        @RequestParam(defaultValue = "America/La_Paz") String zoneId,
+        @RequestParam(defaultValue = "inline") ReportDispositionEnum disposition,
+        HttpServletResponse response)
+    {
+        pdfExportCmd.withRequest(PdfExportCmd.Request.builder()
+                .response(response)
+                .disposition(disposition)
+                .fileName("schedule_transportation_voucher")
+                .callbackGetReportBytes(() -> voucherScheduleTransportationPdfExportCmd.withRequest(
+                        VoucherScheduleTransportationPdfExportCmd.Request.builder()
+                            .scheduleTransportationId(scheduleTransportationId)
+                            .zoneId(zoneId)
+                            .build())
+                    .execute())
+                .build())
+            .execute();
     }
 }
