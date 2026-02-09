@@ -41,21 +41,29 @@ tr.was_requested_by_scheduler,
 trs.code as request_status,
 preq.name as person_req_name,
 preq.last_name as person_req_lastname,
-COUNT(DISTINCT rrr.id) as reject_reasons_count,
-COUNT(DISTINCT crrr.id) as cancel_request_reasons_count,
+COUNT(DISTINCT rr.id) as reject_reasons_count,
+COUNT(DISTINCT crr.id) as cancel_request_reasons_count,
 COALESCE ((SELECT json_agg(json_build_object('id',c.id ,'value', c.value, 'label',lt.code))::TEXT
-FROM contacts c 
-LEFT JOIN label_types lt ON lt.id = c.label_type_id 
-INNER JOIN contact_categories cc ON cc.id = c.contact_category_id 
-WHERE c.person_id = preq.id and cc.code = 'PHONE' 
-), '[]') as contacts_list
+	FROM contacts c 
+	LEFT JOIN label_types lt ON lt.id = c.label_type_id 
+	INNER JOIN contact_categories cc ON cc.id = c.contact_category_id 
+	WHERE c.person_id = preq.id and cc.code = 'PHONE' 
+), '[]') as contacts_list,
+coalesce((select json_agg(json_build_object('reasonLabel',r_rej.value, 'reasonCode',r_rej.code, 'otherReason', rej_r.other_reason ))::TEXT
+	from reject_reasons rej_r
+	inner join reasons r_rej on r_rej.id = rej_r.reason_id 
+	where rej_r.transportation_request_id = tr.id
+),'[]') as reject_reason_list,
+coalesce((select json_agg(json_build_object('reasonLabel',r_canr.value, 'reasonCode',r_canr.code, 'otherReason',canr_r.other_reason ))::TEXT
+	from cancel_request_reasons canr_r
+	inner join reasons r_canr on r_canr.id = canr_r.reason_id 
+	where canr_r.transportation_request_id = tr.id 
+),'[]') as cancel_request_reason_list
 FROM transportation_requests tr
 INNER JOIN transportation_request_states trs ON trs.id = tr.transportation_request_state_id
 INNER JOIN person preq ON preq.id = tr.person_requested_id
 LEFT JOIN reject_reasons rr ON rr.transportation_request_id = tr.id
-LEFT JOIN reasons rrr ON rrr.id = rr.reason_id
 LEFT JOIN cancel_request_reasons crr ON crr.transportation_request_id = tr.id
-LEFT JOIN reasons crrr ON crrr.id = crr.reason_id
 WHERE tr.id = $P{TRANSPORTATION_REQUEST_ID}::uuid
 GROUP BY tr.id,
 trs.code,
@@ -165,6 +173,14 @@ preq.last_name;]]>
 		<property name="com.jaspersoft.studio.field.name" value="contacts_list"/>
 		<property name="com.jaspersoft.studio.field.label" value="contacts_list"/>
 	</field>
+	<field name="reject_reason_list" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="reject_reason_list"/>
+		<property name="com.jaspersoft.studio.field.label" value="reject_reason_list"/>
+	</field>
+	<field name="cancel_request_reason_list" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="cancel_request_reason_list"/>
+		<property name="com.jaspersoft.studio.field.label" value="cancel_request_reason_list"/>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -190,6 +206,9 @@ preq.last_name;]]>
 				</subreportParameter>
 				<subreportParameter name="TITLE_LOGO_IMG">
 					<subreportParameterExpression><![CDATA[$P{TITLE_LOGO_IMG}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REASON_MESSAGE">
+					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getRequestReasonMessages($F{request_status},$F{cancel_request_reason_list},$F{reject_reason_list})]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportExpression><![CDATA["title_voucher.jasper"]]></subreportExpression>
 			</subreport>
@@ -237,6 +256,12 @@ preq.last_name;]]>
 				</subreportParameter>
 				<subreportParameter name="BOX_ICON_IMG">
 					<subreportParameterExpression><![CDATA[$P{BOX_ICON_IMG}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="WAS_REQUESTED_BY_SCHEDULER">
+					<subreportParameterExpression><![CDATA[$F{was_requested_by_scheduler}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REQUESTED_BY">
+					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getRequestedByFullName($F{created_by_user})]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA["header_voucher.jasper"]]></subreportExpression>

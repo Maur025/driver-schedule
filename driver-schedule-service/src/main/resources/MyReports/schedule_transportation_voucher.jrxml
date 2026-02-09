@@ -35,14 +35,26 @@ tr.is_asset_pickup,
 tr.passengers,
 tr.assets,
 tr.detail,
+tr.created_by_user,
+tr.was_requested_by_scheduler,
 coalesce((select json_agg(json_build_object('id', c.id, 'value', c.value, 'label', lt.code ))::TEXT
-from contacts c
-left join label_types lt on lt.id = c.label_type_id 
-inner join contact_categories cc on cc.id = c.contact_category_id
-where c.person_id = preq.id and cc.code = 'PHONE'
+	from contacts c
+	left join label_types lt on lt.id = c.label_type_id 
+	inner join contact_categories cc on cc.id = c.contact_category_id
+	where c.person_id = preq.id and cc.code = 'PHONE'
 ) ,'[]') as preq_phone_list,
 count(DISTINCT cr.id) as cancel_reasons_count,
-count(DISTINCT rr.id) as reschedule_reasons_count
+count(DISTINCT rr.id) as reschedule_reasons_count,
+coalesce((select json_agg(json_build_object('reasonLabel', r_canr.value, 'reasonCode',r_canr.code, 'otherReason',canr.other_reason ))::TEXT
+	from cancel_reasons canr
+	inner join reasons r_canr on r_canr.id = canr.reason_id
+	where canr.schedule_transportation_id = st.id 
+),'[]') as cancel_reason_list,
+coalesce((select json_agg(json_build_object('reasonLabel',r_resr.value, 'reasonCode', r_resr.code, 'otherReason', resr.other_reason ))::TEXT
+	from reschedule_reasons resr
+	inner join reasons r_resr on r_resr.id = resr.reason_id
+	where resr.schedule_transportation_id = st.id 
+),'[]') as reschedule_reason_list
 FROM schedule_transportations st
 inner join schedule_transportation_states sts on sts.id = st.schedule_transportation_state_id
 inner join transportation_requests tr on tr.id = st.transportation_request_id 
@@ -61,6 +73,8 @@ tr.is_asset_pickup,
 tr.passengers,
 tr.assets,
 tr.detail,
+tr.created_by_user ,
+tr.was_requested_by_scheduler,
 preq.id,
 preq."name",
 preq.last_name;]]>
@@ -135,6 +149,16 @@ preq.last_name;]]>
 		<property name="com.jaspersoft.studio.field.label" value="detail"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="transportation_requests"/>
 	</field>
+	<field name="created_by_user" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="created_by_user"/>
+		<property name="com.jaspersoft.studio.field.label" value="created_by_user"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="transportation_requests"/>
+	</field>
+	<field name="was_requested_by_scheduler" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.name" value="was_requested_by_scheduler"/>
+		<property name="com.jaspersoft.studio.field.label" value="was_requested_by_scheduler"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="transportation_requests"/>
+	</field>
 	<field name="preq_phone_list" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="preq_phone_list"/>
 		<property name="com.jaspersoft.studio.field.label" value="preq_phone_list"/>
@@ -146,6 +170,14 @@ preq.last_name;]]>
 	<field name="reschedule_reasons_count" class="java.lang.Long">
 		<property name="com.jaspersoft.studio.field.name" value="reschedule_reasons_count"/>
 		<property name="com.jaspersoft.studio.field.label" value="reschedule_reasons_count"/>
+	</field>
+	<field name="cancel_reason_list" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="cancel_reason_list"/>
+		<property name="com.jaspersoft.studio.field.label" value="cancel_reason_list"/>
+	</field>
+	<field name="reschedule_reason_list" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="reschedule_reason_list"/>
+		<property name="com.jaspersoft.studio.field.label" value="reschedule_reason_list"/>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -174,6 +206,9 @@ preq.last_name;]]>
 				</subreportParameter>
 				<subreportParameter name="SHOW_REASON_MESSAGE">
 					<subreportParameterExpression><![CDATA[VoucherJasperUtil.isShowScheduleReasonMessage($F{request_unique_code},$F{cancel_reasons_count},$F{reschedule_reasons_count})]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REASON_MESSAGE">
+					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getScheduleReasonMessage($F{schedule_state_code},$F{cancel_reason_list},$F{reschedule_reason_list})]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA["title_voucher.jasper"]]></subreportExpression>
@@ -222,6 +257,12 @@ preq.last_name;]]>
 				</subreportParameter>
 				<subreportParameter name="REQUESTED_FOR_CONTACT">
 					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getPersonPhoneContacts($F{preq_phone_list})]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="WAS_REQUESTED_BY_SCHEDULER">
+					<subreportParameterExpression><![CDATA[$F{was_requested_by_scheduler}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REQUESTED_BY">
+					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getRequestedByFullName($F{created_by_user})]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA["header_voucher.jasper"]]></subreportExpression>
