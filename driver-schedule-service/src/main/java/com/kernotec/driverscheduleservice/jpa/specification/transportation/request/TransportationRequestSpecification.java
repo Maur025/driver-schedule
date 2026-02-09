@@ -18,8 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 
+@Slf4j
 public record TransportationRequestSpecification(
     TransportationRequestSpecificationCriteria criteria) implements
     Specification<TransportationRequest>
@@ -154,10 +156,9 @@ public record TransportationRequestSpecification(
         CriteriaBuilder cb)
     {
         return Optional.ofNullable(criteria.getSimpleDate())
-            .map(simpleDate -> CommonSpecification.simpleDatePredicate(
-                cb, root.get("createdAt"),
-                simpleDate, criteria.getZoneId()
-            ));
+            .map(
+                simpleDate -> CommonSpecification.simpleDatePredicate(
+                    cb, root.get("requestedFrom"), simpleDate, criteria.getZoneId()));
     }
 
     public TransportationRequestSpecification withDateRange(ZonedDateTime fromDate,
@@ -177,7 +178,9 @@ public record TransportationRequestSpecification(
         if (from != null && to != null) {
             return Optional.of(
                 CommonSpecification.dateRangePredicate(
-                    cb, root.get("createdAt"), from, to, criteria.getZoneId()));
+                    cb, root.get("requestedFrom"), from, to,
+                    criteria.getZoneId()
+                ));
         }
 
         return Optional.empty();
@@ -193,7 +196,7 @@ public record TransportationRequestSpecification(
     {
         return Optional.ofNullable(criteria.getMonthDate())
             .map(monthDate -> CommonSpecification.monthDatePredicate(
-                cb, root.get("createdAt"),
+                cb, root.get("requestedFrom"),
                 monthDate, criteria.getZoneId()
             ));
     }
@@ -208,7 +211,7 @@ public record TransportationRequestSpecification(
     {
         return Optional.ofNullable(criteria.getYearDate())
             .map(yearDate -> CommonSpecification.yearDatePredicate(
-                cb, root.get("createdAt"),
+                cb, root.get("requestedFrom"),
                 yearDate, criteria.getZoneId()
             ));
     }

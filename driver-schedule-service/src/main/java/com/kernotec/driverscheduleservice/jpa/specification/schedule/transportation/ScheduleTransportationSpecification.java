@@ -131,7 +131,9 @@ public record ScheduleTransportationSpecification(
         return Optional.ofNullable(criteria.getVehicleId())
             .map(
                 vehicleId -> cb.equal(
-                    getOrCreateTripAssignmentJoin(joinMap, root).get("vehicleId"), vehicleId));
+                    getOrCreateTripAssignmentJoin(joinMap, root).get("vehicleId"),
+                    vehicleId
+                ));
     }
 
     public ScheduleTransportationSpecification withVehicleIds(List<UUID> vehicleIds) {
@@ -243,7 +245,7 @@ public record ScheduleTransportationSpecification(
     {
         return Optional.ofNullable(criteria.getSimpleDate())
             .map(simpleDate -> CommonSpecification.simpleDatePredicate(
-                cb, root.get("createdAt"),
+                cb, root.get("scheduleFrom"),
                 simpleDate, criteria.getZoneId()
             ));
     }
@@ -265,9 +267,7 @@ public record ScheduleTransportationSpecification(
         if (from != null && to != null) {
             return Optional.of(
                 CommonSpecification.dateRangePredicate(
-                    cb, root.get("createdAt"), from, to,
-                    criteria.getZoneId()
-                ));
+                    cb, root.get("scheduleFrom"), from, to, criteria.getZoneId()));
         }
 
         return Optional.empty();
@@ -283,7 +283,7 @@ public record ScheduleTransportationSpecification(
     {
         return Optional.ofNullable(criteria.getMonthDate())
             .map(monthDate -> CommonSpecification.monthDatePredicate(
-                cb, root.get("createdAt"),
+                cb, root.get("scheduleFrom"),
                 monthDate, criteria.getZoneId()
             ));
     }
@@ -298,7 +298,7 @@ public record ScheduleTransportationSpecification(
     {
         return Optional.ofNullable(criteria.getYearDate())
             .map(yearDate -> CommonSpecification.yearDatePredicate(
-                cb, root.get("createdAt"),
+                cb, root.get("scheduleFrom"),
                 yearDate, criteria.getZoneId()
             ));
     }
