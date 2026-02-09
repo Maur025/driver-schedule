@@ -6,10 +6,12 @@ import com.kernotec.driverscheduleservice.rest.mapper.response.reason.ReasonResp
 import java.util.List;
 import java.util.Set;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(uses = {ReasonResponseFlatMapper.class})
 public interface CancelReqReasonWithReasonResponseMapper {
 
+    @Mapping(target = "transportationRequest", ignore = true)
     CancelRequestReasonResponse toResponse(CancelRequestReason cancelRequestReason);
 
     List<CancelRequestReasonResponse> toResponse(List<CancelRequestReason> cancelRequestReasonList);
