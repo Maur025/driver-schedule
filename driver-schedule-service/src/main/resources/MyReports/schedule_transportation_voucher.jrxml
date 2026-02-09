@@ -1,22 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.21.5.final using JasperReports Library version 6.21.5-74d586df47b25dbd05bd0957999819196e59934a  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="schedule_transportation_voucher" pageWidth="612" pageHeight="792" columnWidth="486" leftMargin="70" rightMargin="56" topMargin="56" bottomMargin="56" uuid="2a492174-3ca5-49aa-8641-1e5788daea71">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="schedule-service"/>
-	<property name="com.jaspersoft.studio.unit." value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="cm"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="cm"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="cm"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="cm"/>
-	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="schedule_transportation_voucher" pageWidth="612" pageHeight="792" columnWidth="500" leftMargin="70" rightMargin="42" topMargin="42" bottomMargin="28" uuid="2a492174-3ca5-49aa-8641-1e5788daea71">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="driver-schedule-service"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="618"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="370"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="436"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="552"/>
 	<import value="com.kernotec.driverscheduleservice.util.VoucherJasperUtil"/>
 	<parameter name="SCHEDULE_TRANSPORTATION_ID" class="java.lang.String">
-		<defaultValueExpression><![CDATA["f19dfc57-daed-4aaf-9d30-4babd6454790"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["458c3bd3-cc4a-455e-a26c-e85ceea119a8"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="MAIN_TITLE" class="java.lang.String">
 		<defaultValueExpression><![CDATA["Comprobante de Salida"]]></defaultValueExpression>
@@ -163,7 +154,7 @@ preq.last_name;]]>
 		<band height="224" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<subreport>
-				<reportElement x="0" y="0" width="486" height="80" uuid="30dfafbe-c2e3-480e-8c85-e74e0539190e">
+				<reportElement x="0" y="0" width="500" height="80" uuid="30dfafbe-c2e3-480e-8c85-e74e0539190e">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -188,7 +179,7 @@ preq.last_name;]]>
 				<subreportExpression><![CDATA["title_voucher.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement x="0" y="80" width="486" height="144" uuid="b79b5db4-7da6-4387-84b0-c4618f0cbef7">
+				<reportElement x="0" y="80" width="500" height="144" uuid="b79b5db4-7da6-4387-84b0-c4618f0cbef7">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -241,7 +232,7 @@ preq.last_name;]]>
 		<band height="340" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<subreport>
-				<reportElement x="0" y="0" width="486" height="110" uuid="1ca41cc9-e997-46d0-a0b8-33324b6a5f46">
+				<reportElement x="0" y="0" width="500" height="110" uuid="1ca41cc9-e997-46d0-a0b8-33324b6a5f46">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -254,7 +245,7 @@ preq.last_name;]]>
 				<subreportExpression><![CDATA["resource_assignment_voucher.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement x="0" y="110" width="486" height="150" uuid="2b896e2c-a5b5-4bcf-a5ee-8352cff0ea99">
+				<reportElement x="0" y="110" width="500" height="150" uuid="2b896e2c-a5b5-4bcf-a5ee-8352cff0ea99">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -269,7 +260,7 @@ preq.last_name;]]>
 				<subreportExpression><![CDATA["request_detail_voucher.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement x="0" y="260" width="486" height="80" uuid="bce08ac0-9070-4587-85e3-6a808e82fa11">
+				<reportElement x="0" y="260" width="500" height="80" uuid="bce08ac0-9070-4587-85e3-6a808e82fa11">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -282,4 +273,90 @@ preq.last_name;]]>
 			</subreport>
 		</band>
 	</detail>
+	<pageFooter>
+		<band height="36">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<frame>
+				<reportElement x="-6" y="0" width="514" height="36" uuid="9854712c-f8d5-4541-9c55-11655d4ee1c5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<rectangle radius="4">
+					<reportElement x="6" y="4" width="500" height="30" uuid="765abe84-6962-40cc-8762-19c0d30e742d">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</rectangle>
+				<rectangle radius="0">
+					<reportElement x="0" y="0" width="510" height="8" forecolor="#FFFFFF" uuid="6bec1bb6-cf4f-4d00-8348-09d2397031ae">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.0"/>
+					</graphicElement>
+				</rectangle>
+				<ellipse>
+					<reportElement x="500" y="0" width="12" height="12" uuid="715f641b-11e6-47ea-8864-3532c27539da">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+				</ellipse>
+				<rectangle radius="0">
+					<reportElement x="0" y="8" width="20" height="12" forecolor="#FFFFFF" uuid="d8781823-6f11-4203-aa08-41b10e1c4d1a">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.0"/>
+					</graphicElement>
+				</rectangle>
+				<rectangle radius="3">
+					<reportElement x="1" y="12" width="11" height="11" backcolor="#000000" uuid="a34f240e-734e-4c68-80a6-727a38264b0a">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.0"/>
+					</graphicElement>
+				</rectangle>
+				<ellipse>
+					<reportElement x="2" y="13" width="9" height="9" uuid="63c4b8b2-03a0-4615-9afa-895f3c601bd8">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.0"/>
+					</graphicElement>
+				</ellipse>
+				<ellipse>
+					<reportElement x="5" y="16" width="3" height="3" backcolor="#000000" uuid="e3ed9f0c-b215-42f3-b295-d2f4f03737a9">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.0"/>
+					</graphicElement>
+				</ellipse>
+				<textField evaluationTime="Master">
+					<reportElement x="421" y="22" width="80" height="10" uuid="1477eef6-c0e0-41f9-8cd2-6b631d2b08c7">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right">
+						<font fontName="OpenSans" size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Página " +$V{PAGE_NUMBER}+ " de " +$V{MASTER_TOTAL_PAGES}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
 </jasperReport>
