@@ -29,9 +29,9 @@ public class ReasonService extends BaseServiceImpl<Reason, UUID> {
         return repository;
     }
 
-    public Set<Reason> findRejectByTransportationRequestId(UUID transportationRequestId) {
+    /*public Set<Reason> findRejectByTransportationRequestId(UUID transportationRequestId) {
         return repository.findRejectByTransportationRequestId(transportationRequestId);
-    }
+    }*/
 
     public Page<ReasonLookupResponse> findAllToLookup(String keyword, UUID reasonTypeId,
         ReasonTypeEnum reasonType, Pageable pageable)

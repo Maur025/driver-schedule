@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.driverscheduleservice.audit.user.dto.response.AuditEntityUserResponse;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
+import com.kernotec.driverscheduleservice.rest.dto.response.cancel.request.reason.CancelRequestReasonResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.person.PersonResponse;
-import com.kernotec.driverscheduleservice.rest.dto.response.reason.ReasonResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.reject.reason.RejectReasonResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.request.coord.RequestCoordResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.transportation.request.state.TransportationRequestStateResponse;
@@ -46,10 +47,10 @@ public class TransportationRequestResponse extends AuditEntityUserResponse {
     private UUID personRequestedId;
     private PersonResponse personRequested;
 
-    private Set<ReasonResponse> rejectReasons;
-    private Set<ReasonResponse> cancelReasons;
     private Set<ScheduleTransportationResponse> scheduleTransportations;
 
+    private List<RejectReasonResponse> rejectReasons;
+    private List<CancelRequestReasonResponse> cancelReasons;
     private List<RequestCoordResponse> requestCoords;
 
     private String voucherUrl;

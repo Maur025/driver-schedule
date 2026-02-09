@@ -4,15 +4,14 @@ import com.kernotec.driverscheduleservice.jpa.entity.Reason;
 import com.kernotec.driverscheduleservice.rest.dto.response.reason.ReasonResponse;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper
-public interface ReasonResponseMapper {
+public interface ReasonResponseFlatMapper {
 
+    @Mapping(target = "reasonType", ignore = true)
     ReasonResponse toResponse(Reason reason);
-
-    ReasonResponse toResponse(UUID id);
 
     List<ReasonResponse> toResponse(List<Reason> reasonList);
 

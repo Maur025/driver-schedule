@@ -1,5 +1,6 @@
 package com.kernotec.driverscheduleservice.util;
 
+import com.kernotec.driverscheduleservice.config.KernotecApiDefinition;
 import com.kernotec.driverscheduleservice.jpa.enums.TransportationRequestStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
 import java.sql.Timestamp;
@@ -10,10 +11,17 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
+@RequiredArgsConstructor
+@Service
 public class VoucherJasperUtil {
+
+    private final KernotecApiDefinition kernotecApiDefinition;
 
     public static String getVoucherLabelRequestState(String status) {
         if (status == null) {
@@ -127,5 +135,15 @@ public class VoucherJasperUtil {
 
         return combinedDateTime.format(
             DateTimeFormatter.ofPattern("MMM dd, yyyy - hh:mm a", Locale.ENGLISH));
+    }
+
+    public String getVoucherUrl(String resource, Object... uriVariables) {
+        return UriComponentsBuilder.fromHttpUrl(kernotecApiDefinition.getServers()
+                .get(0)
+                .getUrl())
+            .path("/api/driver-schedule" + resource)
+            .queryParam("disposition", "inline")
+            .buildAndExpand(uriVariables)
+            .toUriString();
     }
 }
