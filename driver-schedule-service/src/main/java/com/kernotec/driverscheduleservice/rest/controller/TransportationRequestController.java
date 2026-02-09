@@ -4,7 +4,6 @@ import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
-import com.kernotec.driverscheduleservice.config.KernotecApiDefinition;
 import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestService;
 import com.kernotec.driverscheduleservice.report.jpa.enums.ReportDispositionEnum;
@@ -60,7 +59,6 @@ public class TransportationRequestController {
     private final PdfExportCmd pdfExportCmd;
     private final VoucherTransportationRequestPdfExportCmd voucherTransportationRequestPdfExportCmd;
 
-    private final KernotecApiDefinition kernotecApiDefinition;
     private final VoucherJasperUtil voucherJasperUtil;
 
     @Operation(summary = "find all transportation requests")

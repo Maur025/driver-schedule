@@ -229,4 +229,65 @@ class VoucherJasperUtilTest {
 
         assertTrue(showReasonMessage);
     }
+
+    @Test
+    @DisplayName("should return message when parameter is a valid strig array of reasons")
+    void shouldReturnMessageWhenParameterIsAValidStrigArrayOfReasons() {
+        String rejectReasonArrayStr = """
+            [{"reasonLabel" : "Horario no operativo", "reasonCode" : "OUT_OF_OPERATING_HOURS", "otherReason" : null},
+            {"reasonLabel" : "Otro motivo", "reasonCode" : "OTHER_REJECT", "otherReason" : "Razon personalizada por el cliente"}]
+            """;
+
+        String reasonMessage = VoucherJasperUtil.getRequestReasonMessages(
+            "REJECTED", "[]", rejectReasonArrayStr);
+
+        log.info("reason request message: {}", reasonMessage);
+        assertEquals("Horario no operativo, Razon personalizada por el cliente", reasonMessage);
+    }
+
+    @Test
+    @DisplayName("should return fullname of object string requested by")
+    void shouldReturnFullnameOfObjectStringRequestedBy() {
+        String requestedByStr = """
+            {"id": "fbd9dc82-e4d0-49a9-bbc0-9ba3c2903562", "name": "mauro moya", "roles": ["ROLE_SCHEDULER"], "authTime": 1770388673, "username": "mmoya", "auditUserDataType": "auditUserData.AuthUserData"}
+            """;
+
+        String name = VoucherJasperUtil.getRequestedByFullName(requestedByStr);
+
+        log.info("Requested By Full Name: {}", name);
+        assertEquals("mauro moya", name);
+    }
+
+    @Test
+    @DisplayName("should return schedule reason when param is a valid string array of reasons")
+    void shouldReturnScheduleReasonWhenParamIsAValidStringArrayOfReasons() {
+        String rescheduleReasonArrayStr = """
+            [{"reasonLabel" : "Retraso por tráfico", "reasonCode" : "TRAFFIC_DELAY", "otherReason" : null},
+            {"reasonLabel" : "Otro motivo", "reasonCode" : "OTHER_RESCHEDULED", "otherReason" : "Razon personalizada por el cliente"}]
+            """;
+
+        String reasonMessage = VoucherJasperUtil.getScheduleReasonMessage(
+            "RESCHEDULED", "[]", rescheduleReasonArrayStr);
+        log.info("Schedule reason message: {}", reasonMessage);
+
+        assertEquals("Retraso por tráfico, Razon personalizada por el cliente", reasonMessage);
+    }
+
+    @Test
+    @DisplayName("should return reschedule reason more cancel reason when 2 array of reasons")
+    void shouldReturnRescheduleReasonMoreCancelReasonWhen2ArrayOfReasons() {
+        String rescheduledReasonStr = """
+            [{"reasonLabel" : "Retraso por tráfico", "reasonCode" : "TRAFFIC_DELAY", "otherReason" : null}]
+            """;
+
+        String cancelledReasonStr = """
+            [{"reasonLabel" : "Emergencia operativa", "reasonCode" : "OPERATIONAL_EMERGENCY", "otherReason" : null}]
+            """;
+
+        String reasonMessage = VoucherJasperUtil.getScheduleReasonMessage(
+            "RESCHEDULED", cancelledReasonStr, rescheduledReasonStr);
+        log.info("Schedule reason message of 2 string arrays: {}", reasonMessage);
+
+        assertEquals("Retraso por tráfico, Emergencia operativa", reasonMessage);
+    }
 }

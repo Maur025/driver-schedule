@@ -15,6 +15,7 @@
 		<defaultValueExpression><![CDATA[false]]></defaultValueExpression>
 	</parameter>
 	<parameter name="TITLE_LOGO_IMG" class="java.lang.Object"/>
+	<parameter name="REASON_MESSAGE" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -61,8 +62,8 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{TRANSPORTATION_REQUEST_CODE}]]></textFieldExpression>
 				</textField>
-				<staticText>
-					<reportElement x="0" y="44" width="334" height="36" uuid="df7c6cb2-f3f6-42a9-ac28-2d1eaa43b633">
+				<textField>
+					<reportElement x="0" y="44" width="334" height="36" uuid="0e167a81-b2c0-4765-a7a7-12f0654d8c01">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -71,8 +72,8 @@
 					<textElement>
 						<font fontName="OpenSans" size="10" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Razon de rechazo/cancelacion de la solicitud]]></text>
-				</staticText>
+					<textFieldExpression><![CDATA[$P{REASON_MESSAGE}]]></textFieldExpression>
+				</textField>
 			</frame>
 			<frame>
 				<reportElement x="334" y="0" width="166" height="80" uuid="387ee28f-20a1-44ee-9ec6-f72732e15ecd">

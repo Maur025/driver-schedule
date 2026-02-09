@@ -3,12 +3,15 @@ package com.kernotec.driverscheduleservice.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kernotec.driverscheduleservice.audit.user.json.AuthUserData;
 import com.kernotec.driverscheduleservice.config.KernotecApiDefinition;
 import com.kernotec.driverscheduleservice.jpa.enums.LabelTypeCodeEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.ReasonCodeEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.TransportationRequestStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
 import com.kernotec.driverscheduleservice.util.dto.VoucherContactDto;
+import com.kernotec.driverscheduleservice.util.dto.VoucherReasonDto;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.Timestamp;
@@ -23,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -74,8 +78,6 @@ public class VoucherJasperUtil {
         ZoneId clientZoneId = ZonedDateTimeUtil.getClientZoneId(zoneId);
 
         var zonedDateTime = ZonedDateTime.ofInstant(timestamp.toInstant(), clientZoneId);
-
-        System.out.println("Zoned date time in parameter: " + zonedDateTime);
 
         return zonedDateTime.format(
             DateTimeFormatter.ofPattern("MMM dd, yyyy - hh:mm a", Locale.ENGLISH));
@@ -182,6 +184,21 @@ public class VoucherJasperUtil {
             DateTimeFormatter.ofPattern("MMM dd, yyyy - hh:mm a", Locale.ENGLISH));
     }
 
+    public static String getRequestedByFullName(String createdByUserStr) {
+        if (createdByUserStr == null || createdByUserStr.isBlank() || createdByUserStr.equals(
+            "{}"))
+        {
+            return "N/A";
+        }
+
+        AuthUserData requestedByDto = getObjectFromString(
+            createdByUserStr, new TypeReference<>() {
+            }
+        );
+
+        return requestedByDto.getName();
+    }
+
     public static String getPersonPhoneContacts(String phoneContactsStr) {
         if (phoneContactsStr == null || phoneContactsStr.isBlank() || phoneContactsStr.equals(
             "[]"))
@@ -218,6 +235,105 @@ public class VoucherJasperUtil {
             log.error("Error parsing string to object. String value: {}", value, ex);
             throw new RuntimeException(ex);
         }
+    }
+
+    public static String getRequestReasonMessages(String requestState, String cancelReasonsStr,
+        String rejectReasonsStr)
+    {
+
+        boolean isValidCancelReason = cancelReasonsStr == null || cancelReasonsStr.equals("[]")
+            || cancelReasonsStr.isBlank();
+
+        boolean isValidRejectReason =
+            rejectReasonsStr == null || rejectReasonsStr.isBlank() || rejectReasonsStr.equals("[]");
+
+        if (requestState == null || requestState.isBlank() || (isValidCancelReason
+            && isValidRejectReason))
+        {
+            return "N/A";
+        }
+
+        List<VoucherReasonDto> reasonDtoList = switch (TransportationRequestStateEnum.fromValue(
+            requestState)) {
+            case REJECTED -> getReasonDtoList(rejectReasonsStr);
+            case CANCELLED -> getReasonDtoList(cancelReasonsStr);
+            default -> List.of();
+        };
+
+        if (reasonDtoList.isEmpty()) {
+            return "N/A";
+        }
+
+        List<String> reasonMessages = new ArrayList<>();
+
+        for (VoucherReasonDto voucherReasonDto : reasonDtoList) {
+            ReasonCodeEnum reasonCode = ReasonCodeEnum.fromValue(voucherReasonDto.getReasonCode());
+
+            if (reasonCode.equals(ReasonCodeEnum.OTHER_REJECT) || reasonCode.equals(
+                ReasonCodeEnum.OTHER_REQUEST_CANCELLED))
+            {
+                reasonMessages.add(
+                    Objects.requireNonNullElse(voucherReasonDto.getOtherReason(), "N/A"));
+                continue;
+            }
+
+            reasonMessages.add(voucherReasonDto.getReasonLabel());
+        }
+
+        return String.join(", ", reasonMessages);
+    }
+
+    public static String getScheduleReasonMessage(String scheduleState, String cancelReasonsStr,
+        String rescheduleReasonStr)
+    {
+        boolean isValidRescheduleReason =
+            rescheduleReasonStr == null || rescheduleReasonStr.isBlank()
+                || rescheduleReasonStr.equals("[]");
+
+        boolean isValidCancelReason = cancelReasonsStr == null || cancelReasonsStr.equals("[]")
+            || cancelReasonsStr.isBlank();
+
+        if (scheduleState == null || scheduleState.isBlank() || (isValidCancelReason
+            && isValidRescheduleReason))
+        {
+            return "N/A";
+        }
+
+        List<VoucherReasonDto> reasonDtoList = getReasonDtoList(rescheduleReasonStr);
+        List<VoucherReasonDto> cancelReasonList = getReasonDtoList(cancelReasonsStr);
+
+        if (!cancelReasonList.isEmpty()) {
+            reasonDtoList.addAll(cancelReasonList);
+        }
+
+        if (reasonDtoList.isEmpty()) {
+            return "N/A";
+        }
+
+        List<String> reasonMessages = new ArrayList<>();
+
+        for (VoucherReasonDto voucherReasonDto : reasonDtoList) {
+            ReasonCodeEnum reasonCode = ReasonCodeEnum.fromValue(voucherReasonDto.getReasonCode());
+
+            if (reasonCode.equals(ReasonCodeEnum.OTHER_SCHEDULE_CANCELLED) || reasonCode.equals(
+                ReasonCodeEnum.OTHER_RESCHEDULED))
+            {
+                reasonMessages.add(
+                    Objects.requireNonNullElse(voucherReasonDto.getOtherReason(), "N/A"));
+                continue;
+            }
+
+            reasonMessages.add(voucherReasonDto.getReasonLabel());
+        }
+
+        return String.join(", ", reasonMessages);
+    }
+
+    private static List<VoucherReasonDto> getReasonDtoList(String reasonListStr) {
+        return getObjectFromString(
+            reasonListStr, new TypeReference<>() {
+            }
+        );
     }
 
     public byte[] imageToByteArray(String imgResourcePath) {
