@@ -10,6 +10,7 @@ import com.kernotec.driverscheduleservice.rest.dto.request.request.coord.Request
 import com.kernotec.driverscheduleservice.rest.dto.request.transportation.request.TransportationRequestCreateRequest;
 import com.kernotec.driverscheduleservice.rest.mapper.request.request.coord.RequestCoordEntityMapper;
 import com.kernotec.driverscheduleservice.util.AuthUtil;
+import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -34,6 +35,7 @@ public class TransportationRequestFlowCreateCmd extends
     private final TransportationRequestCreateCmd transportationRequestCreateCmd;
     private final RequestCoordEntityMapper requestCoordEntityMapper;
     private final RequestCoordManyCreateCmd requestCoordManyCreateCmd;
+    private final ZonedDateTimeUtil zonedDateTimeUtil;
 
     @Override
     protected void validate(Request request) {
@@ -67,6 +69,16 @@ public class TransportationRequestFlowCreateCmd extends
         ZonedDateTime endTimeAdjust = endTime.withSecond(0)
             .withNano(0);
 
+        ZonedDateTime requestedFrom = zonedDateTimeUtil.getNewOfDateAndTime(
+            transportationRequestCreateRequest.getRequestedDate(), startTime,
+            transportationRequestCreateRequest.getZoneId()
+        );
+
+        ZonedDateTime requestedTo = zonedDateTimeUtil.getNewOfDateAndTime(
+            transportationRequestCreateRequest.getRequestedDate(), endTime,
+            transportationRequestCreateRequest.getZoneId()
+        );
+
         UUID transportationRequestId = transportationRequestCreateCmd.withRequest(
                 TransportationRequestCreateCmd.Request.builder()
                     .peopleNumber(transportationRequestCreateRequest.getPeopleNumber())
@@ -75,6 +87,8 @@ public class TransportationRequestFlowCreateCmd extends
                     .startTime(startTimeAdjust)
                     .endTime(endTimeAdjust)
                     .requestedDate(transportationRequestCreateRequest.getRequestedDate())
+                    .requestedFrom(requestedFrom)
+                    .requestedTo(requestedTo)
                     .tripType(transportationRequestCreateRequest.getTripType())
                     .isShortNotice(transportationRequestCreateRequest.getIsShortNotice())
                     .detail(transportationRequestCreateRequest.getDetail())

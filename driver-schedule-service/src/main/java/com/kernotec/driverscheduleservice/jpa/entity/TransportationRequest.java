@@ -53,6 +53,14 @@ public class TransportationRequest extends BaseAuditEntityUser {
     @Column(name = "requested_date")
     private LocalDateTime requestedDate;
 
+    @Column(name = "requested_from")
+    @Convert(converter = SafeZoneDateTimeConverter.class)
+    private ZonedDateTime requestedFrom;
+
+    @Column(name = "requested_to")
+    @Convert(converter = SafeZoneDateTimeConverter.class)
+    private ZonedDateTime requestedTo;
+
     @OptimisticLock(excluded = true)
     @Enumerated(EnumType.STRING)
     @Column(name = "trip_type", nullable = false)
