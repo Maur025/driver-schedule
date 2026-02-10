@@ -31,4 +31,6 @@ public class ScheduleTransportationSpecificationCriteria {
 
     private List<UUID> vehicleIds;
     private List<UUID> driverIds;
+
+    private String keyword;
 }

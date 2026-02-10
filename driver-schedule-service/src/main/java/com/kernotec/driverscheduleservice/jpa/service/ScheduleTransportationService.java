@@ -97,7 +97,8 @@ public class ScheduleTransportationService extends BaseServiceImpl<ScheduleTrans
             .withDateRange(filterRequest.getFromDate(), filterRequest.getToDate())
             .withMonthDate(filterRequest.getMonthDate())
             .withYearDate(filterRequest.getYearDate())
-            .withScheduleTransportationStates(filterRequest.getScheduleTransportationStates());
+            .withScheduleTransportationStates(filterRequest.getScheduleTransportationStates())
+            .withKeyword(filterRequest.getKeyword());
 
         boolean isAdmin = authUtil.userContainsRole(authentication, PersonTypeEnum.ADMIN);
         boolean isApplicant = authUtil.userContainsRole(authentication, PersonTypeEnum.APPLICANT);

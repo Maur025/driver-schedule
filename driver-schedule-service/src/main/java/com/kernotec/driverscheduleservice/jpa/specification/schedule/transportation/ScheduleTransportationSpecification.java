@@ -64,6 +64,21 @@ public record ScheduleTransportationSpecification(
         return joinMap.get(ScheduleTransportationSpecificationJoinEnum.TRIP_ASSIGNMENT_JOIN);
     }
 
+    private Join<?, ?> getOrCreateTransportationRequestJoin(
+        Map<ScheduleTransportationSpecificationJoinEnum, Join<?, ?>> joinMap, Root<?> root)
+    {
+        if (!joinMap.containsKey(
+            ScheduleTransportationSpecificationJoinEnum.TRANSPORTATION_REQUEST_JOIN))
+        {
+            joinMap.put(
+                ScheduleTransportationSpecificationJoinEnum.TRANSPORTATION_REQUEST_JOIN,
+                root.join("transportationRequest", JoinType.INNER)
+            );
+        }
+
+        return joinMap.get(ScheduleTransportationSpecificationJoinEnum.TRANSPORTATION_REQUEST_JOIN);
+    }
+
     @Override
     public Predicate toPredicate(Root<ScheduleTransportation> root, CriteriaQuery<?> query,
         CriteriaBuilder cb)
@@ -85,6 +100,7 @@ public record ScheduleTransportationSpecification(
         addScheduleTransportationStatesFilter(root, joinMap).ifPresent(predicateList::add);
         addVehicleIdsFilter(root, joinMap).ifPresent(predicateList::add);
         addDriverIdsFilter(root, joinMap).ifPresent(predicateList::add);
+        addKeywordFilter(root, cb, joinMap).ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -332,5 +348,24 @@ public record ScheduleTransportationSpecification(
                 .in(scheduleTransportationStates.stream()
                     .map(String::valueOf)
                     .toList()));
+    }
+
+    public ScheduleTransportationSpecification withKeyword(String keyword) {
+        this.criteria.setKeyword(keyword);
+        return this;
+    }
+
+    private Optional<Predicate> addKeywordFilter(Root<ScheduleTransportation> root,
+        CriteriaBuilder cb, Map<ScheduleTransportationSpecificationJoinEnum, Join<?, ?>> joinMap)
+    {
+        return Optional.ofNullable(criteria.getKeyword())
+            .map(keyword -> {
+                String pattern = "%" + keyword.toLowerCase() + "%";
+
+                return cb.or(cb.like(
+                    cb.lower(getOrCreateTransportationRequestJoin(joinMap, root).get("code")),
+                    pattern
+                ));
+            });
     }
 }
