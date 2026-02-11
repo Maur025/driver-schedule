@@ -45,7 +45,8 @@ public class TransportationRequestService extends BaseServiceImpl<Transportation
             .withSimpleDate(filterRequest.getSimpleDate())
             .withDateRange(filterRequest.getFromDate(), filterRequest.getToDate())
             .withMonthDate(filterRequest.getMonthDate())
-            .withYearDate(filterRequest.getYearDate());
+            .withYearDate(filterRequest.getYearDate())
+            .withKeyword(filterRequest.getKeyword());
 
         boolean isAdmin = authUtil.userContainsRole(authentication, PersonTypeEnum.ADMIN);
         boolean isApplicant = authUtil.userContainsRole(authentication, PersonTypeEnum.APPLICANT);

@@ -65,6 +65,7 @@ public record TransportationRequestSpecification(
         addMonthDateFilter(root, cb).ifPresent(predicateList::add);
         addYearDateFilter(root, cb).ifPresent(predicateList::add);
         addOnlyRecordsOfPersonIdFilter(root, cb).ifPresent(predicateList::add);
+        addKeywordFilter(root, cb).ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -229,5 +230,21 @@ public record TransportationRequestSpecification(
                 root.get("personRequestedId"),
                 onlyRecordsOfPersonId
             ));
+    }
+
+    public TransportationRequestSpecification withKeyword(String keyword) {
+        this.criteria.setKeyword(keyword);
+        return this;
+    }
+
+    private Optional<Predicate> addKeywordFilter(Root<TransportationRequest> root,
+        CriteriaBuilder cb)
+    {
+        return Optional.ofNullable(criteria.getKeyword())
+            .map(keyword -> {
+                String pattern = "%" + keyword.toLowerCase() + "%";
+
+                return cb.or(cb.like(cb.lower(root.get("code")), pattern));
+            });
     }
 }

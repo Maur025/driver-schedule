@@ -28,4 +28,6 @@ public class TransportationRequestFilterRequest extends BaseRequest {
     private ZonedDateTime monthDate;
     private ZonedDateTime yearDate;
     private String zoneId;
+
+    private String keyword;
 }

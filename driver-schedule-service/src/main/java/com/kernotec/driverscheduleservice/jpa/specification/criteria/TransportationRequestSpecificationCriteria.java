@@ -24,4 +24,6 @@ public class TransportationRequestSpecificationCriteria {
     private ZonedDateTime toDate;
     private ZonedDateTime monthDate;
     private ZonedDateTime yearDate;
+
+    private String keyword;
 }
