@@ -210,6 +210,9 @@ preq.last_name;]]>
 				<subreportParameter name="REASON_MESSAGE">
 					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getScheduleReasonMessage($F{schedule_state_code},$F{cancel_reason_list},$F{reschedule_reason_list})]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="LABEL_FOR_REASON">
+					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getReasonLabelMessage($F{schedule_state_code},false)]]></subreportParameterExpression>
+				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA["title_voucher.jasper"]]></subreportExpression>
 			</subreport>

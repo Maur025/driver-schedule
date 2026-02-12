@@ -336,6 +336,40 @@ public class VoucherJasperUtil {
         );
     }
 
+    public static String getReasonLabelMessage(String stateCodeStr, boolean isRequest) {
+        if (stateCodeStr == null || stateCodeStr.isBlank()) {
+            return "Motivo:";
+        }
+
+        var labelBuilder = new StringBuilder("Motivo");
+
+        if (isRequest) {
+            var stateCode = TransportationRequestStateEnum.fromValue(stateCodeStr);
+            return labelBuilder.append(getReasonLabelByRequestState(stateCode))
+                .toString();
+        }
+
+        var stateCode = ScheduleTransportationStateEnum.fromValue(stateCodeStr);
+        return labelBuilder.append(getReasonLabelByScheduleState(stateCode))
+            .toString();
+    }
+
+    private static String getReasonLabelByRequestState(TransportationRequestStateEnum stateCode) {
+        return switch (stateCode) {
+            case CANCELLED -> " de Cancelación:";
+            case REJECTED -> " de Rechazo:";
+            default -> ":";
+        };
+    }
+
+    private static String getReasonLabelByScheduleState(ScheduleTransportationStateEnum stateCode) {
+        return switch (stateCode) {
+            case CANCELLED -> " de Cancelación:";
+            case RESCHEDULED -> " de Reprogramación:";
+            default -> ":";
+        };
+    }
+
     public byte[] imageToByteArray(String imgResourcePath) {
         String path = "classpath:images/" + imgResourcePath;
 
