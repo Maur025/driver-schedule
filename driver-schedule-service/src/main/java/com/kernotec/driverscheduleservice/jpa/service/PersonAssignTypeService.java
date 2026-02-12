@@ -7,6 +7,7 @@ import com.kernotec.driverscheduleservice.jpa.repository.PersonAssignTypeReposit
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @AllArgsConstructor
 @Service
@@ -24,6 +25,7 @@ public class PersonAssignTypeService extends BaseServiceImpl<PersonAssignType, U
         return repository;
     }
 
+    @Transactional
     public void deleteAllByPersonId(UUID personId) {
         repository.deleteAllByPersonId(personId);
     }
