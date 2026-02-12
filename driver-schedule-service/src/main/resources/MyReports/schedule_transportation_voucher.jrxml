@@ -270,10 +270,10 @@ preq.last_name;]]>
 		</band>
 	</title>
 	<detail>
-		<band height="340" splitType="Stretch">
+		<band height="110" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<subreport>
-				<reportElement x="0" y="0" width="500" height="110" uuid="1ca41cc9-e997-46d0-a0b8-33324b6a5f46">
+				<reportElement stretchType="ContainerHeight" x="0" y="0" width="500" height="110" uuid="1ca41cc9-e997-46d0-a0b8-33324b6a5f46">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -285,8 +285,11 @@ preq.last_name;]]>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA["resource_assignment_voucher.jasper"]]></subreportExpression>
 			</subreport>
+		</band>
+		<band height="150" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<subreport>
-				<reportElement x="0" y="110" width="500" height="150" uuid="2b896e2c-a5b5-4bcf-a5ee-8352cff0ea99">
+				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="500" height="150" uuid="2b896e2c-a5b5-4bcf-a5ee-8352cff0ea99">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -300,8 +303,11 @@ preq.last_name;]]>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA["request_detail_voucher.jasper"]]></subreportExpression>
 			</subreport>
+		</band>
+		<band height="80" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<subreport>
-				<reportElement x="0" y="260" width="500" height="80" uuid="bce08ac0-9070-4587-85e3-6a808e82fa11">
+				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="500" height="80" uuid="bce08ac0-9070-4587-85e3-6a808e82fa11">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>

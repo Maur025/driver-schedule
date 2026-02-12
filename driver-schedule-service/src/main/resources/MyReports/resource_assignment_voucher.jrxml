@@ -97,30 +97,6 @@
 					</textElement>
 					<text><![CDATA[PLACA]]></text>
 				</staticText>
-				<frame>
-					<reportElement key="allocated-resources-detail" x="0" y="48" width="500" height="40" uuid="a1777b84-f4c2-43a7-b71e-2dbc2bd3b906">
-						<property name="com.jaspersoft.studio.unit.x" value="px"/>
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					</reportElement>
-					<box>
-						<pen lineColor="#B8B8B8"/>
-						<bottomPen lineWidth="0.25" lineColor="#B8B8B8"/>
-					</box>
-					<subreport>
-						<reportElement x="0" y="0" width="500" height="40" uuid="d1b67706-349f-451a-972c-db840b3a5b9c">
-							<property name="com.jaspersoft.studio.unit.x" value="px"/>
-							<property name="com.jaspersoft.studio.unit.y" value="px"/>
-							<property name="com.jaspersoft.studio.unit.height" value="px"/>
-							<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						</reportElement>
-						<subreportParameter name="SCHEDULE_TRANSPORTATION_ID">
-							<subreportParameterExpression><![CDATA[$P{SCHEDULE_TRANSPORTATION_ID}]]></subreportParameterExpression>
-						</subreportParameter>
-						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-						<subreportExpression><![CDATA["resource_assignment_detail_voucher.jasper"]]></subreportExpression>
-					</subreport>
-				</frame>
 				<staticText>
 					<reportElement x="0" y="0" width="500" height="26" forecolor="#666666" uuid="d824f59b-e9ea-4d5b-8472-0e62e89d1a50">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -131,6 +107,19 @@
 					</textElement>
 					<text><![CDATA[RECURSOS ASIGNADOS]]></text>
 				</staticText>
+				<subreport>
+					<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="48" width="500" height="40" uuid="d1b67706-349f-451a-972c-db840b3a5b9c">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<subreportParameter name="SCHEDULE_TRANSPORTATION_ID">
+						<subreportParameterExpression><![CDATA[$P{SCHEDULE_TRANSPORTATION_ID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA["resource_assignment_detail_voucher.jasper"]]></subreportExpression>
+				</subreport>
 			</frame>
 		</band>
 	</summary>
