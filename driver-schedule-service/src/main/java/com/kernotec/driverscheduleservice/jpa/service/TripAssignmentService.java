@@ -7,6 +7,7 @@ import com.kernotec.driverscheduleservice.jpa.repository.TripAssignmentRepositor
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @AllArgsConstructor
 @Service
@@ -24,6 +25,7 @@ public class TripAssignmentService extends BaseServiceImpl<TripAssignment, UUID>
         return repository;
     }
 
+    @Transactional
     public void deleteAllByScheduleTransportationId(UUID scheduleTransportationId) {
         repository.deleteAllByScheduleTransportationId(scheduleTransportationId);
     }

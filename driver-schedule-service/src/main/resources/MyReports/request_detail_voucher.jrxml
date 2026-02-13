@@ -14,7 +14,7 @@
 		<band height="150" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<frame>
-				<reportElement x="0" y="0" width="500" height="150" uuid="b3ee003a-ece1-4f05-8978-71c5e48654db">
+				<reportElement stretchType="ContainerHeight" x="0" y="0" width="500" height="150" isRemoveLineWhenBlank="true" uuid="b3ee003a-ece1-4f05-8978-71c5e48654db">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -55,7 +55,7 @@
 					<text><![CDATA[NOMBRES/DESCRIPCIÓN]]></text>
 				</staticText>
 				<frame>
-					<reportElement key="allocated-resources-detail" x="0" y="48" width="500" height="40" uuid="22457444-9d50-4117-85ea-0e35376fb642">
+					<reportElement key="passengers" x="0" y="48" width="500" height="40" uuid="22457444-9d50-4117-85ea-0e35376fb642">
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -64,8 +64,8 @@
 						<pen lineColor="#B8B8B8"/>
 						<bottomPen lineWidth="0.25" lineColor="#B8B8B8"/>
 					</box>
-					<staticText>
-						<reportElement x="0" y="10" width="168" height="14" uuid="941bdd31-1d92-4acc-85ac-da8b0e442303">
+					<textField textAdjust="StretchHeight">
+						<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="10" width="168" height="14" uuid="48b0a6ba-11b5-427b-b890-9498e70878e2">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.y" value="px"/>
 							<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
@@ -75,10 +75,10 @@
 							<font fontName="OpenSans" size="10" isBold="true"/>
 							<paragraph leftIndent="3"/>
 						</textElement>
-						<text><![CDATA[Pasajeros]]></text>
-					</staticText>
+						<textFieldExpression><![CDATA["Pasajeros"]]></textFieldExpression>
+					</textField>
 					<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-						<reportElement x="168" y="10" width="332" height="14" forecolor="#666666" uuid="e7583bca-be9c-4431-a407-ba7d0682fc9c">
+						<reportElement positionType="Float" x="168" y="10" width="332" height="14" forecolor="#666666" uuid="e7583bca-be9c-4431-a407-ba7d0682fc9c">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						</reportElement>
@@ -99,7 +99,7 @@
 					<text><![CDATA[DETALLE DE SOLICITUD]]></text>
 				</staticText>
 				<frame>
-					<reportElement key="allocated-resources-detail" x="0" y="88" width="500" height="40" uuid="9ff70e98-8650-4589-94cb-d2c100939227">
+					<reportElement key="assets" positionType="Float" x="0" y="88" width="500" height="40" uuid="b097b960-50b3-43ae-8dd6-842364eec339">
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -108,8 +108,8 @@
 						<pen lineColor="#B8B8B8"/>
 						<bottomPen lineWidth="0.25" lineColor="#B8B8B8"/>
 					</box>
-					<staticText>
-						<reportElement x="0" y="10" width="168" height="14" uuid="f0c12a62-76a0-4544-9958-60bd2048330e">
+					<textField textAdjust="StretchHeight">
+						<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="10" width="168" height="14" uuid="88a40a7a-ca13-4d8c-9b50-d68895a93141">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.y" value="px"/>
 							<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
@@ -119,10 +119,10 @@
 							<font fontName="OpenSans" size="10" isBold="true"/>
 							<paragraph leftIndent="3"/>
 						</textElement>
-						<text><![CDATA[Materiales a transportar]]></text>
-					</staticText>
+						<textFieldExpression><![CDATA["Materiales a transportar"]]></textFieldExpression>
+					</textField>
 					<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-						<reportElement x="168" y="10" width="332" height="14" forecolor="#666666" uuid="9bf07c9c-c21c-4bf3-bab2-84c4e8865eb3">
+						<reportElement positionType="Float" stretchType="ContainerHeight" x="168" y="10" width="332" height="14" forecolor="#666666" uuid="90923523-8471-4b64-9029-a5315bf50a63">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.y" value="px"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>

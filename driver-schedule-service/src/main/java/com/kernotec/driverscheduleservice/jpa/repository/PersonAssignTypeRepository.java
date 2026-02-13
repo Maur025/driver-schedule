@@ -3,10 +3,18 @@ package com.kernotec.driverscheduleservice.jpa.repository;
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.driverscheduleservice.jpa.entity.PersonAssignType;
 import java.util.UUID;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PersonAssignTypeRepository extends BaseRepository<PersonAssignType, UUID> {
 
-    void deleteAllByPersonId(UUID personId);
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("""
+        DELETE FROM PersonAssignType pat
+        WHERE pat.personId = :personId
+        """)
+    void deleteAllByPersonId(@Param("personId") UUID personId);
 }
