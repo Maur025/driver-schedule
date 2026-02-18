@@ -2,19 +2,21 @@ package com.kernotec.driverscheduleservice.rest.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.kernotec.core.rest.dto.response.BaseResponse;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.RepresentationModel;
 
 @Getter
 @Setter
 @JsonInclude(Include.NON_NULL)
-public class SingleHateoasResponse<T> extends BaseResponse {
+public class SingleHateoasResponse<T> extends RepresentationModel<SingleHateoasResponse<T>> {
 
+    private Integer code;
+    private String message;
     private EntityModel<T> data;
 
     public SingleHateoasResponse() {
@@ -22,7 +24,18 @@ public class SingleHateoasResponse<T> extends BaseResponse {
 
     @Builder
     public SingleHateoasResponse(Integer code, String message, T data, List<Link> links) {
-        super(code, message);
-        this.data = EntityModel.of(data, links);
+        this.code = code;
+        this.message = message;
+
+        if (data != null) {
+            this.data = EntityModel.of(data, links);
+            return;
+        }
+
+        if (links == null) {
+            return;
+        }
+
+        this.add(links);
     }
 }

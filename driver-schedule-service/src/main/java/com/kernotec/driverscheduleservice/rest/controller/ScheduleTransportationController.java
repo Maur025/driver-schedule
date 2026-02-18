@@ -164,7 +164,6 @@ public class ScheduleTransportationController {
 
         return SingleHateoasResponse.<ScheduleTransportationResponse>builder()
             .code(HttpStatus.OK.value())
-            .data(new ScheduleTransportationResponse())
             .message("Reschedule successful")
             .links(List.of(linkTo(methodOn(
                 ScheduleTransportationController.class).scheduleTransportationExportVoucher(
@@ -191,7 +190,6 @@ public class ScheduleTransportationController {
         return SingleHateoasResponse.<ScheduleTransportationResponse>builder()
             .code(HttpStatus.OK.value())
             .message("Cancellation successful")
-            .data(new ScheduleTransportationResponse())
             .links(List.of(linkTo(methodOn(
                 ScheduleTransportationController.class).scheduleTransportationExportVoucher(
                 scheduleTransportationId, null, ReportDispositionEnum.inline)).withRel("voucher")

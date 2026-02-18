@@ -162,7 +162,7 @@ public class TransportationRequestController {
     @PostMapping("{transportationRequestId}/rejected")
     @ResponseStatus(HttpStatus.OK)
     @IsRoleSchedulerOrAdmin
-    public SingleResponse<TransportationRequestResponse> rejectedRequest(
+    public SingleHateoasResponse<TransportationRequestResponse> rejectedRequest(
         @PathVariable UUID transportationRequestId, @RequestBody RejectReasonRequest request)
     {
         processTransportationRequestRejectedCmd.withRequest(
@@ -172,9 +172,13 @@ public class TransportationRequestController {
                     .build())
             .execute();
 
-        return SingleResponse.<TransportationRequestResponse>builder()
+        return SingleHateoasResponse.<TransportationRequestResponse>builder()
             .code(HttpStatus.OK.value())
             .message("Transportation request rejected successfully")
+            .links(List.of(linkTo(
+                methodOn(TransportationRequestController.class).transportationRequestExportVoucher(
+                    transportationRequestId, null, ReportDispositionEnum.inline)).withRel("voucher")
+                .expand()))
             .build();
     }
 
@@ -182,7 +186,7 @@ public class TransportationRequestController {
     @PostMapping("{transportationRequestId}/cancelled")
     @ResponseStatus(HttpStatus.OK)
     @IsRoleApplicantOrScheduler
-    public SingleResponse<TransportationRequestResponse> cancelledRequest(
+    public SingleHateoasResponse<TransportationRequestResponse> cancelledRequest(
         @PathVariable UUID transportationRequestId, @RequestBody CancelRequestReasonRequest request)
     {
         processTransportationRequestCancelledCmd.withRequest(
@@ -192,9 +196,13 @@ public class TransportationRequestController {
                     .build())
             .execute();
 
-        return SingleResponse.<TransportationRequestResponse>builder()
+        return SingleHateoasResponse.<TransportationRequestResponse>builder()
             .code(HttpStatus.OK.value())
             .message("Transportation request cancelled successfully")
+            .links(List.of(linkTo(
+                methodOn(TransportationRequestController.class).transportationRequestExportVoucher(
+                    transportationRequestId, null, ReportDispositionEnum.inline)).withRel("voucher")
+                .expand()))
             .build();
     }
 
