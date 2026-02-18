@@ -22,6 +22,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -30,6 +31,19 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private static final AntPathRequestMatcher[] AUTH_WHITELIST = {
+        new AntPathRequestMatcher("/v3/api-docs/**"),
+        new AntPathRequestMatcher("/swagger-ui/**"),
+        new AntPathRequestMatcher("/swagger-ui.html"),
+        new AntPathRequestMatcher("/webjars/**"),
+        new AntPathRequestMatcher("/*/v3/api-docs/**"),
+        new AntPathRequestMatcher("/*/swagger-ui/**"),
+        new AntPathRequestMatcher("/*/swagger-ui.html"),
+        new AntPathRequestMatcher("/actuator/**"),
+        new AntPathRequestMatcher("/realms/driver-schedule-auth/protocol/openid-connect/token"),
+        new AntPathRequestMatcher("/.well-known/openid-configuration")
+    };
 
     private final DriverScheduleAuthProperties driverScheduleAuthProperties;
     private final ThrottlingFilter throttlingFilter;
@@ -51,11 +65,10 @@ public class SecurityConfig {
             .cors(configurer -> configurer.configurationSource(getCorsConfigurationSource()))
             .sessionManagement(
                 session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth.requestMatchers(
-                    "/realms/driver-schedule-auth/account/**")
-                .authenticated()
+            .authorizeHttpRequests(auth -> auth.requestMatchers(AUTH_WHITELIST)
+                .permitAll()
                 .anyRequest()
-                .permitAll())
+                .authenticated())
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(
                 jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
             .addFilterBefore(throttlingFilter, UsernamePasswordAuthenticationFilter.class)
