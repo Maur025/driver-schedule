@@ -27,12 +27,14 @@ public class ProcessUserUpdateRequestCmd extends
     AbstractTransactionalRequiredCommand<ProcessUserUpdateRequestCmd.Request, Void>
 {
 
+    private final UserService userService;
+    private final UserRoleService userRoleService;
+
+    private final UserUtil userUtil;
+
     private final UserUpdateCmd userUpdateCmd;
     private final UserGetDtoCmd userGetDtoCmd;
-    private final UserUtil userUtil;
-    private final UserService userService;
     private final UserRoleSaveAllByNameCmd userRoleSaveAllByNameCmd;
-    private final UserRoleService userRoleService;
 
     @Override
     protected void validate(Request request) {

@@ -58,7 +58,7 @@ public class TokenJWTClaimSetBuildCmd extends
             .issueTime(new Date())
             .expirationTime(new Date(System.currentTimeMillis() + request.tokenExp))
             .issuer(hostUrl)
-            .audience(authConfigProperties.getAudience())
+            //.audience(authConfigProperties.getAudience())
             .notBeforeTime(new Date())
             .build();
     }

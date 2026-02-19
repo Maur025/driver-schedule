@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 public class AuthConfigProperties {
 
     private String secretKey;
-    private String audience;
     private Integer accessTokenExp;
     private TimeMeasureEnum accessTokenExpType;
     private Integer refreshTokenExp;

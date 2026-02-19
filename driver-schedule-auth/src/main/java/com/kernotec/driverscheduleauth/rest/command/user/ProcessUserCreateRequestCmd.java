@@ -1,13 +1,9 @@
 package com.kernotec.driverscheduleauth.rest.command.user;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverscheduleauth.command.UserRoleCreateCmd;
 import com.kernotec.driverscheduleauth.command.user.UserCreateCmd;
 import com.kernotec.driverscheduleauth.exception.UserException;
-import com.kernotec.driverscheduleauth.jpa.entity.Realm;
 import com.kernotec.driverscheduleauth.jpa.entity.User;
-import com.kernotec.driverscheduleauth.jpa.service.RealmService;
-import com.kernotec.driverscheduleauth.jpa.service.RoleService;
 import com.kernotec.driverscheduleauth.jpa.service.UserService;
 import com.kernotec.driverscheduleauth.rest.command.user.role.UserRoleSaveAllByNameCmd;
 import com.kernotec.driverscheduleauth.rest.dto.request.user.UserCreateRequest;
@@ -29,12 +25,9 @@ public class ProcessUserCreateRequestCmd extends
     AbstractTransactionalRequiredCommand<ProcessUserCreateRequestCmd.Request, UUID>
 {
 
-    private final RealmService realmService;
-    private final RoleService roleService;
     private final UserService userService;
 
     private final UserCreateCmd userCreateCmd;
-    private final UserRoleCreateCmd userRoleCreateCmd;
     private final UserUtil userUtil;
     private final UserRoleSaveAllByNameCmd userRoleSaveAllByNameCmd;
 
@@ -59,14 +52,12 @@ public class ProcessUserCreateRequestCmd extends
 
         String usernameSanitized = userUtil.getUsernameSanitized(userCreateRequest.getUsername());
 
-        Realm realm = realmService.findByNameThrow(userCreateRequest.getRealmName());
-
         UUID userId = userCreateCmd.withRequest(UserCreateCmd.Request.builder()
                 .name(userCreateRequest.getName())
                 .lastName(userCreateRequest.getLastName())
                 .username(usernameSanitized)
                 .password(userCreateRequest.getPassword())
-                .realmId(realm.getId())
+                .realmId(request.realmId)
                 .build())
             .execute();
 
@@ -79,7 +70,7 @@ public class ProcessUserCreateRequestCmd extends
 
         userRoleSaveAllByNameCmd.withRequest(UserRoleSaveAllByNameCmd.Request.builder()
                 .roleNames(userCreateRequest.getRoles())
-                .realmId(realm.getId())
+                .realmId(request.realmId)
                 .resource(userCreateRequest.getResource())
                 .userId(userId)
                 .build())
@@ -89,7 +80,9 @@ public class ProcessUserCreateRequestCmd extends
     }
 
     @Builder
-    public record Request(@NotNull @Valid UserCreateRequest userCreateRequest) {
+    public record Request(@NotNull @Valid UserCreateRequest userCreateRequest,
+                          @NotNull UUID realmId)
+    {
 
     }
 }

@@ -70,6 +70,13 @@ spring:
       minimum-idle: 5
       maximum-pool-size: 50
 
+  # SECURITY
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          audiences: driver.schedule.api
+
 # SWAGGER
 springdoc:
   api-docs:

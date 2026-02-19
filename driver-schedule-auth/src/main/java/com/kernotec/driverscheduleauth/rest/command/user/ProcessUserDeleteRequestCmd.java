@@ -24,8 +24,9 @@ public class ProcessUserDeleteRequestCmd extends
     private final UserDeleteCmd userDeleteCmd;
 
     @Override
-    protected Void run(Request request) {
+    protected void validate(Request request) {
         UserDeleteRequest userDeleteRequest = request.userDeleteRequest;
+
         User user = userService.findByIdThrow(request.userId);
 
         Optional<User> userOptional = userService.findByUsername(userDeleteRequest.getUserName());
@@ -37,14 +38,14 @@ public class ProcessUserDeleteRequestCmd extends
             );
         }
 
-        if (!userDeleteRequest.getRealmName()
-            .equals(user.getRealm()
-                .getName()))
-        {
+        if (!request.realmId.equals(user.getRealmId())) {
             throw new UserException(
                 "realm.verification.failed", "", HttpStatus.BAD_REQUEST.value());
         }
+    }
 
+    @Override
+    protected Void run(Request request) {
         userDeleteCmd.withRequest(UserDeleteCmd.Request.builder()
                 .userId(request.userId)
                 .build())
@@ -54,7 +55,9 @@ public class ProcessUserDeleteRequestCmd extends
     }
 
     @Builder
-    public record Request(@NotNull UUID userId, @NotNull UserDeleteRequest userDeleteRequest) {
+    public record Request(@NotNull UUID userId, @NotNull UserDeleteRequest userDeleteRequest,
+                          @NotNull UUID realmId)
+    {
 
     }
 }

@@ -26,10 +26,6 @@ public class UserCreateRequest extends BaseRequest {
     private String password;
 
     @NotNull
-    @NotBlank
-    private String realmName;
-
-    @NotNull
     private Set<String> roles;
 
     @NotNull

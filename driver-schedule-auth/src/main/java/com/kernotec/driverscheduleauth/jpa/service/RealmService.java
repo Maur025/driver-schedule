@@ -8,6 +8,7 @@ import com.kernotec.driverscheduleauth.jpa.repository.RealmRepository;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -34,5 +35,10 @@ public class RealmService extends BaseServiceImpl<Realm, UUID> {
     public Realm findByNameThrow(String name) {
         return findByName(name).orElseThrow(
             () -> new RealmException("not.found", "'" + name + "'", HttpStatus.NOT_FOUND.value()));
+    }
+
+    @Cacheable(value = "realmIds", key = "#name")
+    public UUID findRealmIdByNameInCache(String name) {
+        return findByNameThrow(name).getId();
     }
 }

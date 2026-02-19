@@ -3,6 +3,7 @@ package com.kernotec.driverscheduleauth.rest.controller;
 import com.kernotec.driverscheduleauth.config.AuthConfigProperties;
 import com.kernotec.driverscheduleauth.jpa.enums.GrantTypeEnum;
 import com.kernotec.driverscheduleauth.jpa.enums.RefreshTokenSecureEnum;
+import com.kernotec.driverscheduleauth.jpa.service.RealmService;
 import com.kernotec.driverscheduleauth.rest.ApiSpec.OpenIdConnectSpec;
 import com.kernotec.driverscheduleauth.rest.command.ConnectionTokenCmd;
 import com.kernotec.driverscheduleauth.rest.command.UserInfoGetDataCmd;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -36,16 +38,20 @@ public class OpenIdConnectController {
     private final AuthConfigProperties authConfigProperties;
     private final ConnectionTokenCmd connectionTokenCmd;
     private final UserInfoGetDataCmd userInfoGetDataCmd;
+    private final RealmService realmService;
 
     @Operation(summary = "OpenID Connect Endpoint to get token")
     @PostMapping("token")
     @ResponseStatus(HttpStatus.OK)
-    public OpenIdConnectTokenResponse getTokenByGrantType(
-        @RequestParam("grant_type") GrantTypeEnum grantType,
+    public OpenIdConnectTokenResponse getTokenByGrantType(@PathVariable String realm,
+        @RequestParam("grant_type") GrantTypeEnum grantType, @RequestParam String audience,
+        @RequestParam String clienId,
         @RequestBody(required = false) OpenIdConnectTokenRequest request,
         HttpServletResponse httpServletResponse,
         @CookieValue(value = "refresh_token", required = false) String refreshToken)
     {
+        realmService.findRealmIdByNameInCache(realm);
+
         OpenIdConnectTokenResponse openIdConnectTokenResponse = connectionTokenCmd.withRequest(
                 ConnectionTokenCmd.Request.builder()
                     .grantType(grantType)
@@ -76,9 +82,11 @@ public class OpenIdConnectController {
     @Operation(summary = "OpenId Connect Endpoint to userinfo endpoint")
     @GetMapping("userinfo")
     @ResponseStatus(HttpStatus.OK)
-    public OpenIdConnectUserInfoResponse getUserInfoData(
+    public OpenIdConnectUserInfoResponse getUserInfoData(@PathVariable String realm,
         @RequestHeader("Authorization") String authorizationHeader)
     {
+        realmService.findRealmIdByNameInCache(realm);
+
         String token = authorizationHeader.substring("Bearer ".length());
 
         return userInfoGetDataCmd.withRequest(UserInfoGetDataCmd.Request.builder()
