@@ -7,6 +7,7 @@ import com.kernotec.driverscheduleauth.jpa.repository.UserRoleRepository;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @AllArgsConstructor
 @Service
@@ -24,6 +25,7 @@ public class UserRoleService extends BaseServiceImpl<UserRole, UUID> {
         return repository;
     }
 
+    @Transactional
     public void deleteAllByUserId(UUID userId) {
         repository.deleteAllByUserId(userId);
     }

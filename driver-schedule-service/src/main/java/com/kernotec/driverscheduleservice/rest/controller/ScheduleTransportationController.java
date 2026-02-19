@@ -1,5 +1,8 @@
 package com.kernotec.driverscheduleservice.rest.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
@@ -17,17 +20,19 @@ import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportati
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationFilterRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationUpdateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.response.SingleHateoasResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.response.schedule.transportation.ScheduleTransportationResponseMapper;
 import com.kernotec.driverscheduleservice.util.AppRoleUtil.IsRoleSchedulerOrAdmin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -123,7 +128,7 @@ public class ScheduleTransportationController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @IsRoleSchedulerOrAdmin
-    public SingleResponse<ScheduleTransportationResponse> save(
+    public SingleHateoasResponse<ScheduleTransportationResponse> save(
         @RequestBody ScheduleTransportationCreateRequest request)
     {
         UUID scheduleTransportationId = processScheduleTransportationCreateRequestCmd.withRequest(
@@ -132,9 +137,13 @@ public class ScheduleTransportationController {
                     .build())
             .execute();
 
-        return SingleResponse.<ScheduleTransportationResponse>builder()
+        return SingleHateoasResponse.<ScheduleTransportationResponse>builder()
             .code(HttpStatus.CREATED.value())
             .data(scheduleTransportationResponseMapper.toResponse(scheduleTransportationId))
+            .links(List.of(linkTo(methodOn(
+                ScheduleTransportationController.class).scheduleTransportationExportVoucher(
+                scheduleTransportationId, null, ReportDispositionEnum.inline)).withRel("voucher")
+                .expand()))
             .build();
     }
 
@@ -142,7 +151,7 @@ public class ScheduleTransportationController {
     @PatchMapping("{scheduleTransportationId}/rescheduled")
     @ResponseStatus(HttpStatus.OK)
     @IsRoleSchedulerOrAdmin
-    public SingleResponse<ScheduleTransportationResponse> reschedule(
+    public SingleHateoasResponse<ScheduleTransportationResponse> reschedule(
         @PathVariable UUID scheduleTransportationId,
         @RequestBody ScheduleTransportationUpdateRequest request)
     {
@@ -153,9 +162,13 @@ public class ScheduleTransportationController {
                     .build())
             .execute();
 
-        return SingleResponse.<ScheduleTransportationResponse>builder()
+        return SingleHateoasResponse.<ScheduleTransportationResponse>builder()
             .code(HttpStatus.OK.value())
             .message("Reschedule successful")
+            .links(List.of(linkTo(methodOn(
+                ScheduleTransportationController.class).scheduleTransportationExportVoucher(
+                scheduleTransportationId, null, ReportDispositionEnum.inline)).withRel("voucher")
+                .expand()))
             .build();
     }
 
@@ -163,7 +176,7 @@ public class ScheduleTransportationController {
     @PostMapping("{scheduleTransportationId}/cancelled")
     @ResponseStatus(HttpStatus.OK)
     @IsRoleSchedulerOrAdmin
-    public SingleResponse<ScheduleTransportationResponse> cancel(
+    public SingleHateoasResponse<ScheduleTransportationResponse> cancel(
         @PathVariable UUID scheduleTransportationId,
         @RequestBody ScheduleTransportationCancelRequest request)
     {
@@ -174,9 +187,13 @@ public class ScheduleTransportationController {
                     .build())
             .execute();
 
-        return SingleResponse.<ScheduleTransportationResponse>builder()
+        return SingleHateoasResponse.<ScheduleTransportationResponse>builder()
             .code(HttpStatus.OK.value())
             .message("Cancellation successful")
+            .links(List.of(linkTo(methodOn(
+                ScheduleTransportationController.class).scheduleTransportationExportVoucher(
+                scheduleTransportationId, null, ReportDispositionEnum.inline)).withRel("voucher")
+                .expand()))
             .build();
     }
 
@@ -196,13 +213,12 @@ public class ScheduleTransportationController {
     @Operation(summary = "schedule transportation export voucher")
     @GetMapping("{scheduleTransportationId}/voucher")
     @ResponseStatus(HttpStatus.OK)
-    public void scheduleTransportationExportVoucher(@PathVariable UUID scheduleTransportationId,
+    public ResponseEntity<byte[]> scheduleTransportationExportVoucher(
+        @PathVariable UUID scheduleTransportationId,
         @RequestParam(defaultValue = "America/La_Paz") String zoneId,
-        @RequestParam(defaultValue = "inline") ReportDispositionEnum disposition,
-        HttpServletResponse response)
+        @RequestParam(defaultValue = "inline") ReportDispositionEnum disposition)
     {
-        pdfExportCmd.withRequest(PdfExportCmd.Request.builder()
-                .response(response)
+        return pdfExportCmd.withRequest(PdfExportCmd.Request.builder()
                 .disposition(disposition)
                 .fileName("schedule_transportation_voucher")
                 .callbackGetReportBytes(() -> voucherScheduleTransportationPdfExportCmd.withRequest(
