@@ -2,6 +2,7 @@ package com.kernotec.driverscheduleauth.rest.controller;
 
 import com.kernotec.driverscheduleauth.config.AuthConfigProperties;
 import com.kernotec.driverscheduleauth.jpa.enums.GrantTypeEnum;
+import com.kernotec.driverscheduleauth.jpa.enums.LoginProtocolParams;
 import com.kernotec.driverscheduleauth.jpa.enums.RefreshTokenSecureEnum;
 import com.kernotec.driverscheduleauth.jpa.service.RealmService;
 import com.kernotec.driverscheduleauth.rest.ApiSpec.OpenIdConnectSpec;
@@ -10,14 +11,21 @@ import com.kernotec.driverscheduleauth.rest.command.UserInfoGetDataCmd;
 import com.kernotec.driverscheduleauth.rest.dto.request.OpenIdConnectTokenRequest;
 import com.kernotec.driverscheduleauth.rest.dto.response.OpenIdConnectTokenResponse;
 import com.kernotec.driverscheduleauth.rest.dto.response.OpenIdConnectUserInfoResponse;
+import com.kernotec.driverscheduleauth.security.grants.GrantHandler;
+import com.kernotec.driverscheduleauth.security.grants.GrantHandlerFactory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.Duration;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @Tag(name = OpenIdConnectSpec.TAG_NAME, description = OpenIdConnectSpec.TAG_DESCRIPTION)
 @RequestMapping(path = OpenIdConnectSpec.BASE_PATH)
 @AllArgsConstructor
@@ -39,13 +48,13 @@ public class OpenIdConnectController {
     private final ConnectionTokenCmd connectionTokenCmd;
     private final UserInfoGetDataCmd userInfoGetDataCmd;
     private final RealmService realmService;
+    private final GrantHandlerFactory grantHandlerFactory;
 
-    @Operation(summary = "OpenID Connect Endpoint to get token")
+/*    @Operation(summary = "OpenID Connect Endpoint to get token")
     @PostMapping("token")
     @ResponseStatus(HttpStatus.OK)
     public OpenIdConnectTokenResponse getTokenByGrantType(@PathVariable String realm,
-        @RequestParam("grant_type") GrantTypeEnum grantType, @RequestParam String audience,
-        @RequestParam String clienId,
+        @RequestParam("grant_type") GrantTypeEnum grantType,
         @RequestBody(required = false) OpenIdConnectTokenRequest request,
         HttpServletResponse httpServletResponse,
         @CookieValue(value = "refresh_token", required = false) String refreshToken)
@@ -60,7 +69,36 @@ public class OpenIdConnectController {
                     .build())
             .execute();
 
-        if (grantType.equals(GrantTypeEnum.password) && openIdConnectTokenResponse != null) {
+        return openIdConnectTokenResponse;
+    }*/
+
+    @Operation(summary = "OpenID Connect Endpoint to get token")
+    @PostMapping(value = "token", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<OpenIdConnectTokenResponse> processGrantRequest(
+        @PathVariable String realm, @RequestParam MultiValueMap<String, String> formParameters,
+        @CookieValue(value = "refresh_token", required = false) String refreshTokenFromCookie)
+    {
+        UUID realmId = realmService.findRealmIdByNameInCache(realm);
+
+        String grantTypeStr = formParameters.getFirst(
+            LoginProtocolParams.GRANT_TYPE_PARAM.getValue());
+        var grantType = GrantTypeEnum.fromValue(grantTypeStr);
+
+        if (refreshTokenFromCookie != null && !refreshTokenFromCookie.isBlank()) {
+            formParameters.add(
+                LoginProtocolParams.REFRESH_TOKEN.getValue(), refreshTokenFromCookie);
+        }
+
+        GrantHandler grantHandler = grantHandlerFactory.getHandler(grantType);
+        OpenIdConnectTokenResponse openIdConnectTokenResponse = grantHandler.handle(
+            realmId, formParameters);
+
+        var responseBuilder = ResponseEntity.ok();
+
+        if (grantType != null && grantType.equals(GrantTypeEnum.PASSWORD)
+            && openIdConnectTokenResponse != null)
+        {
             var refreshTokenCookie = ResponseCookie.from(
                     "refresh_token", openIdConnectTokenResponse.getRefreshToken())
                 .httpOnly(true)
@@ -73,10 +111,10 @@ public class OpenIdConnectController {
                         ? "None" : "Lax")
                 .build();
 
-            httpServletResponse.setHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+            responseBuilder.header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
         }
 
-        return openIdConnectTokenResponse;
+        return responseBuilder.body(openIdConnectTokenResponse);
     }
 
     @Operation(summary = "OpenId Connect Endpoint to userinfo endpoint")

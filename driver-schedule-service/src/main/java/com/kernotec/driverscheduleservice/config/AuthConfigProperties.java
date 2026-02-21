@@ -14,4 +14,5 @@ public class AuthConfigProperties {
     private String secretKey;
     private String realm;
     private String resource;
+    private String audience;
 }

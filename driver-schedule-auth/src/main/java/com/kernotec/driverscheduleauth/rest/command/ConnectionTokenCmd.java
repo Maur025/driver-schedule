@@ -19,7 +19,7 @@ public class ConnectionTokenCmd extends
 
     @Override
     protected OpenIdConnectTokenResponse run(Request request) {
-        return switch (request.grantType) {
+        /*return switch (request.grantType) {
             case password -> authLoginWithPasswordCmd.withRequest(
                     AuthLoginWithPasswordCmd.Request.builder()
                         .tokenRequest(request.tokenRequest)
@@ -31,7 +31,9 @@ public class ConnectionTokenCmd extends
                         .build())
                 .execute();
             case token_exchange -> null;
-        };
+        };*/
+
+        return null;
     }
 
     @Builder

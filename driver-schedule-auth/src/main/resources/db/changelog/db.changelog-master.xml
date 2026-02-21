@@ -30,4 +30,11 @@
   <changeSet id="1771517546708-1" author="Maur025">
     <sqlFile path="data/client/client_seed.sql" relativeToChangelogFile="true"/>
   </changeSet>
+
+  <include file="db/changelog/2026/02/20-01-changelog-11.xml"/>
+
+  <!-- audience - audience seed -->
+  <changeSet id="1771595792414-1" author="Maur025">
+    <sqlFile path="data/audience/audience_seed.sql" relativeToChangelogFile="true"/>
+  </changeSet>
 </databaseChangeLog>
