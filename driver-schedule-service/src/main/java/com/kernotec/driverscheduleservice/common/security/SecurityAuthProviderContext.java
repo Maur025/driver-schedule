@@ -27,17 +27,6 @@ public class SecurityAuthProviderContext implements SecurityAuthProvider {
             .orElse(null);
     }
 
- /*   @Override
-    public UUID getPersonIdThrow() {
-        UUID userId = getUserId();
-
-        if (userId == null) {
-            throw new PersonException("user.id.is.null", "", HttpStatus.BAD_REQUEST.value());
-        }
-
-        return personService.findIdByUserIdThrow(userId);
-    }*/
-
     @Override
     public Collection<String> getRoles() {
         return getJwtToken().map(jwtToken -> jwtToken.getToken()
