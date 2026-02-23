@@ -3,6 +3,7 @@ package com.kernotec.driverscheduleservice.webflux.user.client.rest;
 import com.kernotec.core.api.AbstractApiClient;
 import com.kernotec.core.exception.DefaultException;
 import com.kernotec.core.rest.dto.response.SingleResponse;
+import com.kernotec.driverscheduleservice.config.AuthConfigProperties;
 import com.kernotec.driverscheduleservice.webflux.config.ModuleAppProperties;
 import com.kernotec.driverscheduleservice.webflux.config.ModuleAppProperties.ServiceUri;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserCreateRequest;
@@ -25,6 +26,7 @@ import reactor.core.publisher.Mono;
 public class UserServiceApiClient extends AbstractApiClient {
 
     private final ModuleAppProperties moduleAppProperties;
+    private final AuthConfigProperties authConfigProperties;
     private final WebClient webClient;
 
     public Mono<SingleResponse<UserCreateResponse>> saveUser(UserCreateRequest request) {
@@ -34,8 +36,8 @@ public class UserServiceApiClient extends AbstractApiClient {
             .uri(uriBuilder -> uriBuilder.scheme(authAppConfig.scheme())
                 .host(authAppConfig.host())
                 .port(authAppConfig.port())
-                .path("realms/users")
-                .build())
+                .path("realms/{realm}/users")
+                .build(authConfigProperties.getRealm()))
             .bodyValue(request)
             .retrieve()
             .onStatus(
@@ -59,8 +61,8 @@ public class UserServiceApiClient extends AbstractApiClient {
             .uri(uriBuilder -> uriBuilder.scheme(authAppConfig.scheme())
                 .host(authAppConfig.host())
                 .port(authAppConfig.port())
-                .path(String.format("realms/users/%s", userId))
-                .build())
+                .path("realms/{realm}/users/{userId}")
+                .build(authConfigProperties.getRealm(), userId))
             .bodyValue(request)
             .retrieve()
             .onStatus(
@@ -83,8 +85,8 @@ public class UserServiceApiClient extends AbstractApiClient {
             .uri(uriBuilder -> uriBuilder.scheme(authAppConfig.scheme())
                 .host(authAppConfig.host())
                 .port(authAppConfig.port())
-                .path("realms/users/{userId}")
-                .build(userId))
+                .path("realms/{realm}/users/{userId}")
+                .build(authConfigProperties.getRealm(), userId))
             .bodyValue(request)
             .retrieve()
             .onStatus(

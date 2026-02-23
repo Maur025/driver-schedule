@@ -17,9 +17,5 @@ public class UserDeleteRequest extends BaseRequest {
 
     @NotNull
     @NotBlank
-    private String realmName;
-
-    @NotNull
-    @NotBlank
     private String userName;
 }

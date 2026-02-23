@@ -3,7 +3,7 @@ package com.kernotec.driverscheduleauth.rest;
 public class ApiSpec {
 
     public static final String ROOT_PATH = "/realms";
-    public static final String DEFAULT_REALM_PATH = ROOT_PATH + "/driver-schedule-auth";
+    public static final String REALM_CONTEXT = ROOT_PATH + "/{realm}";
 
     public static class OpenIdConfigurationSpec {
 
@@ -17,7 +17,7 @@ public class ApiSpec {
 
     public static class OpenIdConnectSpec {
 
-        public static final String BASE_PATH = DEFAULT_REALM_PATH + "/protocol/openid-connect";
+        public static final String BASE_PATH = REALM_CONTEXT + "/protocol/openid-connect";
         public static final String TAG_NAME = "OPENID CONNECT";
         public static final String TAG_DESCRIPTION = "OpenID Connect endpoints";
 
@@ -27,7 +27,7 @@ public class ApiSpec {
 
     public static class UserSpec {
 
-        public static final String BASE_PATH = ROOT_PATH + "/users";
+        public static final String BASE_PATH = REALM_CONTEXT + "/users";
         public static final String TAG_NAME = "USERS";
         public static final String TAG_DESCRIPTION = "User management";
 
@@ -37,7 +37,7 @@ public class ApiSpec {
 
     public static class RoleSpec {
 
-        public static final String BASE_PATH = ROOT_PATH + "/roles";
+        public static final String BASE_PATH = REALM_CONTEXT + "/roles";
         public static final String TAG_NAME = "ROLES";
         public static final String TAG_DESCRIPTION = "Role management";
 
@@ -57,7 +57,7 @@ public class ApiSpec {
 
     public static class AccountSpec {
 
-        public static final String BASE_PATH = DEFAULT_REALM_PATH + "/account";
+        public static final String BASE_PATH = REALM_CONTEXT + "/account";
         public static final String TAG_NAME = "ACCOUNT";
         public static final String TAG_DESCRIPTION = "User account management";
 

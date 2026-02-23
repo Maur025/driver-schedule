@@ -8,7 +8,7 @@ import com.kernotec.driverscheduleauth.exception.UserException;
 import com.kernotec.driverscheduleauth.jpa.entity.User;
 import com.kernotec.driverscheduleauth.jpa.enums.TokenTypeEnum;
 import com.kernotec.driverscheduleauth.jpa.service.UserService;
-import com.kernotec.driverscheduleauth.rest.dto.request.OpenIdConnectTokenRequest;
+import com.kernotec.driverscheduleauth.rest.dto.request.GrantPasswordCredentialsRequest;
 import com.kernotec.driverscheduleauth.rest.dto.response.OpenIdConnectTokenResponse;
 import com.kernotec.driverscheduleauth.util.TimeMeasureUtil;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -36,11 +36,11 @@ public class AuthLoginWithPasswordCmd extends
 
     @Override
     protected OpenIdConnectTokenResponse run(Request request) {
-        OpenIdConnectTokenRequest tokenRequest = request.tokenRequest;
+        GrantPasswordCredentialsRequest grantPasswordCredentialsRequest = request.grantPasswordCredentialsRequest;
 
-        User user = userService.findByUsernameThrow(tokenRequest.getUsername());
+        User user = userService.findByUsernameThrow(grantPasswordCredentialsRequest.getUsername());
 
-        if (!passwordEncoder.matches(tokenRequest.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(grantPasswordCredentialsRequest.getPassword(), user.getPassword())) {
             throw new UserException("login.failed", "", HttpStatus.BAD_REQUEST.value());
         }
 
@@ -90,7 +90,9 @@ public class AuthLoginWithPasswordCmd extends
     }
 
     @Builder
-    public record Request(@NotNull OpenIdConnectTokenRequest tokenRequest) {
+    public record Request(
+        @NotNull GrantPasswordCredentialsRequest grantPasswordCredentialsRequest)
+    {
 
     }
 }

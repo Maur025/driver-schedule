@@ -1,6 +1,7 @@
 package com.kernotec.driverscheduleauth.rest.controller;
 
 import com.kernotec.core.rest.dto.response.MessageResponse;
+import com.kernotec.driverscheduleauth.jpa.service.RealmService;
 import com.kernotec.driverscheduleauth.rest.ApiSpec.AccountSpec;
 import com.kernotec.driverscheduleauth.rest.command.account.ProcessAccountChangePasswordCmd;
 import com.kernotec.driverscheduleauth.rest.command.account.ProcessAccountResetPasswordCmd;
@@ -14,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,13 +32,16 @@ public class AccountController {
     private final AuthUtil authUtil;
     private final ProcessAccountChangePasswordCmd processAccountChangePasswordCmd;
     private final ProcessAccountResetPasswordCmd processAccountResetPasswordCmd;
+    private final RealmService realmService;
 
     @Operation(summary = "account change password")
     @PostMapping("/password")
     @ResponseStatus(HttpStatus.OK)
-    public MessageResponse changePassword(@RequestBody AccountChangePasswordRequest request,
-        Authentication authentication)
+    public MessageResponse changePassword(@PathVariable String realm,
+        @RequestBody AccountChangePasswordRequest request, Authentication authentication)
     {
+        realmService.findRealmIdByNameInCache(realm);
+
         processAccountChangePasswordCmd.withRequest(
                 ProcessAccountChangePasswordCmd.Request.builder()
                     .accountChangePasswordRequest(request)
@@ -54,9 +59,11 @@ public class AccountController {
     @PostMapping("/password/reset")
     @ResponseStatus(HttpStatus.OK)
     @IsRoleAdmin
-    public MessageResponse resetPassword(@RequestBody AccountResetPasswordRequest request,
-        Authentication authentication)
+    public MessageResponse resetPassword(@PathVariable String realm,
+        @RequestBody AccountResetPasswordRequest request, Authentication authentication)
     {
+        realmService.findRealmIdByNameInCache(realm);
+
         processAccountResetPasswordCmd.withRequest(ProcessAccountResetPasswordCmd.Request.builder()
                 .accountResetPasswordRequest(request)
                 .adminUserId(authUtil.getUserIdFromAuthentication(authentication))
