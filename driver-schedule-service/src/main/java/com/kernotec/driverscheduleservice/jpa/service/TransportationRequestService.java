@@ -2,17 +2,16 @@ package com.kernotec.driverscheduleservice.jpa.service;
 
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
+import com.kernotec.driverscheduleservice.common.security.SecurityAuthProvider;
 import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
 import com.kernotec.driverscheduleservice.jpa.enums.PersonTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.repository.TransportationRequestRepository;
 import com.kernotec.driverscheduleservice.jpa.specification.transportation.request.TransportationRequestSpecification;
 import com.kernotec.driverscheduleservice.rest.dto.request.transportation.request.TransportationRequestFilterRequest;
-import com.kernotec.driverscheduleservice.util.AuthUtil;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
@@ -20,7 +19,8 @@ import org.springframework.stereotype.Service;
 public class TransportationRequestService extends BaseServiceImpl<TransportationRequest, UUID> {
 
     private final TransportationRequestRepository repository;
-    private final AuthUtil authUtil;
+    private final SecurityAuthProvider securityAuthProvider;
+    private final PersonService personService;
 
     @Override
     protected String resourceName() {
@@ -33,8 +33,7 @@ public class TransportationRequestService extends BaseServiceImpl<Transportation
     }
 
     public Page<TransportationRequest> findAllWithFilters(
-        TransportationRequestFilterRequest filterRequest, Authentication authentication,
-        Pageable pageable)
+        TransportationRequestFilterRequest filterRequest, Pageable pageable)
     {
         TransportationRequestSpecification transportationRequestSpecification = TransportationRequestSpecification.builder()
             .withTransportationRequestStateId(filterRequest.getTransportationRequestStateId())
@@ -48,12 +47,12 @@ public class TransportationRequestService extends BaseServiceImpl<Transportation
             .withYearDate(filterRequest.getYearDate())
             .withKeyword(filterRequest.getKeyword());
 
-        boolean isAdmin = authUtil.userContainsRole(authentication, PersonTypeEnum.ADMIN);
-        boolean isApplicant = authUtil.userContainsRole(authentication, PersonTypeEnum.APPLICANT);
+        boolean isAdmin = securityAuthProvider.userContainsRole(PersonTypeEnum.ADMIN);
+        boolean isApplicant = securityAuthProvider.userContainsRole(PersonTypeEnum.APPLICANT);
 
         if (!isAdmin && isApplicant) {
             transportationRequestSpecification.withOnlyRecordsOfPersonId(
-                authUtil.getPersonIdFromAuthenticationThrow(authentication));
+                personService.findIdByUserIdAuthenticateThrow());
         }
 
         return repository.findAll(transportationRequestSpecification, pageable);

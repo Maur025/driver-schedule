@@ -216,7 +216,7 @@ public class VoucherJasperUtil {
         for (VoucherContactDto voucherContactDto : voucherContactDtoList) {
             LabelTypeCodeEnum code = LabelTypeCodeEnum.fromValue(voucherContactDto.getLabel());
 
-            if (!LabelTypeCodeEnum.MOBILE.equals(code) && !LabelTypeCodeEnum.WORK.equals(code)) {
+            if (!LabelTypeCodeEnum.MAIN.equals(code) && !LabelTypeCodeEnum.WORK.equals(code)) {
                 continue;
             }
 

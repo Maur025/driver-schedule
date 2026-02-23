@@ -28,6 +28,7 @@ sts.code as schedule_state_code,
 tr.code  as request_unique_code,
 preq."name" as person_requested_name,
 preq.last_name as person_requested_last_name,
+tr.correlative,
 tr.trip_type,
 tr.is_short_notice,
 tr.people_number,
@@ -66,6 +67,7 @@ group by st.id,
 st.created_at,
 sts.code,
 tr.code,
+tr.correlative,
 tr.trip_type,
 tr.is_short_notice,
 tr.people_number,
@@ -113,6 +115,11 @@ preq.last_name;]]>
 		<property name="com.jaspersoft.studio.field.name" value="person_requested_last_name"/>
 		<property name="com.jaspersoft.studio.field.label" value="person_requested_last_name"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="person"/>
+	</field>
+	<field name="correlative" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="correlative"/>
+		<property name="com.jaspersoft.studio.field.label" value="correlative"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="transportation_requests"/>
 	</field>
 	<field name="trip_type" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="trip_type"/>
@@ -183,10 +190,10 @@ preq.last_name;]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="224" splitType="Stretch">
+		<band height="244" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<subreport>
-				<reportElement x="0" y="0" width="500" height="80" uuid="30dfafbe-c2e3-480e-8c85-e74e0539190e">
+				<reportElement x="0" y="0" width="500" height="100" uuid="30dfafbe-c2e3-480e-8c85-e74e0539190e">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -213,11 +220,14 @@ preq.last_name;]]>
 				<subreportParameter name="LABEL_FOR_REASON">
 					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getReasonLabelMessage($F{schedule_state_code},false)]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="REQUEST_NUMBER">
+					<subreportParameterExpression><![CDATA[$F{correlative}]]></subreportParameterExpression>
+				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA["title_voucher.jasper"]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement x="0" y="80" width="500" height="144" uuid="b79b5db4-7da6-4387-84b0-c4618f0cbef7">
+				<reportElement x="0" y="100" width="500" height="144" uuid="b79b5db4-7da6-4387-84b0-c4618f0cbef7">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>

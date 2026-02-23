@@ -17,6 +17,7 @@
 	<parameter name="TITLE_LOGO_IMG" class="java.lang.Object"/>
 	<parameter name="REASON_MESSAGE" class="java.lang.String"/>
 	<parameter name="LABEL_FOR_REASON" class="java.lang.String"/>
+	<parameter name="REQUEST_NUMBER" class="java.lang.Long"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -24,10 +25,10 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="80">
+		<band height="100">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<frame>
-				<reportElement key="main-title" x="0" y="0" width="334" height="80" uuid="d6b8bd81-5715-4c7d-ad98-3bc737ff6e9a">
+				<reportElement key="main-title" x="0" y="0" width="334" height="100" uuid="d6b8bd81-5715-4c7d-ad98-3bc737ff6e9a">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -43,17 +44,17 @@
 					<textFieldExpression><![CDATA[$P{MAIN_TITLE}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="0" y="26" width="80" height="18" forecolor="#555555" uuid="63790e3d-a1c5-4a0d-bf9f-876ebd26998a">
+					<reportElement x="0" y="26" width="40" height="18" forecolor="#555555" uuid="63790e3d-a1c5-4a0d-bf9f-876ebd26998a">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textElement>
 						<font fontName="Roboto" size="10" isBold="false"/>
 					</textElement>
-					<text><![CDATA[ID DE SOLICITUD:]]></text>
+					<text><![CDATA[CÓDIGO:]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="82" y="26" width="250" height="18" uuid="a3ec5646-8cfe-4f8f-87eb-9bc53fb2d2ed">
+					<reportElement x="42" y="26" width="290" height="18" uuid="a3ec5646-8cfe-4f8f-87eb-9bc53fb2d2ed">
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -64,7 +65,7 @@
 					<textFieldExpression><![CDATA[$P{TRANSPORTATION_REQUEST_CODE}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight">
-					<reportElement x="0" y="44" width="334" height="36" uuid="0e167a81-b2c0-4765-a7a7-12f0654d8c01">
+					<reportElement x="0" y="63" width="334" height="36" uuid="0e167a81-b2c0-4765-a7a7-12f0654d8c01">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -75,9 +76,30 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{LABEL_FOR_REASON}+" <b>"+$P{REASON_MESSAGE}+"</b>"]]></textFieldExpression>
 				</textField>
+				<staticText>
+					<reportElement x="0" y="44" width="110" height="18" forecolor="#555555" uuid="2973fd3a-980b-4ad7-bce2-0ed6c2804d6f">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="Roboto" size="10" isBold="false"/>
+					</textElement>
+					<text><![CDATA[NÚMERO DE SOLICITUD:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="112" y="44" width="220" height="18" uuid="138e694d-a681-4371-af41-f13dd7789926">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="Roboto" size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{REQUEST_NUMBER} == null ? "N/A": $P{REQUEST_NUMBER}]]></textFieldExpression>
+				</textField>
 			</frame>
 			<frame>
-				<reportElement x="334" y="0" width="166" height="80" uuid="387ee28f-20a1-44ee-9ec6-f72732e15ecd">
+				<reportElement x="334" y="0" width="166" height="100" uuid="387ee28f-20a1-44ee-9ec6-f72732e15ecd">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -93,7 +115,7 @@
 					</graphicElement>
 				</rectangle>
 				<image>
-					<reportElement x="50" y="30" width="116" height="40" uuid="3a8172bf-bea2-42ec-a47a-5b7007876f8a"/>
+					<reportElement x="25" y="30" width="116" height="40" uuid="3a8172bf-bea2-42ec-a47a-5b7007876f8a"/>
 					<imageExpression><![CDATA[$P{TITLE_LOGO_IMG}]]></imageExpression>
 				</image>
 				<textField>

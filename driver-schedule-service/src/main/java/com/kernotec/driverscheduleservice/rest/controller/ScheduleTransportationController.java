@@ -33,7 +33,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -92,11 +91,11 @@ public class ScheduleTransportationController {
         @RequestParam(defaultValue = "10") Integer size,
         @RequestParam(defaultValue = "createdAt") String sortBy,
         @RequestParam(defaultValue = "true") Boolean descending,
-        @RequestBody ScheduleTransportationFilterRequest request, Authentication authentication)
+        @RequestBody ScheduleTransportationFilterRequest request)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<ScheduleTransportation> scheduleTransportationPage = scheduleTransportationService.findAllBySearch(
-            request, authentication, pageable);
+            request, pageable);
 
         return PageResponse.<ScheduleTransportationResponse>builder()
             .code(HttpStatus.OK.value())
