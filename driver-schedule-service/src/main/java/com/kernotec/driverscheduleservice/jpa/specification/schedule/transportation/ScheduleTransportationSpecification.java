@@ -12,6 +12,7 @@ import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,6 +102,7 @@ public record ScheduleTransportationSpecification(
         addVehicleIdsFilter(root, joinMap).ifPresent(predicateList::add);
         addDriverIdsFilter(root, joinMap).ifPresent(predicateList::add);
         addKeywordFilter(root, cb, joinMap).ifPresent(predicateList::add);
+        addGreaterThanOrEqualDateFilter(root, cb).ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -366,6 +368,24 @@ public record ScheduleTransportationSpecification(
                     cb.lower(getOrCreateTransportationRequestJoin(joinMap, root).get("code")),
                     pattern
                 ));
+            });
+    }
+
+    public ScheduleTransportationSpecification withGreaterThanOrEqualDate(ZonedDateTime date)
+    {
+        this.criteria.setGreaterThanOrEqualDate(date);
+        return this;
+    }
+
+    private Optional<Predicate> addGreaterThanOrEqualDateFilter(Root<ScheduleTransportation> root,
+        CriteriaBuilder cb)
+    {
+        return Optional.ofNullable(criteria.getGreaterThanOrEqualDate())
+            .map(date -> {
+                ZonedDateTime dataWithZone = date.withZoneSameInstant(ZoneOffset.UTC);
+                log.info("date with same zone instant: {}", dataWithZone);
+
+                return cb.greaterThanOrEqualTo(root.get("scheduleFrom"), dataWithZone);
             });
     }
 }
