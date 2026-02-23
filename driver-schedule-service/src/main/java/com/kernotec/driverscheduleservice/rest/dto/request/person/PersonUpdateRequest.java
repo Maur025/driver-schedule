@@ -3,6 +3,9 @@ package com.kernotec.driverscheduleservice.rest.dto.request.person;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.request.BaseRequest;
+import com.kernotec.driverscheduleservice.rest.dto.request.contact.ContactCreateRequest;
+import jakarta.validation.Valid;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
@@ -19,4 +22,6 @@ public class PersonUpdateRequest extends BaseRequest {
     private String lastName;
     private String document;
     private Set<UUID> personTypeIds;
+
+    private List<@Valid ContactCreateRequest> contacts;
 }

@@ -7,6 +7,7 @@ import com.kernotec.driverscheduleservice.jpa.repository.ContactRepository;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @AllArgsConstructor
 @Service
@@ -22,5 +23,10 @@ public class ContactService extends BaseServiceImpl<Contact, UUID> {
     @Override
     protected BaseRepository<Contact, UUID> repository() {
         return repository;
+    }
+
+    @Transactional
+    public void deleteAllByPersonId(UUID personId) {
+        repository.deleteAllByPersonId(personId);
     }
 }
