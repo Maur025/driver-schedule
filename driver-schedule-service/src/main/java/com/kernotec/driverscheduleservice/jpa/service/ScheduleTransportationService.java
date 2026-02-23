@@ -2,6 +2,7 @@ package com.kernotec.driverscheduleservice.jpa.service;
 
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
+import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.enums.PersonTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.ScheduleTransportationStateEnum;
@@ -38,6 +39,7 @@ public class ScheduleTransportationService extends BaseServiceImpl<ScheduleTrans
     public List<ScheduleTransportation> findConflictByVehicleId(UUID vehicleId, ZonedDateTime from,
         ZonedDateTime to, String zoneId, UUID scheduleTransportationExcludeId)
     {
+        // TODO: add pagination to prevent overflow
         return repository.findAll(ScheduleTransportationSpecification.builder()
             .withConflictValidation(from, to)
             .withVehicleId(vehicleId)
@@ -48,6 +50,8 @@ public class ScheduleTransportationService extends BaseServiceImpl<ScheduleTrans
     public List<ScheduleTransportation> findConflictByVehicleIds(List<UUID> vehicleIds,
         ZonedDateTime from, ZonedDateTime to, String zoneId, UUID scheduleTransportationExcludeId)
     {
+        // TODO: add pagination to prevent overflow
+
         return repository.findAll(ScheduleTransportationSpecification.builder()
             .withConflictValidation(from, to)
             .withVehicleIds(vehicleIds)
@@ -55,13 +59,15 @@ public class ScheduleTransportationService extends BaseServiceImpl<ScheduleTrans
             .withScheduleTransportationExcludeId(scheduleTransportationExcludeId)
             .withScheduleTransportationStates(List.of(
                 ScheduleTransportationStateEnum.SCHEDULED,
-                ScheduleTransportationStateEnum.RESCHEDULED
+                ScheduleTransportationStateEnum.RESCHEDULED,
+                ScheduleTransportationStateEnum.IN_PROGRESS
             )));
     }
 
     public List<ScheduleTransportation> findConflictByDriverId(UUID driverId, ZonedDateTime from,
         ZonedDateTime to, String zoneId, UUID scheduleTransportationExcludeId)
     {
+        // TODO: add pagination to prevent overflow
         return repository.findAll(ScheduleTransportationSpecification.builder()
             .withConflictValidation(from, to)
             .withDriverId(driverId)
@@ -72,6 +78,7 @@ public class ScheduleTransportationService extends BaseServiceImpl<ScheduleTrans
     public List<ScheduleTransportation> findConflictByDriverIds(List<UUID> driverIds,
         ZonedDateTime from, ZonedDateTime to, String zoneId, UUID scheduleTransportationExcludeId)
     {
+        // TODO: add pagination to prevent overflow
         return repository.findAll(ScheduleTransportationSpecification.builder()
             .withConflictValidation(from, to)
             .withDriverIds(driverIds)
@@ -79,8 +86,30 @@ public class ScheduleTransportationService extends BaseServiceImpl<ScheduleTrans
             .withScheduleTransportationExcludeId(scheduleTransportationExcludeId)
             .withScheduleTransportationStates(List.of(
                 ScheduleTransportationStateEnum.SCHEDULED,
-                ScheduleTransportationStateEnum.RESCHEDULED
+                ScheduleTransportationStateEnum.RESCHEDULED,
+                ScheduleTransportationStateEnum.IN_PROGRESS
             )));
+    }
+
+    public Page<ScheduleTransportation> findWhichVehicleBusy(UUID vehicleId) {
+        return findWhichVehicleBusyByDate(vehicleId, null);
+    }
+
+    public Page<ScheduleTransportation> findWhichVehicleBusyByDate(UUID vehicleId,
+        ZonedDateTime date)
+    {
+        Pageable pageable = PageableUtil.of(0, 10, "scheduleFrom", true);
+
+        return repository.findAll(
+            ScheduleTransportationSpecification.builder()
+                .withVehicleId(vehicleId)
+                .withGreaterThanOrEqualDate(date)
+                .withScheduleTransportationStates(List.of(
+                    ScheduleTransportationStateEnum.SCHEDULED,
+                    ScheduleTransportationStateEnum.RESCHEDULED,
+                    ScheduleTransportationStateEnum.IN_PROGRESS
+                )), pageable
+        );
     }
 
     public Page<ScheduleTransportation> findAllBySearch(

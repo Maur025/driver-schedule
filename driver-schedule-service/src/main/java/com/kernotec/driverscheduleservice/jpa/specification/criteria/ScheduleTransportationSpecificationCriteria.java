@@ -33,4 +33,6 @@ public class ScheduleTransportationSpecificationCriteria {
     private List<UUID> driverIds;
 
     private String keyword;
+
+    private ZonedDateTime greaterThanOrEqualDate;
 }
