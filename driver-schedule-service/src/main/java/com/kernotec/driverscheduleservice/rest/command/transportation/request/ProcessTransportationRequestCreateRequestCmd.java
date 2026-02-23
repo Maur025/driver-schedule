@@ -17,7 +17,6 @@ import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -40,7 +39,6 @@ public class ProcessTransportationRequestCreateRequestCmd extends
         UUID transportationRequestId = transportationRequestFlowCreateCmd.withRequest(
                 TransportationRequestFlowCreateCmd.Request.builder()
                     .transportationRequestCreateRequest(request.transportationRequestCreateRequest)
-                    .authentication(request.authentication)
                     .build())
             .execute();
 
@@ -70,8 +68,7 @@ public class ProcessTransportationRequestCreateRequestCmd extends
 
     @Builder
     public record Request(
-        @NotNull @Valid TransportationRequestCreateRequest transportationRequestCreateRequest,
-        @NotNull Authentication authentication)
+        @NotNull @Valid TransportationRequestCreateRequest transportationRequestCreateRequest)
     {
 
     }

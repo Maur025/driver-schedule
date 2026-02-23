@@ -35,7 +35,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -96,13 +95,12 @@ public class TransportationRequestController {
         @RequestParam(defaultValue = "10") Integer size,
         @RequestParam(defaultValue = "createdAt") String sortBy,
         @RequestParam(defaultValue = "true") Boolean descending,
-        @RequestBody TransportationRequestFilterRequest filterRequest,
-        Authentication authentication)
+        @RequestBody TransportationRequestFilterRequest filterRequest)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
 
         Page<TransportationRequest> transportationRequestPage = transportationRequestService.findAllWithFilters(
-            filterRequest, authentication, pageable);
+            filterRequest, pageable);
 
         return PageResponse.<TransportationRequestResponse>builder()
             .code(HttpStatus.OK.value())
@@ -135,12 +133,11 @@ public class TransportationRequestController {
     @ResponseStatus(HttpStatus.CREATED)
     @IsRoleApplicantOrScheduler
     public SingleHateoasResponse<TransportationRequestResponse> save(
-        @RequestBody TransportationRequestCreateRequest request, Authentication authentication)
+        @RequestBody TransportationRequestCreateRequest request)
     {
         TransportationRequest transportationRequest = processTransportationRequestCreateRequestCmd.withRequest(
                 ProcessTransportationRequestCreateRequestCmd.Request.builder()
                     .transportationRequestCreateRequest(request)
-                    .authentication(authentication)
                     .build())
             .execute();
 

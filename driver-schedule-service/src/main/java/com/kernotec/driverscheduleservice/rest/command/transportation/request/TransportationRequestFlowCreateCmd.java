@@ -3,13 +3,15 @@ package com.kernotec.driverscheduleservice.rest.command.transportation.request;
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.command.request.coord.RequestCoordManyCreateCmd;
 import com.kernotec.driverscheduleservice.command.transportation.request.TransportationRequestCreateCmd;
+import com.kernotec.driverscheduleservice.common.security.SecurityAuthProvider;
 import com.kernotec.driverscheduleservice.jpa.entity.RequestCoord;
 import com.kernotec.driverscheduleservice.jpa.enums.TransportationRequestStateEnum;
+import com.kernotec.driverscheduleservice.jpa.service.PersonService;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestStateService;
 import com.kernotec.driverscheduleservice.rest.dto.request.request.coord.RequestCoordCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.transportation.request.TransportationRequestCreateRequest;
 import com.kernotec.driverscheduleservice.rest.mapper.request.request.coord.RequestCoordEntityMapper;
-import com.kernotec.driverscheduleservice.util.AuthUtil;
+import com.kernotec.driverscheduleservice.util.CommonUtil;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
@@ -18,7 +20,6 @@ import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -29,13 +30,14 @@ public class TransportationRequestFlowCreateCmd extends
 {
 
     private final TransportationRequestStateService transportationRequestStateService;
-    private final AuthUtil authUtil;
 
     private final TransportationRequestValidationCmd transportationRequestValidationCmd;
     private final TransportationRequestCreateCmd transportationRequestCreateCmd;
     private final RequestCoordEntityMapper requestCoordEntityMapper;
     private final RequestCoordManyCreateCmd requestCoordManyCreateCmd;
     private final ZonedDateTimeUtil zonedDateTimeUtil;
+    private final SecurityAuthProvider securityAuthProvider;
+    private final PersonService personService;
 
     @Override
     protected void validate(Request request) {
@@ -58,8 +60,7 @@ public class TransportationRequestFlowCreateCmd extends
         UUID transportationRequestStateRequestedId = transportationRequestStateService.findIdByCodeThrow(
             TransportationRequestStateEnum.REQUESTED);
 
-        UUID personId = getPersonId(
-            request.transportationRequestCreateRequest, request.authentication);
+        UUID personId = getPersonId(request.transportationRequestCreateRequest);
 
         ZonedDateTime startTime = transportationRequestCreateRequest.getStartTime();
         ZonedDateTime startTimeAdjust = startTime.withSecond(0)
@@ -82,8 +83,9 @@ public class TransportationRequestFlowCreateCmd extends
         UUID transportationRequestId = transportationRequestCreateCmd.withRequest(
                 TransportationRequestCreateCmd.Request.builder()
                     .peopleNumber(transportationRequestCreateRequest.getPeopleNumber())
-                    .assets(transportationRequestCreateRequest.getAssets())
-                    .passengers(transportationRequestCreateRequest.getPassengers())
+                    .assets(CommonUtil.toUpperCase(transportationRequestCreateRequest.getAssets()))
+                    .passengers(
+                        CommonUtil.toUpperCase(transportationRequestCreateRequest.getPassengers()))
                     .startTime(startTimeAdjust)
                     .endTime(endTimeAdjust)
                     .requestedDate(transportationRequestCreateRequest.getRequestedDate())
@@ -91,7 +93,7 @@ public class TransportationRequestFlowCreateCmd extends
                     .requestedTo(requestedTo)
                     .tripType(transportationRequestCreateRequest.getTripType())
                     .isShortNotice(transportationRequestCreateRequest.getIsShortNotice())
-                    .detail(transportationRequestCreateRequest.getDetail())
+                    .detail(CommonUtil.toUpperCase(transportationRequestCreateRequest.getDetail()))
                     .isAssetPickup(transportationRequestCreateRequest.getIsAssetPickup())
                     .estimatedTotalDistanceKm(
                         transportationRequestCreateRequest.getEstimatedTotalDistanceKm())
@@ -110,14 +112,13 @@ public class TransportationRequestFlowCreateCmd extends
         return transportationRequestId;
     }
 
-    private UUID getPersonId(TransportationRequestCreateRequest request,
-        Authentication authentication)
+    private UUID getPersonId(TransportationRequestCreateRequest request)
     {
         if (request.getPersonRequestedId() != null) {
             return request.getPersonRequestedId();
         }
 
-        return authUtil.getPersonIdFromAuthenticationThrow(authentication);
+        return personService.findIdByUserIdAuthenticateThrow();
     }
 
     private void registryRequestCoords(
@@ -139,8 +140,7 @@ public class TransportationRequestFlowCreateCmd extends
 
     @Builder
     public record Request(
-        @NotNull TransportationRequestCreateRequest transportationRequestCreateRequest,
-        @NotNull Authentication authentication)
+        @NotNull TransportationRequestCreateRequest transportationRequestCreateRequest)
     {
 
     }
