@@ -7,6 +7,10 @@ import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
+import com.kernotec.driverscheduleservice.common.annotation.schedule.transportation.CanCancelSchedule;
+import com.kernotec.driverscheduleservice.common.annotation.schedule.transportation.CanCreateSchedule;
+import com.kernotec.driverscheduleservice.common.annotation.schedule.transportation.CanReadSchedule;
+import com.kernotec.driverscheduleservice.common.annotation.schedule.transportation.CanReschedule;
 import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.report.jpa.enums.ReportDispositionEnum;
@@ -23,7 +27,6 @@ import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportati
 import com.kernotec.driverscheduleservice.rest.dto.response.SingleHateoasResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.response.schedule.transportation.ScheduleTransportationResponseMapper;
-import com.kernotec.driverscheduleservice.util.AppRoleUtil.IsRoleSchedulerOrAdmin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -62,6 +65,7 @@ public class ScheduleTransportationController {
     @Operation(summary = "find all schedule transportations")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @CanReadSchedule
     public PageResponse<ScheduleTransportationResponse> findAll(
         @RequestParam(defaultValue = "0") Integer page,
         @RequestParam(defaultValue = "10") Integer size,
@@ -86,6 +90,7 @@ public class ScheduleTransportationController {
     @Operation(summary = "search schedule transportation")
     @PostMapping("search")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadSchedule
     public PageResponse<ScheduleTransportationResponse> findAllBySearch(
         @RequestParam(defaultValue = "0") Integer page,
         @RequestParam(defaultValue = "10") Integer size,
@@ -111,6 +116,7 @@ public class ScheduleTransportationController {
     @Operation(summary = "find schedule transportations by id")
     @GetMapping("{scheduleTransportationId}")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadSchedule
     public SingleResponse<ScheduleTransportationResponse> findById(
         @PathVariable UUID scheduleTransportationId)
     {
@@ -126,7 +132,7 @@ public class ScheduleTransportationController {
     @Operation(summary = "save schedule transportation")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @IsRoleSchedulerOrAdmin
+    @CanCreateSchedule
     public SingleHateoasResponse<ScheduleTransportationResponse> save(
         @RequestBody ScheduleTransportationCreateRequest request)
     {
@@ -149,7 +155,7 @@ public class ScheduleTransportationController {
     @Operation(summary = "reschedule transportation")
     @PatchMapping("{scheduleTransportationId}/rescheduled")
     @ResponseStatus(HttpStatus.OK)
-    @IsRoleSchedulerOrAdmin
+    @CanReschedule
     public SingleHateoasResponse<ScheduleTransportationResponse> reschedule(
         @PathVariable UUID scheduleTransportationId,
         @RequestBody ScheduleTransportationUpdateRequest request)
@@ -174,7 +180,7 @@ public class ScheduleTransportationController {
     @Operation(summary = "cancel schedule transportation")
     @PostMapping("{scheduleTransportationId}/cancelled")
     @ResponseStatus(HttpStatus.OK)
-    @IsRoleSchedulerOrAdmin
+    @CanCancelSchedule
     public SingleHateoasResponse<ScheduleTransportationResponse> cancel(
         @PathVariable UUID scheduleTransportationId,
         @RequestBody ScheduleTransportationCancelRequest request)
@@ -199,7 +205,6 @@ public class ScheduleTransportationController {
     @Operation(summary = "end schedule transportation")
     @PostMapping("{scheduleTransportationId}/finalized")
     @ResponseStatus(HttpStatus.OK)
-    @IsRoleSchedulerOrAdmin
     public SingleResponse<ScheduleTransportationResponse> finalize(
         @PathVariable UUID scheduleTransportationId)
     {
@@ -211,7 +216,7 @@ public class ScheduleTransportationController {
 
     @Operation(summary = "schedule transportation export voucher")
     @GetMapping("{scheduleTransportationId}/voucher")
-    @ResponseStatus(HttpStatus.OK)
+    @CanReadSchedule
     public ResponseEntity<byte[]> scheduleTransportationExportVoucher(
         @PathVariable UUID scheduleTransportationId,
         @RequestParam(defaultValue = "America/La_Paz") String zoneId,

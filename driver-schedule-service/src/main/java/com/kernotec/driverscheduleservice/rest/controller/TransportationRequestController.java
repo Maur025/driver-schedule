@@ -7,6 +7,10 @@ import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
+import com.kernotec.driverscheduleservice.common.annotation.transportation.request.CanCancelRequest;
+import com.kernotec.driverscheduleservice.common.annotation.transportation.request.CanCreateRequest;
+import com.kernotec.driverscheduleservice.common.annotation.transportation.request.CanReadRequest;
+import com.kernotec.driverscheduleservice.common.annotation.transportation.request.CanRejectRequest;
 import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestService;
 import com.kernotec.driverscheduleservice.report.jpa.enums.ReportDispositionEnum;
@@ -23,8 +27,6 @@ import com.kernotec.driverscheduleservice.rest.dto.request.transportation.reques
 import com.kernotec.driverscheduleservice.rest.dto.response.SingleHateoasResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.transportation.request.TransportationRequestResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.response.transportation.request.TransportationRequestResponseMapper;
-import com.kernotec.driverscheduleservice.util.AppRoleUtil.IsRoleApplicantOrScheduler;
-import com.kernotec.driverscheduleservice.util.AppRoleUtil.IsRoleSchedulerOrAdmin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -65,6 +67,7 @@ public class TransportationRequestController {
     @Operation(summary = "find all transportation requests")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @CanReadRequest
     public PageResponse<TransportationRequestResponse> findAll(
         @RequestParam(defaultValue = "0") Integer page,
         @RequestParam(defaultValue = "10") Integer size,
@@ -90,6 +93,7 @@ public class TransportationRequestController {
     @Operation(summary = "find all transportation requests with filters")
     @PostMapping("filter")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadRequest
     public PageResponse<TransportationRequestResponse> findAllFilter(
         @RequestParam(defaultValue = "0") Integer page,
         @RequestParam(defaultValue = "10") Integer size,
@@ -116,6 +120,7 @@ public class TransportationRequestController {
     @Operation(summary = "find by id")
     @GetMapping("{transportationRequestId}")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadRequest
     public SingleResponse<TransportationRequestResponse> findById(
         @PathVariable UUID transportationRequestId)
     {
@@ -131,7 +136,7 @@ public class TransportationRequestController {
     @Operation(summary = "save transportation request")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @IsRoleApplicantOrScheduler
+    @CanCreateRequest
     public SingleHateoasResponse<TransportationRequestResponse> save(
         @RequestBody TransportationRequestCreateRequest request)
     {
@@ -158,7 +163,7 @@ public class TransportationRequestController {
     @Operation(summary = "reject transportation request")
     @PostMapping("{transportationRequestId}/rejected")
     @ResponseStatus(HttpStatus.OK)
-    @IsRoleSchedulerOrAdmin
+    @CanRejectRequest
     public SingleHateoasResponse<TransportationRequestResponse> rejectedRequest(
         @PathVariable UUID transportationRequestId, @RequestBody RejectReasonRequest request)
     {
@@ -182,7 +187,7 @@ public class TransportationRequestController {
     @Operation(summary = "cancel transportation request")
     @PostMapping("{transportationRequestId}/cancelled")
     @ResponseStatus(HttpStatus.OK)
-    @IsRoleApplicantOrScheduler
+    @CanCancelRequest
     public SingleHateoasResponse<TransportationRequestResponse> cancelledRequest(
         @PathVariable UUID transportationRequestId, @RequestBody CancelRequestReasonRequest request)
     {
@@ -206,6 +211,7 @@ public class TransportationRequestController {
     @Operation(summary = "transportation request export voucher")
     @GetMapping("{transportationRequestId}/voucher")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadRequest
     public ResponseEntity<byte[]> transportationRequestExportVoucher(
         @PathVariable UUID transportationRequestId,
         @RequestParam(defaultValue = "America/La_Paz") String zoneId,

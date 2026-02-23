@@ -5,6 +5,10 @@ import com.kernotec.core.rest.dto.response.MessageResponse;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
+import com.kernotec.driverscheduleservice.common.annotation.vehicle.CanCreateVehicle;
+import com.kernotec.driverscheduleservice.common.annotation.vehicle.CanReadVehicle;
+import com.kernotec.driverscheduleservice.common.annotation.vehicle.CanUpdateVehicle;
+import com.kernotec.driverscheduleservice.common.security.SecurityAuthProvider;
 import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.entity.Vehicle;
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationService;
@@ -32,6 +36,7 @@ import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.ZonedDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -75,15 +80,24 @@ public class VehicleController {
     private final VehicleCsvImportGetDtoCmd vehicleCsvImportGetDtoCmd;
     private final VehicleCsvImportSaveCmd vehicleCsvImportSaveCmd;
     private final ProcessVehiclePatchRequestCmd processVehiclePatchRequestCmd;
+    private final SecurityAuthProvider securityAuthProvider;
 
     @Operation(summary = "find all vehicles")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @CanReadVehicle
     public PageResponse<VehicleResponse> findAll(@RequestParam(defaultValue = "0") Integer page,
         @RequestParam(defaultValue = "20") Integer size,
         @RequestParam(defaultValue = "createdAt") String sortBy,
         @RequestParam(defaultValue = "true") boolean descending)
     {
+
+        Collection<String> scopes = securityAuthProvider.getScopes();
+
+        for (String scope : scopes) {
+            log.info("scope: {}", scope);
+        }
+
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<Vehicle> vehiclePage = vehicleService.findAll(pageable);
 
@@ -100,18 +114,22 @@ public class VehicleController {
     @Operation(summary = "find vehicles without pagination")
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadVehicle
     public PageResponse<VehicleResponse> findAllWithoutPagination() {
-        List<Vehicle> vehicleList = vehicleService.findAll();
+        Pageable pageable = PageableUtil.of(0, 20, "vehicleNumber", false);
+
+        Page<Vehicle> vehiclePage = vehicleService.findAll(pageable);
 
         return PageResponse.<VehicleResponse>builder()
             .code(HttpStatus.OK.value())
-            .data(vehicleResponseMapper.toResponse(vehicleList))
+            .data(vehicleResponseMapper.toResponse(vehiclePage.getContent()))
             .build();
     }
 
     @Operation(summary = "find by id")
     @GetMapping("{vehicleId}")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadVehicle
     public SingleResponse<VehicleResponse> findById(@PathVariable() UUID vehicleId)
     {
         Vehicle vehicle = vehicleService.findByIdThrow(vehicleId);
@@ -125,6 +143,7 @@ public class VehicleController {
     @Operation(summary = "save vehicle")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @CanCreateVehicle
     public SingleResponse<VehicleResponse> save(@RequestBody VehicleCreateRequest request) {
         UUID vehicleId = processVehicleCreateRequestCmd.withRequest(
                 ProcessVehicleCreateRequestCmd.Request.builder()
@@ -141,6 +160,7 @@ public class VehicleController {
     @Operation(summary = "update vehicle")
     @PutMapping("{vehicleId}")
     @ResponseStatus(HttpStatus.OK)
+    @CanUpdateVehicle
     public SingleResponse<VehicleResponse> update(@PathVariable UUID vehicleId,
         @RequestBody VehicleUpdateRequest request)
     {
@@ -183,6 +203,7 @@ public class VehicleController {
     @Operation(summary = "find vehicle schedule conflicts")
     @PostMapping("{vehicleId}/schedule-conflicts")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadVehicle
     public SingleResponse<VehicleScheduleConflictResponse> findVehicleScheduleConflicts(
         @PathVariable UUID vehicleId, @RequestBody VehicleScheduleConflictRequest request)
     {
@@ -207,6 +228,7 @@ public class VehicleController {
     @Operation(summary = "import vehicles of csv file")
     @PostMapping(value = "imports/csv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.OK)
+    @CanCreateVehicle
     public MessageResponse importVehiclesFromExcel(
         @RequestPart(value = "file") MultipartFile multipartFile)
     {
@@ -234,6 +256,7 @@ public class VehicleController {
     @Operation(summary = "patch update vehicle")
     @PatchMapping("{vehicleId}")
     @ResponseStatus(HttpStatus.OK)
+    @CanUpdateVehicle
     public SingleResponse<VehicleResponse> patchUpdate(@PathVariable UUID vehicleId,
         @RequestBody VehiclePatchRequest request)
     {
