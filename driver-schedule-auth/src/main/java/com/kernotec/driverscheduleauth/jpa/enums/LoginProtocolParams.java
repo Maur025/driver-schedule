@@ -11,13 +11,13 @@ public enum LoginProtocolParams {
     REDIRECT_URI_PARAM("redirect_uri"),
     CLIENT_ID_PARAM("client_id"),
     SCOPE_PARAM("scope"),
-    USERNAME("username"),
-    PASSWORD("password"),
-    REFRESH_TOKEN("refresh_token"),
-    AUDIENCE("audience"),
-    SUBJECT_TOKEN("subject_token"),
-    SUBJECT_TOKEN_TYPE("subject_token_type"),
-    ISSUED_TOKEN_TYPE("issued_token_type");
+    USERNAME_PARAM("username"),
+    PASSWORD_PARAM("password"),
+    REFRESH_TOKEN_PARAM("refresh_token"),
+    AUDIENCE_PARAM("audience"),
+    SUBJECT_TOKEN_PARAM("subject_token"),
+    SUBJECT_TOKEN_TYPE_PARAM("subject_token_type"),
+    ISSUED_TOKEN_TYPE_PARAM("issued_token_type");
 
     private final String value;
 

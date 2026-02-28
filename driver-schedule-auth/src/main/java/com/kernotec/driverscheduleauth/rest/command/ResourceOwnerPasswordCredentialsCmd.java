@@ -22,8 +22,8 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class AuthLoginWithPasswordCmd extends
-    AbstractTransactionalRequiredCommand<AuthLoginWithPasswordCmd.Request, OpenIdConnectTokenResponse>
+public class ResourceOwnerPasswordCredentialsCmd extends
+    AbstractTransactionalRequiredCommand<ResourceOwnerPasswordCredentialsCmd.Request, OpenIdConnectTokenResponse>
 {
 
     private final AuthConfigProperties authConfigProperties;
@@ -40,7 +40,9 @@ public class AuthLoginWithPasswordCmd extends
 
         User user = userService.findByUsernameThrow(grantPasswordCredentialsRequest.getUsername());
 
-        if (!passwordEncoder.matches(grantPasswordCredentialsRequest.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(
+            grantPasswordCredentialsRequest.getPassword(), user.getPassword()))
+        {
             throw new UserException("login.failed", "", HttpStatus.BAD_REQUEST.value());
         }
 
@@ -58,6 +60,7 @@ public class AuthLoginWithPasswordCmd extends
                 TokenJWTClaimSetBuildCmd.Request.builder()
                     .user(user)
                     .tokenExp(accessExp)
+                    .clientId(grantPasswordCredentialsRequest.getClientId())
                     .build())
             .execute();
 
@@ -66,6 +69,7 @@ public class AuthLoginWithPasswordCmd extends
                     .user(user)
                     .tokenExp(refreshExp)
                     .refreshTokenId(refreshTokenId.toString())
+                    .clientId(grantPasswordCredentialsRequest.getClientId())
                     .build())
             .execute();
 

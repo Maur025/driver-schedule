@@ -42,4 +42,9 @@
   <changeSet id="1771883657043-1" author="Maur025">
     <sqlFile path="data/scope/scope_update2.sql" relativeToChangelogFile="true"/>
   </changeSet>
+
+  <!-- role scope - add scopes in roles -->
+  <changeSet id="1772211863148-1" author="Maur025">
+    <sqlFile path="data/role/scope/role_scope_seed.sql" relativeToChangelogFile="true"/>
+  </changeSet>
 </databaseChangeLog>

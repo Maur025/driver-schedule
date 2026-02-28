@@ -14,14 +14,14 @@ public class ConnectionTokenCmd extends
     AbstractTransactionalRequiredCommand<ConnectionTokenCmd.Request, OpenIdConnectTokenResponse>
 {
 
-    private final AuthLoginWithPasswordCmd authLoginWithPasswordCmd;
+    private final ResourceOwnerPasswordCredentialsCmd resourceOwnerPasswordCredentialsCmd;
     private final GenerateAccessFromRefreshTokenCmd generateAccessFromRefreshTokenCmd;
 
     @Override
     protected OpenIdConnectTokenResponse run(Request request) {
         /*return switch (request.grantType) {
             case password -> authLoginWithPasswordCmd.withRequest(
-                    AuthLoginWithPasswordCmd.Request.builder()
+                    ResourceOwnerPasswordCredentialsCmd.Request.builder()
                         .tokenRequest(request.tokenRequest)
                         .build())
                 .execute();

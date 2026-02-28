@@ -2,8 +2,7 @@ package com.kernotec.driverscheduleauth.security.grants;
 
 import com.kernotec.driverscheduleauth.jpa.enums.GrantTypeEnum;
 import com.kernotec.driverscheduleauth.jpa.enums.LoginProtocolParams;
-import com.kernotec.driverscheduleauth.rest.command.AuthLoginWithPasswordCmd;
-import com.kernotec.driverscheduleauth.rest.command.AuthLoginWithPasswordCmd.Request;
+import com.kernotec.driverscheduleauth.rest.command.ResourceOwnerPasswordCredentialsCmd;
 import com.kernotec.driverscheduleauth.rest.dto.request.GrantPasswordCredentialsRequest;
 import com.kernotec.driverscheduleauth.rest.dto.response.OpenIdConnectTokenResponse;
 import java.util.UUID;
@@ -17,7 +16,7 @@ import org.springframework.util.MultiValueMap;
 @RequiredArgsConstructor
 public class ResourceOwnerPasswordCredentialsGrantTypeHandler implements GrantHandler {
 
-    private final AuthLoginWithPasswordCmd authLoginWithPasswordCmd;
+    private final ResourceOwnerPasswordCredentialsCmd resourceOwnerPasswordCredentialsCmd;
 
     @Override
     public GrantTypeEnum getGrantType() {
@@ -26,14 +25,16 @@ public class ResourceOwnerPasswordCredentialsGrantTypeHandler implements GrantHa
 
     @Override
     public OpenIdConnectTokenResponse handle(UUID realmId, MultiValueMap<String, String> params) {
-        log.info("UN SALUDO DESDE EL HANDLER DE PASSWORD");
+        /* TODO: validate clientId exists in realm*/
 
-        return authLoginWithPasswordCmd.withRequest(Request.builder()
-                .grantPasswordCredentialsRequest(GrantPasswordCredentialsRequest.builder()
-                    .username(params.getFirst(LoginProtocolParams.USERNAME.getValue()))
-                    .password(params.getFirst(LoginProtocolParams.PASSWORD.getValue()))
+        return resourceOwnerPasswordCredentialsCmd.withRequest(
+                ResourceOwnerPasswordCredentialsCmd.Request.builder()
+                    .grantPasswordCredentialsRequest(GrantPasswordCredentialsRequest.builder()
+                        .username(params.getFirst(LoginProtocolParams.USERNAME_PARAM.getValue()))
+                        .password(params.getFirst(LoginProtocolParams.PASSWORD_PARAM.getValue()))
+                        .clientId(params.getFirst(LoginProtocolParams.CLIENT_ID_PARAM.getValue()))
+                        .build())
                     .build())
-                .build())
             .execute();
     }
 }
