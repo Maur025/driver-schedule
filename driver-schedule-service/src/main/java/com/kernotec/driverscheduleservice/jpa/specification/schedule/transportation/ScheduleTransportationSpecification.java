@@ -12,6 +12,7 @@ import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,6 +65,21 @@ public record ScheduleTransportationSpecification(
         return joinMap.get(ScheduleTransportationSpecificationJoinEnum.TRIP_ASSIGNMENT_JOIN);
     }
 
+    private Join<?, ?> getOrCreateTransportationRequestJoin(
+        Map<ScheduleTransportationSpecificationJoinEnum, Join<?, ?>> joinMap, Root<?> root)
+    {
+        if (!joinMap.containsKey(
+            ScheduleTransportationSpecificationJoinEnum.TRANSPORTATION_REQUEST_JOIN))
+        {
+            joinMap.put(
+                ScheduleTransportationSpecificationJoinEnum.TRANSPORTATION_REQUEST_JOIN,
+                root.join("transportationRequest", JoinType.INNER)
+            );
+        }
+
+        return joinMap.get(ScheduleTransportationSpecificationJoinEnum.TRANSPORTATION_REQUEST_JOIN);
+    }
+
     @Override
     public Predicate toPredicate(Root<ScheduleTransportation> root, CriteriaQuery<?> query,
         CriteriaBuilder cb)
@@ -85,6 +101,8 @@ public record ScheduleTransportationSpecification(
         addScheduleTransportationStatesFilter(root, joinMap).ifPresent(predicateList::add);
         addVehicleIdsFilter(root, joinMap).ifPresent(predicateList::add);
         addDriverIdsFilter(root, joinMap).ifPresent(predicateList::add);
+        addKeywordFilter(root, cb, joinMap).ifPresent(predicateList::add);
+        addGreaterThanOrEqualDateFilter(root, cb).ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -131,7 +149,9 @@ public record ScheduleTransportationSpecification(
         return Optional.ofNullable(criteria.getVehicleId())
             .map(
                 vehicleId -> cb.equal(
-                    getOrCreateTripAssignmentJoin(joinMap, root).get("vehicleId"), vehicleId));
+                    getOrCreateTripAssignmentJoin(joinMap, root).get("vehicleId"),
+                    vehicleId
+                ));
     }
 
     public ScheduleTransportationSpecification withVehicleIds(List<UUID> vehicleIds) {
@@ -243,7 +263,7 @@ public record ScheduleTransportationSpecification(
     {
         return Optional.ofNullable(criteria.getSimpleDate())
             .map(simpleDate -> CommonSpecification.simpleDatePredicate(
-                cb, root.get("createdAt"),
+                cb, root.get("scheduleFrom"),
                 simpleDate, criteria.getZoneId()
             ));
     }
@@ -265,9 +285,7 @@ public record ScheduleTransportationSpecification(
         if (from != null && to != null) {
             return Optional.of(
                 CommonSpecification.dateRangePredicate(
-                    cb, root.get("createdAt"), from, to,
-                    criteria.getZoneId()
-                ));
+                    cb, root.get("scheduleFrom"), from, to, criteria.getZoneId()));
         }
 
         return Optional.empty();
@@ -283,7 +301,7 @@ public record ScheduleTransportationSpecification(
     {
         return Optional.ofNullable(criteria.getMonthDate())
             .map(monthDate -> CommonSpecification.monthDatePredicate(
-                cb, root.get("createdAt"),
+                cb, root.get("scheduleFrom"),
                 monthDate, criteria.getZoneId()
             ));
     }
@@ -298,7 +316,7 @@ public record ScheduleTransportationSpecification(
     {
         return Optional.ofNullable(criteria.getYearDate())
             .map(yearDate -> CommonSpecification.yearDatePredicate(
-                cb, root.get("createdAt"),
+                cb, root.get("scheduleFrom"),
                 yearDate, criteria.getZoneId()
             ));
     }
@@ -332,5 +350,42 @@ public record ScheduleTransportationSpecification(
                 .in(scheduleTransportationStates.stream()
                     .map(String::valueOf)
                     .toList()));
+    }
+
+    public ScheduleTransportationSpecification withKeyword(String keyword) {
+        this.criteria.setKeyword(keyword);
+        return this;
+    }
+
+    private Optional<Predicate> addKeywordFilter(Root<ScheduleTransportation> root,
+        CriteriaBuilder cb, Map<ScheduleTransportationSpecificationJoinEnum, Join<?, ?>> joinMap)
+    {
+        return Optional.ofNullable(criteria.getKeyword())
+            .map(keyword -> {
+                String pattern = "%" + keyword.toLowerCase() + "%";
+
+                return cb.or(cb.like(
+                    cb.lower(getOrCreateTransportationRequestJoin(joinMap, root).get("code")),
+                    pattern
+                ));
+            });
+    }
+
+    public ScheduleTransportationSpecification withGreaterThanOrEqualDate(ZonedDateTime date)
+    {
+        this.criteria.setGreaterThanOrEqualDate(date);
+        return this;
+    }
+
+    private Optional<Predicate> addGreaterThanOrEqualDateFilter(Root<ScheduleTransportation> root,
+        CriteriaBuilder cb)
+    {
+        return Optional.ofNullable(criteria.getGreaterThanOrEqualDate())
+            .map(date -> {
+                ZonedDateTime dataWithZone = date.withZoneSameInstant(ZoneOffset.UTC);
+                log.info("date with same zone instant: {}", dataWithZone);
+
+                return cb.greaterThanOrEqualTo(root.get("scheduleFrom"), dataWithZone);
+            });
     }
 }

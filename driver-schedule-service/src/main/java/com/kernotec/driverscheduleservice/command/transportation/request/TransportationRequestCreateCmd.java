@@ -33,6 +33,8 @@ public class TransportationRequestCreateCmd extends
         transportationRequest.setStartTime(request.startTime);
         transportationRequest.setEndTime(request.endTime);
         transportationRequest.setRequestedDate(request.requestedDate);
+        transportationRequest.setRequestedFrom(request.requestedFrom);
+        transportationRequest.setRequestedTo(request.requestedTo);
         transportationRequest.setTripType(request.tripType);
         transportationRequest.setShortNotice(
             request.isShortNotice != null && request.isShortNotice);
@@ -71,9 +73,11 @@ public class TransportationRequestCreateCmd extends
     @Builder
     public record Request(@NotNull String peopleNumber, String assets, String passengers,
                           @NotNull ZonedDateTime startTime, @NotNull ZonedDateTime endTime,
-                          @NotNull LocalDateTime requestedDate, @NotNull TripTypeEnum tripType,
-                          Boolean isShortNotice, String detail, Boolean isAssetPickup,
-                          Double estimatedTotalDistanceKm, Double estimatedTotalDurationMin,
+                          @NotNull LocalDateTime requestedDate,
+                          @NotNull ZonedDateTime requestedFrom, @NotNull ZonedDateTime requestedTo,
+                          @NotNull TripTypeEnum tripType, Boolean isShortNotice, String detail,
+                          Boolean isAssetPickup, Double estimatedTotalDistanceKm,
+                          Double estimatedTotalDurationMin,
                           @NotNull Boolean wasRequestedByScheduler,
                           @NotNull UUID transportationRequestStateId, @NotNull UUID personRequestId)
     {

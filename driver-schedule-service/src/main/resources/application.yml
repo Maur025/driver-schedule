@@ -97,6 +97,7 @@ oauth2-config:
   realm: ${OAUTH2_REALM:driver-schedule-auth}
   resource: ${OAUTH2_RESOURCE:driver-schedule}
   secret-key: ${OAUTH2_JWT_SECRET:secret-key}
+  audience: driver.schedule.api
 
 # WEB SOCKET CONFIG
 web-socket-config:

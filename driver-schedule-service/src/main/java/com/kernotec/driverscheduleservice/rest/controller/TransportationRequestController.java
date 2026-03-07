@@ -1,10 +1,16 @@
 package com.kernotec.driverscheduleservice.rest.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
-import com.kernotec.driverscheduleservice.config.KernotecApiDefinition;
+import com.kernotec.driverscheduleservice.common.annotation.transportation.request.CanCancelRequest;
+import com.kernotec.driverscheduleservice.common.annotation.transportation.request.CanCreateRequest;
+import com.kernotec.driverscheduleservice.common.annotation.transportation.request.CanReadRequest;
+import com.kernotec.driverscheduleservice.common.annotation.transportation.request.CanRejectRequest;
 import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestService;
 import com.kernotec.driverscheduleservice.report.jpa.enums.ReportDispositionEnum;
@@ -18,21 +24,19 @@ import com.kernotec.driverscheduleservice.rest.dto.request.cancel.request.reason
 import com.kernotec.driverscheduleservice.rest.dto.request.reject.reason.RejectReasonRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.transportation.request.TransportationRequestCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.transportation.request.TransportationRequestFilterRequest;
+import com.kernotec.driverscheduleservice.rest.dto.response.SingleHateoasResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.transportation.request.TransportationRequestResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.response.transportation.request.TransportationRequestResponseMapper;
-import com.kernotec.driverscheduleservice.util.AppRoleUtil.IsRoleApplicantOrScheduler;
-import com.kernotec.driverscheduleservice.util.AppRoleUtil.IsRoleSchedulerOrAdmin;
-import com.kernotec.driverscheduleservice.util.VoucherJasperUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,12 +64,10 @@ public class TransportationRequestController {
     private final PdfExportCmd pdfExportCmd;
     private final VoucherTransportationRequestPdfExportCmd voucherTransportationRequestPdfExportCmd;
 
-    private final KernotecApiDefinition kernotecApiDefinition;
-    private final VoucherJasperUtil voucherJasperUtil;
-
     @Operation(summary = "find all transportation requests")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @CanReadRequest
     public PageResponse<TransportationRequestResponse> findAll(
         @RequestParam(defaultValue = "0") Integer page,
         @RequestParam(defaultValue = "10") Integer size,
@@ -91,18 +93,18 @@ public class TransportationRequestController {
     @Operation(summary = "find all transportation requests with filters")
     @PostMapping("filter")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadRequest
     public PageResponse<TransportationRequestResponse> findAllFilter(
         @RequestParam(defaultValue = "0") Integer page,
         @RequestParam(defaultValue = "10") Integer size,
         @RequestParam(defaultValue = "createdAt") String sortBy,
         @RequestParam(defaultValue = "true") Boolean descending,
-        @RequestBody TransportationRequestFilterRequest filterRequest,
-        Authentication authentication)
+        @RequestBody TransportationRequestFilterRequest filterRequest)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
 
         Page<TransportationRequest> transportationRequestPage = transportationRequestService.findAllWithFilters(
-            filterRequest, authentication, pageable);
+            filterRequest, pageable);
 
         return PageResponse.<TransportationRequestResponse>builder()
             .code(HttpStatus.OK.value())
@@ -118,6 +120,7 @@ public class TransportationRequestController {
     @Operation(summary = "find by id")
     @GetMapping("{transportationRequestId}")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadRequest
     public SingleResponse<TransportationRequestResponse> findById(
         @PathVariable UUID transportationRequestId)
     {
@@ -133,34 +136,35 @@ public class TransportationRequestController {
     @Operation(summary = "save transportation request")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @IsRoleApplicantOrScheduler
-    public SingleResponse<TransportationRequestResponse> save(
-        @RequestBody TransportationRequestCreateRequest request, Authentication authentication)
+    @CanCreateRequest
+    public SingleHateoasResponse<TransportationRequestResponse> save(
+        @RequestBody TransportationRequestCreateRequest request)
     {
         TransportationRequest transportationRequest = processTransportationRequestCreateRequestCmd.withRequest(
                 ProcessTransportationRequestCreateRequestCmd.Request.builder()
                     .transportationRequestCreateRequest(request)
-                    .authentication(authentication)
                     .build())
             .execute();
 
-        String uri = voucherJasperUtil.getVoucherUrl(
-            "/transportation-requests/{id}/voucher", transportationRequest.getId());
-
-        return SingleResponse.<TransportationRequestResponse>builder()
+        return SingleHateoasResponse.<TransportationRequestResponse>builder()
             .code(HttpStatus.CREATED.value())
             .data(transportationRequestResponseMapper.toResponse(
                 transportationRequest.getId(), transportationRequest.getCorrelative(),
-                transportationRequest.getCode(), uri
+                transportationRequest.getCode()
             ))
+            .links(List.of(linkTo(
+                methodOn(TransportationRequestController.class).transportationRequestExportVoucher(
+                    transportationRequest.getId(), null, ReportDispositionEnum.inline)).withRel(
+                    "voucher")
+                .expand()))
             .build();
     }
 
     @Operation(summary = "reject transportation request")
     @PostMapping("{transportationRequestId}/rejected")
     @ResponseStatus(HttpStatus.OK)
-    @IsRoleSchedulerOrAdmin
-    public SingleResponse<TransportationRequestResponse> rejectedRequest(
+    @CanRejectRequest
+    public SingleHateoasResponse<TransportationRequestResponse> rejectedRequest(
         @PathVariable UUID transportationRequestId, @RequestBody RejectReasonRequest request)
     {
         processTransportationRequestRejectedCmd.withRequest(
@@ -170,17 +174,21 @@ public class TransportationRequestController {
                     .build())
             .execute();
 
-        return SingleResponse.<TransportationRequestResponse>builder()
+        return SingleHateoasResponse.<TransportationRequestResponse>builder()
             .code(HttpStatus.OK.value())
             .message("Transportation request rejected successfully")
+            .links(List.of(linkTo(
+                methodOn(TransportationRequestController.class).transportationRequestExportVoucher(
+                    transportationRequestId, null, ReportDispositionEnum.inline)).withRel("voucher")
+                .expand()))
             .build();
     }
 
     @Operation(summary = "cancel transportation request")
     @PostMapping("{transportationRequestId}/cancelled")
     @ResponseStatus(HttpStatus.OK)
-    @IsRoleApplicantOrScheduler
-    public SingleResponse<TransportationRequestResponse> cancelledRequest(
+    @CanCancelRequest
+    public SingleHateoasResponse<TransportationRequestResponse> cancelledRequest(
         @PathVariable UUID transportationRequestId, @RequestBody CancelRequestReasonRequest request)
     {
         processTransportationRequestCancelledCmd.withRequest(
@@ -190,22 +198,26 @@ public class TransportationRequestController {
                     .build())
             .execute();
 
-        return SingleResponse.<TransportationRequestResponse>builder()
+        return SingleHateoasResponse.<TransportationRequestResponse>builder()
             .code(HttpStatus.OK.value())
             .message("Transportation request cancelled successfully")
+            .links(List.of(linkTo(
+                methodOn(TransportationRequestController.class).transportationRequestExportVoucher(
+                    transportationRequestId, null, ReportDispositionEnum.inline)).withRel("voucher")
+                .expand()))
             .build();
     }
 
     @Operation(summary = "transportation request export voucher")
     @GetMapping("{transportationRequestId}/voucher")
     @ResponseStatus(HttpStatus.OK)
-    public void transportationRequestExportVoucher(@PathVariable UUID transportationRequestId,
+    @CanReadRequest
+    public ResponseEntity<byte[]> transportationRequestExportVoucher(
+        @PathVariable UUID transportationRequestId,
         @RequestParam(defaultValue = "America/La_Paz") String zoneId,
-        @RequestParam(defaultValue = "inline") ReportDispositionEnum disposition,
-        HttpServletResponse response)
+        @RequestParam(defaultValue = "inline") ReportDispositionEnum disposition)
     {
-        pdfExportCmd.withRequest(PdfExportCmd.Request.builder()
-                .response(response)
+        return pdfExportCmd.withRequest(PdfExportCmd.Request.builder()
                 .disposition(disposition)
                 .fileName("request-voucher")
                 .callbackGetReportBytes(() -> voucherTransportationRequestPdfExportCmd.withRequest(
@@ -216,6 +228,5 @@ public class TransportationRequestController {
                     .execute())
                 .build())
             .execute();
-
     }
 }

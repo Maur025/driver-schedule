@@ -52,6 +52,4 @@ public class TransportationRequestResponse extends AuditEntityUserResponse {
     private List<RejectReasonResponse> rejectReasons;
     private List<CancelRequestReasonResponse> cancelReasons;
     private List<RequestCoordResponse> requestCoords;
-
-    private String voucherUrl;
 }

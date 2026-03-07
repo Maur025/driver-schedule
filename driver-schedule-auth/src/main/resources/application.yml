@@ -89,7 +89,6 @@ logging:
 # OAUTH2 CONFIG
 oauth2-config:
   secret-key: ${OAUTH2_JWT_SECRET:secret-key}
-  audience: ${OAUTH2_JWT_AUDIENCE:driver-schedule-audience}
   access-token-exp: ${OAUTH2_JWT_ACCESS_TOKEN_EXP:3600}
   access-token-exp-type: ${OAUTH2_JWT_ACCESS_TOKEN_EXP_TYPE:seconds}
   refresh-token-exp: ${OAUTH2_JWT_REFRESH_TOKEN_EXP:86400}

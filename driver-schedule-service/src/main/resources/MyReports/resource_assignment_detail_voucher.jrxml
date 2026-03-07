@@ -63,49 +63,67 @@ where ta.schedule_transportation_id =  $P{SCHEDULE_TRANSPORTATION_ID}::uuid;]]>
 	<detail>
 		<band height="40" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-				<reportElement x="0" y="10" width="166" height="14" uuid="dca50578-df66-4442-beaf-24aed0f0de54">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<textElement>
-					<font fontName="OpenSans" size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[VoucherJasperUtil.getPersonFullName($F{driver_name},$F{driver_last_name})]]></textFieldExpression>
-			</textField>
-			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-				<reportElement x="166" y="10" width="110" height="14" uuid="777e3659-5e83-4648-98ff-15230c350cf3">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+			<frame>
+				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="500" height="40" uuid="c254a376-cba0-4767-b7c7-26ff138208d6">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<textElement>
-					<font fontName="OpenSans" size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[VoucherJasperUtil.getPersonPhoneContacts($F{driver_phone_list})]]></textFieldExpression>
-			</textField>
-			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-				<reportElement x="276" y="10" width="130" height="14" uuid="3b23e562-c188-4cfe-9434-10beaf23f821">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement>
-					<font fontName="OpenSans" size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{vehicle_model}]]></textFieldExpression>
-			</textField>
-			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-				<reportElement x="406" y="10" width="80" height="14" uuid="80c04472-4403-47c3-969d-9943877654bb">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Right">
-					<font fontName="OpenSans" size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{vehicle_number}]]></textFieldExpression>
-			</textField>
+				<box>
+					<pen lineColor="#B8B8B8"/>
+					<bottomPen lineWidth="0.25" lineColor="#B8B8B8"/>
+				</box>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement x="0" y="10" width="170" height="14" uuid="dca50578-df66-4442-beaf-24aed0f0de54">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="OpenSans" size="10" isBold="true"/>
+						<paragraph leftIndent="3"/>
+					</textElement>
+					<textFieldExpression><![CDATA[VoucherJasperUtil.getPersonFullName($F{driver_name},$F{driver_last_name})]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement x="170" y="10" width="114" height="14" uuid="777e3659-5e83-4648-98ff-15230c350cf3">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="OpenSans" size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[VoucherJasperUtil.getPersonPhoneContacts($F{driver_phone_list})]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement x="284" y="10" width="134" height="14" uuid="3b23e562-c188-4cfe-9434-10beaf23f821">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="OpenSans" size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{vehicle_model}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement x="418" y="10" width="82" height="14" uuid="80c04472-4403-47c3-969d-9943877654bb">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right">
+						<font fontName="OpenSans" size="10" isBold="true"/>
+						<paragraph rightIndent="3"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{vehicle_number}]]></textFieldExpression>
+				</textField>
+			</frame>
 		</band>
 	</detail>
 </jasperReport>

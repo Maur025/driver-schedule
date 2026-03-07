@@ -22,15 +22,16 @@
 		<band height="110" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<frame>
-				<reportElement x="0" y="0" width="486" height="110" uuid="791dcf2f-7841-4917-850a-a91b3cb80391">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<reportElement x="0" y="0" width="500" height="110" uuid="791dcf2f-7841-4917-850a-a91b3cb80391">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<staticText>
-					<reportElement x="0" y="26" width="166" height="18" forecolor="#666666" uuid="060f8a0e-5068-4528-8af3-3e627269e102">
+					<reportElement mode="Opaque" x="0" y="26" width="170" height="22" forecolor="#000000" backcolor="#F7BF8C" uuid="060f8a0e-5068-4528-8af3-3e627269e102">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 					</reportElement>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -38,15 +39,15 @@
 						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<textElement verticalAlignment="Top">
+					<textElement verticalAlignment="Middle">
 						<font fontName="OpenSans" size="8" isBold="false"/>
+						<paragraph leftIndent="3"/>
 					</textElement>
 					<text><![CDATA[CONDUCTOR]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="166" y="26" width="110" height="18" forecolor="#666666" uuid="75d82a92-fcf2-44aa-b835-dc5285374af4">
+					<reportElement mode="Opaque" x="170" y="26" width="114" height="22" forecolor="#000000" backcolor="#F7BF8C" uuid="75d82a92-fcf2-44aa-b835-dc5285374af4">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<box>
@@ -55,15 +56,16 @@
 						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<textElement verticalAlignment="Top">
+					<textElement verticalAlignment="Middle">
 						<font fontName="OpenSans" size="8" isBold="false"/>
 					</textElement>
 					<text><![CDATA[CONTACTO]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="276" y="26" width="130" height="18" forecolor="#666666" uuid="0db428a1-fb18-44fa-b3af-c1676f098a73">
+					<reportElement mode="Opaque" x="284" y="26" width="134" height="22" forecolor="#000000" backcolor="#F7BF8C" uuid="0db428a1-fb18-44fa-b3af-c1676f098a73">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -71,15 +73,17 @@
 						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<textElement verticalAlignment="Top">
+					<textElement verticalAlignment="Middle">
 						<font fontName="OpenSans" size="8" isBold="false"/>
 					</textElement>
 					<text><![CDATA[VEHÍCULO]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="406" y="26" width="80" height="18" forecolor="#666666" uuid="fdd7a82f-c81d-4086-b76e-4f7e7b0a2a60">
+					<reportElement mode="Opaque" x="418" y="26" width="82" height="22" forecolor="#000000" backcolor="#F7BF8C" uuid="fdd7a82f-c81d-4086-b76e-4f7e7b0a2a60">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 					</reportElement>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -87,36 +91,14 @@
 						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<textElement textAlignment="Right" verticalAlignment="Top">
+					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="OpenSans" size="8" isBold="false"/>
+						<paragraph rightIndent="3"/>
 					</textElement>
 					<text><![CDATA[PLACA]]></text>
 				</staticText>
-				<frame>
-					<reportElement key="allocated-resources-detail" x="0" y="44" width="486" height="40" uuid="a1777b84-f4c2-43a7-b71e-2dbc2bd3b906">
-						<property name="com.jaspersoft.studio.unit.x" value="px"/>
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					</reportElement>
-					<box>
-						<pen lineColor="#B8B8B8"/>
-						<bottomPen lineWidth="0.25" lineColor="#B8B8B8"/>
-					</box>
-					<subreport>
-						<reportElement x="0" y="0" width="486" height="40" uuid="d1b67706-349f-451a-972c-db840b3a5b9c">
-							<property name="com.jaspersoft.studio.unit.x" value="px"/>
-							<property name="com.jaspersoft.studio.unit.y" value="px"/>
-							<property name="com.jaspersoft.studio.unit.width" value="px"/>
-							<property name="com.jaspersoft.studio.unit.height" value="px"/>
-						</reportElement>
-						<subreportParameter name="SCHEDULE_TRANSPORTATION_ID">
-							<subreportParameterExpression><![CDATA[$P{SCHEDULE_TRANSPORTATION_ID}]]></subreportParameterExpression>
-						</subreportParameter>
-						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-						<subreportExpression><![CDATA["resource_assignment_detail_voucher.jasper"]]></subreportExpression>
-					</subreport>
-				</frame>
 				<staticText>
-					<reportElement x="0" y="0" width="486" height="26" forecolor="#666666" uuid="d824f59b-e9ea-4d5b-8472-0e62e89d1a50">
+					<reportElement x="0" y="0" width="500" height="26" forecolor="#666666" uuid="d824f59b-e9ea-4d5b-8472-0e62e89d1a50">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
@@ -125,6 +107,19 @@
 					</textElement>
 					<text><![CDATA[RECURSOS ASIGNADOS]]></text>
 				</staticText>
+				<subreport>
+					<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="48" width="500" height="40" uuid="d1b67706-349f-451a-972c-db840b3a5b9c">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<subreportParameter name="SCHEDULE_TRANSPORTATION_ID">
+						<subreportParameterExpression><![CDATA[$P{SCHEDULE_TRANSPORTATION_ID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA["resource_assignment_detail_voucher.jasper"]]></subreportExpression>
+				</subreport>
 			</frame>
 		</band>
 	</summary>

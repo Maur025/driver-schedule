@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.jpa.enums;
 
 public enum LabelTypeCodeEnum {
-    MOBILE, WORK, MAIN, OTHER, HOME;
+    WORK, MAIN, OTHER;
 
     public static LabelTypeCodeEnum fromValue(String value) {
         if (value == null || value.isBlank()) {

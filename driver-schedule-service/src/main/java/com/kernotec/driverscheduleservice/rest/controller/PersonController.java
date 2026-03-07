@@ -5,6 +5,9 @@ import com.kernotec.core.rest.dto.response.MessageResponse;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
+import com.kernotec.driverscheduleservice.common.annotation.person.CanCreatePerson;
+import com.kernotec.driverscheduleservice.common.annotation.person.CanReadPerson;
+import com.kernotec.driverscheduleservice.common.annotation.person.CanUpdatePerson;
 import com.kernotec.driverscheduleservice.jpa.entity.Person;
 import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.enums.PersonTypeEnum;
@@ -73,6 +76,7 @@ public class PersonController {
     @Operation(summary = "find all persons")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @CanReadPerson
     public PageResponse<PersonResponse> findAll(@RequestParam(defaultValue = "0") Integer page,
         @RequestParam(defaultValue = "20") Integer size,
         @RequestParam(defaultValue = "createdAt") String sortBy,
@@ -94,20 +98,24 @@ public class PersonController {
     @Operation(summary = "find persons without pagination")
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadPerson
     public PageResponse<PersonResponse> findAllWithoutPagination(
         @RequestParam(required = false) PersonTypeEnum personType)
     {
-        List<Person> personList = personService.findAllByPersonType(personType);
+        Pageable pageable = PageableUtil.of(0, 20, "name", false);
+
+        Page<Person> personPage = personService.findAllByPersonType(personType, pageable);
 
         return PageResponse.<PersonResponse>builder()
             .code(HttpStatus.OK.value())
-            .data(personResponseMapper.toResponse(personList))
+            .data(personResponseMapper.toResponse(personPage.getContent()))
             .build();
     }
 
     @Operation(summary = "find persons to lookup")
     @GetMapping("lookup")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadPerson
     public LookupResponse<List<PersonLookupResponse>> findAllToLookup(
         @RequestParam(required = false) String keyword,
         @RequestParam(required = false) PersonTypeEnum personType)
@@ -126,6 +134,7 @@ public class PersonController {
     @Operation(summary = "find by id")
     @GetMapping("{personId}")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadPerson
     public SingleResponse<PersonResponse> findById(@PathVariable() UUID personId)
     {
         Person person = personService.findByIdThrow(personId);
@@ -139,6 +148,7 @@ public class PersonController {
     @Operation(summary = "save person")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @CanCreatePerson
     public SingleResponse<PersonResponse> save(@RequestBody PersonCreateRequest request) {
         UUID personId = processPersonCreateRequestCmd.withRequest(
                 ProcessPersonCreateRequestCmd.Request.builder()
@@ -155,6 +165,7 @@ public class PersonController {
     @Operation(summary = "find driver schedule conflicts")
     @PostMapping("{driverId}/schedule-conflicts")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadPerson
     public SingleResponse<PersonScheduleConflictResponse> findPersonScheduleConflicts(
         @PathVariable UUID driverId, @RequestBody PersonScheduleConflictRequest request)
     {
@@ -180,6 +191,7 @@ public class PersonController {
     @Operation(summary = "import persons of csv file")
     @PostMapping(value = "imports/csv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.OK)
+    @CanCreatePerson
     public MessageResponse importPersonsFromCsvFile(@RequestPart(value = "file") MultipartFile file)
     {
         csvImportCmd.withRequest(CsvImportCmd.Request.<PersonCsvImportDto>builder()
@@ -206,6 +218,7 @@ public class PersonController {
     @Operation(summary = "update person")
     @PutMapping("{personId}")
     @ResponseStatus(HttpStatus.OK)
+    @CanUpdatePerson
     public SingleResponse<PersonResponse> updatePerson(@PathVariable UUID personId,
         @RequestBody PersonUpdateRequest request)
     {

@@ -66,15 +66,15 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
             .execute();
 
         ScheduleTransportationStateDto scheduleTransportationStateDto = scheduleTransportationDto.getScheduleTransportationState();
+        ScheduleTransportationStateEnum stateCode = ScheduleTransportationStateEnum.fromValue(
+            scheduleTransportationStateDto.getCode());
 
-        if (!ScheduleTransportationStateEnum.RESCHEDULED.equals(
-            ScheduleTransportationStateEnum.fromValue(scheduleTransportationStateDto.getCode()))
-            || !ScheduleTransportationStateEnum.SCHEDULED.equals(
-            ScheduleTransportationStateEnum.fromValue(scheduleTransportationStateDto.getCode())))
+        if (!stateCode.equals(ScheduleTransportationStateEnum.RESCHEDULED) && !stateCode.equals(
+            ScheduleTransportationStateEnum.SCHEDULED))
         {
             throw new ScheduleTransportationException(
-                "is.cancelled", "'" + request.scheduleTransportationId + "'",
-                HttpStatus.CONFLICT.value()
+                "invalid.state.to.action",
+                "'" + stateCode + "'", HttpStatus.CONFLICT.value()
             );
         }
 

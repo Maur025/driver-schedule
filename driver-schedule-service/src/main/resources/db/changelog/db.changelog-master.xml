@@ -158,4 +158,15 @@
 
   <include file="/db/changelog/2026/02/03-01-changelog-42.xml"/>
   <include file="db/changelog/2026/02/03-01-changelog-43.xml"/>
+  <include file="db/changelog/2026/02/09-01-changelog-44.xml"/>
+
+  <!-- label type - change name for WORK and MAIN-->
+  <changeSet id="1771685762209-1" author="Maur025">
+    <sqlFile path="data/label/type/label_type_update2.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- label type - remove MOBILE and HOME -->
+  <changeSet id="1771685958683-1" author="Maur025">
+    <sqlFile path="data/label/type/label_type_update3.sql" relativeToChangelogFile="true"/>
+  </changeSet>
 </databaseChangeLog>

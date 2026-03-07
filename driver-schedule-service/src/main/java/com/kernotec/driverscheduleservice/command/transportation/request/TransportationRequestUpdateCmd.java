@@ -43,6 +43,12 @@ public class TransportationRequestUpdateCmd extends
         if (request.requestedDate != null) {
             transportationRequest.setRequestedDate(request.requestedDate);
         }
+        if (request.requestedFrom != null) {
+            transportationRequest.setRequestedFrom(request.requestedFrom);
+        }
+        if (request.requestedTo != null) {
+            transportationRequest.setRequestedTo(request.requestedTo);
+        }
         if (request.tripType != null) {
             transportationRequest.setTripType(request.tripType);
         }
@@ -73,7 +79,8 @@ public class TransportationRequestUpdateCmd extends
     @Builder
     public record Request(@NotNull UUID transportationRequestId, String peopleNumber, String assets,
                           String passengers, ZonedDateTime startTime, ZonedDateTime endTime,
-                          LocalDateTime requestedDate, TripTypeEnum tripType, Boolean isShortNotice,
+                          LocalDateTime requestedDate, ZonedDateTime requestedFrom,
+                          ZonedDateTime requestedTo, TripTypeEnum tripType, Boolean isShortNotice,
                           String detail, Boolean isAssetPickup, Double estimatedTotalDistanceKm,
                           Double estimatedTotalDurationMin, UUID transportationRequestStateId)
     {

@@ -4,6 +4,7 @@ import com.kernotec.core.command.AbstractCommand;
 import com.kernotec.driverscheduleservice.command.person.PersonGetDtoCmd;
 import com.kernotec.driverscheduleservice.command.person.PersonUpdateCmd;
 import com.kernotec.driverscheduleservice.command.person.assign.type.PersonAssignTypeManyCreateCmd;
+import com.kernotec.driverscheduleservice.common.ContactProcessCommon;
 import com.kernotec.driverscheduleservice.config.AuthConfigProperties;
 import com.kernotec.driverscheduleservice.jpa.dto.PersonDto;
 import com.kernotec.driverscheduleservice.jpa.entity.Person;
@@ -19,6 +20,7 @@ import com.kernotec.driverscheduleservice.rest.mapper.response.person.PersonResp
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserUpdateRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -47,6 +49,7 @@ public class ProcessPersonUpdateRequestCmd extends
     private final PersonUpdateCmd personUpdateCmd;
     private final PersonAssignTypeGetManyRequestCmd personAssignTypeGetManyRequestCmd;
     private final PersonAssignTypeManyCreateCmd personAssignTypeManyCreateCmd;
+    private final ContactProcessCommon contactProcessCommon;
     private final WebSocketHandler webSocketHandler;
 
     @Override
@@ -112,6 +115,9 @@ public class ProcessPersonUpdateRequestCmd extends
                 .execute();
         }
 
+        contactProcessCommon.registerManyContactsForPerson(
+            personUpdateRequest.getContacts(), request.personId, true);
+
         Person person = personService.findByIdThrow(request.personId);
 
         webSocketHandler.emitMessage(
@@ -127,7 +133,7 @@ public class ProcessPersonUpdateRequestCmd extends
 
     @Builder
     public record Request(@NotNull UUID personId,
-                          @NotNull PersonUpdateRequest personUpdateRequest)
+                          @NotNull @Valid PersonUpdateRequest personUpdateRequest)
     {
 
     }

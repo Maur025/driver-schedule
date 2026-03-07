@@ -11,9 +11,7 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<parameter name="REQUEST_DETAIL" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["A short description"]]></defaultValueExpression>
-	</parameter>
+	<parameter name="REQUEST_DETAIL" class="java.lang.String" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -24,16 +22,16 @@
 		<band height="80" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<frame>
-				<reportElement x="0" y="0" width="486" height="80" uuid="cc4710c1-90e8-47df-940e-1a3e4d8fe750">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<reportElement x="0" y="0" width="500" height="80" uuid="cc4710c1-90e8-47df-940e-1a3e4d8fe750">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<staticText>
-					<reportElement x="0" y="0" width="486" height="26" forecolor="#666666" uuid="f122690c-7095-4ef8-b0c9-5dc9ea0598d2">
+					<reportElement x="0" y="0" width="500" height="26" forecolor="#666666" uuid="f122690c-7095-4ef8-b0c9-5dc9ea0598d2">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<printWhenExpression><![CDATA[$P{REQUEST_DETAIL} != null && !$P{REQUEST_DETAIL}.isBlank()]]></printWhenExpression>
 					</reportElement>
 					<textElement>
@@ -42,7 +40,7 @@
 					<text><![CDATA[OBSERVACIONES ADICIONALES]]></text>
 				</staticText>
 				<textField textAdjust="StretchHeight">
-					<reportElement x="0" y="26" width="324" height="36" forecolor="#555555" uuid="fb75ee85-cb2b-44d5-a1fa-13f1db111875">
+					<reportElement x="0" y="26" width="334" height="36" forecolor="#555555" uuid="fb75ee85-cb2b-44d5-a1fa-13f1db111875">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>

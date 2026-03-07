@@ -29,4 +29,5 @@ public class ScheduleTransportationFilterRequest extends BaseRequest {
     private ZonedDateTime monthDate;
     private ZonedDateTime yearDate;
     private String zoneId;
+    private String keyword;
 }

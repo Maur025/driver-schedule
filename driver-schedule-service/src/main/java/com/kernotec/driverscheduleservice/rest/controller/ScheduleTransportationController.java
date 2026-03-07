@@ -1,9 +1,16 @@
 package com.kernotec.driverscheduleservice.rest.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
+import com.kernotec.driverscheduleservice.common.annotation.schedule.transportation.CanCancelSchedule;
+import com.kernotec.driverscheduleservice.common.annotation.schedule.transportation.CanCreateSchedule;
+import com.kernotec.driverscheduleservice.common.annotation.schedule.transportation.CanReadSchedule;
+import com.kernotec.driverscheduleservice.common.annotation.schedule.transportation.CanReschedule;
 import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.report.jpa.enums.ReportDispositionEnum;
@@ -17,18 +24,18 @@ import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportati
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationFilterRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportation.ScheduleTransportationUpdateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.response.SingleHateoasResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.response.schedule.transportation.ScheduleTransportationResponseMapper;
-import com.kernotec.driverscheduleservice.util.AppRoleUtil.IsRoleSchedulerOrAdmin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,6 +65,7 @@ public class ScheduleTransportationController {
     @Operation(summary = "find all schedule transportations")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @CanReadSchedule
     public PageResponse<ScheduleTransportationResponse> findAll(
         @RequestParam(defaultValue = "0") Integer page,
         @RequestParam(defaultValue = "10") Integer size,
@@ -82,16 +90,17 @@ public class ScheduleTransportationController {
     @Operation(summary = "search schedule transportation")
     @PostMapping("search")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadSchedule
     public PageResponse<ScheduleTransportationResponse> findAllBySearch(
         @RequestParam(defaultValue = "0") Integer page,
         @RequestParam(defaultValue = "10") Integer size,
         @RequestParam(defaultValue = "createdAt") String sortBy,
         @RequestParam(defaultValue = "true") Boolean descending,
-        @RequestBody ScheduleTransportationFilterRequest request, Authentication authentication)
+        @RequestBody ScheduleTransportationFilterRequest request)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<ScheduleTransportation> scheduleTransportationPage = scheduleTransportationService.findAllBySearch(
-            request, authentication, pageable);
+            request, pageable);
 
         return PageResponse.<ScheduleTransportationResponse>builder()
             .code(HttpStatus.OK.value())
@@ -107,6 +116,7 @@ public class ScheduleTransportationController {
     @Operation(summary = "find schedule transportations by id")
     @GetMapping("{scheduleTransportationId}")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadSchedule
     public SingleResponse<ScheduleTransportationResponse> findById(
         @PathVariable UUID scheduleTransportationId)
     {
@@ -122,8 +132,8 @@ public class ScheduleTransportationController {
     @Operation(summary = "save schedule transportation")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @IsRoleSchedulerOrAdmin
-    public SingleResponse<ScheduleTransportationResponse> save(
+    @CanCreateSchedule
+    public SingleHateoasResponse<ScheduleTransportationResponse> save(
         @RequestBody ScheduleTransportationCreateRequest request)
     {
         UUID scheduleTransportationId = processScheduleTransportationCreateRequestCmd.withRequest(
@@ -132,17 +142,21 @@ public class ScheduleTransportationController {
                     .build())
             .execute();
 
-        return SingleResponse.<ScheduleTransportationResponse>builder()
+        return SingleHateoasResponse.<ScheduleTransportationResponse>builder()
             .code(HttpStatus.CREATED.value())
             .data(scheduleTransportationResponseMapper.toResponse(scheduleTransportationId))
+            .links(List.of(linkTo(methodOn(
+                ScheduleTransportationController.class).scheduleTransportationExportVoucher(
+                scheduleTransportationId, null, ReportDispositionEnum.inline)).withRel("voucher")
+                .expand()))
             .build();
     }
 
     @Operation(summary = "reschedule transportation")
     @PatchMapping("{scheduleTransportationId}/rescheduled")
     @ResponseStatus(HttpStatus.OK)
-    @IsRoleSchedulerOrAdmin
-    public SingleResponse<ScheduleTransportationResponse> reschedule(
+    @CanReschedule
+    public SingleHateoasResponse<ScheduleTransportationResponse> reschedule(
         @PathVariable UUID scheduleTransportationId,
         @RequestBody ScheduleTransportationUpdateRequest request)
     {
@@ -153,17 +167,21 @@ public class ScheduleTransportationController {
                     .build())
             .execute();
 
-        return SingleResponse.<ScheduleTransportationResponse>builder()
+        return SingleHateoasResponse.<ScheduleTransportationResponse>builder()
             .code(HttpStatus.OK.value())
             .message("Reschedule successful")
+            .links(List.of(linkTo(methodOn(
+                ScheduleTransportationController.class).scheduleTransportationExportVoucher(
+                scheduleTransportationId, null, ReportDispositionEnum.inline)).withRel("voucher")
+                .expand()))
             .build();
     }
 
     @Operation(summary = "cancel schedule transportation")
     @PostMapping("{scheduleTransportationId}/cancelled")
     @ResponseStatus(HttpStatus.OK)
-    @IsRoleSchedulerOrAdmin
-    public SingleResponse<ScheduleTransportationResponse> cancel(
+    @CanCancelSchedule
+    public SingleHateoasResponse<ScheduleTransportationResponse> cancel(
         @PathVariable UUID scheduleTransportationId,
         @RequestBody ScheduleTransportationCancelRequest request)
     {
@@ -174,16 +192,19 @@ public class ScheduleTransportationController {
                     .build())
             .execute();
 
-        return SingleResponse.<ScheduleTransportationResponse>builder()
+        return SingleHateoasResponse.<ScheduleTransportationResponse>builder()
             .code(HttpStatus.OK.value())
             .message("Cancellation successful")
+            .links(List.of(linkTo(methodOn(
+                ScheduleTransportationController.class).scheduleTransportationExportVoucher(
+                scheduleTransportationId, null, ReportDispositionEnum.inline)).withRel("voucher")
+                .expand()))
             .build();
     }
 
     @Operation(summary = "end schedule transportation")
     @PostMapping("{scheduleTransportationId}/finalized")
     @ResponseStatus(HttpStatus.OK)
-    @IsRoleSchedulerOrAdmin
     public SingleResponse<ScheduleTransportationResponse> finalize(
         @PathVariable UUID scheduleTransportationId)
     {
@@ -195,14 +216,13 @@ public class ScheduleTransportationController {
 
     @Operation(summary = "schedule transportation export voucher")
     @GetMapping("{scheduleTransportationId}/voucher")
-    @ResponseStatus(HttpStatus.OK)
-    public void scheduleTransportationExportVoucher(@PathVariable UUID scheduleTransportationId,
+    @CanReadSchedule
+    public ResponseEntity<byte[]> scheduleTransportationExportVoucher(
+        @PathVariable UUID scheduleTransportationId,
         @RequestParam(defaultValue = "America/La_Paz") String zoneId,
-        @RequestParam(defaultValue = "inline") ReportDispositionEnum disposition,
-        HttpServletResponse response)
+        @RequestParam(defaultValue = "inline") ReportDispositionEnum disposition)
     {
-        pdfExportCmd.withRequest(PdfExportCmd.Request.builder()
-                .response(response)
+        return pdfExportCmd.withRequest(PdfExportCmd.Request.builder()
                 .disposition(disposition)
                 .fileName("schedule_transportation_voucher")
                 .callbackGetReportBytes(() -> voucherScheduleTransportationPdfExportCmd.withRequest(

@@ -18,8 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 
+@Slf4j
 public record TransportationRequestSpecification(
     TransportationRequestSpecificationCriteria criteria) implements
     Specification<TransportationRequest>
@@ -63,6 +65,7 @@ public record TransportationRequestSpecification(
         addMonthDateFilter(root, cb).ifPresent(predicateList::add);
         addYearDateFilter(root, cb).ifPresent(predicateList::add);
         addOnlyRecordsOfPersonIdFilter(root, cb).ifPresent(predicateList::add);
+        addKeywordFilter(root, cb).ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -154,10 +157,9 @@ public record TransportationRequestSpecification(
         CriteriaBuilder cb)
     {
         return Optional.ofNullable(criteria.getSimpleDate())
-            .map(simpleDate -> CommonSpecification.simpleDatePredicate(
-                cb, root.get("createdAt"),
-                simpleDate, criteria.getZoneId()
-            ));
+            .map(
+                simpleDate -> CommonSpecification.simpleDatePredicate(
+                    cb, root.get("requestedFrom"), simpleDate, criteria.getZoneId()));
     }
 
     public TransportationRequestSpecification withDateRange(ZonedDateTime fromDate,
@@ -177,7 +179,9 @@ public record TransportationRequestSpecification(
         if (from != null && to != null) {
             return Optional.of(
                 CommonSpecification.dateRangePredicate(
-                    cb, root.get("createdAt"), from, to, criteria.getZoneId()));
+                    cb, root.get("requestedFrom"), from, to,
+                    criteria.getZoneId()
+                ));
         }
 
         return Optional.empty();
@@ -193,7 +197,7 @@ public record TransportationRequestSpecification(
     {
         return Optional.ofNullable(criteria.getMonthDate())
             .map(monthDate -> CommonSpecification.monthDatePredicate(
-                cb, root.get("createdAt"),
+                cb, root.get("requestedFrom"),
                 monthDate, criteria.getZoneId()
             ));
     }
@@ -208,7 +212,7 @@ public record TransportationRequestSpecification(
     {
         return Optional.ofNullable(criteria.getYearDate())
             .map(yearDate -> CommonSpecification.yearDatePredicate(
-                cb, root.get("createdAt"),
+                cb, root.get("requestedFrom"),
                 yearDate, criteria.getZoneId()
             ));
     }
@@ -226,5 +230,21 @@ public record TransportationRequestSpecification(
                 root.get("personRequestedId"),
                 onlyRecordsOfPersonId
             ));
+    }
+
+    public TransportationRequestSpecification withKeyword(String keyword) {
+        this.criteria.setKeyword(keyword);
+        return this;
+    }
+
+    private Optional<Predicate> addKeywordFilter(Root<TransportationRequest> root,
+        CriteriaBuilder cb)
+    {
+        return Optional.ofNullable(criteria.getKeyword())
+            .map(keyword -> {
+                String pattern = "%" + keyword.toLowerCase() + "%";
+
+                return cb.or(cb.like(cb.lower(root.get("code")), pattern));
+            });
     }
 }

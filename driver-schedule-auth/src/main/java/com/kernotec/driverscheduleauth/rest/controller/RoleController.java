@@ -5,6 +5,7 @@ import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleauth.jpa.entity.Role;
+import com.kernotec.driverscheduleauth.jpa.service.RealmService;
 import com.kernotec.driverscheduleauth.jpa.service.RoleService;
 import com.kernotec.driverscheduleauth.rest.ApiSpec.RoleSpec;
 import com.kernotec.driverscheduleauth.rest.dto.response.role.RoleResponse;
@@ -31,15 +32,19 @@ public class RoleController {
 
     private final RoleService roleService;
     private final RoleResponseMapper roleResponseMapper;
+    private final RealmService realmService;
 
     @Operation(summary = "find all roles")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<RoleResponse> findAllUsers(@RequestParam(defaultValue = "0") Integer page,
+    public PageResponse<RoleResponse> findAllUsers(@PathVariable String realm,
+        @RequestParam(defaultValue = "0") Integer page,
         @RequestParam(defaultValue = "10") Integer size,
         @RequestParam(defaultValue = "createdAt") String sortBy,
         @RequestParam(defaultValue = "true") Boolean descending)
     {
+        realmService.findRealmIdByNameInCache(realm);
+
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
 
         Page<Role> rolePage = roleService.findAll(pageable);
@@ -57,7 +62,11 @@ public class RoleController {
     @Operation(summary = "find role by id")
     @GetMapping("{roleId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<RoleResponse> findById(@PathVariable UUID roleId) {
+    public SingleResponse<RoleResponse> findById(@PathVariable String realm,
+        @PathVariable UUID roleId)
+    {
+        realmService.findRealmIdByNameInCache(realm);
+
         Role role = roleService.findByIdThrow(roleId);
 
         return SingleResponse.<RoleResponse>builder()

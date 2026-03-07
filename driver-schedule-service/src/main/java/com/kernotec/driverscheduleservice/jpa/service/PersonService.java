@@ -3,6 +3,7 @@ package com.kernotec.driverscheduleservice.jpa.service;
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.core.rest.dto.response.SingleResponse;
+import com.kernotec.driverscheduleservice.common.security.SecurityAuthProvider;
 import com.kernotec.driverscheduleservice.exception.PersonException;
 import com.kernotec.driverscheduleservice.jpa.entity.Person;
 import com.kernotec.driverscheduleservice.jpa.enums.PersonTypeEnum;
@@ -29,6 +30,7 @@ public class PersonService extends BaseServiceImpl<Person, UUID> {
 
     private final PersonRepository repository;
     private final UserServiceApiClient userServiceApiClient;
+    private final SecurityAuthProvider securityAuthProvider;
 
     @Override
     protected String resourceName() {
@@ -79,12 +81,20 @@ public class PersonService extends BaseServiceImpl<Person, UUID> {
     public Person findByUserIdThrow(UUID userId) {
         return findByUserId(userId).orElseThrow(
             () -> new PersonException(
-                "not.found.by.user.id", "'" + userId + "'", HttpStatus.BAD_REQUEST.value()));
+                "not.found.by.user.id", "'" + userId + "'",
+                HttpStatus.BAD_REQUEST.value()
+            ));
     }
 
-    public List<Person> findAllByPersonType(PersonTypeEnum personType) {
-        return repository.findAll(PersonSpecification.builder()
-            .withPersonType(personType));
+    public UUID findIdByUserIdThrow(UUID userId) {
+        return findByUserIdThrow(userId).getId();
+    }
+
+    public Page<Person> findAllByPersonType(PersonTypeEnum personType, Pageable pageable) {
+        return repository.findAll(
+            PersonSpecification.builder()
+                .withPersonType(personType), pageable
+        );
     }
 
     public Page<PersonLookupResponse> findAllToLookup(String keyword, PersonTypeEnum personType,
@@ -93,5 +103,11 @@ public class PersonService extends BaseServiceImpl<Person, UUID> {
         String personTypeStr = personType != null ? personType.toString() : null;
 
         return repository.findAllToLookup(keyword, personTypeStr, pageable);
+    }
+
+    public UUID findIdByUserIdAuthenticateThrow() {
+        UUID userId = securityAuthProvider.getUserId();
+
+        return findIdByUserIdThrow(userId);
     }
 }

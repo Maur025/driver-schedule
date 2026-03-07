@@ -5,6 +5,7 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
   <include file="db/changelog/2025/12/15-01-changelog.xml"/>
+  <include file="db/changelog/2026/02/19-01-changelog-10.xml"/>
 
   <!-- Realm seed -->
   <changeSet id="1765884294730-1" author="maur025">
@@ -13,5 +14,37 @@
   <!-- Role seed -->
   <changeSet id="1765884333789-1" author="maur025">
     <sqlFile path="data/role/role_seed.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- Scope seed -->
+  <changeSet id="1771516462621-1" author="Maur025">
+    <sqlFile path="data/scope/scope_seed.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- scope - add more scopes to admin -->
+  <changeSet id="1771517093338-1" author="Maur025">
+    <sqlFile path="data/scope/scope_update1.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- client - client seed -->
+  <changeSet id="1771517546708-1" author="Maur025">
+    <sqlFile path="data/client/client_seed.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <include file="db/changelog/2026/02/20-01-changelog-11.xml"/>
+
+  <!-- audience - audience seed -->
+  <changeSet id="1771595792414-1" author="Maur025">
+    <sqlFile path="data/audience/audience_seed.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- changes and enhanced scopes -->
+  <changeSet id="1771883657043-1" author="Maur025">
+    <sqlFile path="data/scope/scope_update2.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- role scope - add scopes in roles -->
+  <changeSet id="1772211863148-1" author="Maur025">
+    <sqlFile path="data/role/scope/role_scope_seed.sql" relativeToChangelogFile="true"/>
   </changeSet>
 </databaseChangeLog>

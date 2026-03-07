@@ -6,7 +6,6 @@ import com.kernotec.driverscheduleservice.command.schedule.transportation.log.Sc
 import com.kernotec.driverscheduleservice.command.transportation.request.TransportationRequestGetDtoCmd;
 import com.kernotec.driverscheduleservice.command.transportation.request.TransportationRequestUpdateCmd;
 import com.kernotec.driverscheduleservice.command.transportation.request.log.TransportationRequestLogCreateCmd;
-import com.kernotec.driverscheduleservice.command.trip.assignment.TripAssignmentManyCreateCmd;
 import com.kernotec.driverscheduleservice.exception.ScheduleTransportationException;
 import com.kernotec.driverscheduleservice.jpa.dto.TransportationRequestDto;
 import com.kernotec.driverscheduleservice.jpa.dto.TransportationRequestStateDto;
@@ -20,7 +19,6 @@ import com.kernotec.driverscheduleservice.rest.dto.request.schedule.transportati
 import com.kernotec.driverscheduleservice.rest.dto.request.trip.assignment.TripAssignmentCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.request.trip.assignment.TripAssignmentEntityMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.response.schedule.transportation.ScheduleTransportationResponseMapper;
 import com.kernotec.driverscheduleservice.util.ScheduleTransportationUtil;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
@@ -57,8 +55,6 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
     private final ZonedDateTimeUtil zonedDateTimeUtil;
     private final ScheduleTransportationLogCreateCmd scheduleTransportationLogCreateCmd;
     private final TransportationRequestLogCreateCmd transportationRequestLogCreateCmd;
-    private final TripAssignmentEntityMapper tripAssignmentEntityMapper;
-    private final TripAssignmentManyCreateCmd tripAssignmentManyCreateCmd;
     private final ScheduleTransportationUtil scheduleTransportationUtil;
 
     @Override

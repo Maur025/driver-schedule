@@ -5,12 +5,10 @@ import com.kernotec.driverscheduleservice.command.transportation.request.Transpo
 import com.kernotec.driverscheduleservice.command.transportation.request.log.TransportationRequestLogCreateCmd;
 import com.kernotec.driverscheduleservice.jpa.dto.TransportationRequestDto;
 import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
-import com.kernotec.driverscheduleservice.jpa.service.ReasonService;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestService;
 import com.kernotec.driverscheduleservice.rest.dto.request.reject.reason.RejectReasonRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.transportation.request.TransportationRequestResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.response.reason.ReasonResponseMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.response.transportation.request.TransportationRequestResponseMapper;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
@@ -29,10 +27,8 @@ public class ProcessTransportationRequestRejectedCmd extends
 {
 
     private final TransportationRequestService transportationRequestService;
-    private final ReasonService reasonService;
 
     private final TransportationRequestResponseMapper transportationRequestResponseMapper;
-    private final ReasonResponseMapper reasonResponseMapper;
 
     private final TransportationRequestRejectedCmd transportationRequestRejectedCmd;
     private final WebSocketHandler webSocketHandler;

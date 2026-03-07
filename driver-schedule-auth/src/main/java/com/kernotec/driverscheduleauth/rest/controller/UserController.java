@@ -5,6 +5,7 @@ import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleauth.jpa.entity.User;
+import com.kernotec.driverscheduleauth.jpa.service.RealmService;
 import com.kernotec.driverscheduleauth.jpa.service.UserService;
 import com.kernotec.driverscheduleauth.rest.ApiSpec.UserSpec;
 import com.kernotec.driverscheduleauth.rest.command.user.ProcessUserCreateRequestCmd;
@@ -45,15 +46,19 @@ public class UserController {
     private final ProcessUserCreateRequestCmd processUserCreateRequestCmd;
     private final ProcessUserDeleteRequestCmd processUserDeleteRequestCmd;
     private final ProcessUserUpdateRequestCmd processUserUpdateRequestCmd;
+    private final RealmService realmService;
 
     @Operation(summary = "find all users")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<UserResponse> findAllUsers(@RequestParam(defaultValue = "0") Integer page,
+    public PageResponse<UserResponse> findAllUsers(@PathVariable String realm,
+        @RequestParam(defaultValue = "0") Integer page,
         @RequestParam(defaultValue = "10") Integer size,
         @RequestParam(defaultValue = "createdAt") String sortBy,
         @RequestParam(defaultValue = "true") Boolean descending)
     {
+        realmService.findRealmIdByNameInCache(realm);
+
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
 
         Page<User> userPage = userService.findAll(pageable);
@@ -71,7 +76,11 @@ public class UserController {
     @Operation(summary = "get user by id")
     @GetMapping("{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<UserResponse> findById(@PathVariable UUID userId) {
+    public SingleResponse<UserResponse> findById(@PathVariable String realm,
+        @PathVariable UUID userId)
+    {
+        realmService.findRealmIdByNameInCache(realm);
+
         User user = userService.findByIdThrow(userId);
 
         return SingleResponse.<UserResponse>builder()
@@ -83,10 +92,15 @@ public class UserController {
     @Operation(summary = "save user")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SingleResponse<UserResponse> save(@RequestBody UserCreateRequest request) {
+    public SingleResponse<UserResponse> save(@PathVariable String realm,
+        @RequestBody UserCreateRequest request)
+    {
+        UUID realmId = realmService.findRealmIdByNameInCache(realm);
+
         UUID userId = processUserCreateRequestCmd.withRequest(
                 ProcessUserCreateRequestCmd.Request.builder()
                     .userCreateRequest(request)
+                    .realmId(realmId)
                     .build())
             .execute();
 
@@ -99,9 +113,11 @@ public class UserController {
     @Operation(summary = "delete user by id")
     @DeleteMapping("{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<UserResponse> delete(@PathVariable UUID userId,
-        @RequestBody UserDeleteRequest request)
+    public SingleResponse<UserResponse> delete(@PathVariable String realm,
+        @PathVariable UUID userId, @RequestBody UserDeleteRequest request)
     {
+        realmService.findRealmIdByNameInCache(realm);
+
         processUserDeleteRequestCmd.withRequest(ProcessUserDeleteRequestCmd.Request.builder()
                 .userId(userId)
                 .userDeleteRequest(request)
@@ -117,9 +133,11 @@ public class UserController {
     @Operation(summary = "update user")
     @PatchMapping("{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<UserResponse> update(@PathVariable UUID userId,
-        @RequestBody UserUpdateRequest request)
+    public SingleResponse<UserResponse> update(@PathVariable String realm,
+        @PathVariable UUID userId, @RequestBody UserUpdateRequest request)
     {
+        realmService.findRealmIdByNameInCache(realm);
+
         processUserUpdateRequestCmd.withRequest(ProcessUserUpdateRequestCmd.Request.builder()
                 .userId(userId)
                 .userUpdateRequest(request)

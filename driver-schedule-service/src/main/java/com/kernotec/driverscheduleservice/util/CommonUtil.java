@@ -32,4 +32,12 @@ public class CommonUtil {
             throw new RuntimeException(ex);
         }
     }
+
+    public static String toUpperCase(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        return value.toUpperCase();
+    }
 }

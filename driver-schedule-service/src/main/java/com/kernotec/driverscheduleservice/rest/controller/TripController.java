@@ -4,6 +4,7 @@ import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
+import com.kernotec.driverscheduleservice.common.annotation.trip.CanReadTrip;
 import com.kernotec.driverscheduleservice.jpa.entity.Trip;
 import com.kernotec.driverscheduleservice.jpa.service.TripService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.TripSpec;
@@ -35,6 +36,7 @@ public class TripController {
     @Operation(summary = "find all trips")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @CanReadTrip
     public PageResponse<TripResponse> findAll(@RequestParam(defaultValue = "0") Integer page,
         @RequestParam(defaultValue = "10") Integer size,
         @RequestParam(defaultValue = "createdAt") String sortBy,
@@ -56,6 +58,7 @@ public class TripController {
     @Operation(summary = "find trip by id")
     @GetMapping("{tripId}")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadTrip
     public SingleResponse<TripResponse> findById(@PathVariable UUID tripId) {
         Trip trip = tripService.findByIdThrow(tripId);
 
