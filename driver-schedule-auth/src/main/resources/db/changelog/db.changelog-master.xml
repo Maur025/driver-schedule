@@ -47,4 +47,6 @@
   <changeSet id="1772211863148-1" author="Maur025">
     <sqlFile path="data/role/scope/role_scope_seed.sql" relativeToChangelogFile="true"/>
   </changeSet>
+
+  <include file="db/changelog/2026/03/07-01-changelog-12.xml"/>
 </databaseChangeLog>

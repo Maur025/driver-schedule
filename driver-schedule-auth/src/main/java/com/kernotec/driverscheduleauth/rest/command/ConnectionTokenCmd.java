@@ -15,7 +15,7 @@ public class ConnectionTokenCmd extends
 {
 
     private final ResourceOwnerPasswordCredentialsCmd resourceOwnerPasswordCredentialsCmd;
-    private final GenerateAccessFromRefreshTokenCmd generateAccessFromRefreshTokenCmd;
+    private final RefreshTokenGrantCmd refreshTokenGrantCmd;
 
     @Override
     protected OpenIdConnectTokenResponse run(Request request) {
@@ -26,7 +26,7 @@ public class ConnectionTokenCmd extends
                         .build())
                 .execute();
             case refresh_token -> generateAccessFromRefreshTokenCmd.withRequest(
-                    GenerateAccessFromRefreshTokenCmd.Request.builder()
+                    RefreshTokenGrantCmd.Request.builder()
                         .refreshToken(request.refreshToken)
                         .build())
                 .execute();
