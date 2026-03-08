@@ -35,4 +35,14 @@ public class ClientService extends BaseServiceImpl<Client, UUID> {
         return findByClientId(clientId).orElseThrow(
             () -> new ClientException("not.found", clientId, HttpStatus.NOT_FOUND.value()));
     }
+
+    public Optional<Client> findByRealmIdAndClientId(UUID realmId, String clientId)
+    {
+        return repository.findByRealmIdAndClientId(realmId, clientId);
+    }
+
+    public Client findByRealmIdAndClientIdThrow(UUID realmId, String clientId) {
+        return findByRealmIdAndClientId(realmId, clientId).orElseThrow(
+            () -> new ClientException("not.found", clientId, HttpStatus.NOT_FOUND.value()));
+    }
 }

@@ -23,8 +23,8 @@ public class Token extends BaseAuditEntity {
     @Column(name = "client_id")
     private String clientId;
 
-    @Column(name = "token_hash", nullable = false)
-    private String tokenHash;
+    @Column(name = "token", nullable = false, columnDefinition = "TEXT")
+    private String token;
 
     @Column(name = "token_id", nullable = false)
     private UUID tokenId;

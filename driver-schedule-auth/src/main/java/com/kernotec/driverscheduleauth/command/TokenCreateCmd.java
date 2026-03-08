@@ -25,7 +25,7 @@ public class TokenCreateCmd extends
         var token = new Token();
 
         token.setClientId(request.clientId);
-        token.setTokenHash(passwordEncoder.encode(request.tokenHash));
+        token.setToken(request.token);
         token.setTokenId(request.tokenId);
         token.setIssuedAt(request.issuedAt);
         token.setExpiresAt(request.expiresAt);
@@ -38,7 +38,7 @@ public class TokenCreateCmd extends
     }
 
     @Builder
-    public record Request(String clientId, @NotNull String tokenHash, @NotNull UUID tokenId,
+    public record Request(String clientId, @NotNull String token, @NotNull UUID tokenId,
                           @NotNull ZonedDateTime issuedAt, @NotNull ZonedDateTime expiresAt,
                           @NotNull Long expiresIn, @NotNull Boolean revoked, @NotNull UUID userId)
     {

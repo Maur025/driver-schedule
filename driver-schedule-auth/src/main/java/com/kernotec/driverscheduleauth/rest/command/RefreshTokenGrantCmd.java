@@ -15,24 +15,25 @@ import com.kernotec.driverscheduleauth.rest.dto.response.OpenIdConnectTokenRespo
 import com.kernotec.driverscheduleauth.util.TimeMeasureUtil;
 import com.nimbusds.jwt.JWTClaimsSet;
 import jakarta.validation.constraints.NotNull;
+import java.text.ParseException;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class GenerateAccessFromRefreshTokenCmd extends
-    AbstractTransactionalRequiredCommand<GenerateAccessFromRefreshTokenCmd.Request, OpenIdConnectTokenResponse>
+public class RefreshTokenGrantCmd extends
+    AbstractTransactionalRequiredCommand<RefreshTokenGrantCmd.Request, OpenIdConnectTokenResponse>
 {
 
     private final AuthConfigProperties authConfigProperties;
-    private final PasswordEncoder passwordEncoder;
 
     private final TokenService tokenService;
     private final UserService userService;
@@ -43,6 +44,12 @@ public class GenerateAccessFromRefreshTokenCmd extends
 
     @Override
     protected OpenIdConnectTokenResponse run(Request request) {
+
+        log.info(
+            "refresh token {} request received for clientId: {}", request.refreshToken,
+            request.clientId
+        );
+
         JWTClaimsSet jwtClaimsSet = tokenClaimSetGetCmd.withRequest(
                 TokenClaimSetGetCmd.Request.builder()
                     .token(request.refreshToken)
@@ -60,7 +67,11 @@ public class GenerateAccessFromRefreshTokenCmd extends
             false
         );
 
-        if (!passwordEncoder.matches(request.refreshToken, refreshToken.getTokenHash())) {
+        log.info("refresh token found {}", refreshToken.getToken());
+
+        if (!refreshToken.getToken()
+            .equals(request.refreshToken))
+        {
             throw new TokenException("invalid", "", HttpStatus.UNAUTHORIZED.value());
         }
 
@@ -73,6 +84,8 @@ public class GenerateAccessFromRefreshTokenCmd extends
                 TokenJWTClaimSetBuildCmd.Request.builder()
                     .user(user)
                     .tokenExp(accessExp)
+                    .clientId(request.clientId)
+                    .roleFilters(getRolesToFilter(jwtClaimsSet))
                     .build())
             .execute();
 
@@ -90,8 +103,28 @@ public class GenerateAccessFromRefreshTokenCmd extends
             .build();
     }
 
+    private Set<String> getRolesToFilter(JWTClaimsSet jwtClaimsSet) {
+        try {
+            Set<String> roles = jwtClaimsSet.getListClaim("roles")
+                .stream()
+                .map(String::valueOf)
+                .collect(Collectors.toSet());
+
+            if (roles.isEmpty()) {
+                return Set.of();
+            }
+
+            return roles.stream()
+                .map(value -> value.replace("ROLE_", ""))
+                .collect(Collectors.toSet());
+        } catch (ParseException e) {
+            log.error("error while parsing roles from refresh token claim set", e);
+            throw new RuntimeException(e);
+        }
+    }
+
     @Builder
-    public record Request(@NotNull String refreshToken) {
+    public record Request(@NotNull String refreshToken, String clientId) {
 
     }
 }
