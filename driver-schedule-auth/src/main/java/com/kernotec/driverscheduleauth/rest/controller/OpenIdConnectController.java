@@ -60,7 +60,7 @@ public class OpenIdConnectController {
 
         if (refreshTokenFromCookie != null && !refreshTokenFromCookie.isBlank()) {
             formParameters.add(
-                LoginProtocolParams.REFRESH_TOKEN.getValue(), refreshTokenFromCookie);
+                LoginProtocolParams.REFRESH_TOKEN_PARAM.getValue(), refreshTokenFromCookie);
         }
 
         GrantHandler grantHandler = grantHandlerFactory.getHandler(grantType);

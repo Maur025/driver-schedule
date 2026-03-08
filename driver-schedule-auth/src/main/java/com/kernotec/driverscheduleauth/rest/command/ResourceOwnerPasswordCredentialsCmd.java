@@ -1,6 +1,7 @@
 package com.kernotec.driverscheduleauth.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
+import com.kernotec.driverscheduleauth.command.TokenCreateCmd;
 import com.kernotec.driverscheduleauth.command.TokenGenerateNewCmd;
 import com.kernotec.driverscheduleauth.command.TokenJWTClaimSetBuildCmd;
 import com.kernotec.driverscheduleauth.config.AuthConfigProperties;
@@ -13,6 +14,8 @@ import com.kernotec.driverscheduleauth.rest.dto.response.OpenIdConnectTokenRespo
 import com.kernotec.driverscheduleauth.util.TimeMeasureUtil;
 import com.nimbusds.jwt.JWTClaimsSet;
 import jakarta.validation.constraints.NotNull;
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +25,8 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class AuthLoginWithPasswordCmd extends
-    AbstractTransactionalRequiredCommand<AuthLoginWithPasswordCmd.Request, OpenIdConnectTokenResponse>
+public class ResourceOwnerPasswordCredentialsCmd extends
+    AbstractTransactionalRequiredCommand<ResourceOwnerPasswordCredentialsCmd.Request, OpenIdConnectTokenResponse>
 {
 
     private final AuthConfigProperties authConfigProperties;
@@ -33,6 +36,7 @@ public class AuthLoginWithPasswordCmd extends
 
     private final TokenJWTClaimSetBuildCmd tokenJWTClaimSetBuildCmd;
     private final TokenGenerateNewCmd tokenGenerateNewCmd;
+    private final TokenCreateCmd tokenCreateCmd;
 
     @Override
     protected OpenIdConnectTokenResponse run(Request request) {
@@ -40,7 +44,9 @@ public class AuthLoginWithPasswordCmd extends
 
         User user = userService.findByUsernameThrow(grantPasswordCredentialsRequest.getUsername());
 
-        if (!passwordEncoder.matches(grantPasswordCredentialsRequest.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(
+            grantPasswordCredentialsRequest.getPassword(), user.getPassword()))
+        {
             throw new UserException("login.failed", "", HttpStatus.BAD_REQUEST.value());
         }
 
@@ -58,6 +64,7 @@ public class AuthLoginWithPasswordCmd extends
                 TokenJWTClaimSetBuildCmd.Request.builder()
                     .user(user)
                     .tokenExp(accessExp)
+                    .clientId(grantPasswordCredentialsRequest.getClientId())
                     .build())
             .execute();
 
@@ -65,7 +72,8 @@ public class AuthLoginWithPasswordCmd extends
                 TokenJWTClaimSetBuildCmd.Request.builder()
                     .user(user)
                     .tokenExp(refreshExp)
-                    .refreshTokenId(refreshTokenId.toString())
+                    .refreshTokenId(refreshTokenId)
+                    .clientId(grantPasswordCredentialsRequest.getClientId())
                     .build())
             .execute();
 
@@ -79,13 +87,27 @@ public class AuthLoginWithPasswordCmd extends
                 .build())
             .execute();
 
+        tokenCreateCmd.withRequest(TokenCreateCmd.Request.builder()
+                .clientId(grantPasswordCredentialsRequest.getClientId())
+                .token(refreshToken)
+                .tokenId(refreshTokenId)
+                .issuedAt(ZonedDateTime.now())
+                .expiresAt(ZonedDateTime.now()
+                    .plus(Duration.ofMillis(refreshExp)))
+                .expiresIn(refreshExp / 1000)
+                .revoked(false)
+                .userId(user.getId())
+                .build())
+            .execute();
+
         return OpenIdConnectTokenResponse.builder()
             .accessToken(accessToken)
             .refreshToken(refreshToken)
             .tokenType(TokenTypeEnum.bearer)
             .expiresIn(accessExp / 1000)
             .refreshExpiresIn(refreshExp / 1000)
-            .scope("openid profile email")
+            .scope(claimsSetOfAccessToken.getClaim("scope")
+                .toString())
             .build();
     }
 

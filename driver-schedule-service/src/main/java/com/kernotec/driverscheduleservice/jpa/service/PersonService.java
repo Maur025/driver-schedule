@@ -90,9 +90,11 @@ public class PersonService extends BaseServiceImpl<Person, UUID> {
         return findByUserIdThrow(userId).getId();
     }
 
-    public List<Person> findAllByPersonType(PersonTypeEnum personType) {
-        return repository.findAll(PersonSpecification.builder()
-            .withPersonType(personType));
+    public Page<Person> findAllByPersonType(PersonTypeEnum personType, Pageable pageable) {
+        return repository.findAll(
+            PersonSpecification.builder()
+                .withPersonType(personType), pageable
+        );
     }
 
     public Page<PersonLookupResponse> findAllToLookup(String keyword, PersonTypeEnum personType,

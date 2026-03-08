@@ -4,6 +4,9 @@ import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
+import com.kernotec.driverscheduleservice.common.annotation.location.CanCreateLocation;
+import com.kernotec.driverscheduleservice.common.annotation.location.CanReadLocation;
+import com.kernotec.driverscheduleservice.common.annotation.location.CanUpdateLocation;
 import com.kernotec.driverscheduleservice.jpa.entity.Location;
 import com.kernotec.driverscheduleservice.jpa.service.LocationService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.LocationSpec;
@@ -15,7 +18,6 @@ import com.kernotec.driverscheduleservice.rest.dto.response.location.LocationRes
 import com.kernotec.driverscheduleservice.rest.mapper.response.location.LocationResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -45,6 +47,7 @@ public class LocationController {
     @Operation(summary = "find all locations")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @CanReadLocation
     public PageResponse<LocationResponse> findAll(@RequestParam(defaultValue = "0") Integer page,
         @RequestParam(defaultValue = "10") Integer size,
         @RequestParam(defaultValue = "createdAt") String sortBy,
@@ -68,19 +71,23 @@ public class LocationController {
     @Operation(summary = "find all without pagination")
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadLocation
     public PageResponse<LocationResponse> findAllWithoutPagination()
     {
-        List<Location> locationList = locationService.findAll();
+        Pageable pageable = PageableUtil.of(0, 20, "name", false);
+
+        Page<Location> locationPage = locationService.findAll(pageable);
 
         return PageResponse.<LocationResponse>builder()
             .code(HttpStatus.OK.value())
-            .data(locationResponseMapper.toResponse(locationList))
+            .data(locationResponseMapper.toResponse(locationPage.getContent()))
             .build();
     }
 
     @Operation(summary = "find location by id")
     @GetMapping("{locationId}")
     @ResponseStatus(HttpStatus.OK)
+    @CanReadLocation
     public SingleResponse<LocationResponse> findById(@PathVariable UUID locationId) {
         Location location = locationService.findByIdThrow(locationId);
 
@@ -93,6 +100,7 @@ public class LocationController {
     @Operation(summary = "save location")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @CanCreateLocation
     public SingleResponse<LocationResponse> save(@RequestBody LocationCreateRequest request) {
         UUID locationId = processLocationCreateRequestCmd.withRequest(
                 ProcessLocationCreateRequestCmd.Request.builder()
@@ -109,6 +117,7 @@ public class LocationController {
     @Operation(summary = "update location")
     @PutMapping("{locationId}")
     @ResponseStatus(HttpStatus.OK)
+    @CanUpdateLocation
     public SingleResponse<LocationResponse> update(@PathVariable UUID locationId,
         @RequestBody LocationUpdateRequest request)
     {
