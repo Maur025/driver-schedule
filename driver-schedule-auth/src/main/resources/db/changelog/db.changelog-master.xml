@@ -49,4 +49,14 @@
   </changeSet>
 
   <include file="db/changelog/2026/03/07-01-changelog-12.xml"/>
+  <include file="db/changelog/2026/03/09-01-changelog-13.xml"/>
+
+  <!-- token - add state expired in all tokens -->
+  <changeSet id="1773075775198-1" author="Maur025">
+    <sqlFile path="data/token/token_update1.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <include file="db/changelog/2026/03/09-01-changelog-14.xml"/>
+  <include file="db/changelog/2026/03/09-01-changelog-15.xml"/>
+  <include file="db/changelog/2026/03/09-01-changelog-16.xml"/>
 </databaseChangeLog>

@@ -4,10 +4,13 @@ import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleauth.command.TokenClaimSetGetCmd;
 import com.kernotec.driverscheduleauth.command.TokenGenerateNewCmd;
 import com.kernotec.driverscheduleauth.command.TokenJWTClaimSetBuildCmd;
+import com.kernotec.driverscheduleauth.command.token.TokenCreateCmd;
+import com.kernotec.driverscheduleauth.command.token.TokenUpdateCmd;
 import com.kernotec.driverscheduleauth.config.AuthConfigProperties;
 import com.kernotec.driverscheduleauth.exception.TokenException;
 import com.kernotec.driverscheduleauth.jpa.entity.Token;
 import com.kernotec.driverscheduleauth.jpa.entity.User;
+import com.kernotec.driverscheduleauth.jpa.enums.TokenStateEnum;
 import com.kernotec.driverscheduleauth.jpa.enums.TokenTypeEnum;
 import com.kernotec.driverscheduleauth.jpa.service.TokenService;
 import com.kernotec.driverscheduleauth.jpa.service.UserService;
@@ -15,11 +18,10 @@ import com.kernotec.driverscheduleauth.rest.dto.response.OpenIdConnectTokenRespo
 import com.kernotec.driverscheduleauth.util.TimeMeasureUtil;
 import com.nimbusds.jwt.JWTClaimsSet;
 import jakarta.validation.constraints.NotNull;
-import java.text.ParseException;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,33 +43,28 @@ public class RefreshTokenGrantCmd extends
     private final TokenClaimSetGetCmd tokenClaimSetGetCmd;
     private final TokenJWTClaimSetBuildCmd tokenJWTClaimSetBuildCmd;
     private final TokenGenerateNewCmd tokenGenerateNewCmd;
+    private final TokenCreateCmd tokenCreateCmd;
+    private final TokenUpdateCmd tokenUpdateCmd;
 
     @Override
     protected OpenIdConnectTokenResponse run(Request request) {
-
-        log.info(
-            "refresh token {} request received for clientId: {}", request.refreshToken,
-            request.clientId
-        );
-
-        JWTClaimsSet jwtClaimsSet = tokenClaimSetGetCmd.withRequest(
+        JWTClaimsSet refreshTokenJwtClaimsSet = tokenClaimSetGetCmd.withRequest(
                 TokenClaimSetGetCmd.Request.builder()
                     .token(request.refreshToken)
                     .build())
             .execute();
 
-        Date expiration = jwtClaimsSet.getExpirationTime();
+        Date expiration = refreshTokenJwtClaimsSet.getExpirationTime();
 
         if (expiration.before(new Date())) {
             throw new TokenException("expired", "", HttpStatus.UNAUTHORIZED.value());
         }
 
-        Token refreshToken = tokenService.findByUserIdAndTokenIdAndRevokedThrow(
-            UUID.fromString(jwtClaimsSet.getSubject()), UUID.fromString(jwtClaimsSet.getJWTID()),
-            false
+        Token refreshToken = tokenService.findByTokenIdAndClientIdAndUserIdAndStateInThrow(
+            UUID.fromString(refreshTokenJwtClaimsSet.getJWTID()), request.clientId,
+            UUID.fromString(refreshTokenJwtClaimsSet.getSubject()),
+            Set.of(TokenStateEnum.ACTIVE, TokenStateEnum.REPLACED, TokenStateEnum.REVOKED)
         );
-
-        log.info("refresh token found {}", refreshToken.getToken());
 
         if (!refreshToken.getToken()
             .equals(request.refreshToken))
@@ -75,7 +72,20 @@ public class RefreshTokenGrantCmd extends
             throw new TokenException("invalid", "", HttpStatus.UNAUTHORIZED.value());
         }
 
-        User user = userService.findByIdThrow(UUID.fromString(jwtClaimsSet.getSubject()));
+        if (refreshToken.getState()
+            .equals(TokenStateEnum.REVOKED))
+        {
+            throw new TokenException("revoked", "", HttpStatus.UNAUTHORIZED.value());
+        }
+
+        if (refreshToken.getState()
+            .equals(TokenStateEnum.REPLACED))
+        {
+            throw new TokenException("replaced", "", HttpStatus.UNAUTHORIZED.value());
+        }
+
+        User user = userService.findByIdThrow(
+            UUID.fromString(refreshTokenJwtClaimsSet.getSubject()));
 
         long accessExp = TimeMeasureUtil.getMillisecondsByTypeTime(
             authConfigProperties.getAccessTokenExp(), authConfigProperties.getAccessTokenExpType());
@@ -85,7 +95,6 @@ public class RefreshTokenGrantCmd extends
                     .user(user)
                     .tokenExp(accessExp)
                     .clientId(request.clientId)
-                    .roleFilters(getRolesToFilter(jwtClaimsSet))
                     .build())
             .execute();
 
@@ -94,33 +103,58 @@ public class RefreshTokenGrantCmd extends
                 .build())
             .execute();
 
+        UUID newRefreshTokenId = UUID.randomUUID();
+
+        JWTClaimsSet.Builder refreshTokenBuilder = new JWTClaimsSet.Builder();
+
+        refreshTokenJwtClaimsSet.getClaims()
+            .forEach(refreshTokenBuilder::claim);
+
+        refreshTokenBuilder.jwtID(newRefreshTokenId.toString());
+        refreshTokenBuilder.issueTime(new Date());
+
+        JWTClaimsSet claimsSetOfRefreshToken = refreshTokenBuilder.build();
+
+        String newRefreshToken = tokenGenerateNewCmd.withRequest(
+                TokenGenerateNewCmd.Request.builder()
+                    .claimsSet(claimsSetOfRefreshToken)
+                    .build())
+            .execute();
+
+        long newRefreshTokenExp = refreshTokenJwtClaimsSet.getExpirationTime()
+            .getTime() - claimsSetOfRefreshToken.getIssueTime()
+            .getTime();
+
+        tokenCreateCmd.withRequest(TokenCreateCmd.Request.builder()
+                .tokenId(newRefreshTokenId)
+                .clientId(request.clientId)
+                .token(newRefreshToken)
+                .issuedAt(ZonedDateTime.now())
+                .expiresAt(refreshToken.getExpiresAt())
+                .expiresIn(TimeMeasureUtil.getSecondsOfMilliseconds(newRefreshTokenExp))
+                .tokenState(TokenStateEnum.ACTIVE)
+                .userId(refreshToken.getUserId())
+                .tokenParentId(refreshToken.getId())
+                .build())
+            .execute();
+
+        tokenUpdateCmd.withRequest(TokenUpdateCmd.Request.builder()
+                .tokenDbId(refreshToken.getId())
+                .tokenState(TokenStateEnum.REPLACED)
+                .build())
+            .execute();
+
+        log.info("New refresh token: {}", newRefreshToken);
+
         return OpenIdConnectTokenResponse.builder()
             .accessToken(accessToken)
-            .refreshToken(request.refreshToken)
+            .refreshToken(newRefreshToken)
             .tokenType(TokenTypeEnum.bearer)
-            .expiresIn(accessExp / 1000)
-            .scope("openid profile email")
+            .expiresIn(TimeMeasureUtil.getSecondsOfMilliseconds(accessExp))
+            .refreshExpiresIn(TimeMeasureUtil.getSecondsOfMilliseconds(newRefreshTokenExp))
+            .scope(claimsSetOfAccessToken.getClaim("scope")
+                .toString())
             .build();
-    }
-
-    private Set<String> getRolesToFilter(JWTClaimsSet jwtClaimsSet) {
-        try {
-            Set<String> roles = jwtClaimsSet.getListClaim("roles")
-                .stream()
-                .map(String::valueOf)
-                .collect(Collectors.toSet());
-
-            if (roles.isEmpty()) {
-                return Set.of();
-            }
-
-            return roles.stream()
-                .map(value -> value.replace("ROLE_", ""))
-                .collect(Collectors.toSet());
-        } catch (ParseException e) {
-            log.error("error while parsing roles from refresh token claim set", e);
-            throw new RuntimeException(e);
-        }
     }
 
     @Builder

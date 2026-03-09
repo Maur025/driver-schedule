@@ -41,7 +41,7 @@ public class TokenJWTClaimSetBuildCmd extends
         Set<String> clientAudiences = getClientAudiences(request.clientId);
 
         Map<UserRoleAndPermissionEnum, Set<String>> userRoleAndPermissionEnumSetMap = getUserRolesAndPermissions(
-            user, request.roleFilters);
+            user);
 
         Set<String> roles = userRoleAndPermissionEnumSetMap.get(UserRoleAndPermissionEnum.ROLES);
         Set<String> scopes = userRoleAndPermissionEnumSetMap.get(UserRoleAndPermissionEnum.SCOPES);
@@ -81,20 +81,13 @@ public class TokenJWTClaimSetBuildCmd extends
             .collect(Collectors.toSet());
     }
 
-    private Map<UserRoleAndPermissionEnum, Set<String>> getUserRolesAndPermissions(User user,
-        Set<String> roleFilters)
+    private Map<UserRoleAndPermissionEnum, Set<String>> getUserRolesAndPermissions(User user)
     {
         Set<String> roles = new HashSet<>();
         Set<String> scopes = new HashSet<>();
 
-        Set<String> filters = roleFilters == null ? Set.of() : roleFilters;
-
         for (var role : user.getRoles()) {
             if (role == null) {
-                continue;
-            }
-
-            if (!filters.isEmpty() && !filters.contains(role.getName())) {
                 continue;
             }
 
@@ -145,7 +138,7 @@ public class TokenJWTClaimSetBuildCmd extends
 
     @Builder
     public record Request(@NotNull User user, @NotNull Long tokenExp, UUID refreshTokenId,
-                          String clientId, Set<String> roleFilters)
+                          String clientId)
     {
 
     }

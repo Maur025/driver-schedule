@@ -69,8 +69,8 @@ public class OpenIdConnectController {
 
         var responseBuilder = ResponseEntity.ok();
 
-        if (grantType != null && grantType.equals(GrantTypeEnum.PASSWORD)
-            && openIdConnectTokenResponse != null)
+        if (grantType != null && (grantType.equals(GrantTypeEnum.PASSWORD) || grantType.equals(
+            GrantTypeEnum.REFRESH_TOKEN)) && openIdConnectTokenResponse != null)
         {
             var refreshTokenCookie = ResponseCookie.from(
                     "refresh_token", openIdConnectTokenResponse.getRefreshToken())
