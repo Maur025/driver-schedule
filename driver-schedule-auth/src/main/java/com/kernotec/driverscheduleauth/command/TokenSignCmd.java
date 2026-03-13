@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class TokenGenerateNewCmd extends
-    AbstractTransactionalRequiredCommand<TokenGenerateNewCmd.Request, String>
+public class TokenSignCmd extends
+    AbstractTransactionalRequiredCommand<TokenSignCmd.Request, String>
 {
 
     private final AuthConfigProperties authConfigProperties;

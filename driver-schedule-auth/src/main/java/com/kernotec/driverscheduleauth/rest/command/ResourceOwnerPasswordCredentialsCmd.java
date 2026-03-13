@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleauth.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverscheduleauth.command.TokenGenerateNewCmd;
+import com.kernotec.driverscheduleauth.command.TokenSignCmd;
 import com.kernotec.driverscheduleauth.command.TokenJWTClaimSetBuildCmd;
 import com.kernotec.driverscheduleauth.command.token.TokenCreateCmd;
 import com.kernotec.driverscheduleauth.config.AuthConfigProperties;
@@ -36,7 +36,7 @@ public class ResourceOwnerPasswordCredentialsCmd extends
     private final UserService userService;
 
     private final TokenJWTClaimSetBuildCmd tokenJWTClaimSetBuildCmd;
-    private final TokenGenerateNewCmd tokenGenerateNewCmd;
+    private final TokenSignCmd tokenSignCmd;
     private final TokenCreateCmd tokenCreateCmd;
 
     @Override
@@ -78,12 +78,12 @@ public class ResourceOwnerPasswordCredentialsCmd extends
                     .build())
             .execute();
 
-        String accessToken = tokenGenerateNewCmd.withRequest(TokenGenerateNewCmd.Request.builder()
+        String accessToken = tokenSignCmd.withRequest(TokenSignCmd.Request.builder()
                 .claimsSet(claimsSetOfAccessToken)
                 .build())
             .execute();
 
-        String refreshToken = tokenGenerateNewCmd.withRequest(TokenGenerateNewCmd.Request.builder()
+        String refreshToken = tokenSignCmd.withRequest(TokenSignCmd.Request.builder()
                 .claimsSet(claimsSetOfRefreshToken)
                 .build())
             .execute();

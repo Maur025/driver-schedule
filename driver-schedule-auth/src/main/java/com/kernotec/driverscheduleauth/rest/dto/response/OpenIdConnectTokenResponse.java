@@ -28,4 +28,7 @@ public class OpenIdConnectTokenResponse {
     private Long refreshExpiresIn;
 
     private String scope;
+
+    @JsonProperty("issued_token_type")
+    private String issuedTokenType;
 }

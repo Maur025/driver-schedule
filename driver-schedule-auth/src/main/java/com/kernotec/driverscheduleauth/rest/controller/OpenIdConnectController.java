@@ -12,6 +12,9 @@ import com.kernotec.driverscheduleauth.rest.dto.response.OpenIdConnectUserInfoRe
 import com.kernotec.driverscheduleauth.security.grants.GrantHandler;
 import com.kernotec.driverscheduleauth.security.grants.GrantHandlerFactory;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.Duration;
 import java.util.UUID;
@@ -46,11 +49,27 @@ public class OpenIdConnectController {
     private final GrantHandlerFactory grantHandlerFactory;
 
     @Operation(summary = "OpenID Connect Endpoint to get token")
+    @Parameters({@Parameter(name = "grant_type",
+                            description = "Type grant OIDC (e.g. password, refresh_token, urn:ietf:params:oauth:grant-type:token-exchange)",
+                            required = true, example = "password"),
+        @Parameter(name = "client_id", description = "Id code of client", example = "service-app"),
+        @Parameter(name = "scope", description = "Permission and Roles to request",
+                   example = "ROLE_ADMIN"), @Parameter(name = "username",
+                                                       description = "username to authenticate with credentials legacy mode"),
+        @Parameter(name = "password",
+                   description = "password to authenticate with credentials legacy mode"),
+        @Parameter(name = "refresh_token", description = "token to renew session"),
+        @Parameter(name = "audience", description = "audience to authenticate"),
+        @Parameter(name = "subject_token", description = "token to perform operations"),
+        @Parameter(name = "subject_token_type",
+                   description = "defines the type of subject token (e.g. urn:ietf:params:oauth:token-type:access_token, urn:ietf:params:oauth:token-type:refresh_token, urn:ietf:params:oauth:token-type:id_token, urn:ietf:params:oauth:token-type:jwt)")})
     @PostMapping(value = "token", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<OpenIdConnectTokenResponse> processGrantRequest(
-        @PathVariable String realm, @RequestParam MultiValueMap<String, String> formParameters,
-        @CookieValue(value = "refresh_token", required = false) String refreshTokenFromCookie)
+        @PathVariable String realm,
+        @Schema(hidden = true) @RequestParam MultiValueMap<String, String> formParameters,
+        @Schema(hidden = true) @CookieValue(value = "refresh_token",
+                                            required = false) String refreshTokenFromCookie)
     {
         UUID realmId = realmService.findRealmIdByNameInCache(realm);
 
