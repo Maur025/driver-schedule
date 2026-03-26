@@ -80,7 +80,8 @@ public class TripAssignmentController {
         @RequestBody TripAssignmentFilterRequest request)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
-        Page<TripAssignment> tripAssignmentPage = tripAssignmentService.findAll(pageable);
+        Page<TripAssignment> tripAssignmentPage = tripAssignmentService.findAllBySearch(
+            request, pageable);
 
         return PageResponse.<TripAssignmentResponse>builder()
             .code(HttpStatus.OK.value())
