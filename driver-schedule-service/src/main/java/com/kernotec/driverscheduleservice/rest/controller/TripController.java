@@ -9,7 +9,9 @@ import com.kernotec.driverscheduleservice.jpa.entity.Trip;
 import com.kernotec.driverscheduleservice.jpa.service.TripService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.TripSpec;
 import com.kernotec.driverscheduleservice.rest.command.trip.ProcessTripCreateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.command.trip.ProcessTripPatchUpdateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripCreateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripUpdatePatchRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.trip.TripResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.response.trip.TripResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,6 +40,7 @@ public class TripController {
     private final TripService tripService;
     private final TripResponseMapper tripResponseMapper;
     private final ProcessTripCreateRequestCmd processTripCreateRequestCmd;
+    private final ProcessTripPatchUpdateRequestCmd processTripPatchUpdateRequestCmd;
 
     @Operation(summary = "find all trips")
     @GetMapping
@@ -84,6 +88,25 @@ public class TripController {
 
         return SingleResponse.<TripResponse>builder()
             .code(HttpStatus.OK.value())
+            .build();
+    }
+
+    @Operation(summary = "trip update")
+    @PatchMapping("{tripId}")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<TripResponse> patchUpdate(@PathVariable UUID tripId,
+        @RequestBody TripUpdatePatchRequest request)
+    {
+        processTripPatchUpdateRequestCmd.withRequest(
+                ProcessTripPatchUpdateRequestCmd.Request.builder()
+                    .tripId(tripId)
+                    .tripUpdatePatchRequest(request)
+                    .build())
+            .execute();
+
+        return SingleResponse.<TripResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("Update successfully")
             .build();
     }
 }
