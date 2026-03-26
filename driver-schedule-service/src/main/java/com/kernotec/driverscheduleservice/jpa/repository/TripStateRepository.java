@@ -3,6 +3,7 @@ package com.kernotec.driverscheduleservice.jpa.repository;
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.driverscheduleservice.jpa.entity.TripState;
 import com.kernotec.driverscheduleservice.rest.dto.response.trip.state.TripStateLookupResponse;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,4 +22,6 @@ public interface TripStateRepository extends BaseRepository<TripState, UUID> {
         """)
     Page<TripStateLookupResponse> findAllToLookup(@Param("keyword") String keyword,
         Pageable pageable);
+
+    Optional<TripState> findByCode(String code);
 }
