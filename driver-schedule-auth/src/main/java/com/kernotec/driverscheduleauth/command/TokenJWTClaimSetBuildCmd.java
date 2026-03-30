@@ -8,6 +8,8 @@ import com.kernotec.driverscheduleauth.jpa.entity.Scope;
 import com.kernotec.driverscheduleauth.jpa.entity.User;
 import com.kernotec.driverscheduleauth.jpa.enums.UserRoleAndPermissionEnum;
 import com.kernotec.driverscheduleauth.jpa.service.ClientService;
+import com.kernotec.driverscheduleauth.security.grants.GrantHandlerCommon;
+import com.kernotec.driverscheduleauth.security.grants.TokenClaim;
 import com.kernotec.driverscheduleauth.util.CommonUtil;
 import com.nimbusds.jwt.JWTClaimsSet;
 import jakarta.validation.constraints.NotNull;
@@ -33,6 +35,7 @@ public class TokenJWTClaimSetBuildCmd extends
 
     private final DriverScheduleAuthProperties driverScheduleAuthProperties;
     private final ClientService clientService;
+    private final GrantHandlerCommon grantHandlerCommon;
 
     @Override
     protected JWTClaimsSet run(Request request) {
@@ -41,21 +44,21 @@ public class TokenJWTClaimSetBuildCmd extends
         Set<String> clientAudiences = getClientAudiences(request.clientId);
 
         Map<UserRoleAndPermissionEnum, Set<String>> userRoleAndPermissionEnumSetMap = getUserRolesAndPermissions(
-            user, request.roleFilters);
+            user);
 
         Set<String> roles = userRoleAndPermissionEnumSetMap.get(UserRoleAndPermissionEnum.ROLES);
         Set<String> scopes = userRoleAndPermissionEnumSetMap.get(UserRoleAndPermissionEnum.SCOPES);
 
         return new JWTClaimsSet.Builder().subject(CommonUtil.getStringOfUuid(user.getId()))
             .jwtID(getJwtId(request.refreshTokenId))
-            .claim("preferred_username", user.getUsername())
-            .claim("name", getName(user))
-            .claim("roles", getRoleList(roles))
-            .claim("auth_time", getAuthTimeLong())
-            .claim("azp", request.clientId)
-            .claim("scope", getStringOfScopes(scopes))
+            .claim(TokenClaim.PREFERRED_USERNAME, user.getUsername())
+            .claim(TokenClaim.FULL_NAME, getName(user))
+            .claim(TokenClaim.ROLES, getRoleList(roles))
+            .claim(TokenClaim.AUTH_TIME, getAuthTimeLong())
+            .claim(TokenClaim.CLIENT_ID, request.clientId)
+            .claim(TokenClaim.SCOPE, getStringOfScopes(scopes))
             .issueTime(new Date())
-            .expirationTime(getExpirationTime(request.tokenExp))
+            .expirationTime(grantHandlerCommon.getExpirationTime(request.tokenExp))
             .issuer(getIssuer())
             .audience(getAudienceList(clientAudiences))
             .notBeforeTime(new Date())
@@ -81,20 +84,13 @@ public class TokenJWTClaimSetBuildCmd extends
             .collect(Collectors.toSet());
     }
 
-    private Map<UserRoleAndPermissionEnum, Set<String>> getUserRolesAndPermissions(User user,
-        Set<String> roleFilters)
+    private Map<UserRoleAndPermissionEnum, Set<String>> getUserRolesAndPermissions(User user)
     {
         Set<String> roles = new HashSet<>();
         Set<String> scopes = new HashSet<>();
 
-        Set<String> filters = roleFilters == null ? Set.of() : roleFilters;
-
         for (var role : user.getRoles()) {
             if (role == null) {
-                continue;
-            }
-
-            if (!filters.isEmpty() && !filters.contains(role.getName())) {
                 continue;
             }
 
@@ -134,10 +130,6 @@ public class TokenJWTClaimSetBuildCmd extends
         return scopes.isEmpty() ? "" : String.join(" ", scopes);
     }
 
-    private Date getExpirationTime(Long tokenExpiration) {
-        return new Date(System.currentTimeMillis() + tokenExpiration);
-    }
-
     private List<String> getAudienceList(Set<String> audiences) {
         return audiences.stream()
             .toList();
@@ -145,7 +137,7 @@ public class TokenJWTClaimSetBuildCmd extends
 
     @Builder
     public record Request(@NotNull User user, @NotNull Long tokenExp, UUID refreshTokenId,
-                          String clientId, Set<String> roleFilters)
+                          String clientId)
     {
 
     }

@@ -128,17 +128,21 @@ public class ScheduleTransportationService extends BaseServiceImpl<ScheduleTrans
             .withScheduleTransportationStates(filterRequest.getScheduleTransportationStates())
             .withKeyword(filterRequest.getKeyword());
 
-        boolean isAdmin = securityAuthProvider.userContainsRole(PersonTypeEnum.ADMIN);
+        boolean hasOnlyOneRole = securityAuthProvider.hasOnlyOneRole();
         boolean isApplicant = securityAuthProvider.userContainsRole(PersonTypeEnum.APPLICANT);
         boolean isDriver = securityAuthProvider.userContainsRole(PersonTypeEnum.DRIVER);
 
         UUID personAuthenticateId = personService.findIdByUserIdAuthenticateThrow();
 
-        if (!isAdmin && isApplicant) {
+        if (!hasOnlyOneRole) {
+            return repository.findAll(scheduleTransportationSpecification, pageable);
+        }
+
+        if (isApplicant) {
             scheduleTransportationSpecification.withPersonRequestedId(personAuthenticateId);
         }
 
-        if (!isAdmin && isDriver) {
+        if (isDriver) {
             scheduleTransportationSpecification.withDriverId(personAuthenticateId);
         }
 

@@ -1,8 +1,6 @@
 package com.kernotec.driverscheduleauth.security.grants;
 
 import com.kernotec.driverscheduleauth.jpa.enums.GrantTypeEnum;
-import com.kernotec.driverscheduleauth.jpa.enums.LoginProtocolParams;
-import com.kernotec.driverscheduleauth.jpa.service.ClientService;
 import com.kernotec.driverscheduleauth.rest.command.RefreshTokenGrantCmd;
 import com.kernotec.driverscheduleauth.rest.dto.response.OpenIdConnectTokenResponse;
 import java.util.UUID;
@@ -15,7 +13,7 @@ import org.springframework.util.MultiValueMap;
 public class RefreshTokenGrantTypeHandler implements GrantHandler {
 
     private final RefreshTokenGrantCmd refreshTokenGrantCmd;
-    private final ClientService clientService;
+    private final GrantHandlerCommon grantHandlerCommon;
 
     @Override
     public GrantTypeEnum getGrantType() {
@@ -24,12 +22,12 @@ public class RefreshTokenGrantTypeHandler implements GrantHandler {
 
     @Override
     public OpenIdConnectTokenResponse handle(UUID realmId, MultiValueMap<String, String> params) {
-        String clientId = params.getFirst(LoginProtocolParams.CLIENT_ID_PARAM.getValue());
+        String clientId = grantHandlerCommon.getClientIdOfParams(params);
 
-        clientService.findByRealmIdAndClientIdThrow(realmId, clientId);
+        grantHandlerCommon.validateClientId(realmId, clientId);
 
         return refreshTokenGrantCmd.withRequest(RefreshTokenGrantCmd.Request.builder()
-                .refreshToken(params.getFirst(LoginProtocolParams.REFRESH_TOKEN_PARAM.getValue()))
+                .refreshToken(grantHandlerCommon.getRefreshTokenOfParams(params))
                 .clientId(clientId)
                 .build())
             .execute();

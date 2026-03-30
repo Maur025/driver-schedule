@@ -19,7 +19,7 @@ public interface AuthUserDataResponseMapper {
             response.setId(authUserData.getId());
             response.setUsername(authUserData.getUsername());
             response.setName(authUserData.getName());
-            response.setRoles(authUserData.getRoles());
+            // response.setRoles(authUserData.getRoles());
             response.setAuthTime(authUserData.getAuthTime());
 
             return response;

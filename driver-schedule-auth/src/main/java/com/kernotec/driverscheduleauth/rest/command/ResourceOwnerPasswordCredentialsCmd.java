@@ -1,12 +1,13 @@
 package com.kernotec.driverscheduleauth.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverscheduleauth.command.TokenCreateCmd;
-import com.kernotec.driverscheduleauth.command.TokenGenerateNewCmd;
+import com.kernotec.driverscheduleauth.command.TokenSignCmd;
 import com.kernotec.driverscheduleauth.command.TokenJWTClaimSetBuildCmd;
+import com.kernotec.driverscheduleauth.command.token.TokenCreateCmd;
 import com.kernotec.driverscheduleauth.config.AuthConfigProperties;
 import com.kernotec.driverscheduleauth.exception.UserException;
 import com.kernotec.driverscheduleauth.jpa.entity.User;
+import com.kernotec.driverscheduleauth.jpa.enums.TokenStateEnum;
 import com.kernotec.driverscheduleauth.jpa.enums.TokenTypeEnum;
 import com.kernotec.driverscheduleauth.jpa.service.UserService;
 import com.kernotec.driverscheduleauth.rest.dto.request.GrantPasswordCredentialsRequest;
@@ -35,7 +36,7 @@ public class ResourceOwnerPasswordCredentialsCmd extends
     private final UserService userService;
 
     private final TokenJWTClaimSetBuildCmd tokenJWTClaimSetBuildCmd;
-    private final TokenGenerateNewCmd tokenGenerateNewCmd;
+    private final TokenSignCmd tokenSignCmd;
     private final TokenCreateCmd tokenCreateCmd;
 
     @Override
@@ -77,25 +78,25 @@ public class ResourceOwnerPasswordCredentialsCmd extends
                     .build())
             .execute();
 
-        String accessToken = tokenGenerateNewCmd.withRequest(TokenGenerateNewCmd.Request.builder()
+        String accessToken = tokenSignCmd.withRequest(TokenSignCmd.Request.builder()
                 .claimsSet(claimsSetOfAccessToken)
                 .build())
             .execute();
 
-        String refreshToken = tokenGenerateNewCmd.withRequest(TokenGenerateNewCmd.Request.builder()
+        String refreshToken = tokenSignCmd.withRequest(TokenSignCmd.Request.builder()
                 .claimsSet(claimsSetOfRefreshToken)
                 .build())
             .execute();
 
         tokenCreateCmd.withRequest(TokenCreateCmd.Request.builder()
+                .tokenId(refreshTokenId)
                 .clientId(grantPasswordCredentialsRequest.getClientId())
                 .token(refreshToken)
-                .tokenId(refreshTokenId)
                 .issuedAt(ZonedDateTime.now())
                 .expiresAt(ZonedDateTime.now()
                     .plus(Duration.ofMillis(refreshExp)))
-                .expiresIn(refreshExp / 1000)
-                .revoked(false)
+                .expiresIn(TimeMeasureUtil.getSecondsOfMilliseconds(refreshExp))
+                .tokenState(TokenStateEnum.ACTIVE)
                 .userId(user.getId())
                 .build())
             .execute();
@@ -104,8 +105,8 @@ public class ResourceOwnerPasswordCredentialsCmd extends
             .accessToken(accessToken)
             .refreshToken(refreshToken)
             .tokenType(TokenTypeEnum.bearer)
-            .expiresIn(accessExp / 1000)
-            .refreshExpiresIn(refreshExp / 1000)
+            .expiresIn(TimeMeasureUtil.getSecondsOfMilliseconds(accessExp))
+            .refreshExpiresIn(TimeMeasureUtil.getSecondsOfMilliseconds(refreshExp))
             .scope(claimsSetOfAccessToken.getClaim("scope")
                 .toString())
             .build();

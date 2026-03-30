@@ -169,4 +169,10 @@
   <changeSet id="1771685958683-1" author="Maur025">
     <sqlFile path="data/label/type/label_type_update3.sql" relativeToChangelogFile="true"/>
   </changeSet>
+
+  <!-- schedule transportation state - add state IN_PROGRESS -->
+  <changeSet id="1773425731611-1" author="Maur025">
+    <sqlFile path="data/schedule/transportation/state/schedule_transportation_state_update2.sql"
+      relativeToChangelogFile="true"/>
+  </changeSet>
 </databaseChangeLog>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+  <changeSet id="1773078812662-1" author="mmoya@PragmaInvest.com">
+    <addColumn tableName="tokens">
+      <column name="token_id" type="UUID"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="1773078812662-2" author="mmoya@PragmaInvest.com">
+    <addUniqueConstraint columnNames="token_id, client_id, user_id"
+      constraintName="uc_1d33a47334bcbacf8ecc312e1" tableName="tokens"/>
+  </changeSet>
+
+</databaseChangeLog>

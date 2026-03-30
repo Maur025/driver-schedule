@@ -29,4 +29,8 @@ public class TimeMeasureUtil {
     private static long getMillisecondsOfDays(Integer time) {
         return getMillisecondsOfHours(time) * 24L;
     }
+
+    public static long getSecondsOfMilliseconds(long milliseconds) {
+        return milliseconds / 1000L;
+    }
 }

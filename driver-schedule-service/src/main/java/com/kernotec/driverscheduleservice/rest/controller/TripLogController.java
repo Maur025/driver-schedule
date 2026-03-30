@@ -7,6 +7,7 @@ import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.TripLog;
 import com.kernotec.driverscheduleservice.jpa.service.TripLogService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.TripLogSpec;
+import com.kernotec.driverscheduleservice.rest.dto.request.trip.log.TripLogFilterRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.trip.log.TripLogResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.response.trip.log.TripLogResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -62,6 +65,28 @@ public class TripLogController {
         return SingleResponse.<TripLogResponse>builder()
             .code(HttpStatus.OK.value())
             .data(tripLogResponseMapper.toResponse(tripLog))
+            .build();
+    }
+
+    @Operation(summary = "find all by search")
+    @PostMapping("search")
+    @ResponseStatus(HttpStatus.OK)
+    public PageResponse<TripLogResponse> search(@RequestParam(defaultValue = "0") Integer page,
+        @RequestParam(defaultValue = "20") Integer size,
+        @RequestParam(defaultValue = "createdAt") String sortBy,
+        @RequestParam(defaultValue = "false") Boolean descending,
+        @RequestBody TripLogFilterRequest request)
+    {
+        Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
+        Page<TripLog> tripLogPage = tripLogService.findAllBySearch(request, pageable);
+
+        return PageResponse.<TripLogResponse>builder()
+            .code(HttpStatus.OK.value())
+            .data(tripLogResponseMapper.toResponse(tripLogPage.getContent()))
+            .pagination(PaginationResponse.builder()
+                .count(tripLogPage.getTotalElements())
+                .pages(tripLogPage.getTotalPages())
+                .build())
             .build();
     }
 }

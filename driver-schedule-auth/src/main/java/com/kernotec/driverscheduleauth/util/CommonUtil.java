@@ -11,4 +11,12 @@ public class CommonUtil {
 
         return String.valueOf(value);
     }
+
+    public static UUID getUuidOfString(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        return UUID.fromString(value);
+    }
 }

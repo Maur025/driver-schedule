@@ -15,4 +15,6 @@ public interface SecurityAuthProvider {
     Collection<String> getScopes();
 
     boolean hasScope(String scope);
+
+    boolean hasOnlyOneRole();
 }

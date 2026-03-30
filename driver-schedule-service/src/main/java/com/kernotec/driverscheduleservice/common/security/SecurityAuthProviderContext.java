@@ -56,4 +56,16 @@ public class SecurityAuthProviderContext implements SecurityAuthProvider {
 
         return scopes.contains(scope);
     }
+
+    @Override
+    public boolean hasOnlyOneRole() {
+        int countRole = 0;
+        for (PersonTypeEnum personType : PersonTypeEnum.values()) {
+            if (userContainsRole(personType)) {
+                countRole++;
+            }
+        }
+
+        return countRole == 1;
+    }
 }

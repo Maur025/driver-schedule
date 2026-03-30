@@ -31,6 +31,8 @@ public class TransportationRequestResponse extends AuditEntityUserResponse {
     private ZonedDateTime startTime;
     private ZonedDateTime endTime;
     private LocalDateTime requestedDate;
+    private ZonedDateTime requestedFrom;
+    private ZonedDateTime requestedTo;
     private TripTypeEnum tripType;
     private boolean isShortNotice;
     private Long correlative;
