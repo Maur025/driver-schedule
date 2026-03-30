@@ -4,8 +4,12 @@ import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.driverscheduleservice.jpa.entity.TripLog;
 import com.kernotec.driverscheduleservice.jpa.repository.TripLogRepository;
+import com.kernotec.driverscheduleservice.jpa.specification.trip.log.TripLogSpecification;
+import com.kernotec.driverscheduleservice.rest.dto.request.trip.log.TripLogFilterRequest;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
@@ -22,5 +26,18 @@ public class TripLogService extends BaseServiceImpl<TripLog, UUID> {
     @Override
     protected BaseRepository<TripLog, UUID> repository() {
         return repository;
+    }
+
+    public Page<TripLog> findAllBySearch(TripLogFilterRequest filterRequest, Pageable pageable) {
+        return repository.findAll(
+            TripLogSpecification.builder()
+                .withZoneId(filterRequest.getZoneId())
+                .withSimpleDate(filterRequest.getSimpleDate())
+                .withDateRange(filterRequest.getFromDate(), filterRequest.getToDate())
+                .withMonthDate(filterRequest.getMonthDate())
+                .withYearDate(filterRequest.getYearDate())
+                .withTripId(filterRequest.getTripId())
+                .withTripStates(filterRequest.getTripStates()), pageable
+        );
     }
 }

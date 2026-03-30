@@ -11,6 +11,7 @@ import com.kernotec.driverscheduleservice.rest.ApiSpec.TripSpec;
 import com.kernotec.driverscheduleservice.rest.command.trip.ProcessTripCreateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.trip.ProcessTripPatchUpdateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripCreateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripFilterRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripUpdatePatchRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.trip.TripResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.response.trip.TripResponseMapper;
@@ -38,7 +39,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class TripController {
 
     private final TripService tripService;
+
     private final TripResponseMapper tripResponseMapper;
+
     private final ProcessTripCreateRequestCmd processTripCreateRequestCmd;
     private final ProcessTripPatchUpdateRequestCmd processTripPatchUpdateRequestCmd;
 
@@ -77,17 +80,44 @@ public class TripController {
             .build();
     }
 
+    @Operation(summary = "search trips")
+    @PostMapping("search")
+    @ResponseStatus(HttpStatus.OK)
+    @CanReadTrip
+    public PageResponse<TripResponse> search(@RequestParam(defaultValue = "0") Integer page,
+        @RequestParam(defaultValue = "20") Integer size,
+        @RequestParam(defaultValue = "createdAt") String sortBy,
+        @RequestParam(defaultValue = "false") Boolean descending,
+        @RequestBody TripFilterRequest request)
+    {
+        Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
+        Page<Trip> tripPage = tripService.findAllBySearch(request, pageable);
+
+        return PageResponse.<TripResponse>builder()
+            .code(HttpStatus.OK.value())
+            .data(tripResponseMapper.toResponse(tripPage.getContent()))
+            .pagination(PaginationResponse.builder()
+                .count(tripPage.getTotalElements())
+                .pages(tripPage.getTotalPages())
+                .build())
+            .build();
+    }
+
     @Operation(summary = "create trip")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public SingleResponse<TripResponse> create(@RequestBody TripCreateRequest request) {
-        processTripCreateRequestCmd.withRequest(ProcessTripCreateRequestCmd.Request.builder()
-                .tripCreateRequest(request)
-                .build())
-            .execute();
+        UUID tripId = tripService.findByTripAssignmentId(request.getTripAssignmentId())
+            .map(Trip::getId)
+            .orElseGet(() -> processTripCreateRequestCmd.withRequest(
+                    ProcessTripCreateRequestCmd.Request.builder()
+                        .tripCreateRequest(request)
+                        .build())
+                .execute());
 
         return SingleResponse.<TripResponse>builder()
-            .code(HttpStatus.OK.value())
+            .code(HttpStatus.CREATED.value())
+            .data(tripResponseMapper.toResponse(tripId))
             .build();
     }
 

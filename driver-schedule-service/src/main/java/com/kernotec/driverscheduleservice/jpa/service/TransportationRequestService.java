@@ -35,26 +35,28 @@ public class TransportationRequestService extends BaseServiceImpl<Transportation
     public Page<TransportationRequest> findAllWithFilters(
         TransportationRequestFilterRequest filterRequest, Pageable pageable)
     {
-        TransportationRequestSpecification transportationRequestSpecification = TransportationRequestSpecification.builder()
-            .withTransportationRequestStateId(filterRequest.getTransportationRequestStateId())
-            .withPersonRequestedId(filterRequest.getPersonRequestedId())
-            .withTransportationRequestState(filterRequest.getTransportationRequestState())
-            .withTripType(filterRequest.getTripType())
-            .withZoneId(filterRequest.getZoneId())
-            .withSimpleDate(filterRequest.getSimpleDate())
-            .withDateRange(filterRequest.getFromDate(), filterRequest.getToDate())
-            .withMonthDate(filterRequest.getMonthDate())
-            .withYearDate(filterRequest.getYearDate())
-            .withKeyword(filterRequest.getKeyword());
-
-        boolean isAdmin = securityAuthProvider.userContainsRole(PersonTypeEnum.ADMIN);
+        boolean hasOnlyOneRole = securityAuthProvider.hasOnlyOneRole();
         boolean isApplicant = securityAuthProvider.userContainsRole(PersonTypeEnum.APPLICANT);
 
-        if (!isAdmin && isApplicant) {
-            transportationRequestSpecification.withOnlyRecordsOfPersonId(
-                personService.findIdByUserIdAuthenticateThrow());
+        UUID onlyRecordsOfPersonId = null;
+
+        if (hasOnlyOneRole && isApplicant) {
+            onlyRecordsOfPersonId = personService.findIdByUserIdAuthenticateThrow();
         }
 
-        return repository.findAll(transportationRequestSpecification, pageable);
+        return repository.findAll(
+            TransportationRequestSpecification.builder()
+                .withTransportationRequestStateId(filterRequest.getTransportationRequestStateId())
+                .withPersonRequestedId(filterRequest.getPersonRequestedId())
+                .withTransportationRequestState(filterRequest.getTransportationRequestState())
+                .withTripType(filterRequest.getTripType())
+                .withZoneId(filterRequest.getZoneId())
+                .withSimpleDate(filterRequest.getSimpleDate())
+                .withDateRange(filterRequest.getFromDate(), filterRequest.getToDate())
+                .withMonthDate(filterRequest.getMonthDate())
+                .withYearDate(filterRequest.getYearDate())
+                .withKeyword(filterRequest.getKeyword())
+                .withOnlyRecordsOfPersonId(onlyRecordsOfPersonId), pageable
+        );
     }
 }
