@@ -7,9 +7,9 @@ import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.ContactCategory;
 import com.kernotec.driverscheduleservice.jpa.service.ContactCategoryService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.ContactCategorySpec;
+import com.kernotec.driverscheduleservice.rest.dto.response.LookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.contact.category.ContactCategoryLookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.contact.category.ContactCategoryResponse;
-import com.kernotec.driverscheduleservice.rest.dto.response.LookupResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.response.contact.category.ContactCategoryResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,10 +40,10 @@ public class ContactCategoryController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public PageResponse<ContactCategoryResponse> findAll(
-        @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") Boolean descending)
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "10") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") Boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<ContactCategory> contactCategoryPage = contactCategoryService.findAll(pageable);
@@ -61,7 +61,9 @@ public class ContactCategoryController {
     @Operation(summary = "find contact category by id")
     @GetMapping("{contactCategoryId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<ContactCategoryResponse> findById(@PathVariable UUID contactCategoryId) {
+    public SingleResponse<ContactCategoryResponse> findById(
+        @PathVariable("contactCategoryId") UUID contactCategoryId)
+    {
         ContactCategory contactCategory = contactCategoryService.findByIdThrow(contactCategoryId);
 
         return SingleResponse.<ContactCategoryResponse>builder()
@@ -74,7 +76,7 @@ public class ContactCategoryController {
     @GetMapping("lookup")
     @ResponseStatus(HttpStatus.OK)
     public LookupResponse<List<ContactCategoryLookupResponse>> findAllToLookup(
-        @RequestParam(required = false) String keyword)
+        @RequestParam(name = "keyword", required = false) String keyword)
     {
         Pageable pageable = PageableUtil.of(0, 500, "name", false);
         Page<ContactCategoryLookupResponse> contactCategoryPage = contactCategoryService.findAllToLookup(

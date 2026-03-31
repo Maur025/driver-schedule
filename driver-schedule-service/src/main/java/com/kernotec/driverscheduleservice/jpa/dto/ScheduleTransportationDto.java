@@ -3,6 +3,7 @@ package com.kernotec.driverscheduleservice.jpa.dto;
 import com.kernotec.core.jpa.dto.AuditEntityDto;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
@@ -16,12 +17,6 @@ public class ScheduleTransportationDto extends AuditEntityDto {
     private ZonedDateTime scheduleTo;
     private LocalDateTime scheduledDate;
 
-    private UUID vehicleId;
-    private VehicleDto vehicle;
-
-    private UUID driverId;
-    private PersonDto driver;
-
     private UUID transportationRequestId;
     private TransportationRequestDto transportationRequest;
 
@@ -33,4 +28,6 @@ public class ScheduleTransportationDto extends AuditEntityDto {
 
     private Set<ReasonDto> cancelReasons;
     private Set<ReasonDto> rescheduleReasons;
+
+    private List<TripAssignmentDto> tripAssignments;
 }

@@ -1,6 +1,9 @@
-package com.kernotec.driverscheduleservice.jpa.dto.mapper;
+package com.kernotec.driverscheduleservice.jpa.dto.mapper.trip.assignment;
 
 import com.kernotec.driverscheduleservice.jpa.dto.TripAssignmentDto;
+import com.kernotec.driverscheduleservice.jpa.dto.mapper.PersonDtoFlatMapper;
+import com.kernotec.driverscheduleservice.jpa.dto.mapper.ScheduleTransportationDtoMapper;
+import com.kernotec.driverscheduleservice.jpa.dto.mapper.VehicleDtoFlatMapper;
 import com.kernotec.driverscheduleservice.jpa.entity.TripAssignment;
 import java.util.List;
 import java.util.Set;

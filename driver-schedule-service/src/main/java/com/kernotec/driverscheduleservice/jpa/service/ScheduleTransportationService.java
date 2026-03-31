@@ -126,7 +126,8 @@ public class ScheduleTransportationService extends BaseServiceImpl<ScheduleTrans
             .withMonthDate(filterRequest.getMonthDate())
             .withYearDate(filterRequest.getYearDate())
             .withScheduleTransportationStates(filterRequest.getScheduleTransportationStates())
-            .withKeyword(filterRequest.getKeyword());
+            .withKeyword(filterRequest.getKeyword())
+            .withPersonRequestedId(filterRequest.getPersonRequestedId());
 
         boolean hasOnlyOneRole = securityAuthProvider.hasOnlyOneRole();
         boolean isApplicant = securityAuthProvider.userContainsRole(PersonTypeEnum.APPLICANT);

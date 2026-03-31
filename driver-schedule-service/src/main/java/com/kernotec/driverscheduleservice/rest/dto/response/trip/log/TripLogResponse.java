@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.driverscheduleservice.audit.user.dto.response.AuditEntityUserResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.trip.TripResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.trip.state.TripStateResponse;
+import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,10 @@ import lombok.Setter;
 @Setter
 @JsonInclude(Include.NON_NULL)
 public class TripLogResponse extends AuditEntityUserResponse {
+
+    private Double latitude;
+    private Double longitude;
+    private List<Double> coordinates;
 
     private UUID tripId;
     private TripResponse trip;

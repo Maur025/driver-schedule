@@ -364,10 +364,15 @@ public record ScheduleTransportationSpecification(
             .map(keyword -> {
                 String pattern = "%" + keyword.toLowerCase() + "%";
 
-                return cb.or(cb.like(
-                    cb.lower(getOrCreateTransportationRequestJoin(joinMap, root).get("code")),
-                    pattern
-                ));
+                return cb.or(
+                    cb.like(
+                        cb.lower(getOrCreateTransportationRequestJoin(joinMap, root).get("code")),
+                        pattern
+                    ), cb.like(
+                        getOrCreateTransportationRequestJoin(joinMap, root).get("correlative")
+                            .as(String.class), pattern
+                    )
+                );
             });
     }
 

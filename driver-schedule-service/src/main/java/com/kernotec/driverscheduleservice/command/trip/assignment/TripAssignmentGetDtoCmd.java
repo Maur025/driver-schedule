@@ -2,7 +2,7 @@ package com.kernotec.driverscheduleservice.command.trip.assignment;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.jpa.dto.TripAssignmentDto;
-import com.kernotec.driverscheduleservice.jpa.dto.mapper.TripAssignmentDtoMapper;
+import com.kernotec.driverscheduleservice.jpa.dto.mapper.trip.assignment.TripAssignmentDtoMapper;
 import com.kernotec.driverscheduleservice.jpa.entity.TripAssignment;
 import com.kernotec.driverscheduleservice.jpa.service.TripAssignmentService;
 import jakarta.validation.constraints.NotNull;

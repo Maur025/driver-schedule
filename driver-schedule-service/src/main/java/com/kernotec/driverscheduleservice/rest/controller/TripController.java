@@ -8,10 +8,12 @@ import com.kernotec.driverscheduleservice.common.annotation.trip.CanReadTrip;
 import com.kernotec.driverscheduleservice.jpa.entity.Trip;
 import com.kernotec.driverscheduleservice.jpa.service.TripService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.TripSpec;
+import com.kernotec.driverscheduleservice.rest.command.trip.ProcessFlowTripFinalizeRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.trip.ProcessTripCreateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.trip.ProcessTripPatchUpdateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripFilterRequest;
+import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripFinalizeRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripUpdatePatchRequest;
 import com.kernotec.driverscheduleservice.rest.dto.response.trip.TripResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.response.trip.TripResponseMapper;
@@ -44,15 +46,17 @@ public class TripController {
 
     private final ProcessTripCreateRequestCmd processTripCreateRequestCmd;
     private final ProcessTripPatchUpdateRequestCmd processTripPatchUpdateRequestCmd;
+    private final ProcessFlowTripFinalizeRequestCmd processFlowTripFinalizeRequestCmd;
 
     @Operation(summary = "find all trips")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @CanReadTrip
-    public PageResponse<TripResponse> findAll(@RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") Boolean descending)
+    public PageResponse<TripResponse> findAll(
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "10") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") Boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<Trip> tripPage = tripService.findAll(pageable);
@@ -71,7 +75,7 @@ public class TripController {
     @GetMapping("{tripId}")
     @ResponseStatus(HttpStatus.OK)
     @CanReadTrip
-    public SingleResponse<TripResponse> findById(@PathVariable UUID tripId) {
+    public SingleResponse<TripResponse> findById(@PathVariable("tripId") UUID tripId) {
         Trip trip = tripService.findByIdThrow(tripId);
 
         return SingleResponse.<TripResponse>builder()
@@ -84,10 +88,11 @@ public class TripController {
     @PostMapping("search")
     @ResponseStatus(HttpStatus.OK)
     @CanReadTrip
-    public PageResponse<TripResponse> search(@RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "20") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "false") Boolean descending,
+    public PageResponse<TripResponse> search(
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "20") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "false") Boolean descending,
         @RequestBody TripFilterRequest request)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
@@ -124,7 +129,7 @@ public class TripController {
     @Operation(summary = "trip update")
     @PatchMapping("{tripId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<TripResponse> patchUpdate(@PathVariable UUID tripId,
+    public SingleResponse<TripResponse> patchUpdate(@PathVariable("tripId") UUID tripId,
         @RequestBody TripUpdatePatchRequest request)
     {
         processTripPatchUpdateRequestCmd.withRequest(
@@ -137,6 +142,25 @@ public class TripController {
         return SingleResponse.<TripResponse>builder()
             .code(HttpStatus.OK.value())
             .message("Update successfully")
+            .build();
+    }
+
+    @Operation(summary = "trip finalized")
+    @PostMapping("{tripId}/finalized")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<TripResponse> tripFinalize(@PathVariable("tripId") UUID tripId,
+        @RequestBody TripFinalizeRequest request)
+    {
+        processFlowTripFinalizeRequestCmd.withRequest(
+                ProcessFlowTripFinalizeRequestCmd.Request.builder()
+                    .tripId(tripId)
+                    .tripFinalizeRequest(request)
+                    .build())
+            .execute();
+
+        return SingleResponse.<TripResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("successfully completed")
             .build();
     }
 }

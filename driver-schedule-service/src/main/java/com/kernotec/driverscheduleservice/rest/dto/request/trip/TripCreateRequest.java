@@ -15,4 +15,7 @@ import lombok.Setter;
 public class TripCreateRequest extends BaseRequest {
 
     private UUID tripAssignmentId;
+
+    private Double latitude;
+    private Double longitude;
 }

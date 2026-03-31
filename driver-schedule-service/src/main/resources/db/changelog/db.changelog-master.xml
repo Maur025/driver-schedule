@@ -175,4 +175,7 @@
     <sqlFile path="data/schedule/transportation/state/schedule_transportation_state_update2.sql"
       relativeToChangelogFile="true"/>
   </changeSet>
+
+  <include file="db/changelog/2026/03/30-01-changelog-45.xml"/>
+  <include file="db/changelog/2026/03/30-01-changelog-46.xml"/>
 </databaseChangeLog>
