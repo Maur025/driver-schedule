@@ -47,10 +47,11 @@ public class VehicleTypeController {
     @Operation(summary = "find all vehicle types")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<VehicleTypeResponse> findAll(@RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") boolean descending)
+    public PageResponse<VehicleTypeResponse> findAll(
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "10") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<VehicleType> vehicleTypePage = vehicleTypeService.findAll(pageable);
@@ -80,7 +81,8 @@ public class VehicleTypeController {
     @Operation(summary = "find by id")
     @GetMapping("{vehicleTypeId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<VehicleTypeResponse> findById(@PathVariable() UUID vehicleTypeId)
+    public SingleResponse<VehicleTypeResponse> findById(
+        @PathVariable("vehicleTypeId") UUID vehicleTypeId)
     {
         VehicleType vehicleType = vehicleTypeService.findByIdThrow(vehicleTypeId);
 
@@ -109,7 +111,8 @@ public class VehicleTypeController {
     @Operation(summary = "update vehicle type")
     @PatchMapping("{vehicleTypeId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<VehicleTypeResponse> update(@PathVariable UUID vehicleTypeId,
+    public SingleResponse<VehicleTypeResponse> update(
+        @PathVariable("vehicleTypeId") UUID vehicleTypeId,
         @RequestBody VehicleTypeUpdateRequest request)
     {
         vehicleTypeUpdateCmd.withRequest(VehicleTypeUpdateCmd.Request.builder()

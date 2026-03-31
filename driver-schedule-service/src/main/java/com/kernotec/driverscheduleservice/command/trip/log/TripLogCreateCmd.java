@@ -3,6 +3,7 @@ package com.kernotec.driverscheduleservice.command.trip.log;
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.jpa.entity.TripLog;
 import com.kernotec.driverscheduleservice.jpa.service.TripLogService;
+import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.Builder;
@@ -23,13 +24,14 @@ public class TripLogCreateCmd extends
 
         tripLog.setTripId(request.tripId);
         tripLog.setTripStateId(request.tripStateId);
+        tripLog.setCoordinate(request.coordinate);
 
         tripLog = tripLogService.save(tripLog);
         return tripLog.getId();
     }
 
     @Builder
-    public record Request(@NotNull UUID tripId, @NotNull UUID tripStateId) {
+    public record Request(@NotNull UUID tripId, @NotNull UUID tripStateId, Coordinate coordinate) {
 
     }
 }

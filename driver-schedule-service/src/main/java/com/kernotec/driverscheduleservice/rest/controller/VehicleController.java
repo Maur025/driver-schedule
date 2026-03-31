@@ -25,6 +25,8 @@ import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleCreate
 import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehiclePatchRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleScheduleConflictRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.vehicle.VehicleUpdateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.response.LookupResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.vehicle.VehicleLookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.vehicle.VehicleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.vehicle.VehicleScheduleConflictResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketSingleResponse;
@@ -86,12 +88,12 @@ public class VehicleController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @CanReadVehicle
-    public PageResponse<VehicleResponse> findAll(@RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "20") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") boolean descending)
+    public PageResponse<VehicleResponse> findAll(
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "20") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") boolean descending)
     {
-
         Collection<String> scopes = securityAuthProvider.getScopes();
 
         for (String scope : scopes) {
@@ -130,7 +132,7 @@ public class VehicleController {
     @GetMapping("{vehicleId}")
     @ResponseStatus(HttpStatus.OK)
     @CanReadVehicle
-    public SingleResponse<VehicleResponse> findById(@PathVariable() UUID vehicleId)
+    public SingleResponse<VehicleResponse> findById(@PathVariable("vehicleId") UUID vehicleId)
     {
         Vehicle vehicle = vehicleService.findByIdThrow(vehicleId);
 
@@ -161,7 +163,7 @@ public class VehicleController {
     @PutMapping("{vehicleId}")
     @ResponseStatus(HttpStatus.OK)
     @CanUpdateVehicle
-    public SingleResponse<VehicleResponse> update(@PathVariable UUID vehicleId,
+    public SingleResponse<VehicleResponse> update(@PathVariable("vehicleId") UUID vehicleId,
         @RequestBody VehicleUpdateRequest request)
     {
         processVehicleUpdateRequestCmd.withRequest(ProcessVehicleUpdateRequestCmd.Request.builder()
@@ -205,7 +207,8 @@ public class VehicleController {
     @ResponseStatus(HttpStatus.OK)
     @CanReadVehicle
     public SingleResponse<VehicleScheduleConflictResponse> findVehicleScheduleConflicts(
-        @PathVariable UUID vehicleId, @RequestBody VehicleScheduleConflictRequest request)
+        @PathVariable("vehicleId") UUID vehicleId,
+        @RequestBody VehicleScheduleConflictRequest request)
     {
         ZonedDateTime from = zonedDateTimeUtil.getNewOfDateAndTime(
             request.getRequestedDate(), request.getConflictValidationFrom(), request.getZoneId());
@@ -257,7 +260,7 @@ public class VehicleController {
     @PatchMapping("{vehicleId}")
     @ResponseStatus(HttpStatus.OK)
     @CanUpdateVehicle
-    public SingleResponse<VehicleResponse> patchUpdate(@PathVariable UUID vehicleId,
+    public SingleResponse<VehicleResponse> patchUpdate(@PathVariable("vehicleId") UUID vehicleId,
         @RequestBody VehiclePatchRequest request)
     {
         processVehiclePatchRequestCmd.withRequest(ProcessVehiclePatchRequestCmd.Request.builder()
@@ -269,6 +272,22 @@ public class VehicleController {
         return SingleResponse.<VehicleResponse>builder()
             .code(HttpStatus.OK.value())
             .message("Vehicle patched successfully")
+            .build();
+    }
+
+    @Operation(summary = "find all to lookup")
+    @GetMapping("lookup")
+    @ResponseStatus(HttpStatus.OK)
+    public LookupResponse<List<VehicleLookupResponse>> findAllToLookup(
+        @RequestParam(name = "keyword", required = false) String keyword)
+    {
+        Pageable pageable = PageableUtil.of(0, 25, "vehicleNumber", false);
+        Page<VehicleLookupResponse> vehicleLookupResponsePage = vehicleService.findAllToLookup(
+            keyword, pageable);
+
+        return LookupResponse.<List<VehicleLookupResponse>>builder()
+            .code(HttpStatus.OK.value())
+            .data(vehicleLookupResponsePage.getContent())
             .build();
     }
 }

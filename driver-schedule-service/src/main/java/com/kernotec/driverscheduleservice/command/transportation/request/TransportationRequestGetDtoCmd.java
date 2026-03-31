@@ -2,7 +2,7 @@ package com.kernotec.driverscheduleservice.command.transportation.request;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.jpa.dto.TransportationRequestDto;
-import com.kernotec.driverscheduleservice.jpa.dto.mapper.TransportationRequestDtoMapper;
+import com.kernotec.driverscheduleservice.jpa.dto.mapper.transportation.request.TransportationRequestDtoMapper;
 import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
 import com.kernotec.driverscheduleservice.jpa.service.TransportationRequestService;
 import jakarta.validation.constraints.NotNull;

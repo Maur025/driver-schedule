@@ -1,7 +1,9 @@
 package com.kernotec.driverscheduleservice.jpa.entity;
 
 import com.kernotec.driverscheduleservice.audit.user.BaseAuditEntityUser;
+import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -18,6 +20,9 @@ import lombok.Setter;
 @Entity
 @Table(name = "trip_logs")
 public class TripLog extends BaseAuditEntityUser {
+
+    @Embedded
+    private Coordinate coordinate;
 
     @Column(name = "trip_id", nullable = false)
     private UUID tripId;

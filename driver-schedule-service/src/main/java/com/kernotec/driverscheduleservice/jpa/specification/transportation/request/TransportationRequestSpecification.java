@@ -244,7 +244,12 @@ public record TransportationRequestSpecification(
             .map(keyword -> {
                 String pattern = "%" + keyword.toLowerCase() + "%";
 
-                return cb.or(cb.like(cb.lower(root.get("code")), pattern));
+                return cb.or(
+                    cb.like(cb.lower(root.get("code")), pattern), cb.like(
+                        root.get("correlative")
+                            .as(String.class), pattern
+                    )
+                );
             });
     }
 }

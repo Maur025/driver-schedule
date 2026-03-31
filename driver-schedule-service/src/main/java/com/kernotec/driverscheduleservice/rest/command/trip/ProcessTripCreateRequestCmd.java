@@ -9,10 +9,13 @@ import com.kernotec.driverscheduleservice.exception.ScheduleTransportationExcept
 import com.kernotec.driverscheduleservice.jpa.dto.TripAssignmentDto;
 import com.kernotec.driverscheduleservice.jpa.enums.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.TripStateEnum;
+import com.kernotec.driverscheduleservice.jpa.service.LocationService;
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationStateService;
 import com.kernotec.driverscheduleservice.jpa.service.TripStateService;
+import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
 import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripCreateRequest;
 import jakarta.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,7 @@ public class ProcessTripCreateRequestCmd extends
 
     private final TripStateService tripStateService;
     private final ScheduleTransportationStateService scheduleTransportationStateService;
+    private final LocationService locationService;
 
     private final TripAssignmentGetDtoCmd tripAssignmentGetDtoCmd;
     private final ScheduleTransportationUpdateCmd scheduleTransportationUpdateCmd;
@@ -67,12 +71,19 @@ public class ProcessTripCreateRequestCmd extends
         UUID tripId = tripCreateCmd.withRequest(TripCreateCmd.Request.builder()
                 .tripStateId(tripStateOnRouteId)
                 .tripAssignmentId(tripCreateRequest.getTripAssignmentId())
+                .durationTotalMinutes(0d)
+                .onRouteTimeMinutes(0d)
+                .waitTimeMinutes(0d)
                 .build())
             .execute();
+
+        Coordinate coordinate = locationService.getCoordinateOfList(
+            Arrays.asList(tripCreateRequest.getLongitude(), tripCreateRequest.getLatitude()));
 
         tripLogCreateCmd.withRequest(TripLogCreateCmd.Request.builder()
                 .tripId(tripId)
                 .tripStateId(tripStateOnRouteId)
+                .coordinate(coordinate)
                 .build())
             .execute();
 

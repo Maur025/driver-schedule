@@ -2,6 +2,7 @@ package com.kernotec.driverscheduleservice.jpa.service;
 
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
+import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.driverscheduleservice.common.security.SecurityAuthProvider;
 import com.kernotec.driverscheduleservice.jpa.entity.Trip;
 import com.kernotec.driverscheduleservice.jpa.enums.PersonTypeEnum;
@@ -9,6 +10,7 @@ import com.kernotec.driverscheduleservice.jpa.repository.TripRepository;
 import com.kernotec.driverscheduleservice.jpa.specification.trip.TripSpecification;
 import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripFilterRequest;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -63,5 +65,14 @@ public class TripService extends BaseServiceImpl<Trip, UUID> {
                 .withTripStates(filterRequest.getTripStates())
                 .withDeleted(filterRequest.getDeleted()), pageable
         );
+    }
+
+    public Page<Trip> findByTripAssignmentIdInAndDeleted(Set<UUID> tripAssignmentIds,
+        Boolean deleted)
+    {
+        Pageable pageable = PageableUtil.of(
+            0, Math.max(tripAssignmentIds.size(), 1), "createdAt", false);
+
+        return repository.findByTripAssignmentIdInAndDeleted(tripAssignmentIds, deleted, pageable);
     }
 }

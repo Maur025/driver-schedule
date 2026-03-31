@@ -10,11 +10,13 @@ import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @AllArgsConstructor
 @Service
 public class LocationService extends BaseServiceImpl<Location, UUID> {
@@ -40,10 +42,18 @@ public class LocationService extends BaseServiceImpl<Location, UUID> {
             throw new LocationException("invalid.coordinate", "", HttpStatus.BAD_REQUEST.value());
         }
 
+        Double lng = coords.get(0);
+        Double lat = coords.get(1);
+
+        if (lng == null || lat == null) {
+            log.warn("Invalid data in coordinate, return null object");
+            return null;
+        }
+
         var coordinate = new Coordinate();
 
-        coordinate.setLat(coords.get(1));
-        coordinate.setLng(coords.get(0));
+        coordinate.setLat(lat);
+        coordinate.setLng(lng);
         return coordinate;
     }
 
