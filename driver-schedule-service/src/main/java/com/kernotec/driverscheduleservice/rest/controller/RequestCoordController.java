@@ -36,10 +36,10 @@ public class RequestCoordController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public PageResponse<RequestCoordResponse> findAll(
-        @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") Boolean descending)
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "10") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") Boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<RequestCoord> reasonTypePage = requestCoordService.findAll(pageable);
@@ -57,7 +57,9 @@ public class RequestCoordController {
     @Operation(summary = "find request coord by id")
     @GetMapping("{requestCoordId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<RequestCoordResponse> findById(@PathVariable UUID requestCoordId) {
+    public SingleResponse<RequestCoordResponse> findById(
+        @PathVariable("requestCoordId") UUID requestCoordId)
+    {
         RequestCoord requestCoord = requestCoordService.findByIdThrow(requestCoordId);
 
         return SingleResponse.<RequestCoordResponse>builder()

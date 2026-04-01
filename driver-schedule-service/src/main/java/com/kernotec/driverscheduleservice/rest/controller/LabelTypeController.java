@@ -7,9 +7,9 @@ import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.LabelType;
 import com.kernotec.driverscheduleservice.jpa.service.LabelTypeService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.LabelTypeSpec;
+import com.kernotec.driverscheduleservice.rest.dto.response.LookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.label.type.LabelTypeLookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.label.type.LabelTypeResponse;
-import com.kernotec.driverscheduleservice.rest.dto.response.LookupResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.response.label.type.LabelTypeResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,10 +38,11 @@ public class LabelTypeController {
     @Operation(summary = "find label types ")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<LabelTypeResponse> findAll(@RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") Boolean descending)
+    public PageResponse<LabelTypeResponse> findAll(
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "10") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") Boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<LabelType> labelTypePage = labelTypeService.findAll(pageable);
@@ -59,7 +60,8 @@ public class LabelTypeController {
     @Operation(summary = "find label type by id")
     @GetMapping("{labelTypeId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<LabelTypeResponse> findById(@PathVariable UUID labelTypeId) {
+    public SingleResponse<LabelTypeResponse> findById(@PathVariable("labelTypeId") UUID labelTypeId)
+    {
         LabelType labelType = labelTypeService.findByIdThrow(labelTypeId);
 
         return SingleResponse.<LabelTypeResponse>builder()

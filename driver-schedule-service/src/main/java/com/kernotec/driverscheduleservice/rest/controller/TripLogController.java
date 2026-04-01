@@ -38,10 +38,11 @@ public class TripLogController {
     @Operation(summary = "find all trip logs")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<TripLogResponse> findAll(@RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") Boolean descending)
+    public PageResponse<TripLogResponse> findAll(
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "10") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") Boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<TripLog> tripLogPage = tripLogService.findAll(pageable);
@@ -59,7 +60,7 @@ public class TripLogController {
     @Operation(summary = "find trip log by id")
     @GetMapping("{tripLogId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<TripLogResponse> findById(@PathVariable UUID tripLogId) {
+    public SingleResponse<TripLogResponse> findById(@PathVariable("tripLogId") UUID tripLogId) {
         TripLog tripLog = tripLogService.findByIdThrow(tripLogId);
 
         return SingleResponse.<TripLogResponse>builder()
@@ -71,10 +72,11 @@ public class TripLogController {
     @Operation(summary = "find all by search")
     @PostMapping("search")
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<TripLogResponse> search(@RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "20") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "false") Boolean descending,
+    public PageResponse<TripLogResponse> search(
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "20") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "false") Boolean descending,
         @RequestBody TripLogFilterRequest request)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);

@@ -77,10 +77,11 @@ public class PersonController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @CanReadPerson
-    public PageResponse<PersonResponse> findAll(@RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "20") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") boolean descending)
+    public PageResponse<PersonResponse> findAll(
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "20") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<Person> personPage = personService.findAll(pageable);
@@ -99,8 +100,9 @@ public class PersonController {
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     @CanReadPerson
+    @Deprecated
     public PageResponse<PersonResponse> findAllWithoutPagination(
-        @RequestParam(required = false) PersonTypeEnum personType)
+        @RequestParam(name = "personType", required = false) PersonTypeEnum personType)
     {
         Pageable pageable = PageableUtil.of(0, 20, "name", false);
 
@@ -117,8 +119,8 @@ public class PersonController {
     @ResponseStatus(HttpStatus.OK)
     @CanReadPerson
     public LookupResponse<List<PersonLookupResponse>> findAllToLookup(
-        @RequestParam(required = false) String keyword,
-        @RequestParam(required = false) PersonTypeEnum personType)
+        @RequestParam(name = "keyword", required = false) String keyword,
+        @RequestParam(name = "personType", required = false) PersonTypeEnum personType)
     {
         Pageable pageable = PageableUtil.of(0, 500, "lastName", false);
 
@@ -135,7 +137,7 @@ public class PersonController {
     @GetMapping("{personId}")
     @ResponseStatus(HttpStatus.OK)
     @CanReadPerson
-    public SingleResponse<PersonResponse> findById(@PathVariable() UUID personId)
+    public SingleResponse<PersonResponse> findById(@PathVariable("personId") UUID personId)
     {
         Person person = personService.findByIdThrow(personId);
 
@@ -167,7 +169,7 @@ public class PersonController {
     @ResponseStatus(HttpStatus.OK)
     @CanReadPerson
     public SingleResponse<PersonScheduleConflictResponse> findPersonScheduleConflicts(
-        @PathVariable UUID driverId, @RequestBody PersonScheduleConflictRequest request)
+        @PathVariable("driverId") UUID driverId, @RequestBody PersonScheduleConflictRequest request)
     {
         ZonedDateTime from = zonedDateTimeUtil.getNewOfDateAndTime(
             request.getRequestedDate(), request.getConflictValidationFrom(), request.getZoneId());
@@ -219,7 +221,7 @@ public class PersonController {
     @PutMapping("{personId}")
     @ResponseStatus(HttpStatus.OK)
     @CanUpdatePerson
-    public SingleResponse<PersonResponse> updatePerson(@PathVariable UUID personId,
+    public SingleResponse<PersonResponse> updatePerson(@PathVariable("personId") UUID personId,
         @RequestBody PersonUpdateRequest request)
     {
         processPersonUpdateRequestCmd.withRequest(ProcessPersonUpdateRequestCmd.Request.builder()

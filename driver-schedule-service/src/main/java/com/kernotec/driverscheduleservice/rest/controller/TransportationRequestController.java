@@ -69,10 +69,10 @@ public class TransportationRequestController {
     @ResponseStatus(HttpStatus.OK)
     @CanReadRequest
     public PageResponse<TransportationRequestResponse> findAll(
-        @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") Boolean descending)
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "10") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") Boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
 
@@ -95,14 +95,13 @@ public class TransportationRequestController {
     @ResponseStatus(HttpStatus.OK)
     @CanReadRequest
     public PageResponse<TransportationRequestResponse> findAllFilter(
-        @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") Boolean descending,
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "10") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") Boolean descending,
         @RequestBody TransportationRequestFilterRequest filterRequest)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
-
         Page<TransportationRequest> transportationRequestPage = transportationRequestService.findAllWithFilters(
             filterRequest, pageable);
 
@@ -122,7 +121,7 @@ public class TransportationRequestController {
     @ResponseStatus(HttpStatus.OK)
     @CanReadRequest
     public SingleResponse<TransportationRequestResponse> findById(
-        @PathVariable UUID transportationRequestId)
+        @PathVariable("transportationRequestId") UUID transportationRequestId)
     {
         TransportationRequest transportationRequest = transportationRequestService.findByIdThrow(
             transportationRequestId);
@@ -165,7 +164,8 @@ public class TransportationRequestController {
     @ResponseStatus(HttpStatus.OK)
     @CanRejectRequest
     public SingleHateoasResponse<TransportationRequestResponse> rejectedRequest(
-        @PathVariable UUID transportationRequestId, @RequestBody RejectReasonRequest request)
+        @PathVariable("transportationRequestId") UUID transportationRequestId,
+        @RequestBody RejectReasonRequest request)
     {
         processTransportationRequestRejectedCmd.withRequest(
                 ProcessTransportationRequestRejectedCmd.Request.builder()
@@ -189,7 +189,8 @@ public class TransportationRequestController {
     @ResponseStatus(HttpStatus.OK)
     @CanCancelRequest
     public SingleHateoasResponse<TransportationRequestResponse> cancelledRequest(
-        @PathVariable UUID transportationRequestId, @RequestBody CancelRequestReasonRequest request)
+        @PathVariable("transportationRequestId") UUID transportationRequestId,
+        @RequestBody CancelRequestReasonRequest request)
     {
         processTransportationRequestCancelledCmd.withRequest(
                 ProcessTransportationRequestCancelledCmd.Request.builder()
@@ -213,9 +214,10 @@ public class TransportationRequestController {
     @ResponseStatus(HttpStatus.OK)
     @CanReadRequest
     public ResponseEntity<byte[]> transportationRequestExportVoucher(
-        @PathVariable UUID transportationRequestId,
-        @RequestParam(defaultValue = "America/La_Paz") String zoneId,
-        @RequestParam(defaultValue = "inline") ReportDispositionEnum disposition)
+        @PathVariable("transportationRequestId") UUID transportationRequestId,
+        @RequestParam(name = "zoneId", defaultValue = "America/La_Paz") String zoneId,
+        @RequestParam(name = "disposition",
+                      defaultValue = "inline") ReportDispositionEnum disposition)
     {
         return pdfExportCmd.withRequest(PdfExportCmd.Request.builder()
                 .disposition(disposition)

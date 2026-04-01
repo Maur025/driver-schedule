@@ -1,25 +1,34 @@
 package com.kernotec.driverscheduleservice.rest.command.trip;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
+import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.driverscheduleservice.command.schedule.transportation.ScheduleTransportationUpdateCmd;
 import com.kernotec.driverscheduleservice.command.trip.TripCreateCmd;
 import com.kernotec.driverscheduleservice.command.trip.assignment.TripAssignmentGetDtoCmd;
 import com.kernotec.driverscheduleservice.command.trip.log.TripLogCreateCmd;
 import com.kernotec.driverscheduleservice.exception.ScheduleTransportationException;
+import com.kernotec.driverscheduleservice.exception.TripException;
 import com.kernotec.driverscheduleservice.jpa.dto.TripAssignmentDto;
+import com.kernotec.driverscheduleservice.jpa.entity.Trip;
 import com.kernotec.driverscheduleservice.jpa.enums.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.TripStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.LocationService;
+import com.kernotec.driverscheduleservice.jpa.service.PersonService;
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationStateService;
+import com.kernotec.driverscheduleservice.jpa.service.TripService;
 import com.kernotec.driverscheduleservice.jpa.service.TripStateService;
 import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
 import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripCreateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripFilterRequest;
 import jakarta.validation.constraints.NotNull;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +42,8 @@ public class ProcessTripCreateRequestCmd extends
     private final TripStateService tripStateService;
     private final ScheduleTransportationStateService scheduleTransportationStateService;
     private final LocationService locationService;
+    private final TripService tripService;
+    private final PersonService personService;
 
     private final TripAssignmentGetDtoCmd tripAssignmentGetDtoCmd;
     private final ScheduleTransportationUpdateCmd scheduleTransportationUpdateCmd;
@@ -40,14 +51,39 @@ public class ProcessTripCreateRequestCmd extends
     private final TripLogCreateCmd tripLogCreateCmd;
 
     @Override
+    protected void validate(Request request) {
+        Pageable pageable = PageableUtil.of(0, 10, "createdAt", false);
+        UUID driverId = personService.findIdByUserIdAuthenticateThrow();
+
+        TripFilterRequest filterRequest = new TripFilterRequest();
+        filterRequest.setDriverId(driverId);
+        filterRequest.setDeleted(false);
+        filterRequest.setTripStates(Set.of(TripStateEnum.ON_ROUTE, TripStateEnum.WAITING));
+
+        Page<Trip> tripPage = tripService.findAllBySearch(filterRequest, pageable);
+
+        if (tripPage.getTotalElements() > 0) {
+            throw new TripException(
+                "driver.already.trip.in.progress", "", HttpStatus.CONFLICT.value());
+        }
+    }
+
+    @Override
     protected UUID run(Request request) {
         TripCreateRequest tripCreateRequest = request.tripCreateRequest;
+        UUID driverId = personService.findIdByUserIdAuthenticateThrow();
 
         TripAssignmentDto tripAssignmentDto = tripAssignmentGetDtoCmd.withRequest(
                 TripAssignmentGetDtoCmd.Request.builder()
                     .tripAssignmentId(tripCreateRequest.getTripAssignmentId())
                     .build())
             .execute();
+
+        if (!tripAssignmentDto.getDriverId()
+            .equals(driverId))
+        {
+            throw new TripException("driver.assignment.conflict", "", HttpStatus.CONFLICT.value());
+        }
 
         ScheduleTransportationStateEnum scheduleTransportationStateCode = ScheduleTransportationStateEnum.fromValue(
             tripAssignmentDto.getScheduleTransportation()

@@ -39,10 +39,10 @@ public class TripAssignmentController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public PageResponse<TripAssignmentResponse> findAll(
-        @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") Boolean descending)
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "10") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") Boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<TripAssignment> tripAssignmentPage = tripAssignmentService.findAll(pageable);
@@ -60,7 +60,9 @@ public class TripAssignmentController {
     @Operation(summary = "find trip assignment by id")
     @GetMapping("{tripAssignmentId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<TripAssignmentResponse> findById(@PathVariable UUID tripAssignmentId) {
+    public SingleResponse<TripAssignmentResponse> findById(
+        @PathVariable("tripAssignmentId") UUID tripAssignmentId)
+    {
         TripAssignment tripAssignment = tripAssignmentService.findByIdThrow(tripAssignmentId);
 
         return SingleResponse.<TripAssignmentResponse>builder()
@@ -73,10 +75,10 @@ public class TripAssignmentController {
     @PostMapping("search")
     @ResponseStatus(HttpStatus.OK)
     public PageResponse<TripAssignmentResponse> search(
-        @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "20") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "false") Boolean descending,
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "20") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "false") Boolean descending,
         @RequestBody TripAssignmentFilterRequest request)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);

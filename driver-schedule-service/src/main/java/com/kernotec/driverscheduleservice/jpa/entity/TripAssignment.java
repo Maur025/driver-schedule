@@ -6,7 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,4 +44,7 @@ public class TripAssignment extends BaseAuditEntityUser {
     @JoinColumn(name = "schedule_transportation_id", referencedColumnName = "id",
                 insertable = false, updatable = false)
     private ScheduleTransportation scheduleTransportation;
+
+    @OneToMany(mappedBy = "tripAssignment", fetch = FetchType.LAZY)
+    private Set<Trip> trips;
 }

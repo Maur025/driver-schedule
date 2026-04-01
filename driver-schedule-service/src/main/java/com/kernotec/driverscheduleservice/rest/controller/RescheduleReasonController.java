@@ -37,10 +37,10 @@ public class RescheduleReasonController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public PageResponse<RescheduleReasonResponse> findAll(
-        @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "20") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") boolean descending)
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "20") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<RescheduleReason> rescheduleReasonPage = rescheduleReasonService.findAll(pageable);
@@ -58,6 +58,7 @@ public class RescheduleReasonController {
     @Operation(summary = "find reschedule reasons without pagination")
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
+    @Deprecated
     public PageResponse<RescheduleReasonResponse> findAllWithoutPagination() {
         List<RescheduleReason> rescheduleReasonList = rescheduleReasonService.findAll();
 
@@ -71,7 +72,7 @@ public class RescheduleReasonController {
     @GetMapping("{rescheduleReasonId}")
     @ResponseStatus(HttpStatus.OK)
     public SingleResponse<RescheduleReasonResponse> findById(
-        @PathVariable() UUID rescheduleReasonId)
+        @PathVariable("rescheduleReasonId") UUID rescheduleReasonId)
     {
         RescheduleReason rescheduleReason = rescheduleReasonService.findByIdThrow(
             rescheduleReasonId);

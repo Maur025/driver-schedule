@@ -36,10 +36,11 @@ public class PersonTypeController {
     @Operation(summary = "find all person types")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<PersonTypeResponse> findAll(@RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "20") Integer size,
-        @RequestParam(defaultValue = "id") String sortBy,
-        @RequestParam(defaultValue = "true") boolean descending)
+    public PageResponse<PersonTypeResponse> findAll(
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "20") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<PersonType> personTypePage = personTypeService.findAll(pageable);
@@ -57,6 +58,7 @@ public class PersonTypeController {
     @Operation(summary = "find person types without pagination")
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
+    @Deprecated
     public PageResponse<PersonTypeResponse> findAllWithoutPagination() {
         List<PersonType> personTypeList = personTypeService.findAll();
 
@@ -69,7 +71,8 @@ public class PersonTypeController {
     @Operation(summary = "find by id")
     @GetMapping("{personTypeId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<PersonTypeResponse> findById(@PathVariable() UUID personTypeId)
+    public SingleResponse<PersonTypeResponse> findById(
+        @PathVariable("personTypeId") UUID personTypeId)
     {
         PersonType personType = personTypeService.findByIdThrow(personTypeId);
 

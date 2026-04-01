@@ -36,10 +36,10 @@ public class RejectReasonController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public PageResponse<RejectReasonResponse> findAll(
-        @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") Boolean descending)
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "10") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") Boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<RejectReason> rejectReasonPage = rejectReasonService.findAll(pageable);
@@ -57,7 +57,9 @@ public class RejectReasonController {
     @Operation(summary = "find reject reason by id")
     @GetMapping("{rejectReasonId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<RejectReasonResponse> findById(@PathVariable UUID rejectReasonId) {
+    public SingleResponse<RejectReasonResponse> findById(
+        @PathVariable("rejectReasonId") UUID rejectReasonId)
+    {
         RejectReason rejectReason = rejectReasonService.findByIdThrow(rejectReasonId);
 
         return SingleResponse.<RejectReasonResponse>builder()

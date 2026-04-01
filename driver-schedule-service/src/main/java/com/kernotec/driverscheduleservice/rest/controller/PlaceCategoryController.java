@@ -39,10 +39,10 @@ public class PlaceCategoryController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public PageResponse<PlaceCategoryResponse> findAll(
-        @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") Boolean descending)
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "10") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") Boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<PlaceCategory> placeCategoryPage = placeCategoryService.findAll(pageable);
@@ -60,7 +60,9 @@ public class PlaceCategoryController {
     @Operation(summary = "find place category by id")
     @GetMapping("{placeCategoryId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<PlaceCategoryResponse> findById(@PathVariable UUID placeCategoryId) {
+    public SingleResponse<PlaceCategoryResponse> findById(
+        @PathVariable("placeCategoryId") UUID placeCategoryId)
+    {
         PlaceCategory placeCategory = placeCategoryService.findByIdThrow(placeCategoryId);
 
         return SingleResponse.<PlaceCategoryResponse>builder()
@@ -73,7 +75,7 @@ public class PlaceCategoryController {
     @GetMapping("lookup")
     @ResponseStatus(HttpStatus.OK)
     public LookupResponse<List<PlaceCategoryLookupResponse>> findAllToLookup(
-        @RequestParam(required = false) String keyword)
+        @RequestParam(name = "keyword", required = false) String keyword)
     {
         Pageable pageable = PageableUtil.of(0, 500, "name", false);
         Page<PlaceCategoryLookupResponse> placeCategoryResponsePage = placeCategoryService.findAllToLookup(

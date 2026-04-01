@@ -37,10 +37,10 @@ public class ScheduleTransportationLogController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public PageResponse<ScheduleTransportationLogResponse> findAll(
-        @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") Boolean descending)
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "10") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") Boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<ScheduleTransportationLog> scheduleTransportationLogPage = scheduleTransportationLogService.findAll(
@@ -61,7 +61,7 @@ public class ScheduleTransportationLogController {
     @GetMapping("{transportationRequestLogId}")
     @ResponseStatus(HttpStatus.OK)
     public SingleResponse<ScheduleTransportationLogResponse> findById(
-        @PathVariable UUID transportationRequestLogId)
+        @PathVariable("transportationRequestLogId") UUID transportationRequestLogId)
     {
         ScheduleTransportationLog scheduleTransportationLog = scheduleTransportationLogService.findByIdThrow(
             transportationRequestLogId);

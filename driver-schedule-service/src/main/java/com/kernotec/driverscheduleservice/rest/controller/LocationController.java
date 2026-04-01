@@ -48,11 +48,12 @@ public class LocationController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @CanReadLocation
-    public PageResponse<LocationResponse> findAll(@RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") Boolean descending,
-        @RequestParam(required = false) String keyword)
+    public PageResponse<LocationResponse> findAll(
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "10") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") Boolean descending,
+        @RequestParam(name = "keyword", required = false) String keyword)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
 
@@ -72,6 +73,7 @@ public class LocationController {
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     @CanReadLocation
+    @Deprecated
     public PageResponse<LocationResponse> findAllWithoutPagination()
     {
         Pageable pageable = PageableUtil.of(0, 20, "name", false);
@@ -88,7 +90,7 @@ public class LocationController {
     @GetMapping("{locationId}")
     @ResponseStatus(HttpStatus.OK)
     @CanReadLocation
-    public SingleResponse<LocationResponse> findById(@PathVariable UUID locationId) {
+    public SingleResponse<LocationResponse> findById(@PathVariable("locationId") UUID locationId) {
         Location location = locationService.findByIdThrow(locationId);
 
         return SingleResponse.<LocationResponse>builder()
@@ -118,7 +120,7 @@ public class LocationController {
     @PutMapping("{locationId}")
     @ResponseStatus(HttpStatus.OK)
     @CanUpdateLocation
-    public SingleResponse<LocationResponse> update(@PathVariable UUID locationId,
+    public SingleResponse<LocationResponse> update(@PathVariable("locationId") UUID locationId,
         @RequestBody LocationUpdateRequest request)
     {
         processLocationUpdateRequestCmd.withRequest(
