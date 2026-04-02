@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.response.data.AuditEntityResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.person.PersonResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.ScheduleTransportationResponse;
+import com.kernotec.driverscheduleservice.rest.dto.response.trip.TripResponse;
 import com.kernotec.driverscheduleservice.rest.dto.response.vehicle.VehicleResponse;
+import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,4 +27,6 @@ public class TripAssignmentResponse extends AuditEntityResponse {
 
     private UUID scheduleTransportationId;
     private ScheduleTransportationResponse scheduleTransportation;
+
+    private Set<TripResponse> trips;
 }

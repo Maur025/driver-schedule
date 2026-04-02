@@ -39,10 +39,11 @@ public class ReasonController {
     @Operation(summary = "find all reasons")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<ReasonResponse> findAll(@RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "20") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") boolean descending)
+    public PageResponse<ReasonResponse> findAll(
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "20") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<Reason> reasonPage = reasonService.findAll(pageable);
@@ -60,7 +61,7 @@ public class ReasonController {
     @Operation(summary = "find by id")
     @GetMapping("{reasonId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<ReasonResponse> findById(@PathVariable() UUID reasonId)
+    public SingleResponse<ReasonResponse> findById(@PathVariable("reasonId") UUID reasonId)
     {
         Reason reason = reasonService.findByIdThrow(reasonId);
 
@@ -74,9 +75,9 @@ public class ReasonController {
     @GetMapping("lookup")
     @ResponseStatus(HttpStatus.OK)
     public LookupResponse<List<ReasonLookupResponse>> findAllToLookup(
-        @RequestParam(required = false) String keyword,
-        @RequestParam(required = false) UUID reasonTypeId,
-        @RequestParam(required = false) ReasonTypeEnum reasonType)
+        @RequestParam(name = "keyword", required = false) String keyword,
+        @RequestParam(name = "reasonTypeId", required = false) UUID reasonTypeId,
+        @RequestParam(name = "reasonType", required = false) ReasonTypeEnum reasonType)
 
     {
         Pageable pageable = PageableUtil.of(0, 500, "value", false);

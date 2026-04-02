@@ -43,10 +43,11 @@ public class ContactController {
     @Operation(summary = "find all contacts")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<ContactResponse> findAll(@RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") Boolean descending)
+    public PageResponse<ContactResponse> findAll(
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "10") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") Boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<Contact> contactPage = contactService.findAll(pageable);
@@ -64,7 +65,7 @@ public class ContactController {
     @Operation(summary = "find contact by id")
     @GetMapping("{contactId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<ContactResponse> findById(@PathVariable UUID contactId) {
+    public SingleResponse<ContactResponse> findById(@PathVariable("contactId") UUID contactId) {
         Contact contact = contactService.findByIdThrow(contactId);
 
         return SingleResponse.<ContactResponse>builder()
@@ -76,7 +77,7 @@ public class ContactController {
     @Operation(summary = "update contact")
     @PatchMapping("{contactId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<ContactResponse> update(@PathVariable UUID contactId,
+    public SingleResponse<ContactResponse> update(@PathVariable("contactId") UUID contactId,
         @RequestBody ContactUpdateRequest request)
     {
         contactUpdateCmd.withRequest(ContactUpdateCmd.Request.builder()
@@ -95,7 +96,7 @@ public class ContactController {
     @Operation(summary = "delete contact")
     @DeleteMapping("{contactId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<ContactResponse> delete(@PathVariable UUID contactId) {
+    public SingleResponse<ContactResponse> delete(@PathVariable("contactId") UUID contactId) {
         processContactDeleteRequestCmd.withRequest(ProcessContactDeleteRequestCmd.Request.builder()
                 .contactId(contactId)
                 .build())

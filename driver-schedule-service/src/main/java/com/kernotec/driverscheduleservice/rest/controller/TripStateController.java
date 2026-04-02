@@ -38,10 +38,11 @@ public class TripStateController {
     @Operation(summary = "find all trip states")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<TripStateResponse> findAll(@RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") Boolean descending)
+    public PageResponse<TripStateResponse> findAll(
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "10") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") Boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<TripState> tripStatePage = tripStateService.findAll(pageable);
@@ -59,7 +60,8 @@ public class TripStateController {
     @Operation(summary = "find trip state by id")
     @GetMapping("{tripStateId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<TripStateResponse> findById(@PathVariable UUID tripStateId) {
+    public SingleResponse<TripStateResponse> findById(@PathVariable("tripStateId") UUID tripStateId)
+    {
         TripState tripState = tripStateService.findByIdThrow(tripStateId);
 
         return SingleResponse.<TripStateResponse>builder()
@@ -72,7 +74,7 @@ public class TripStateController {
     @GetMapping("lookup")
     @ResponseStatus(HttpStatus.OK)
     public LookupResponse<List<TripStateLookupResponse>> findAllToLookup(
-        @RequestParam(required = false) String keyword)
+        @RequestParam(name = "keyword", required = false) String keyword)
     {
         Pageable pageable = PageableUtil.of(0, 500, "name", false);
         Page<TripStateLookupResponse> placeCategoryResponsePage = tripStateService.findAllToLookup(

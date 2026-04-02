@@ -38,10 +38,10 @@ public class ScheduleTransportationStateController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public PageResponse<ScheduleTransportationStateResponse> findAll(
-        @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "20") Integer size,
-        @RequestParam(defaultValue = "id") String sortBy,
-        @RequestParam(defaultValue = "true") boolean descending)
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "20") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<ScheduleTransportationState> scheduleTransportationStatePage = scheduleTransportationStateService.findAll(
@@ -61,6 +61,7 @@ public class ScheduleTransportationStateController {
     @Operation(summary = "find schedule transportation states without pagination")
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
+    @Deprecated
     public PageResponse<ScheduleTransportationStateResponse> findAllWithoutPagination() {
         List<ScheduleTransportationState> scheduleTransportationStateList = scheduleTransportationStateService.findAll();
 
@@ -75,7 +76,7 @@ public class ScheduleTransportationStateController {
     @GetMapping("{scheduleTransportationStateId}")
     @ResponseStatus(HttpStatus.OK)
     public SingleResponse<ScheduleTransportationStateResponse> findById(
-        @PathVariable() UUID scheduleTransportationStateId)
+        @PathVariable("scheduleTransportationStateId") UUID scheduleTransportationStateId)
     {
         ScheduleTransportationState scheduleTransportationState = scheduleTransportationStateService.findByIdThrow(
             scheduleTransportationStateId);

@@ -4,7 +4,6 @@ import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
-import com.kernotec.driverscheduleservice.command.cancel.reason.CancelReasonCreateCmd;
 import com.kernotec.driverscheduleservice.jpa.entity.CancelReason;
 import com.kernotec.driverscheduleservice.jpa.service.CancelReasonService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.CancelReasonSpec;
@@ -37,17 +36,16 @@ public class CancelReasonController {
 
     private final CancelReasonService cancelReasonService;
     private final CancelReasonResponseMapper cancelReasonResponseMapper;
-    private final CancelReasonCreateCmd cancelReasonCreateCmd;
     private final ProcessCancelReasonCreateRequestCmd processCancelReasonCreateRequestCmd;
 
     @Operation(summary = "find all cancel reasons")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public PageResponse<CancelReasonResponse> findAll(
-        @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "20") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") boolean descending)
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "20") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<CancelReason> cancelReasonPage = cancelReasonService.findAll(pageable);
@@ -65,6 +63,7 @@ public class CancelReasonController {
     @Operation(summary = "find cancel reasons without pagination")
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
+    @Deprecated
     public PageResponse<CancelReasonResponse> findAllWithoutPagination() {
         List<CancelReason> cancelReasonList = cancelReasonService.findAll();
 
@@ -77,7 +76,8 @@ public class CancelReasonController {
     @Operation(summary = "find by id")
     @GetMapping("{cancelReasonId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<CancelReasonResponse> findById(@PathVariable() UUID cancelReasonId)
+    public SingleResponse<CancelReasonResponse> findById(
+        @PathVariable("cancelReasonId") UUID cancelReasonId)
     {
         CancelReason cancelReason = cancelReasonService.findByIdThrow(cancelReasonId);
 

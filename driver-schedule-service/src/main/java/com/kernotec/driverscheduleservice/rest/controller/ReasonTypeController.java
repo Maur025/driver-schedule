@@ -38,10 +38,11 @@ public class ReasonTypeController {
     @Operation(summary = "find all reason types")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<ReasonTypeResponse> findAll(@RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") Boolean descending)
+    public PageResponse<ReasonTypeResponse> findAll(
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "10") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") Boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<ReasonType> reasonTypePage = reasonTypeService.findAll(pageable);
@@ -59,7 +60,9 @@ public class ReasonTypeController {
     @Operation(summary = "find reason type by id")
     @GetMapping("{reasonTypeId}")
     @ResponseStatus(HttpStatus.OK)
-    public SingleResponse<ReasonTypeResponse> findById(@PathVariable UUID reasonTypeId) {
+    public SingleResponse<ReasonTypeResponse> findById(
+        @PathVariable("reasonTypeId") UUID reasonTypeId)
+    {
         ReasonType reasonType = reasonTypeService.findByIdThrow(reasonTypeId);
 
         return SingleResponse.<ReasonTypeResponse>builder()
@@ -72,7 +75,7 @@ public class ReasonTypeController {
     @GetMapping("lookup")
     @ResponseStatus(HttpStatus.OK)
     public LookupResponse<List<ReasonTypeLookupResponse>> findAllToLookup(
-        @RequestParam(required = false) String keyword)
+        @RequestParam(name = "keyword", required = false) String keyword)
     {
         Pageable pageable = PageableUtil.of(0, 500, "name", false);
         Page<ReasonTypeLookupResponse> placeCategoryResponsePage = reasonTypeService.findAllToLookup(

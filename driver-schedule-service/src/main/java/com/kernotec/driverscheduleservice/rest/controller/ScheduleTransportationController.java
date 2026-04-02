@@ -67,10 +67,10 @@ public class ScheduleTransportationController {
     @ResponseStatus(HttpStatus.OK)
     @CanReadSchedule
     public PageResponse<ScheduleTransportationResponse> findAll(
-        @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") Boolean descending)
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "10") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") Boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<ScheduleTransportation> scheduleTransportationPage = scheduleTransportationService.findAll(
@@ -92,10 +92,10 @@ public class ScheduleTransportationController {
     @ResponseStatus(HttpStatus.OK)
     @CanReadSchedule
     public PageResponse<ScheduleTransportationResponse> findAllBySearch(
-        @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(defaultValue = "createdAt") String sortBy,
-        @RequestParam(defaultValue = "true") Boolean descending,
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "10") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") Boolean descending,
         @RequestBody ScheduleTransportationFilterRequest request)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
@@ -118,7 +118,7 @@ public class ScheduleTransportationController {
     @ResponseStatus(HttpStatus.OK)
     @CanReadSchedule
     public SingleResponse<ScheduleTransportationResponse> findById(
-        @PathVariable UUID scheduleTransportationId)
+        @PathVariable("scheduleTransportationId") UUID scheduleTransportationId)
     {
         ScheduleTransportation scheduleTransportation = scheduleTransportationService.findByIdThrow(
             scheduleTransportationId);
@@ -157,7 +157,7 @@ public class ScheduleTransportationController {
     @ResponseStatus(HttpStatus.OK)
     @CanReschedule
     public SingleHateoasResponse<ScheduleTransportationResponse> reschedule(
-        @PathVariable UUID scheduleTransportationId,
+        @PathVariable("scheduleTransportationId") UUID scheduleTransportationId,
         @RequestBody ScheduleTransportationUpdateRequest request)
     {
         processScheduleTransportationUpdateRequestCmd.withRequest(
@@ -182,7 +182,7 @@ public class ScheduleTransportationController {
     @ResponseStatus(HttpStatus.OK)
     @CanCancelSchedule
     public SingleHateoasResponse<ScheduleTransportationResponse> cancel(
-        @PathVariable UUID scheduleTransportationId,
+        @PathVariable("scheduleTransportationId") UUID scheduleTransportationId,
         @RequestBody ScheduleTransportationCancelRequest request)
     {
         processScheduleTransportationCancelRequestCmd.withRequest(
@@ -206,7 +206,7 @@ public class ScheduleTransportationController {
     @PostMapping("{scheduleTransportationId}/finalized")
     @ResponseStatus(HttpStatus.OK)
     public SingleResponse<ScheduleTransportationResponse> finalize(
-        @PathVariable UUID scheduleTransportationId)
+        @PathVariable("scheduleTransportationId") UUID scheduleTransportationId)
     {
         return SingleResponse.<ScheduleTransportationResponse>builder()
             .code(HttpStatus.OK.value())
@@ -218,9 +218,10 @@ public class ScheduleTransportationController {
     @GetMapping("{scheduleTransportationId}/voucher")
     @CanReadSchedule
     public ResponseEntity<byte[]> scheduleTransportationExportVoucher(
-        @PathVariable UUID scheduleTransportationId,
-        @RequestParam(defaultValue = "America/La_Paz") String zoneId,
-        @RequestParam(defaultValue = "inline") ReportDispositionEnum disposition)
+        @PathVariable("scheduleTransportationId") UUID scheduleTransportationId,
+        @RequestParam(name = "zoneId", defaultValue = "America/La_Paz") String zoneId,
+        @RequestParam(name = "disposition",
+                      defaultValue = "inline") ReportDispositionEnum disposition)
     {
         return pdfExportCmd.withRequest(PdfExportCmd.Request.builder()
                 .disposition(disposition)

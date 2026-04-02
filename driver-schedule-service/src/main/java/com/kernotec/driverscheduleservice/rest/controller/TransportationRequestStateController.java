@@ -38,10 +38,10 @@ public class TransportationRequestStateController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public PageResponse<TransportationRequestStateResponse> findAll(
-        @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "20") Integer size,
-        @RequestParam(defaultValue = "id") String sortBy,
-        @RequestParam(defaultValue = "true") boolean descending)
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "20") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "true") boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<TransportationRequestState> transportationRequestStatePage = transportationRequestStateService.findAll(
@@ -61,6 +61,7 @@ public class TransportationRequestStateController {
     @Operation(summary = "find transportation request states without pagination")
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
+    @Deprecated
     public PageResponse<TransportationRequestStateResponse> findAllWithoutPagination() {
         List<TransportationRequestState> transportationRequestStateList = transportationRequestStateService.findAll();
 
@@ -75,7 +76,7 @@ public class TransportationRequestStateController {
     @GetMapping("{transportationRequestStateId}")
     @ResponseStatus(HttpStatus.OK)
     public SingleResponse<TransportationRequestStateResponse> findById(
-        @PathVariable() UUID transportationRequestStateId)
+        @PathVariable("transportationRequestStateId") UUID transportationRequestStateId)
     {
         TransportationRequestState transportationRequestState = transportationRequestStateService.findByIdThrow(
             transportationRequestStateId);
