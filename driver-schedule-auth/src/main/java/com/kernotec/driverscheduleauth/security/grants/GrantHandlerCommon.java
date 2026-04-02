@@ -44,6 +44,10 @@ public class GrantHandlerCommon {
         return getParamOfParams(LoginProtocolParams.SCOPE_PARAM, params);
     }
 
+    public String getRealmOfParams(MultiValueMap<String, String> params) {
+        return getParamOfParams(LoginProtocolParams.REALM_PARAM, params);
+    }
+
     private String getParamOfParams(LoginProtocolParams param, MultiValueMap<String, String> params)
     {
         return params.getFirst(param.getValue());

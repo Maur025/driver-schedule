@@ -35,6 +35,7 @@ public class ResourceOwnerPasswordCredentialsGrantTypeHandler implements GrantHa
                         .username(grantHandlerCommon.getUsernameOfParams(params))
                         .password(grantHandlerCommon.getPasswordOfParams(params))
                         .clientId(clientId)
+                        .realm(grantHandlerCommon.getRealmOfParams(params))
                         .build())
                     .build())
             .execute();

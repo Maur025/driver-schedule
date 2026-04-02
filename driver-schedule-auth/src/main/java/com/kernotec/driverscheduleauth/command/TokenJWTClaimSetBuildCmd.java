@@ -25,6 +25,7 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -59,16 +60,19 @@ public class TokenJWTClaimSetBuildCmd extends
             .claim(TokenClaim.SCOPE, getStringOfScopes(scopes))
             .issueTime(new Date())
             .expirationTime(grantHandlerCommon.getExpirationTime(request.tokenExp))
-            .issuer(getIssuer())
+            .issuer(getIssuer(request.realm))
             .audience(getAudienceList(clientAudiences))
             .notBeforeTime(new Date())
             .build();
     }
 
-    private String getIssuer() {
-        return driverScheduleAuthProperties.getServers()
-            .get(0)
-            .url();
+    private String getIssuer(String realm) {
+        return UriComponentsBuilder.fromHttpUrl(driverScheduleAuthProperties.getServers()
+                .get(0)
+                .url())
+            .path("/realms/{realm}")
+            .buildAndExpand(realm)
+            .toUriString();
     }
 
     private Set<String> getClientAudiences(String clientId) {
@@ -137,7 +141,7 @@ public class TokenJWTClaimSetBuildCmd extends
 
     @Builder
     public record Request(@NotNull User user, @NotNull Long tokenExp, UUID refreshTokenId,
-                          String clientId)
+                          String clientId, @NotNull String realm)
     {
 
     }

@@ -93,11 +93,12 @@ logging:
 
 # OAUTH2 CONFIG
 oauth2-config:
-  host: ${OAUTH2_HOST:http://localhost:7801}
+  host: ${APP_SERVER_URL_AUTH:http://localhost:7800}
   realm: ${OAUTH2_REALM:driver-schedule-auth}
   resource: ${OAUTH2_RESOURCE:driver-schedule}
   secret-key: ${OAUTH2_JWT_SECRET:secret-key}
   audience: driver.schedule.api
+  issuer-uri: ${OAUTH2_ISSUER_URI:${oauth2-config.host}/realms/${oauth2-config.realm}}
 
 # WEB SOCKET CONFIG
 web-socket-config:

@@ -12,6 +12,7 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtValidationException;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
@@ -53,6 +54,9 @@ public class WebSocketInterceptor implements ChannelInterceptor {
             accessor.setUser(auth);
 
             log.info("WebSocket connection authenticated for user: {}", auth.getName());
+        } catch (JwtValidationException ex) {
+            log.warn("WebSocket rejected: {}", ex.getMessage());
+            throw new MessageDeliveryException("TOKEN_EXPIRED");
         } catch (Exception ex) {
             log.error("Token validation failed: {}", ex.getMessage(), ex);
             throw new MessageDeliveryException("Token validation failed");
