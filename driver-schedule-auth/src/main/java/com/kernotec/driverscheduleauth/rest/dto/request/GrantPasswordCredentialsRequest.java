@@ -10,4 +10,5 @@ public class GrantPasswordCredentialsRequest {
     private String username;
     private String password;
     private String clientId;
+    private String realm;
 }

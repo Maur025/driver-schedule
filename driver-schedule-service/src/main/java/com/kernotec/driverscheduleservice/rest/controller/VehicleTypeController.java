@@ -69,6 +69,7 @@ public class VehicleTypeController {
     @Operation(summary = "find vehicle types without pagination")
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
+    @Deprecated
     public PageResponse<VehicleTypeResponse> findAllWithoutPagination() {
         List<VehicleType> vehicleTypeList = vehicleTypeService.findAll();
 

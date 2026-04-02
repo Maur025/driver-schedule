@@ -1,6 +1,8 @@
 package com.kernotec.driverscheduleauth.rest.controller;
 
 import com.kernotec.core.rest.dto.response.MessageResponse;
+import com.kernotec.driverscheduleauth.common.annotation.CanUserCredential;
+import com.kernotec.driverscheduleauth.common.annotation.CanUserResetPassword;
 import com.kernotec.driverscheduleauth.jpa.service.RealmService;
 import com.kernotec.driverscheduleauth.rest.ApiSpec.AccountSpec;
 import com.kernotec.driverscheduleauth.rest.command.account.ProcessAccountChangePasswordCmd;
@@ -8,7 +10,6 @@ import com.kernotec.driverscheduleauth.rest.command.account.ProcessAccountResetP
 import com.kernotec.driverscheduleauth.rest.dto.request.account.AccountChangePasswordRequest;
 import com.kernotec.driverscheduleauth.rest.dto.request.account.AccountResetPasswordRequest;
 import com.kernotec.driverscheduleauth.util.AuthUtil;
-import com.kernotec.driverscheduleauth.util.RoleUtil.IsRoleAdmin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,7 @@ public class AccountController {
     @Operation(summary = "account change password")
     @PostMapping("/password")
     @ResponseStatus(HttpStatus.OK)
+    @CanUserCredential
     public MessageResponse changePassword(@PathVariable String realm,
         @RequestBody AccountChangePasswordRequest request, Authentication authentication)
     {
@@ -58,7 +60,7 @@ public class AccountController {
     @Operation(summary = "account reset password")
     @PostMapping("/password/reset")
     @ResponseStatus(HttpStatus.OK)
-    @IsRoleAdmin
+    @CanUserResetPassword
     public MessageResponse resetPassword(@PathVariable String realm,
         @RequestBody AccountResetPasswordRequest request, Authentication authentication)
     {

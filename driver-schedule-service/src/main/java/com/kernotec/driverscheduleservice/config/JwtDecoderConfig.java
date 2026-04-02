@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimNames;
 import org.springframework.security.oauth2.jwt.JwtClaimValidator;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
+import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
 @Configuration
@@ -32,13 +32,16 @@ public class JwtDecoderConfig {
         var jwtDecoder = NimbusJwtDecoder.withSecretKey(secretKeySpec)
             .build();
 
+        OAuth2TokenValidator<Jwt> defaultWithIssuer = JwtValidators.createDefaultWithIssuer(
+            authConfigProperties.getIssuerUri());
+
         OAuth2TokenValidator<Jwt> audienceValidator = new JwtClaimValidator<List<String>>(
             JwtClaimNames.AUD,
             aud -> aud != null && aud.contains(authConfigProperties.getAudience())
         );
 
         OAuth2TokenValidator<Jwt> withDefaultValidators = new DelegatingOAuth2TokenValidator<>(
-            new JwtTimestampValidator(), audienceValidator);
+            defaultWithIssuer, audienceValidator);
 
         jwtDecoder.setJwtValidator(withDefaultValidators);
 

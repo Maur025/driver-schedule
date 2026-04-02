@@ -1,6 +1,8 @@
 package com.kernotec.driverscheduleservice.rest.command.trip;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kernotec.core.command.AbstractCommand;
+import com.kernotec.core.util.JsonUtil;
 import com.kernotec.driverscheduleservice.command.schedule.transportation.ScheduleTransportationGetDtoCmd;
 import com.kernotec.driverscheduleservice.command.schedule.transportation.ScheduleTransportationUpdateCmd;
 import com.kernotec.driverscheduleservice.command.trip.TripGetDtoCmd;
@@ -15,6 +17,7 @@ import com.kernotec.driverscheduleservice.jpa.enums.TripStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationStateService;
 import com.kernotec.driverscheduleservice.jpa.service.TripService;
 import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripFinalizeRequest;
+import com.kernotec.driverscheduleservice.rest.mapper.response.trip.TripResponseMapper;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
@@ -44,16 +47,24 @@ public class ProcessFlowTripFinalizeRequestCmd extends
     private final ScheduleTransportationGetDtoCmd scheduleTransportationGetDtoCmd;
     private final ProcessTripFinalizeRequestCmd processTripFinalizeRequestCmd;
 
+    private final ObjectMapper objectMapper;
+    private final TripResponseMapper tripResponseMapper;
+
     @Override
     protected Void run(Request request) {
+        log.info("INICIALIZE TRIP ENDING");
+
         processTripFinalizeRequestCmd.withRequest(ProcessTripFinalizeRequestCmd.Request.builder()
                 .tripId(request.tripId)
                 .tripFinalizeRequest(request.tripFinalizeRequest)
                 .build())
             .execute();
 
-        verifyAndUpdateSchedule(request.tripId);
+        log.info("UPDATE TRIP");
+        log.info("INICIALIZE SCAN OF SCHEDULE");
 
+        verifyAndUpdateSchedule(request.tripId);
+        log.info("UPDATE SCHEDULE AND RETURN");
         return null;
     }
 
@@ -68,28 +79,41 @@ public class ProcessFlowTripFinalizeRequestCmd extends
 
         Set<UUID> tripAssignmentIds = getTripAssignmentIds(scheduleTransportationId);
 
+        log.info("TRIP ASSIGNMENTS NUMBER: {}", tripAssignmentIds.size());
+
         Page<Trip> tripPage = tripService.findByTripAssignmentIdInAndDeleted(
             tripAssignmentIds, false);
+
+        log.info("TRIPS FOUND COUNT: {}", tripPage.getTotalElements());
+
+        log.info(
+            "TRIPS DATA: {}",
+            JsonUtil.toString(objectMapper, tripResponseMapper.toResponse(tripPage.getContent()))
+        );
 
         if (tripPage.getTotalElements() > tripAssignmentIds.size()) {
             throw new TripException("validation.invalid", "", HttpStatus.CONFLICT.value());
         }
 
         if (tripPage.getTotalElements() < tripAssignmentIds.size()) {
+            log.info("TOTAL ELEMENTS FOUND LESS THAN TRIP ASSIGNMENT QUANTITY");
             log.info("Trip less to assignments, schedule not finalized");
             return;
         }
 
         List<TripDto> tripDtoList = tripDtoMapper.toDto(tripPage.getContent());
-        Set<TripStateEnum> tripStateEnumSet = getTripStateEnumSet(tripDtoList);
+        Set<TripStateEnum> tripStateEnumSet = getTripStateEnumSet(tripDtoList, tripId);
 
         int tripFinalizedCount = getTripFinalizedCount(tripStateEnumSet);
+        log.info("TRIP FINALIZED COUNT : {}", tripFinalizedCount);
 
         if (tripFinalizedCount < tripAssignmentIds.size()) {
+            log.info("TRIPS FINALIZED COUNT LESS THAN TRIP ASSIGNMENT QUANTITY");
             log.info("Some trips still need to be completed");
             return;
         }
 
+        log.info("IS TO UPDATE SCHEDULE");
         UUID scheduleStateFinalizedId = scheduleTransportationStateService.findIdByCodeThrow(
             ScheduleTransportationStateEnum.FINALIZED);
 
@@ -99,6 +123,7 @@ public class ProcessFlowTripFinalizeRequestCmd extends
                     .scheduleTransportationStateId(scheduleStateFinalizedId)
                     .build())
             .execute();
+        log.info("UPDATE SCHEDULE SUCESSFULLY");
     }
 
     private Set<UUID> getTripAssignmentIds(UUID scheduleTransportationId) {
@@ -114,11 +139,18 @@ public class ProcessFlowTripFinalizeRequestCmd extends
             .collect(Collectors.toSet());
     }
 
-    private Set<TripStateEnum> getTripStateEnumSet(List<TripDto> tripDtoList) {
+    private Set<TripStateEnum> getTripStateEnumSet(List<TripDto> tripDtoList, UUID tripId) {
         return tripDtoList.stream()
             .map(tripDto -> {
                 if (tripDto.getTripState() == null) {
                     return null;
+                }
+
+                if (tripDto.getId()
+                    .equals(tripId))
+                {
+                    log.debug("In current processing, successfull if is here, finalized");
+                    return TripStateEnum.FINALIZED;
                 }
 
                 String code = tripDto.getTripState()

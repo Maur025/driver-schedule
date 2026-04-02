@@ -91,7 +91,7 @@ oauth2-config:
   secret-key: ${OAUTH2_JWT_SECRET:secret-key}
   access-token-exp: ${OAUTH2_JWT_ACCESS_TOKEN_EXP:1}
   access-token-exp-type: ${OAUTH2_JWT_ACCESS_TOKEN_EXP_TYPE:hours}
-  refresh-token-exp: ${OAUTH2_JWT_REFRESH_TOKEN_EXP:30}
+  refresh-token-exp: ${OAUTH2_JWT_REFRESH_TOKEN_EXP:7}
   refresh-token-exp-type: ${OAUTH2_JWT_REFRESH_TOKEN_EXP_TYPE:days}
   refresh-token-secure: ${OATH2_JWT_REFRESH_TOKEN_SECURE:dev}
   admin-password: ${OAUTH2_ADMIN_PASSWORD:admin-pass}

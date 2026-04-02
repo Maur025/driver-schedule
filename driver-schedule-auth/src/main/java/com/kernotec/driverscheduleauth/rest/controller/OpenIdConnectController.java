@@ -1,5 +1,6 @@
 package com.kernotec.driverscheduleauth.rest.controller;
 
+import com.kernotec.driverscheduleauth.common.annotation.IsOpenId;
 import com.kernotec.driverscheduleauth.config.AuthConfigProperties;
 import com.kernotec.driverscheduleauth.jpa.enums.GrantTypeEnum;
 import com.kernotec.driverscheduleauth.jpa.enums.LoginProtocolParams;
@@ -43,9 +44,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OpenIdConnectController {
 
-    private final AuthConfigProperties authConfigProperties;
-    private final UserInfoGetDataCmd userInfoGetDataCmd;
     private final RealmService realmService;
+
+    private final AuthConfigProperties authConfigProperties;
+
+    private final UserInfoGetDataCmd userInfoGetDataCmd;
     private final GrantHandlerFactory grantHandlerFactory;
 
     @Operation(summary = "OpenID Connect Endpoint to get token")
@@ -76,6 +79,8 @@ public class OpenIdConnectController {
         String grantTypeStr = formParameters.getFirst(
             LoginProtocolParams.GRANT_TYPE_PARAM.getValue());
         var grantType = GrantTypeEnum.fromValue(grantTypeStr);
+
+        formParameters.add(LoginProtocolParams.REALM_PARAM.getValue(), realm);
 
         if (refreshTokenFromCookie != null && !refreshTokenFromCookie.isBlank()) {
             formParameters.add(
@@ -112,6 +117,7 @@ public class OpenIdConnectController {
     @Operation(summary = "OpenId Connect Endpoint to userinfo endpoint")
     @GetMapping("userinfo")
     @ResponseStatus(HttpStatus.OK)
+    @IsOpenId
     public OpenIdConnectUserInfoResponse getUserInfoData(@PathVariable String realm,
         @RequestHeader("Authorization") String authorizationHeader)
     {

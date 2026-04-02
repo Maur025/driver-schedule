@@ -4,7 +4,10 @@ import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
+import com.kernotec.driverscheduleservice.common.annotation.trip.CanCreateTrip;
+import com.kernotec.driverscheduleservice.common.annotation.trip.CanFinishTrip;
 import com.kernotec.driverscheduleservice.common.annotation.trip.CanReadTrip;
+import com.kernotec.driverscheduleservice.common.annotation.trip.CanUpdateTrip;
 import com.kernotec.driverscheduleservice.jpa.entity.Trip;
 import com.kernotec.driverscheduleservice.jpa.service.TripService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.TripSpec;
@@ -111,6 +114,7 @@ public class TripController {
     @Operation(summary = "create trip")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @CanCreateTrip
     public SingleResponse<TripResponse> create(@RequestBody TripCreateRequest request) {
         UUID tripId = tripService.findByTripAssignmentId(request.getTripAssignmentId())
             .map(Trip::getId)
@@ -129,6 +133,7 @@ public class TripController {
     @Operation(summary = "trip update")
     @PatchMapping("{tripId}")
     @ResponseStatus(HttpStatus.OK)
+    @CanUpdateTrip
     public SingleResponse<TripResponse> patchUpdate(@PathVariable("tripId") UUID tripId,
         @RequestBody TripUpdatePatchRequest request)
     {
@@ -148,6 +153,7 @@ public class TripController {
     @Operation(summary = "trip finalized")
     @PostMapping("{tripId}/finalized")
     @ResponseStatus(HttpStatus.OK)
+    @CanFinishTrip
     public SingleResponse<TripResponse> tripFinalize(@PathVariable("tripId") UUID tripId,
         @RequestBody TripFinalizeRequest request)
     {
