@@ -1,6 +1,7 @@
 package com.kernotec.driverscheduleservice.jpa.specification.criteria;
 
 import com.kernotec.driverscheduleservice.jpa.enums.ScheduleTransportationStateEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.TripStateEnum;
 import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -22,4 +23,6 @@ public class TripAssignmentSpecificationCriteria {
     private ZonedDateTime monthDate;
     private ZonedDateTime yearDate;
     private String zoneId;
+
+    private Set<TripStateEnum> tripStates;
 }

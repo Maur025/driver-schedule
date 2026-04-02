@@ -9,6 +9,7 @@ import com.kernotec.driverscheduleservice.jpa.service.TripStateService;
 import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
 import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripFinalizeRequest;
 import jakarta.validation.constraints.NotNull;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.UUID;
 import lombok.Builder;
@@ -40,8 +41,7 @@ public class ProcessTripFinalizeRequestCmd extends
 
         tripUpdateCmd.withRequest(TripUpdateCmd.Request.builder()
                 .tripId(request.tripId)
-                .tripStart(tripFinalizeRequest.getTripStart())
-                .tripEnd(tripFinalizeRequest.getTripEnd())
+                .tripEnd(ZonedDateTime.now())
                 .durationTotalMinutes(tripFinalizeRequest.getDurationTotalMinutes())
                 .onRouteTimeMinutes(tripFinalizeRequest.getOnRouteTimeMinutes())
                 .waitTimeMinutes(tripFinalizeRequest.getWaitTimeMinutes())
