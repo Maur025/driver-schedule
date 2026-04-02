@@ -21,6 +21,7 @@ import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
 import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripFilterRequest;
 import jakarta.validation.constraints.NotNull;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
@@ -110,6 +111,7 @@ public class ProcessTripCreateRequestCmd extends
                 .durationTotalMinutes(0d)
                 .onRouteTimeMinutes(0d)
                 .waitTimeMinutes(0d)
+                .tripStart(ZonedDateTime.now())
                 .build())
             .execute();
 

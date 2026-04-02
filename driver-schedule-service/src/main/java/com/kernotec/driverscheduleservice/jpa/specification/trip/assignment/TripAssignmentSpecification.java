@@ -2,6 +2,7 @@ package com.kernotec.driverscheduleservice.jpa.specification.trip.assignment;
 
 import com.kernotec.driverscheduleservice.jpa.entity.TripAssignment;
 import com.kernotec.driverscheduleservice.jpa.enums.ScheduleTransportationStateEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.TripStateEnum;
 import com.kernotec.driverscheduleservice.jpa.specification.criteria.TripAssignmentSpecificationCriteria;
 import com.kernotec.driverscheduleservice.util.CommonSpecification;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -59,6 +60,30 @@ public record TripAssignmentSpecification(TripAssignmentSpecificationCriteria cr
         return joinMap.get(TripAssignmentSpecificationJoinEnum.SCHEDULE_TRANSPORTATION_STATE_JOIN);
     }
 
+    private Join<?, ?> getOrCreateTripJoin(
+        Map<TripAssignmentSpecificationJoinEnum, Join<?, ?>> joinMap, Root<?> root)
+    {
+        if (!joinMap.containsKey(TripAssignmentSpecificationJoinEnum.TRIP_JOIN)) {
+            joinMap.put(
+                TripAssignmentSpecificationJoinEnum.TRIP_JOIN, root.join("trips", JoinType.INNER));
+        }
+
+        return joinMap.get(TripAssignmentSpecificationJoinEnum.TRIP_JOIN);
+    }
+
+    private Join<?, ?> getOrCreateTripStateJoin(
+        Map<TripAssignmentSpecificationJoinEnum, Join<?, ?>> joinMap, Root<?> root)
+    {
+        if (!joinMap.containsKey(TripAssignmentSpecificationJoinEnum.TRIP_STATE_JOIN)) {
+            joinMap.put(
+                TripAssignmentSpecificationJoinEnum.TRIP_STATE_JOIN,
+                getOrCreateTripJoin(joinMap, root).join("tripState", JoinType.INNER)
+            );
+        }
+
+        return joinMap.get(TripAssignmentSpecificationJoinEnum.TRIP_STATE_JOIN);
+    }
+
     @Override
     public Predicate toPredicate(Root<TripAssignment> root, CriteriaQuery<?> query,
         CriteriaBuilder cb)
@@ -73,6 +98,7 @@ public record TripAssignmentSpecification(TripAssignmentSpecificationCriteria cr
         addScheduleTransportationStatesFilter(root, cb, joinMap).ifPresent(predicateList::add);
         addDriverIdFilter(root, cb).ifPresent(predicateList::add);
         addVehicleIdFilter(root, cb).ifPresent(predicateList::add);
+        addTripStatesFilter(root, cb, joinMap).ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -186,5 +212,20 @@ public record TripAssignmentSpecification(TripAssignmentSpecificationCriteria cr
     private Optional<Predicate> addVehicleIdFilter(Root<TripAssignment> root, CriteriaBuilder cb) {
         return Optional.ofNullable(criteria.getVehicleId())
             .map(vehicleId -> cb.equal(root.get("vehicleId"), vehicleId));
+    }
+
+    public TripAssignmentSpecification withTripStates(Set<TripStateEnum> tripStates) {
+        this.criteria.setTripStates(tripStates);
+        return this;
+    }
+
+    private Optional<Predicate> addTripStatesFilter(Root<TripAssignment> root, CriteriaBuilder cb,
+        Map<TripAssignmentSpecificationJoinEnum, Join<?, ?>> joinMap)
+    {
+        return Optional.ofNullable(criteria.getTripStates())
+            .map(tripStates -> getOrCreateTripStateJoin(joinMap, root).get("code")
+                .in(tripStates.stream()
+                    .map(String::valueOf)
+                    .toList()));
     }
 }

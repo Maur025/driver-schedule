@@ -59,7 +59,8 @@ public class TripAssignmentService extends BaseServiceImpl<TripAssignment, UUID>
                 .withYearDate(filterRequest.getYearDate())
                 .withScheduleTransportationStates(filterRequest.getScheduleTransportationStates())
                 .withDriverId(driverId)
-                .withVehicleId(filterRequest.getVehicleId()), pageable
+                .withVehicleId(filterRequest.getVehicleId())
+                .withTripStates(filterRequest.getTripStates()), pageable
         );
     }
 }
