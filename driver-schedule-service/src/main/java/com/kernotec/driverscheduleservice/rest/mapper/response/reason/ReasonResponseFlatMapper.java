@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.mapper.response.reason;
 
-import com.kernotec.driverscheduleservice.jpa.entity.Reason;
-import com.kernotec.driverscheduleservice.rest.dto.response.reason.ReasonResponse;
+import com.kernotec.driverscheduleservice.jpa.entity.resource.Reason;
+import com.kernotec.driverscheduleservice.rest.dto.resource.response.reason.ReasonResponse;
 import java.util.List;
 import java.util.Set;
 import org.mapstruct.Mapper;

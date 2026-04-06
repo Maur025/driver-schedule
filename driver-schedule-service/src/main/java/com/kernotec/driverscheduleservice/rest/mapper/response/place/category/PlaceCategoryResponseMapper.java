@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.mapper.response.place.category;
 
-import com.kernotec.driverscheduleservice.jpa.entity.PlaceCategory;
-import com.kernotec.driverscheduleservice.rest.dto.response.place.category.PlaceCategoryResponse;
+import com.kernotec.driverscheduleservice.jpa.entity.resource.PlaceCategory;
+import com.kernotec.driverscheduleservice.rest.dto.resource.response.place.category.PlaceCategoryResponse;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;

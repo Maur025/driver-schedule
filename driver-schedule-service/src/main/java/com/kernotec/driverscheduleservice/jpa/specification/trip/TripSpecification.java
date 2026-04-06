@@ -1,8 +1,8 @@
 package com.kernotec.driverscheduleservice.jpa.specification.trip;
 
-import com.kernotec.driverscheduleservice.jpa.entity.Trip;
-import com.kernotec.driverscheduleservice.jpa.enums.TripStateEnum;
-import com.kernotec.driverscheduleservice.jpa.specification.criteria.TripSpecificationCriteria;
+import com.kernotec.driverscheduleservice.jpa.entity.trip.Trip;
+import com.kernotec.driverscheduleservice.jpa.enums.trip.TripStateEnum;
+import com.kernotec.driverscheduleservice.jpa.specification.trip.criteria.TripSpecificationCriteria;
 import com.kernotec.driverscheduleservice.util.CommonSpecification;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;

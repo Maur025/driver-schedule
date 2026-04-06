@@ -1,6 +1,6 @@
 package com.kernotec.driverscheduleservice.web.socket;
 
-import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketBaseResponse;
+import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketBaseResponse;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

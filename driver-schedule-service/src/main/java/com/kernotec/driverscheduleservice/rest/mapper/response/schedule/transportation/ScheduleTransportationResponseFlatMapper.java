@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.mapper.response.schedule.transportation;
 
-import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
-import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.ScheduleTransportationResponse;
+import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
+import com.kernotec.driverscheduleservice.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;

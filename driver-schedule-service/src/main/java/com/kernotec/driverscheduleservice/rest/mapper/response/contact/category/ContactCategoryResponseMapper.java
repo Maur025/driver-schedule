@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.mapper.response.contact.category;
 
-import com.kernotec.driverscheduleservice.jpa.entity.ContactCategory;
-import com.kernotec.driverscheduleservice.rest.dto.response.contact.category.ContactCategoryResponse;
+import com.kernotec.driverscheduleservice.jpa.entity.resource.ContactCategory;
+import com.kernotec.driverscheduleservice.rest.dto.resource.response.contact.category.ContactCategoryResponse;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;

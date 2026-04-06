@@ -1,0 +1,37 @@
+package com.kernotec.driverscheduleservice.command.request.transportation.request.state;
+
+import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
+import com.kernotec.driverscheduleservice.jpa.entity.request.TransportationRequestState;
+import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestStateService;
+import jakarta.validation.constraints.NotNull;
+import java.util.UUID;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@RequiredArgsConstructor
+@Service
+public class TransportationRequestStateUpdateCmd extends
+    AbstractTransactionalRequiredCommand<TransportationRequestStateUpdateCmd.Request, Void>
+{
+
+    private final TransportationRequestStateService transportationRequestStateService;
+
+    @Override
+    protected Void run(Request request) {
+        TransportationRequestState transportationRequestState = transportationRequestStateService.findByIdThrow(
+            request.transportationRequestStateId);
+
+        if (request.name != null) {
+            transportationRequestState.setName(request.name);
+        }
+
+        transportationRequestStateService.save(transportationRequestState);
+        return null;
+    }
+
+    @Builder
+    public record Request(@NotNull UUID transportationRequestStateId, String name) {
+
+    }
+}

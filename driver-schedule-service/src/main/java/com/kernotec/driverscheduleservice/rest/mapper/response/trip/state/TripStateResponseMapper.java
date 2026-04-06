@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.mapper.response.trip.state;
 
-import com.kernotec.driverscheduleservice.jpa.entity.TripState;
-import com.kernotec.driverscheduleservice.rest.dto.response.trip.state.TripStateResponse;
+import com.kernotec.driverscheduleservice.jpa.entity.trip.TripState;
+import com.kernotec.driverscheduleservice.rest.dto.trip.response.trip.state.TripStateResponse;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;

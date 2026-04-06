@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.mapper.response.reject.reason;
 
-import com.kernotec.driverscheduleservice.jpa.entity.RejectReason;
-import com.kernotec.driverscheduleservice.rest.dto.response.reject.reason.RejectReasonResponse;
+import com.kernotec.driverscheduleservice.jpa.entity.request.RejectReason;
+import com.kernotec.driverscheduleservice.rest.dto.request.response.reject.reason.RejectReasonResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.response.reason.ReasonResponseFlatMapper;
 import java.util.List;
 import java.util.Set;

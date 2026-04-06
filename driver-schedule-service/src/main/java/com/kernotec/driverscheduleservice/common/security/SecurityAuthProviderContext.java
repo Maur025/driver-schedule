@@ -1,6 +1,6 @@
 package com.kernotec.driverscheduleservice.common.security;
 
-import com.kernotec.driverscheduleservice.jpa.enums.PersonTypeEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.resource.PersonTypeEnum;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;

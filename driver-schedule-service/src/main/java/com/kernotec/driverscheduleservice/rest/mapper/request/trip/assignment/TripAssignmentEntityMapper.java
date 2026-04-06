@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.mapper.request.trip.assignment;
 
-import com.kernotec.driverscheduleservice.jpa.entity.TripAssignment;
-import com.kernotec.driverscheduleservice.rest.dto.request.trip.assignment.TripAssignmentCreateRequest;
+import com.kernotec.driverscheduleservice.jpa.entity.schedule.TripAssignment;
+import com.kernotec.driverscheduleservice.rest.dto.schedule.request.trip.assignment.TripAssignmentCreateRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

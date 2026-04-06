@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.rest.mapper.request.contact;
 
-import com.kernotec.driverscheduleservice.jpa.entity.Contact;
-import com.kernotec.driverscheduleservice.rest.dto.request.contact.ContactCreateRequest;
+import com.kernotec.driverscheduleservice.jpa.entity.resource.Contact;
+import com.kernotec.driverscheduleservice.rest.dto.resource.request.contact.ContactCreateRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

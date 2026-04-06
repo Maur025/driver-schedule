@@ -1,6 +1,6 @@
 package com.kernotec.driverscheduleservice.util;
 
-import com.kernotec.driverscheduleservice.jpa.enums.GenerateCodeEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.request.GenerateCodeEnum;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;

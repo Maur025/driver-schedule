@@ -1,12 +1,12 @@
 package com.kernotec.driverscheduleservice.rest.command.trip;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverscheduleservice.command.trip.TripUpdateCmd;
-import com.kernotec.driverscheduleservice.command.trip.log.TripLogCreateCmd;
-import com.kernotec.driverscheduleservice.jpa.service.LocationService;
-import com.kernotec.driverscheduleservice.jpa.service.TripStateService;
+import com.kernotec.driverscheduleservice.command.trip.trip.TripUpdateCmd;
+import com.kernotec.driverscheduleservice.command.trip.trip.log.TripLogCreateCmd;
+import com.kernotec.driverscheduleservice.jpa.service.resource.LocationService;
+import com.kernotec.driverscheduleservice.jpa.service.trip.TripStateService;
 import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
-import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripUpdatePatchRequest;
+import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.TripUpdatePatchRequest;
 import jakarta.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.UUID;
