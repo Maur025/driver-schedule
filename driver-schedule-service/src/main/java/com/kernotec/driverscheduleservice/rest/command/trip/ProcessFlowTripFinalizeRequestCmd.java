@@ -17,7 +17,7 @@ import com.kernotec.driverscheduleservice.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationStateService;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripService;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.TripFinalizeRequest;
-import com.kernotec.driverscheduleservice.rest.mapper.response.trip.TripResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.trip.response.trip.TripResponseMapper;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;

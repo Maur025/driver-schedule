@@ -10,7 +10,7 @@ import com.kernotec.driverscheduleservice.rest.ApiSpec.TripStateSpec;
 import com.kernotec.driverscheduleservice.rest.dto.common.response.LookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.trip.response.trip.state.TripStateLookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.trip.response.trip.state.TripStateResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.response.trip.state.TripStateResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.trip.response.trip.state.TripStateResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;

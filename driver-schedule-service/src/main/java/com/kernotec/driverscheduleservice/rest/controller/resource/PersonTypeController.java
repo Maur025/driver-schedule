@@ -8,7 +8,7 @@ import com.kernotec.driverscheduleservice.jpa.entity.resource.PersonType;
 import com.kernotec.driverscheduleservice.jpa.service.resource.PersonTypeService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.PersonTypeSpec;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.person.type.PersonTypeResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.response.person.type.PersonTypeResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.resource.response.person.type.PersonTypeResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;

@@ -27,8 +27,8 @@ import com.kernotec.driverscheduleservice.rest.dto.common.response.LookupRespons
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.person.PersonLookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.person.PersonResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.person.PersonScheduleConflictResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.response.person.PersonResponseMapper;
-import com.kernotec.driverscheduleservice.rest.mapper.response.schedule.transportation.ScheduleTransportationResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.resource.response.person.PersonResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

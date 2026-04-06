@@ -11,7 +11,7 @@ import com.kernotec.driverscheduleservice.rest.ApiSpec.ContactSpec;
 import com.kernotec.driverscheduleservice.rest.command.resource.contact.ProcessContactDeleteRequestCmd;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.contact.ContactUpdateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.contact.ContactResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.response.contact.ContactResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.resource.response.contact.ContactResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;

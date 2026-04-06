@@ -11,7 +11,7 @@ import com.kernotec.driverscheduleservice.rest.ApiSpec.ReasonSpec;
 import com.kernotec.driverscheduleservice.rest.dto.common.response.LookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.reason.ReasonLookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.reason.ReasonResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.response.reason.ReasonResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.resource.response.reason.ReasonResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;

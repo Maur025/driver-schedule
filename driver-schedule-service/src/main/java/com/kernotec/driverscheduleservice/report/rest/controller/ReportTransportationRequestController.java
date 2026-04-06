@@ -8,7 +8,7 @@ import com.kernotec.driverscheduleservice.report.jpa.service.ReportTransportatio
 import com.kernotec.driverscheduleservice.report.rest.dto.request.ReportTransportationRequestRequest;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.ReportSpec;
 import com.kernotec.driverscheduleservice.rest.dto.request.response.transportation.request.TransportationRequestResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.response.request.transportation.request.TransportationRequestResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.request.response.transportation.request.TransportationRequestResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;

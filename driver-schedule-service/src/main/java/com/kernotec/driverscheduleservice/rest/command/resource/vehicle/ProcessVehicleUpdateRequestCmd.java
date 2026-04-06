@@ -7,7 +7,7 @@ import com.kernotec.driverscheduleservice.jpa.service.resource.VehicleService;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.vehicle.VehicleUpdateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.vehicle.VehicleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.response.vehicle.VehicleResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.resource.response.vehicle.VehicleResponseMapper;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;

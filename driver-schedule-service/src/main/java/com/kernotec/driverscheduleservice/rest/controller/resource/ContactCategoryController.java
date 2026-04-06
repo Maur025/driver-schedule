@@ -10,7 +10,7 @@ import com.kernotec.driverscheduleservice.rest.ApiSpec.ContactCategorySpec;
 import com.kernotec.driverscheduleservice.rest.dto.common.response.LookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.contact.category.ContactCategoryLookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.contact.category.ContactCategoryResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.response.contact.category.ContactCategoryResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.resource.response.contact.category.ContactCategoryResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;

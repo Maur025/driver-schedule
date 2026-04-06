@@ -26,7 +26,7 @@ import com.kernotec.driverscheduleservice.rest.dto.request.request.transportatio
 import com.kernotec.driverscheduleservice.rest.dto.request.request.transportation.request.TransportationRequestFilterRequest;
 import com.kernotec.driverscheduleservice.rest.dto.common.response.SingleHateoasResponse;
 import com.kernotec.driverscheduleservice.rest.dto.request.response.transportation.request.TransportationRequestResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.response.request.transportation.request.TransportationRequestResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.request.response.transportation.request.TransportationRequestResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;

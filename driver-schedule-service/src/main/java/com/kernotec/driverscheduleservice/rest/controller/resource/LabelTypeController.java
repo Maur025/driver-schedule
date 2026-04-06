@@ -10,7 +10,7 @@ import com.kernotec.driverscheduleservice.rest.ApiSpec.LabelTypeSpec;
 import com.kernotec.driverscheduleservice.rest.dto.common.response.LookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.label.type.LabelTypeLookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.label.type.LabelTypeResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.response.label.type.LabelTypeResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.resource.response.label.type.LabelTypeResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;

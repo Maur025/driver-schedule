@@ -6,7 +6,7 @@ import com.kernotec.driverscheduleservice.jpa.enums.resource.ContactCategoryEnum
 import com.kernotec.driverscheduleservice.jpa.service.resource.ContactCategoryService;
 import com.kernotec.driverscheduleservice.jpa.service.resource.ContactService;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.contact.ContactCreateRequest;
-import com.kernotec.driverscheduleservice.rest.mapper.request.contact.ContactEntityMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.resource.request.contact.ContactEntityMapper;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;

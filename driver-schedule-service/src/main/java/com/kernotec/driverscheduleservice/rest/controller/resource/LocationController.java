@@ -15,7 +15,7 @@ import com.kernotec.driverscheduleservice.rest.command.resource.location.Process
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.location.LocationCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.location.LocationUpdateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.location.LocationResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.response.request.location.LocationResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.resource.response.location.LocationResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;

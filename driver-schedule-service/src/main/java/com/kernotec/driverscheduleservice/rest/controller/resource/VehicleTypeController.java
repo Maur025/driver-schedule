@@ -12,7 +12,7 @@ import com.kernotec.driverscheduleservice.rest.ApiSpec.VehicleTypeSpec;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.vehicle.type.VehicleTypeCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.vehicle.type.VehicleTypeUpdateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.vehicle.type.VehicleTypeResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.response.vehicle.type.VehicleTypeResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.resource.response.vehicle.type.VehicleTypeResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;

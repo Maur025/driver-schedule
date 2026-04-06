@@ -8,7 +8,7 @@ import com.kernotec.driverscheduleservice.jpa.entity.request.RequestCoord;
 import com.kernotec.driverscheduleservice.jpa.service.request.RequestCoordService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.RequestCoordSpec;
 import com.kernotec.driverscheduleservice.rest.dto.request.response.request.coord.RequestCoordResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.response.request.request.coord.RequestCoordResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.request.response.request.coord.RequestCoordResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
