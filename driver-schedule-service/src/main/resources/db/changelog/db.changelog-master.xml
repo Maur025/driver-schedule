@@ -178,4 +178,16 @@
 
   <include file="db/changelog/2026/03/30-01-changelog-45.xml"/>
   <include file="db/changelog/2026/03/30-01-changelog-46.xml"/>
+  <include file="db/changelog/2026/04/02-01-changelog-47.xml"/>
+  <include file="db/changelog/2026/04/02-01-changelog-48.xml"/>
+
+  <!-- reason type - add 2 new reason types -->
+  <changeSet id="1775575593580-1" author="Maur025">
+    <sqlFile path="data/reason/type/reason_type_update1.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <changeSet id="1775594328253-1" author="Maur025">
+    <sqlFile path="data/trip/emergency/state/trip_emergency_state_seed.sql"
+      relativeToChangelogFile="true"/>
+  </changeSet>
 </databaseChangeLog>

@@ -3,12 +3,15 @@ package com.kernotec.driverscheduleservice.jpa.entity.trip;
 import com.kernotec.driverscheduleservice.audit.user.BaseAuditEntityUser;
 import com.kernotec.driverscheduleservice.jpa.entity.resource.Person;
 import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,4 +55,10 @@ public class TripEmergency extends BaseAuditEntityUser {
     @JoinColumn(name = "trip_emergency_state_id", referencedColumnName = "id", insertable = false,
                 updatable = false)
     private TripEmergencyState tripEmergencyState;
+
+    @OneToMany(mappedBy = "tripEmergency", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<EmergencyReason> emergencyReasons;
+
+    @OneToMany(mappedBy = "tripEmergency", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<EmergencyRejectReason> emergencyRejectReasons;
 }
