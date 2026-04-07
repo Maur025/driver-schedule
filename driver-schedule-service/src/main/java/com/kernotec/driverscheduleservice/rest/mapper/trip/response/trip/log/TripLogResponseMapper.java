@@ -1,0 +1,29 @@
+package com.kernotec.driverscheduleservice.rest.mapper.trip.response.trip.log;
+
+import com.kernotec.driverscheduleservice.audit.user.mapper.AuthUserDataResponseMapper;
+import com.kernotec.driverscheduleservice.jpa.entity.trip.TripLog;
+import com.kernotec.driverscheduleservice.rest.dto.trip.response.trip.log.TripLogResponse;
+import com.kernotec.driverscheduleservice.rest.mapper.trip.response.trip.TripNAResponseFlatMapper;
+import com.kernotec.driverscheduleservice.util.GeoJsonUtil;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+@Mapper(
+    uses = {TripNAResponseFlatMapper.class, AuthUserDataResponseMapper.class, GeoJsonUtil.class})
+public interface TripLogResponseMapper {
+
+    @Mapping(target = "coordinates", source = "coordinate",
+             qualifiedByName = "mapToPositionGeoJson")
+    @Mapping(target = "longitude", source = "coordinate.lng")
+    @Mapping(target = "latitude", source = "coordinate.lat")
+    TripLogResponse toResponse(TripLog tripLog);
+
+    TripLogResponse toResponse(UUID id);
+
+    List<TripLogResponse> toResponse(List<TripLog> tripLogList);
+
+    Set<TripLogResponse> toResponse(Set<TripLog> tripLogSet);
+}

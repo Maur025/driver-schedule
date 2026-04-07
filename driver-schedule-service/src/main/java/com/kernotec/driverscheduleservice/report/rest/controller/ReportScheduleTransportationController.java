@@ -3,12 +3,12 @@ package com.kernotec.driverscheduleservice.report.rest.controller;
 import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
-import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
+import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.report.jpa.service.ReportScheduleTransportationService;
 import com.kernotec.driverscheduleservice.report.rest.dto.request.ReportScheduleTransportationRequest;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.ReportSpec;
-import com.kernotec.driverscheduleservice.rest.dto.response.schedule.transportation.ScheduleTransportationResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.response.schedule.transportation.ScheduleTransportationResponseMapper;
+import com.kernotec.driverscheduleservice.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
+import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -32,7 +32,7 @@ public class ReportScheduleTransportationController {
     private final ReportScheduleTransportationService reportScheduleTransportationService;
     private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
 
-    @Operation(summary = "schedule transportation report preview with filters")
+    @Operation(summary = "response transportation report preview with filters")
     @PostMapping("schedule-transportation/report")
     @ResponseStatus(HttpStatus.OK)
     public PageResponse<ScheduleTransportationResponse> findAllWithFilters(

@@ -3,21 +3,21 @@ package com.kernotec.driverscheduleservice.rest.command.trip;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kernotec.core.command.AbstractCommand;
 import com.kernotec.core.util.JsonUtil;
-import com.kernotec.driverscheduleservice.command.schedule.transportation.ScheduleTransportationGetDtoCmd;
-import com.kernotec.driverscheduleservice.command.schedule.transportation.ScheduleTransportationUpdateCmd;
-import com.kernotec.driverscheduleservice.command.trip.TripGetDtoCmd;
-import com.kernotec.driverscheduleservice.exception.TripException;
-import com.kernotec.driverscheduleservice.jpa.dto.ScheduleTransportationDto;
-import com.kernotec.driverscheduleservice.jpa.dto.TripAssignmentDto;
-import com.kernotec.driverscheduleservice.jpa.dto.TripDto;
+import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.ScheduleTransportationGetDtoCmd;
+import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.ScheduleTransportationUpdateCmd;
+import com.kernotec.driverscheduleservice.command.trip.trip.TripGetDtoCmd;
+import com.kernotec.driverscheduleservice.exception.trip.TripException;
+import com.kernotec.driverscheduleservice.jpa.dto.schedule.ScheduleTransportationDto;
+import com.kernotec.driverscheduleservice.jpa.dto.schedule.TripAssignmentDto;
+import com.kernotec.driverscheduleservice.jpa.dto.trip.TripDto;
 import com.kernotec.driverscheduleservice.jpa.dto.mapper.trip.TripDtoMapper;
-import com.kernotec.driverscheduleservice.jpa.entity.Trip;
-import com.kernotec.driverscheduleservice.jpa.enums.ScheduleTransportationStateEnum;
-import com.kernotec.driverscheduleservice.jpa.enums.TripStateEnum;
-import com.kernotec.driverscheduleservice.jpa.service.ScheduleTransportationStateService;
-import com.kernotec.driverscheduleservice.jpa.service.TripService;
-import com.kernotec.driverscheduleservice.rest.dto.request.trip.TripFinalizeRequest;
-import com.kernotec.driverscheduleservice.rest.mapper.response.trip.TripResponseMapper;
+import com.kernotec.driverscheduleservice.jpa.entity.trip.Trip;
+import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.trip.TripStateEnum;
+import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationStateService;
+import com.kernotec.driverscheduleservice.jpa.service.trip.TripService;
+import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.TripFinalizeRequest;
+import com.kernotec.driverscheduleservice.rest.mapper.trip.response.trip.TripResponseMapper;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
@@ -97,7 +97,7 @@ public class ProcessFlowTripFinalizeRequestCmd extends
 
         if (tripPage.getTotalElements() < tripAssignmentIds.size()) {
             log.info("TOTAL ELEMENTS FOUND LESS THAN TRIP ASSIGNMENT QUANTITY");
-            log.info("Trip less to assignments, schedule not finalized");
+            log.info("Trip less to assignments, response not finalized");
             return;
         }
 

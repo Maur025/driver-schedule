@@ -1,8 +1,8 @@
 package com.kernotec.driverscheduleservice.report.jpa.service;
 
-import com.kernotec.driverscheduleservice.jpa.entity.ScheduleTransportation;
-import com.kernotec.driverscheduleservice.jpa.repository.ScheduleTransportationRepository;
-import com.kernotec.driverscheduleservice.jpa.specification.schedule.transportation.ScheduleTransportationSpecification;
+import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
+import com.kernotec.driverscheduleservice.jpa.repository.schedule.ScheduleTransportationRepository;
+import com.kernotec.driverscheduleservice.jpa.specification.schedule.ScheduleTransportationSpecification;
 import com.kernotec.driverscheduleservice.report.rest.dto.request.ReportScheduleTransportationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
