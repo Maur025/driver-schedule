@@ -11,13 +11,15 @@ import com.kernotec.driverscheduleservice.common.annotation.trip.CanUpdateTrip;
 import com.kernotec.driverscheduleservice.jpa.entity.trip.Trip;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.TripSpec;
-import com.kernotec.driverscheduleservice.rest.command.trip.ProcessFlowTripFinalizeRequestCmd;
-import com.kernotec.driverscheduleservice.rest.command.trip.ProcessTripCreateRequestCmd;
-import com.kernotec.driverscheduleservice.rest.command.trip.ProcessTripPatchUpdateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.command.trip.trip.ProcessFlowTripFinalizeRequestCmd;
+import com.kernotec.driverscheduleservice.rest.command.trip.trip.ProcessTripCreateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.command.trip.trip.ProcessTripPatchUpdateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.command.trip.trip.emergency.ProcessTripEmergencyRequestCmd;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.TripCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.TripFilterRequest;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.TripFinalizeRequest;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.TripUpdatePatchRequest;
+import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyRequest;
 import com.kernotec.driverscheduleservice.rest.dto.trip.response.trip.TripResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.trip.response.trip.TripResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,6 +52,7 @@ public class TripController {
     private final ProcessTripCreateRequestCmd processTripCreateRequestCmd;
     private final ProcessTripPatchUpdateRequestCmd processTripPatchUpdateRequestCmd;
     private final ProcessFlowTripFinalizeRequestCmd processFlowTripFinalizeRequestCmd;
+    private final ProcessTripEmergencyRequestCmd processTripEmergencyRequestCmd;
 
     @Operation(summary = "find all trips")
     @GetMapping
@@ -167,6 +170,24 @@ public class TripController {
         return SingleResponse.<TripResponse>builder()
             .code(HttpStatus.OK.value())
             .message("successfully completed")
+            .build();
+    }
+
+    @Operation(summary = "trip emergency")
+    @PostMapping("{tripId}/emergency-reported")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<TripResponse> tripEmergency(@PathVariable("tripId") UUID tripId,
+        @RequestBody TripEmergencyRequest request)
+    {
+        processTripEmergencyRequestCmd.withRequest(ProcessTripEmergencyRequestCmd.Request.builder()
+                .tripId(tripId)
+                .tripEmergencyRequest(request)
+                .build())
+            .execute();
+
+        return SingleResponse.<TripResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("emergency reported successfully")
             .build();
     }
 }
