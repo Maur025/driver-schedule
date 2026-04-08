@@ -5,6 +5,7 @@ import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.common.annotation.trip.CanCreateTrip;
+import com.kernotec.driverscheduleservice.common.annotation.trip.CanEmergencyTrip;
 import com.kernotec.driverscheduleservice.common.annotation.trip.CanFinishTrip;
 import com.kernotec.driverscheduleservice.common.annotation.trip.CanReadTrip;
 import com.kernotec.driverscheduleservice.common.annotation.trip.CanUpdateTrip;
@@ -176,6 +177,7 @@ public class TripController {
     @Operation(summary = "trip emergency")
     @PostMapping("{tripId}/emergency-reported")
     @ResponseStatus(HttpStatus.OK)
+    @CanEmergencyTrip
     public SingleResponse<TripResponse> tripEmergency(@PathVariable("tripId") UUID tripId,
         @RequestBody TripEmergencyRequest request)
     {
