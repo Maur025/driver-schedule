@@ -1,8 +1,9 @@
 package com.kernotec.driverscheduleservice.util;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +22,13 @@ public class ZonedDateTimeUtil {
         return ZoneId.systemDefault();
     }
 
-    public ZonedDateTime getNewOfDateAndTime(LocalDateTime date, ZonedDateTime time, String zoneId)
+    public ZonedDateTime getNewOfDateAndTime(ZonedDateTime date, ZonedDateTime time, String zoneId)
     {
         ZoneId clientZoneId = getClientZoneId(zoneId);
+
+        ZonedDateTime dateWithClientZoneId = date.withZoneSameInstant(clientZoneId);
+
+        LocalDate localDateInClientZoneId = dateWithClientZoneId.toLocalDate();
 
         ZonedDateTime timeWithoutSeconds = time.withSecond(0)
             .withNano(0);
@@ -31,8 +36,21 @@ public class ZonedDateTimeUtil {
         LocalTime timeAsLocalTime = timeWithoutSeconds.withZoneSameInstant(clientZoneId)
             .toLocalTime();
 
-        log.info("Value of  timeAsLocalTime: {}", timeAsLocalTime);
+        ZonedDateTime joinWithUserZone = ZonedDateTime.of(
+            localDateInClientZoneId, timeAsLocalTime, clientZoneId);
 
-        return ZonedDateTime.of(date.toLocalDate(), timeAsLocalTime, clientZoneId);
+        return joinWithUserZone.withZoneSameInstant(ZoneOffset.UTC);
+    }
+
+    public ZonedDateTime getDateScheduleNormalized(ZonedDateTime zonedDateTime) {
+        return zonedDateTime.withSecond(0)
+            .withNano(0)
+            .withZoneSameInstant(ZoneOffset.UTC);
+    }
+
+    public ZonedDateTime getDateWithSameUserZone(ZonedDateTime zonedDateTime, String zoneId) {
+        ZoneId clientZoneId = getClientZoneId(zoneId);
+
+        return zonedDateTime.withZoneSameInstant(clientZoneId);
     }
 }

@@ -4,7 +4,6 @@ import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationService;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.Builder;
@@ -37,7 +36,7 @@ public class ScheduleTransportationCreateCmd extends
 
     @Builder
     public record Request(@NotNull ZonedDateTime scheduleFrom, @NotNull ZonedDateTime scheduleTo,
-                          @NotNull LocalDateTime scheduledDate,
+                          @NotNull ZonedDateTime scheduledDate,
                           @NotNull UUID transportationRequestId, @NotNull UUID personRequestedId,
                           @NotNull UUID scheduleTransportationStateId)
     {

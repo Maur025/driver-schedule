@@ -1,8 +1,8 @@
 package com.kernotec.driverscheduleservice.jpa.entity.schedule;
 
 import com.kernotec.driverscheduleservice.audit.user.BaseAuditEntityUser;
-import com.kernotec.driverscheduleservice.jpa.entity.resource.Person;
 import com.kernotec.driverscheduleservice.jpa.entity.request.TransportationRequest;
+import com.kernotec.driverscheduleservice.jpa.entity.resource.Person;
 import com.kernotec.driverscheduleservice.util.SafeZoneDateTimeConverter;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -13,7 +13,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -37,7 +36,7 @@ public class ScheduleTransportation extends BaseAuditEntityUser {
     private ZonedDateTime scheduleTo;
 
     @Column(name = "scheduled_date", nullable = false)
-    private LocalDateTime scheduledDate;
+    private ZonedDateTime scheduledDate;
 
     @Column(name = "transportation_request_id", nullable = false)
     private UUID transportationRequestId;

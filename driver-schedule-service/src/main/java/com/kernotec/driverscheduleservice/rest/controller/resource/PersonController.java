@@ -19,11 +19,11 @@ import com.kernotec.driverscheduleservice.rest.command.resource.person.PersonCsv
 import com.kernotec.driverscheduleservice.rest.command.resource.person.PersonCsvImportSaveCmd;
 import com.kernotec.driverscheduleservice.rest.command.resource.person.ProcessPersonCreateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.resource.person.ProcessPersonUpdateRequestCmd;
+import com.kernotec.driverscheduleservice.rest.dto.common.response.LookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.PersonCsvImportDto;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.person.PersonCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.person.PersonScheduleConflictRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.person.PersonUpdateRequest;
-import com.kernotec.driverscheduleservice.rest.dto.common.response.LookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.person.PersonLookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.person.PersonResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.person.PersonScheduleConflictResponse;
@@ -171,11 +171,11 @@ public class PersonController {
     public SingleResponse<PersonScheduleConflictResponse> findPersonScheduleConflicts(
         @PathVariable("driverId") UUID driverId, @RequestBody PersonScheduleConflictRequest request)
     {
-        ZonedDateTime from = zonedDateTimeUtil.getNewOfDateAndTime(
-            request.getRequestedDate(), request.getConflictValidationFrom(), request.getZoneId());
+        ZonedDateTime from = zonedDateTimeUtil.getDateScheduleNormalized(
+            request.getConflictValidationFrom());
 
-        ZonedDateTime to = zonedDateTimeUtil.getNewOfDateAndTime(
-            request.getRequestedDate(), request.getConflictValidationTo(), request.getZoneId());
+        ZonedDateTime to = zonedDateTimeUtil.getDateScheduleNormalized(
+            request.getConflictValidationTo());
 
         List<ScheduleTransportation> scheduleTransportationList = scheduleTransportationService.findConflictByDriverId(
             driverId, from, to, request.getZoneId(), request.getScheduleTransportationExcludeId());

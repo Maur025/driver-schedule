@@ -1,24 +1,24 @@
 package com.kernotec.driverscheduleservice.rest.command.schedule.schedule.transportation;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.ScheduleTransportationCreateCmd;
-import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.log.ScheduleTransportationLogCreateCmd;
 import com.kernotec.driverscheduleservice.command.request.transportation.request.TransportationRequestGetDtoCmd;
 import com.kernotec.driverscheduleservice.command.request.transportation.request.TransportationRequestUpdateCmd;
 import com.kernotec.driverscheduleservice.command.request.transportation.request.log.TransportationRequestLogCreateCmd;
+import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.ScheduleTransportationCreateCmd;
+import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.log.ScheduleTransportationLogCreateCmd;
 import com.kernotec.driverscheduleservice.exception.schedule.ScheduleTransportationException;
 import com.kernotec.driverscheduleservice.jpa.dto.request.TransportationRequestDto;
 import com.kernotec.driverscheduleservice.jpa.dto.request.TransportationRequestStateDto;
 import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
-import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.request.TransportationRequestStateEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
+import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestStateService;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationStateService;
-import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestStateService;
+import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleTransportationCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.trip.assignment.TripAssignmentCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
-import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
 import com.kernotec.driverscheduleservice.util.ScheduleTransportationUtil;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
@@ -51,10 +51,11 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
     private final ScheduleTransportationCreateCmd scheduleTransportationCreateCmd;
     private final TransportationRequestUpdateCmd transportationRequestUpdateCmd;
     private final ScheduleTransportationDateValidationCmd scheduleTransportationDateValidationCmd;
-    private final WebSocketHandler webSocketHandler;
-    private final ZonedDateTimeUtil zonedDateTimeUtil;
     private final ScheduleTransportationLogCreateCmd scheduleTransportationLogCreateCmd;
     private final TransportationRequestLogCreateCmd transportationRequestLogCreateCmd;
+
+    private final WebSocketHandler webSocketHandler;
+    private final ZonedDateTimeUtil zonedDateTimeUtil;
     private final ScheduleTransportationUtil scheduleTransportationUtil;
 
     @Override
@@ -75,7 +76,6 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
                 ScheduleTransportationDateValidationCmd.Request.builder()
                     .vehicleIdList(vehicleIds)
                     .driverIdList(driverIds)
-                    .requestedDate(scheduleTransportationCreateRequest.getRequestedDate())
                     .requestedStartTime(scheduleTransportationCreateRequest.getRequestedStartTime())
                     .requestedEndTime(scheduleTransportationCreateRequest.getRequestedEndTime())
                     .zoneId(scheduleTransportationCreateRequest.getZoneId())
@@ -126,23 +126,17 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
         UUID scheduledTransportationStateScheduledId = scheduleTransportationStateService.findIdByCodeThrow(
             ScheduleTransportationStateEnum.SCHEDULED);
 
-        ZonedDateTime scheduledFrom = zonedDateTimeUtil.getNewOfDateAndTime(
-            scheduleTransportationCreateRequest.getRequestedDate(),
-            scheduleTransportationCreateRequest.getRequestedStartTime(),
-            scheduleTransportationCreateRequest.getZoneId()
-        );
+        ZonedDateTime scheduledFrom = zonedDateTimeUtil.getDateScheduleNormalized(
+            scheduleTransportationCreateRequest.getRequestedStartTime());
 
-        ZonedDateTime scheduledTo = zonedDateTimeUtil.getNewOfDateAndTime(
-            scheduleTransportationCreateRequest.getRequestedDate(),
-            scheduleTransportationCreateRequest.getRequestedEndTime(),
-            scheduleTransportationCreateRequest.getZoneId()
-        );
+        ZonedDateTime scheduledTo = zonedDateTimeUtil.getDateScheduleNormalized(
+            scheduleTransportationCreateRequest.getRequestedEndTime());
 
         UUID scheduleTransportationId = scheduleTransportationCreateCmd.withRequest(
                 ScheduleTransportationCreateCmd.Request.builder()
                     .scheduleFrom(scheduledFrom)
                     .scheduleTo(scheduledTo)
-                    .scheduledDate(scheduleTransportationCreateRequest.getRequestedDate())
+                    .scheduledDate(scheduledFrom)
                     .transportationRequestId(
                         scheduleTransportationCreateRequest.getTransportationRequestId())
                     .personRequestedId(transportationRequestDto.getPersonRequestedId())
