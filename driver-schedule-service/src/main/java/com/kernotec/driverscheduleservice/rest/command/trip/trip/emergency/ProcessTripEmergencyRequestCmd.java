@@ -9,15 +9,23 @@ import com.kernotec.driverscheduleservice.command.trip.trip.emergency.log.TripEm
 import com.kernotec.driverscheduleservice.command.trip.trip.log.TripLogCreateCmd;
 import com.kernotec.driverscheduleservice.exception.trip.TripException;
 import com.kernotec.driverscheduleservice.jpa.dto.trip.TripDto;
+import com.kernotec.driverscheduleservice.jpa.entity.trip.TripEmergency;
 import com.kernotec.driverscheduleservice.jpa.enums.trip.TripEmergencyStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.resource.LocationService;
 import com.kernotec.driverscheduleservice.jpa.service.resource.PersonService;
+import com.kernotec.driverscheduleservice.jpa.service.trip.TripEmergencyService;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripEmergencyStateService;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripStateService;
 import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
+import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyRequest;
+import com.kernotec.driverscheduleservice.rest.dto.trip.response.trip.emergency.TripEmergencyResponse;
+import com.kernotec.driverscheduleservice.rest.mapper.trip.response.trip.emergency.TripEmergencyResponseMapper;
+import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
+import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.UUID;
 import lombok.Builder;
@@ -37,6 +45,9 @@ public class ProcessTripEmergencyRequestCmd extends
     private final LocationService locationService;
     private final TripEmergencyStateService tripEmergencyStateService;
     private final PersonService personService;
+    private final TripEmergencyService tripEmergencyService;
+
+    private final TripEmergencyResponseMapper tripEmergencyResponseMapper;
 
     private final TripGetDtoCmd tripGetDtoCmd;
     private final TripUpdateCmd tripUpdateCmd;
@@ -44,6 +55,7 @@ public class ProcessTripEmergencyRequestCmd extends
     private final TripEmergencyCreateCmd tripEmergencyCreateCmd;
     private final EmergencyReasonCreateCmd emergencyReasonCreateCmd;
     private final TripEmergencyLogCreateCmd tripEmergencyLogCreateCmd;
+    private final WebSocketHandler webSocketHandler;
 
     @Override
     protected Void run(Request request) {
@@ -75,14 +87,16 @@ public class ProcessTripEmergencyRequestCmd extends
         Coordinate coordinate = locationService.getCoordinateOfList(
             Arrays.asList(tripEmergencyRequest.getLongitude(), tripEmergencyRequest.getLatitude()));
 
-        createTripEmergency(request.tripId, tripDto, tripEmergencyRequest);
+        UUID tripEmergencyId = createTripEmergency(request.tripId, tripDto, tripEmergencyRequest);
 
         markTripInEmergency(request.tripId, coordinate);
+
+        emitWebSocketMessage(tripEmergencyId);
 
         return null;
     }
 
-    private void createTripEmergency(UUID tripId, TripDto tripDto,
+    private UUID createTripEmergency(UUID tripId, TripDto tripDto,
         TripEmergencyRequest tripEmergencyRequest)
     {
         UUID tripEmergencyStateReportedId = tripEmergencyStateService.findIdByCodeThrow(
@@ -112,6 +126,8 @@ public class ProcessTripEmergencyRequestCmd extends
                 .otherReason(tripEmergencyRequest.getOtherReason())
                 .build())
             .execute();
+
+        return tripEmergencyId;
     }
 
     private void markTripInEmergency(UUID tripId, Coordinate coordinate) {
@@ -129,6 +145,19 @@ public class ProcessTripEmergencyRequestCmd extends
                 .coordinate(coordinate)
                 .build())
             .execute();
+    }
+
+    private void emitWebSocketMessage(UUID tripEmergencyId) {
+        TripEmergency tripEmergency = tripEmergencyService.findByIdThrow(tripEmergencyId);
+
+        webSocketHandler.emitMessage(
+            WebSocketTopic.TRIP_EMERGENCY_REPORTED,
+            WebSocketSingleResponse.<TripEmergencyResponse>builder()
+                .timestamp(ZonedDateTime.now())
+                .data(tripEmergencyResponseMapper.toResponse(tripEmergency))
+                .topic(WebSocketTopic.TRIP_EMERGENCY_REPORTED)
+                .build()
+        );
     }
 
     @Builder

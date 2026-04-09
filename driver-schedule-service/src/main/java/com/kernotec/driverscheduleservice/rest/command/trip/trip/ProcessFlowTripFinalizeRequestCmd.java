@@ -9,13 +9,22 @@ import com.kernotec.driverscheduleservice.jpa.dto.mapper.trip.TripDtoMapper;
 import com.kernotec.driverscheduleservice.jpa.dto.schedule.ScheduleTransportationDto;
 import com.kernotec.driverscheduleservice.jpa.dto.schedule.TripAssignmentDto;
 import com.kernotec.driverscheduleservice.jpa.dto.trip.TripDto;
+import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.entity.trip.Trip;
 import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.trip.TripStateEnum;
+import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationStateService;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripService;
+import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
+import com.kernotec.driverscheduleservice.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.TripFinalizeRequest;
+import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseFlatMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.trip.response.trip.TripResponseMapper;
+import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
+import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -36,13 +45,17 @@ public class ProcessFlowTripFinalizeRequestCmd extends
 
     private final TripService tripService;
     private final ScheduleTransportationStateService scheduleTransportationStateService;
+    private final ScheduleTransportationService scheduleTransportationService;
 
     private final TripDtoMapper tripDtoMapper;
+    private final ScheduleTransportationResponseFlatMapper scheduleTransportationResponseFlatMapper;
+    private final TripResponseMapper tripResponseMapper;
 
     private final TripGetDtoCmd tripGetDtoCmd;
     private final ScheduleTransportationUpdateCmd scheduleTransportationUpdateCmd;
     private final ScheduleTransportationGetDtoCmd scheduleTransportationGetDtoCmd;
     private final ProcessTripFinalizeRequestCmd processTripFinalizeRequestCmd;
+    private final WebSocketHandler webSocketHandler;
 
     @Override
     protected Void run(Request request) {
@@ -68,6 +81,8 @@ public class ProcessFlowTripFinalizeRequestCmd extends
             .execute();
 
         verifyAndUpdateSchedule(request.tripId, tripDto);
+
+        emitWebSocketTripMessage(request.tripId);
 
         return null;
     }
@@ -110,6 +125,8 @@ public class ProcessFlowTripFinalizeRequestCmd extends
                     .scheduleTransportationStateId(scheduleStateFinalizedId)
                     .build())
             .execute();
+
+        emitWebSocketScheduleMessage(scheduleTransportationId);
     }
 
     private Set<UUID> getTripAssignmentIds(UUID scheduleTransportationId) {
@@ -159,6 +176,32 @@ public class ProcessFlowTripFinalizeRequestCmd extends
         }
 
         return tripFinalizedCount;
+    }
+
+    private void emitWebSocketScheduleMessage(UUID scheduleTransportationId) {
+        ScheduleTransportation scheduleTransportation = scheduleTransportationService.findByIdThrow(
+            scheduleTransportationId);
+
+        webSocketHandler.emitMessage(
+            WebSocketTopic.SCHEDULE_TRANSPORTATION_FINALIZED,
+            WebSocketSingleResponse.<ScheduleTransportationResponse>builder()
+                .timestamp(ZonedDateTime.now())
+                .data(scheduleTransportationResponseFlatMapper.toResponse(scheduleTransportation))
+                .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_FINALIZED)
+                .build()
+        );
+    }
+
+    private void emitWebSocketTripMessage(UUID tripId) {
+        Trip trip = tripService.findByIdThrow(tripId);
+
+        webSocketHandler.emitMessage(
+            WebSocketTopic.TRIP_FINALIZED, WebSocketSingleResponse.builder()
+                .timestamp(ZonedDateTime.now())
+                .data(tripResponseMapper.toResponse(trip))
+                .topic(WebSocketTopic.TRIP_FINALIZED)
+                .build()
+        );
     }
 
     @Builder
