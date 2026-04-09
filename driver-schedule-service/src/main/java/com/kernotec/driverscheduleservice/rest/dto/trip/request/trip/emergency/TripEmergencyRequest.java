@@ -1,23 +1,22 @@
-package com.kernotec.driverscheduleservice.rest.dto.trip.request.trip;
+package com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.request.BaseRequest;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-@Getter
 @Setter
+@Getter
 @JsonInclude(Include.NON_NULL)
-public class TripFinalizeRequest extends BaseRequest {
-
-    private Double durationTotalMinutes;
-    private Double onRouteTimeMinutes;
-    private Double waitTimeMinutes;
+public class TripEmergencyRequest extends BaseRequest {
 
     private Double latitude;
     private Double longitude;
-    private String description;
+
+    private UUID reasonId;
+    private String otherReason;
 }

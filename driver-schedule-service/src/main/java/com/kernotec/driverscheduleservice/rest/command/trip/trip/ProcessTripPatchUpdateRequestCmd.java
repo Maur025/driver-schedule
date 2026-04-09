@@ -1,4 +1,4 @@
-package com.kernotec.driverscheduleservice.rest.command.trip;
+package com.kernotec.driverscheduleservice.rest.command.trip.trip;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.command.trip.trip.TripUpdateCmd;
