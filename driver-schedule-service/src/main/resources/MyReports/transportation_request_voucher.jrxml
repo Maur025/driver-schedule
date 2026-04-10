@@ -243,10 +243,10 @@ preq.last_name;]]>
 					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getPersonFullName($F{person_req_name},$F{person_req_lastname})]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="DATE_FROM_FORMAT">
-					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getDateWithConcatDateAndTime($F{requested_date},$F{start_time},$P{ZONE_ID})]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[VoucherJasperUtil.formatDateToVoucher($F{start_time},$P{ZONE_ID})]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="DATE_TO_FORMAT">
-					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getDateWithConcatDateAndTime($F{requested_date},$F{end_time},$P{ZONE_ID})]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[VoucherJasperUtil.formatDateToVoucher($F{end_time},$P{ZONE_ID})]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="REQUESTED_FOR_CONTACT">
 					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getPersonPhoneContacts($F{contacts_list})]]></subreportParameterExpression>

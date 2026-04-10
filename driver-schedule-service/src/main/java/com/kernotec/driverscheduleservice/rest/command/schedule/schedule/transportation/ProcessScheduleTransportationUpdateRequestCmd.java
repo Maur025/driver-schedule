@@ -13,10 +13,10 @@ import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportat
 import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationStateService;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.TripAssignmentService;
+import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleTransportationUpdateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.trip.assignment.TripAssignmentCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
-import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
 import com.kernotec.driverscheduleservice.util.ScheduleTransportationUtil;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
@@ -92,7 +92,6 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
                 ScheduleTransportationDateValidationCmd.Request.builder()
                     .vehicleIdList(vehicleIds)
                     .driverIdList(driverIds)
-                    .requestedDate(scheduleTransportationUpdateRequest.getRequestedDate())
                     .requestedStartTime(scheduleTransportationUpdateRequest.getRequestedStartTime())
                     .requestedEndTime(scheduleTransportationUpdateRequest.getRequestedEndTime())
                     .zoneId(scheduleTransportationUpdateRequest.getZoneId())
@@ -108,24 +107,18 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
         UUID scheduleTransportationStateRescheduledId = scheduleTransportationStateService.findIdByCodeThrow(
             ScheduleTransportationStateEnum.RESCHEDULED);
 
-        ZonedDateTime scheduledFrom = zonedDateTimeUtil.getNewOfDateAndTime(
-            scheduleTransportationUpdateRequest.getRequestedDate(),
-            scheduleTransportationUpdateRequest.getRequestedStartTime(),
-            scheduleTransportationUpdateRequest.getZoneId()
-        );
+        ZonedDateTime scheduledFrom = zonedDateTimeUtil.getDateScheduleNormalized(
+            scheduleTransportationUpdateRequest.getRequestedStartTime());
 
-        ZonedDateTime scheduledTo = zonedDateTimeUtil.getNewOfDateAndTime(
-            scheduleTransportationUpdateRequest.getRequestedDate(),
-            scheduleTransportationUpdateRequest.getRequestedEndTime(),
-            scheduleTransportationUpdateRequest.getZoneId()
-        );
+        ZonedDateTime scheduledTo = zonedDateTimeUtil.getDateScheduleNormalized(
+            scheduleTransportationUpdateRequest.getRequestedEndTime());
 
         scheduleTransportationUpdateCmd.withRequest(
                 ScheduleTransportationUpdateCmd.Request.builder()
                     .scheduleTransportationId(request.scheduleTransportationId)
                     .scheduleFrom(scheduledFrom)
                     .scheduleTo(scheduledTo)
-                    .requestedDate(request.scheduleTransportationUpdateRequest.getRequestedDate())
+                    .requestedDate(scheduledFrom)
                     .scheduleTransportationStateId(scheduleTransportationStateRescheduledId)
                     .build())
             .execute();

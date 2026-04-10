@@ -5,7 +5,6 @@ import com.kernotec.driverscheduleservice.jpa.entity.request.TransportationReque
 import com.kernotec.driverscheduleservice.jpa.enums.request.TripTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestService;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.Builder;
@@ -79,7 +78,7 @@ public class TransportationRequestUpdateCmd extends
     @Builder
     public record Request(@NotNull UUID transportationRequestId, String peopleNumber, String assets,
                           String passengers, ZonedDateTime startTime, ZonedDateTime endTime,
-                          LocalDateTime requestedDate, ZonedDateTime requestedFrom,
+                          ZonedDateTime requestedDate, ZonedDateTime requestedFrom,
                           ZonedDateTime requestedTo, TripTypeEnum tripType, Boolean isShortNotice,
                           String detail, Boolean isAssetPickup, Double estimatedTotalDistanceKm,
                           Double estimatedTotalDurationMin, UUID transportationRequestStateId)

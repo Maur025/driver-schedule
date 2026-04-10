@@ -8,11 +8,10 @@ import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.common.annotation.vehicle.CanCreateVehicle;
 import com.kernotec.driverscheduleservice.common.annotation.vehicle.CanReadVehicle;
 import com.kernotec.driverscheduleservice.common.annotation.vehicle.CanUpdateVehicle;
-import com.kernotec.driverscheduleservice.common.security.SecurityAuthProvider;
-import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.entity.resource.Vehicle;
-import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationService;
+import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.service.resource.VehicleService;
+import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.VehicleSpec;
 import com.kernotec.driverscheduleservice.rest.command.csv.imports.CsvImportCmd;
 import com.kernotec.driverscheduleservice.rest.command.resource.vehicle.ProcessVehicleCreateRequestCmd;
@@ -20,25 +19,24 @@ import com.kernotec.driverscheduleservice.rest.command.resource.vehicle.ProcessV
 import com.kernotec.driverscheduleservice.rest.command.resource.vehicle.ProcessVehicleUpdateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.resource.vehicle.VehicleCsvImportGetDtoCmd;
 import com.kernotec.driverscheduleservice.rest.command.resource.vehicle.VehicleCsvImportSaveCmd;
+import com.kernotec.driverscheduleservice.rest.dto.common.response.LookupResponse;
+import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.VehicleCsvImportDto;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.vehicle.VehicleCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.vehicle.VehiclePatchRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.vehicle.VehicleScheduleConflictRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.vehicle.VehicleUpdateRequest;
-import com.kernotec.driverscheduleservice.rest.dto.common.response.LookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.vehicle.VehicleLookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.vehicle.VehicleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.vehicle.VehicleScheduleConflictResponse;
-import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.resource.response.vehicle.VehicleResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.ZonedDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -82,7 +80,6 @@ public class VehicleController {
     private final VehicleCsvImportGetDtoCmd vehicleCsvImportGetDtoCmd;
     private final VehicleCsvImportSaveCmd vehicleCsvImportSaveCmd;
     private final ProcessVehiclePatchRequestCmd processVehiclePatchRequestCmd;
-    private final SecurityAuthProvider securityAuthProvider;
 
     @Operation(summary = "find all vehicles")
     @GetMapping
@@ -94,12 +91,6 @@ public class VehicleController {
         @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
         @RequestParam(name = "descending", defaultValue = "true") boolean descending)
     {
-        Collection<String> scopes = securityAuthProvider.getScopes();
-
-        for (String scope : scopes) {
-            log.info("scope: {}", scope);
-        }
-
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<Vehicle> vehiclePage = vehicleService.findAll(pageable);
 
@@ -210,10 +201,10 @@ public class VehicleController {
         @PathVariable("vehicleId") UUID vehicleId,
         @RequestBody VehicleScheduleConflictRequest request)
     {
-        ZonedDateTime from = zonedDateTimeUtil.getNewOfDateAndTime(
-            request.getRequestedDate(), request.getConflictValidationFrom(), request.getZoneId());
-        ZonedDateTime to = zonedDateTimeUtil.getNewOfDateAndTime(
-            request.getRequestedDate(), request.getConflictValidationTo(), request.getZoneId());
+        ZonedDateTime from = zonedDateTimeUtil.getDateScheduleNormalized(
+            request.getConflictValidationFrom());
+        ZonedDateTime to = zonedDateTimeUtil.getDateScheduleNormalized(
+            request.getConflictValidationTo());
 
         List<ScheduleTransportation> scheduleTransportationList = scheduleTransportationService.findConflictByVehicleId(
             vehicleId, from, to, request.getZoneId(), request.getScheduleTransportationExcludeId());

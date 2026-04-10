@@ -3,11 +3,10 @@ package com.kernotec.driverscheduleservice.rest.command.request;
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.command.request.request.coord.RequestCoordManyCreateCmd;
 import com.kernotec.driverscheduleservice.command.request.transportation.request.TransportationRequestCreateCmd;
-import com.kernotec.driverscheduleservice.common.security.SecurityAuthProvider;
 import com.kernotec.driverscheduleservice.jpa.entity.request.RequestCoord;
 import com.kernotec.driverscheduleservice.jpa.enums.request.TransportationRequestStateEnum;
-import com.kernotec.driverscheduleservice.jpa.service.resource.PersonService;
 import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestStateService;
+import com.kernotec.driverscheduleservice.jpa.service.resource.PersonService;
 import com.kernotec.driverscheduleservice.rest.dto.request.request.request.coord.RequestCoordCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.request.transportation.request.TransportationRequestCreateRequest;
 import com.kernotec.driverscheduleservice.rest.mapper.request.request.request.coord.RequestCoordEntityMapper;
@@ -30,14 +29,14 @@ public class TransportationRequestFlowCreateCmd extends
 {
 
     private final TransportationRequestStateService transportationRequestStateService;
+    private final PersonService personService;
+
+    private final RequestCoordEntityMapper requestCoordEntityMapper;
 
     private final TransportationRequestValidationCmd transportationRequestValidationCmd;
     private final TransportationRequestCreateCmd transportationRequestCreateCmd;
-    private final RequestCoordEntityMapper requestCoordEntityMapper;
     private final RequestCoordManyCreateCmd requestCoordManyCreateCmd;
     private final ZonedDateTimeUtil zonedDateTimeUtil;
-    private final SecurityAuthProvider securityAuthProvider;
-    private final PersonService personService;
 
     @Override
     protected void validate(Request request) {
@@ -47,7 +46,6 @@ public class TransportationRequestFlowCreateCmd extends
                 TransportationRequestValidationCmd.Request.builder()
                     .fromDate(transportationRequestCreateRequest.getStartTime())
                     .toDate(transportationRequestCreateRequest.getEndTime())
-                    .requestedDate(transportationRequestCreateRequest.getRequestedDate())
                     .zoneId(transportationRequestCreateRequest.getZoneId())
                     .build())
             .execute();
@@ -62,23 +60,17 @@ public class TransportationRequestFlowCreateCmd extends
 
         UUID personId = getPersonId(request.transportationRequestCreateRequest);
 
-        ZonedDateTime startTime = transportationRequestCreateRequest.getStartTime();
-        ZonedDateTime startTimeAdjust = startTime.withSecond(0)
-            .withNano(0);
+        log.info("REQUEST time start: {}", transportationRequestCreateRequest.getStartTime());
+        log.info("REQUEST time end: {}", transportationRequestCreateRequest.getEndTime());
 
-        ZonedDateTime endTime = transportationRequestCreateRequest.getEndTime();
-        ZonedDateTime endTimeAdjust = endTime.withSecond(0)
-            .withNano(0);
+        ZonedDateTime requestedFrom = zonedDateTimeUtil.getDateScheduleNormalized(
+            transportationRequestCreateRequest.getStartTime());
 
-        ZonedDateTime requestedFrom = zonedDateTimeUtil.getNewOfDateAndTime(
-            transportationRequestCreateRequest.getRequestedDate(), startTime,
-            transportationRequestCreateRequest.getZoneId()
-        );
+        ZonedDateTime requestedTo = zonedDateTimeUtil.getDateScheduleNormalized(
+            transportationRequestCreateRequest.getEndTime());
 
-        ZonedDateTime requestedTo = zonedDateTimeUtil.getNewOfDateAndTime(
-            transportationRequestCreateRequest.getRequestedDate(), endTime,
-            transportationRequestCreateRequest.getZoneId()
-        );
+        log.info("requested from: {}", requestedFrom);
+        log.info("requested to: {}", requestedTo);
 
         UUID transportationRequestId = transportationRequestCreateCmd.withRequest(
                 TransportationRequestCreateCmd.Request.builder()
@@ -86,9 +78,9 @@ public class TransportationRequestFlowCreateCmd extends
                     .assets(CommonUtil.toUpperCase(transportationRequestCreateRequest.getAssets()))
                     .passengers(
                         CommonUtil.toUpperCase(transportationRequestCreateRequest.getPassengers()))
-                    .startTime(startTimeAdjust)
-                    .endTime(endTimeAdjust)
-                    .requestedDate(transportationRequestCreateRequest.getRequestedDate())
+                    .startTime(requestedFrom)
+                    .endTime(requestedTo)
+                    .requestedDate(requestedFrom)
                     .requestedFrom(requestedFrom)
                     .requestedTo(requestedTo)
                     .tripType(transportationRequestCreateRequest.getTripType())
@@ -125,7 +117,7 @@ public class TransportationRequestFlowCreateCmd extends
         List<RequestCoordCreateRequest> requestCoordCreateRequestList, UUID transportationRequestId)
     {
         if (requestCoordCreateRequestList == null || requestCoordCreateRequestList.isEmpty()) {
-            log.debug("No coordinates to register for the transportation request12.");
+            log.debug("No coordinates to register for the transportation request.");
             return;
         }
 

@@ -7,12 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Timestamp;
 import java.util.TimeZone;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@Slf4j
 class VoucherJasperUtilTest {
 
     @BeforeAll
@@ -26,8 +24,6 @@ class VoucherJasperUtilTest {
         String formattedDate = VoucherJasperUtil.formatDateToVoucher(
             Timestamp.valueOf("2026-02-03 21:10:00.000"), "America/La_Paz");
 
-        log.info("Formatted Date: {}", formattedDate);
-
         assertNotNull(formattedDate);
         assertEquals("Feb 03, 2026 - 05:10 PM", formattedDate);
     }
@@ -40,8 +36,6 @@ class VoucherJasperUtilTest {
 
         String fullName = VoucherJasperUtil.getPersonFullName(name, lastName);
 
-        log.info("Full Name: {}", fullName);
-
         assertNotNull(fullName);
         assertEquals(name + " " + lastName, fullName);
     }
@@ -53,8 +47,6 @@ class VoucherJasperUtilTest {
 
         String fullName = VoucherJasperUtil.getPersonFullName(name, null);
 
-        log.info("Only Name: {}", fullName);
-
         assertNotNull(fullName);
         assertEquals(name, fullName);
     }
@@ -63,8 +55,6 @@ class VoucherJasperUtilTest {
     @DisplayName("should return a string corresponding to ONE WAY enum")
     void shouldReturnAStringCorrespondingToOneWayEnum() {
         String tripTypeString = VoucherJasperUtil.getRequestTripType("ONE_WAY");
-
-        log.info("Trip Type String: {}", tripTypeString);
 
         assertNotNull(tripTypeString);
         assertEquals("Solo Ida", tripTypeString);
@@ -83,8 +73,6 @@ class VoucherJasperUtilTest {
     void shouldReturnNoInRequestWithShortNotice() {
         String withAdvance = VoucherJasperUtil.getRequestWithAdvance(true);
 
-        log.info("With Advance: {}", withAdvance);
-
         assertEquals("No", withAdvance);
     }
 
@@ -92,8 +80,6 @@ class VoucherJasperUtilTest {
     @DisplayName("should return yes in request without advance")
     void shouldReturnYesInRequestWithoutAdvance() {
         String withAdvance = VoucherJasperUtil.getRequestWithAdvance(false);
-
-        log.info("Without Advance: {}", withAdvance);
 
         assertEquals("Sí", withAdvance);
     }
@@ -111,8 +97,6 @@ class VoucherJasperUtilTest {
     void shouldReturnNoInRequestWithAssetPickup() {
         String assetPickup = VoucherJasperUtil.getRequestAssetPickup(true);
 
-        log.info("With asset pickup: {}", assetPickup);
-
         assertEquals("Sí", assetPickup);
     }
 
@@ -120,8 +104,6 @@ class VoucherJasperUtilTest {
     @DisplayName("should return yes in request without asset pickup")
     void shouldReturnYesInRequestWithoutAssetPickup() {
         String assetPickup = VoucherJasperUtil.getRequestAssetPickup(false);
-
-        log.info("Without asset pickup: {}", assetPickup);
 
         assertEquals("No", assetPickup);
     }
@@ -165,13 +147,10 @@ class VoucherJasperUtilTest {
     @Test
     @DisplayName("should return dateTime combined in America/La_Paz timezone")
     void shouldReturnDateTimeCombinedInAmericaLa_PazTimezone() {
-        Timestamp timestampDate = Timestamp.valueOf("2026-02-04 01:06:00.000");
-        Timestamp timestampTime = Timestamp.valueOf("2026-02-03 21:10:00.000");
+        Timestamp timestampTime = Timestamp.valueOf("2026-02-04 21:10:00.000");
 
         String dateTimeStr = VoucherJasperUtil.getDateWithConcatDateAndTime(
-            timestampDate, timestampTime, "America/La_Paz");
-
-        log.info("Combined DateTime String: {}", dateTimeStr);
+            timestampTime, "America/La_Paz");
 
         assertEquals("Feb 04, 2026 - 05:10 PM", dateTimeStr);
     }
@@ -185,8 +164,6 @@ class VoucherJasperUtilTest {
 
         String phoneNumbers = VoucherJasperUtil.getPersonPhoneContacts(stringArray);
 
-        log.info("Phone Numbers: {}", phoneNumbers);
-
         assertEquals("77889997 - 1616", phoneNumbers);
     }
 
@@ -195,8 +172,6 @@ class VoucherJasperUtilTest {
     void shouldReturnLabelWhenCodeIsSCHEDULED() {
         String code = "SCHEDULED";
         String label = VoucherJasperUtil.getVoucherLabelScheduleState(code);
-
-        log.info("Schedule State Label: {}", label);
 
         assertEquals("SOLICITUD APROBADA", label);
     }
@@ -241,7 +216,6 @@ class VoucherJasperUtilTest {
         String reasonMessage = VoucherJasperUtil.getRequestReasonMessages(
             "REJECTED", "[]", rejectReasonArrayStr);
 
-        log.info("reason request message: {}", reasonMessage);
         assertEquals("Horario no operativo, Razon personalizada por el cliente", reasonMessage);
     }
 
@@ -254,7 +228,6 @@ class VoucherJasperUtilTest {
 
         String name = VoucherJasperUtil.getRequestedByFullName(requestedByStr);
 
-        log.info("Requested By Full Name: {}", name);
         assertEquals("mauro moya", name);
     }
 
@@ -268,8 +241,6 @@ class VoucherJasperUtilTest {
 
         String reasonMessage = VoucherJasperUtil.getScheduleReasonMessage(
             "RESCHEDULED", "[]", rescheduleReasonArrayStr);
-        log.info("Schedule reason message: {}", reasonMessage);
-
         assertEquals("Retraso por tráfico, Razon personalizada por el cliente", reasonMessage);
     }
 
@@ -286,7 +257,6 @@ class VoucherJasperUtilTest {
 
         String reasonMessage = VoucherJasperUtil.getScheduleReasonMessage(
             "RESCHEDULED", cancelledReasonStr, rescheduledReasonStr);
-        log.info("Schedule reason message of 2 string arrays: {}", reasonMessage);
 
         assertEquals("Retraso por tráfico, Emergencia operativa", reasonMessage);
     }
