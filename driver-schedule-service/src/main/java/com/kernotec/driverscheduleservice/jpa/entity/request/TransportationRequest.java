@@ -52,6 +52,7 @@ public class TransportationRequest extends BaseAuditEntityUser {
     private ZonedDateTime endTime;
 
     @Column(name = "requested_date")
+    @Convert(converter = SafeZoneDateTimeConverter.class)
     private ZonedDateTime requestedDate;
 
     @Column(name = "requested_from")
