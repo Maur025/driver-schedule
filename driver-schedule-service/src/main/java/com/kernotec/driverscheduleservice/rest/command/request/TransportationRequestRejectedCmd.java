@@ -6,7 +6,6 @@ import com.kernotec.driverscheduleservice.command.request.transportation.request
 import com.kernotec.driverscheduleservice.command.request.transportation.request.TransportationRequestUpdateCmd;
 import com.kernotec.driverscheduleservice.exception.request.TransportationRequestException;
 import com.kernotec.driverscheduleservice.jpa.dto.request.TransportationRequestDto;
-import com.kernotec.driverscheduleservice.jpa.dto.request.TransportationRequestStateDto;
 import com.kernotec.driverscheduleservice.jpa.enums.request.TransportationRequestStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestStateService;
 import com.kernotec.driverscheduleservice.rest.dto.request.request.reject.reason.RejectReasonRequest;
@@ -38,14 +37,14 @@ public class TransportationRequestRejectedCmd extends
                     .build())
             .execute();
 
-        TransportationRequestStateDto transportationRequestStateDto = transportationRequestDto.getTransportationRequestState();
+        TransportationRequestStateEnum requestStateCurrent = TransportationRequestStateEnum.fromValue(
+            transportationRequestDto.getTransportationRequestState()
+                .getCode());
 
-        if (!TransportationRequestStateEnum.REQUESTED.equals(
-            TransportationRequestStateEnum.fromValue(transportationRequestStateDto.getCode())))
-        {
+        if (!requestStateCurrent.canTransitionTo(TransportationRequestStateEnum.REJECTED)) {
             throw new TransportationRequestException(
                 "state.invalid.to.reject",
-                "'" + transportationRequestStateDto.getCode() + "'", HttpStatus.BAD_REQUEST.value()
+                "'" + requestStateCurrent + "'", HttpStatus.BAD_REQUEST.value()
             );
         }
     }

@@ -64,18 +64,10 @@ public class ProcessTripEmergencyRequestCmd extends
                 .build())
             .execute();
 
-        TripStateEnum tripStateCode = TripStateEnum.fromValue(tripDto.getTripState()
+        TripStateEnum tripStateCurrent = TripStateEnum.fromValue(tripDto.getTripState()
             .getCode());
 
-        if (tripStateCode.equals(TripStateEnum.EMERGENCY)) {
-            log.warn(
-                "Trip is already in emergency state, no need to process emergency request again");
-            return null;
-        }
-
-        if (tripStateCode.equals(TripStateEnum.FINALIZED) || tripStateCode.equals(
-            TripStateEnum.SYSTEM_CLOSED))
-        {
+        if (!tripStateCurrent.canTransitionTo(TripStateEnum.EMERGENCY)) {
             throw new TripException(
                 "action.not.available", TripStateEnum.EMERGENCY.toString(),
                 HttpStatus.CONFLICT.value()

@@ -64,12 +64,10 @@ public class ProcessFlowTripFinalizeRequestCmd extends
                 .build())
             .execute();
 
-        TripStateEnum tripStateCode = TripStateEnum.fromValue(tripDto.getTripState()
+        TripStateEnum tripStateCurrent = TripStateEnum.fromValue(tripDto.getTripState()
             .getCode());
 
-        if (tripStateCode.equals(TripStateEnum.FINALIZED) || tripStateCode.equals(
-            TripStateEnum.SYSTEM_CLOSED))
-        {
+        if (!tripStateCurrent.canTransitionTo(TripStateEnum.FINALIZED)) {
             log.warn("Trip is already finalized, no need to process finalize request again");
             return null;
         }

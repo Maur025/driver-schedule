@@ -7,14 +7,13 @@ import com.kernotec.driverscheduleservice.command.schedule.schedule.transportati
 import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.log.ScheduleTransportationLogCreateCmd;
 import com.kernotec.driverscheduleservice.exception.schedule.ScheduleTransportationException;
 import com.kernotec.driverscheduleservice.jpa.dto.schedule.ScheduleTransportationDto;
-import com.kernotec.driverscheduleservice.jpa.dto.schedule.ScheduleTransportationStateDto;
 import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationStateService;
+import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleTransportationCancelRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
-import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
@@ -54,11 +53,11 @@ public class ProcessScheduleTransportationCancelRequestCmd extends
                     .build())
             .execute();
 
-        ScheduleTransportationStateDto scheduleTransportationStateDto = scheduleTransportationDto.getScheduleTransportationState();
+        ScheduleTransportationStateEnum scheduleStateCurrent = ScheduleTransportationStateEnum.fromValue(
+            scheduleTransportationDto.getScheduleTransportationState()
+                .getCode());
 
-        if (ScheduleTransportationStateEnum.CANCELLED.equals(
-            ScheduleTransportationStateEnum.fromValue(scheduleTransportationStateDto.getCode())))
-        {
+        if (!scheduleStateCurrent.canTransitionTo(ScheduleTransportationStateEnum.CANCELLED)) {
             throw new ScheduleTransportationException(
                 "already.cancelled", "'" + request.scheduleTransportationId + "'",
                 HttpStatus.CONFLICT.value()
