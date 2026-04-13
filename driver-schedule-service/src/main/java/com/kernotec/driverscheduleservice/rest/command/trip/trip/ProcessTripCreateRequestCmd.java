@@ -98,22 +98,20 @@ public class ProcessTripCreateRequestCmd extends
             throw new TripException("driver.assignment.conflict", "", HttpStatus.CONFLICT.value());
         }
 
-        ScheduleTransportationStateEnum scheduleTransportationStateCode = ScheduleTransportationStateEnum.fromValue(
+        ScheduleTransportationStateEnum scheduleStateCurrent = ScheduleTransportationStateEnum.fromValue(
             tripAssignmentDto.getScheduleTransportation()
                 .getScheduleTransportationState()
                 .getCode());
 
-        if (ScheduleTransportationStateEnum.CANCELLED.equals(scheduleTransportationStateCode)
-            || ScheduleTransportationStateEnum.FINALIZED.equals(scheduleTransportationStateCode))
-        {
+        if (!scheduleStateCurrent.canTransitionTo(ScheduleTransportationStateEnum.IN_PROGRESS)) {
             throw new ScheduleTransportationException(
                 "not.supported.state",
-                "'" + scheduleTransportationStateCode + "'", HttpStatus.CONFLICT.value()
+                "'" + scheduleStateCurrent + "'", HttpStatus.CONFLICT.value()
             );
         }
 
         updateScheduleStateToInProgress(
-            scheduleTransportationStateCode, tripAssignmentDto.getScheduleTransportationId());
+            scheduleStateCurrent, tripAssignmentDto.getScheduleTransportationId());
 
         UUID tripStateOnRouteId = tripStateService.findIdByCodeThrow(TripStateEnum.ON_ROUTE);
 

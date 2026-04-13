@@ -8,7 +8,6 @@ import com.kernotec.driverscheduleservice.command.schedule.schedule.transportati
 import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.log.ScheduleTransportationLogCreateCmd;
 import com.kernotec.driverscheduleservice.exception.schedule.ScheduleTransportationException;
 import com.kernotec.driverscheduleservice.jpa.dto.request.TransportationRequestDto;
-import com.kernotec.driverscheduleservice.jpa.dto.request.TransportationRequestStateDto;
 import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.enums.request.TransportationRequestStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
@@ -94,13 +93,13 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
                     .build())
             .execute();
 
-        TransportationRequestStateDto transportationRequestStateDto = transportationRequestDto.getTransportationRequestState();
+        TransportationRequestStateEnum requestStateCurrent = TransportationRequestStateEnum.fromValue(
+            transportationRequestDto.getTransportationRequestState()
+                .getCode());
 
-        if (!transportationRequestStateDto.getCode()
-            .equals(String.valueOf(TransportationRequestStateEnum.REQUESTED)))
-        {
+        if (!requestStateCurrent.canTransitionTo(TransportationRequestStateEnum.APPROVED)) {
             throw new ScheduleTransportationException(
-                "invalid.state.to.action", "'" + transportationRequestStateDto.getCode() + "'",
+                "invalid.state.to.action", "'" + requestStateCurrent + "'",
                 HttpStatus.BAD_REQUEST.value()
             );
         }

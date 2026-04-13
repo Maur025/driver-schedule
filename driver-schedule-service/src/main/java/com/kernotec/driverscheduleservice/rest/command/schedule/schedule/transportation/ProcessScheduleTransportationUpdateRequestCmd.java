@@ -7,7 +7,6 @@ import com.kernotec.driverscheduleservice.command.schedule.schedule.transportati
 import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.log.ScheduleTransportationLogCreateCmd;
 import com.kernotec.driverscheduleservice.exception.schedule.ScheduleTransportationException;
 import com.kernotec.driverscheduleservice.jpa.dto.schedule.ScheduleTransportationDto;
-import com.kernotec.driverscheduleservice.jpa.dto.schedule.ScheduleTransportationStateDto;
 import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationService;
@@ -65,16 +64,14 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
                     .build())
             .execute();
 
-        ScheduleTransportationStateDto scheduleTransportationStateDto = scheduleTransportationDto.getScheduleTransportationState();
-        ScheduleTransportationStateEnum stateCode = ScheduleTransportationStateEnum.fromValue(
-            scheduleTransportationStateDto.getCode());
+        ScheduleTransportationStateEnum scheduleStateCurrent = ScheduleTransportationStateEnum.fromValue(
+            scheduleTransportationDto.getScheduleTransportationState()
+                .getCode());
 
-        if (!stateCode.equals(ScheduleTransportationStateEnum.RESCHEDULED) && !stateCode.equals(
-            ScheduleTransportationStateEnum.SCHEDULED))
-        {
+        if (!scheduleStateCurrent.canTransitionTo(ScheduleTransportationStateEnum.RESCHEDULED)) {
             throw new ScheduleTransportationException(
                 "invalid.state.to.action",
-                "'" + stateCode + "'", HttpStatus.CONFLICT.value()
+                "'" + scheduleStateCurrent + "'", HttpStatus.CONFLICT.value()
             );
         }
 
