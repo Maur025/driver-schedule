@@ -2,6 +2,7 @@ package com.kernotec.driverscheduleservice.jpa.specification.schedule;
 
 import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverscheduleservice.jpa.specification.schedule.criteria.ScheduleTransportationSpecificationCriteria;
 import com.kernotec.driverscheduleservice.util.CommonSpecification;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
@@ -15,6 +16,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +82,32 @@ public record ScheduleTransportationSpecification(
         return joinMap.get(ScheduleTransportationSpecificationJoinEnum.TRANSPORTATION_REQUEST_JOIN);
     }
 
+    private Join<?, ?> getOrCreateTripJoin(
+        Map<ScheduleTransportationSpecificationJoinEnum, Join<?, ?>> joinMap, Root<?> root)
+    {
+        if (!joinMap.containsKey(ScheduleTransportationSpecificationJoinEnum.TRIP_JOIN)) {
+            joinMap.put(
+                ScheduleTransportationSpecificationJoinEnum.TRIP_JOIN,
+                getOrCreateTripAssignmentJoin(joinMap, root).join("trips", JoinType.LEFT)
+            );
+        }
+
+        return joinMap.get(ScheduleTransportationSpecificationJoinEnum.TRIP_JOIN);
+    }
+
+    private Join<?, ?> getOrCreateTripStateJoin(
+        Map<ScheduleTransportationSpecificationJoinEnum, Join<?, ?>> joinMap, Root<?> root)
+    {
+        if (!joinMap.containsKey(ScheduleTransportationSpecificationJoinEnum.TRIP_STATE_JOIN)) {
+            joinMap.put(
+                ScheduleTransportationSpecificationJoinEnum.TRIP_STATE_JOIN,
+                getOrCreateTripJoin(joinMap, root).join("tripState", JoinType.LEFT)
+            );
+        }
+
+        return joinMap.get(ScheduleTransportationSpecificationJoinEnum.TRIP_STATE_JOIN);
+    }
+
     @Override
     public Predicate toPredicate(Root<ScheduleTransportation> root, CriteriaQuery<?> query,
         CriteriaBuilder cb)
@@ -103,6 +131,7 @@ public record ScheduleTransportationSpecification(
         addDriverIdsFilter(root, joinMap).ifPresent(predicateList::add);
         addKeywordFilter(root, cb, joinMap).ifPresent(predicateList::add);
         addGreaterThanOrEqualDateFilter(root, cb).ifPresent(predicateList::add);
+        addTripStatesFilter(root, cb, joinMap).ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -149,12 +178,10 @@ public record ScheduleTransportationSpecification(
         return Optional.ofNullable(criteria.getVehicleId())
             .map(
                 vehicleId -> cb.equal(
-                    getOrCreateTripAssignmentJoin(joinMap, root).get("vehicleId"),
-                    vehicleId
-                ));
+                    getOrCreateTripAssignmentJoin(joinMap, root).get("vehicleId"), vehicleId));
     }
 
-    public ScheduleTransportationSpecification withVehicleIds(List<UUID> vehicleIds) {
+    public ScheduleTransportationSpecification withVehicleIds(Collection<UUID> vehicleIds) {
         this.criteria.setVehicleIds(vehicleIds);
         return this;
     }
@@ -182,7 +209,7 @@ public record ScheduleTransportationSpecification(
             ));
     }
 
-    public ScheduleTransportationSpecification withDriverIds(List<UUID> driverIds) {
+    public ScheduleTransportationSpecification withDriverIds(Collection<UUID> driverIds) {
         this.criteria.setDriverIds(driverIds);
         return this;
     }
@@ -285,7 +312,9 @@ public record ScheduleTransportationSpecification(
         if (from != null && to != null) {
             return Optional.of(
                 CommonSpecification.dateRangePredicate(
-                    cb, root.get("scheduleFrom"), from, to, criteria.getZoneId()));
+                    cb, root.get("scheduleFrom"), from, to,
+                    criteria.getZoneId()
+                ));
         }
 
         return Optional.empty();
@@ -334,7 +363,7 @@ public record ScheduleTransportationSpecification(
     }
 
     public ScheduleTransportationSpecification withScheduleTransportationStates(
-        List<ScheduleTransportationStateEnum> scheduleTransportationStates)
+        Collection<ScheduleTransportationStateEnum> scheduleTransportationStates)
     {
         this.criteria.setScheduleTransportationStates(scheduleTransportationStates);
         return this;
@@ -392,5 +421,24 @@ public record ScheduleTransportationSpecification(
 
                 return cb.greaterThanOrEqualTo(root.get("scheduleFrom"), dataWithZone);
             });
+    }
+
+    public ScheduleTransportationSpecification withTripStates(Collection<TripStateEnum> tripStates)
+    {
+        this.criteria.setTripStates(tripStates);
+        return this;
+    }
+
+    private Optional<Predicate> addTripStatesFilter(Root<ScheduleTransportation> root,
+        CriteriaBuilder cb, Map<ScheduleTransportationSpecificationJoinEnum, Join<?, ?>> joinMap)
+    {
+        return Optional.ofNullable(criteria.getTripStates())
+            .map(tripStates -> cb.or(
+                cb.isNull(getOrCreateTripJoin(joinMap, root).get("id")), getOrCreateTripStateJoin(
+                    joinMap, root).get("code")
+                    .in(tripStates.stream()
+                        .map(String::valueOf)
+                        .toList())
+            ));
     }
 }

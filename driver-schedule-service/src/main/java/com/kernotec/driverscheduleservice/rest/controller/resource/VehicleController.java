@@ -9,7 +9,7 @@ import com.kernotec.driverscheduleservice.common.annotation.vehicle.CanCreateVeh
 import com.kernotec.driverscheduleservice.common.annotation.vehicle.CanReadVehicle;
 import com.kernotec.driverscheduleservice.common.annotation.vehicle.CanUpdateVehicle;
 import com.kernotec.driverscheduleservice.jpa.entity.resource.Vehicle;
-import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
+import com.kernotec.driverscheduleservice.jpa.service.resource.AvailabilityForAssignmentService;
 import com.kernotec.driverscheduleservice.jpa.service.resource.VehicleService;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.VehicleSpec;
@@ -22,13 +22,14 @@ import com.kernotec.driverscheduleservice.rest.command.resource.vehicle.VehicleC
 import com.kernotec.driverscheduleservice.rest.dto.common.response.LookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.VehicleCsvImportDto;
+import com.kernotec.driverscheduleservice.rest.dto.resource.request.AvailabilityForAssignmentRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.vehicle.VehicleCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.vehicle.VehiclePatchRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.vehicle.VehicleScheduleConflictRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.vehicle.VehicleUpdateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.resource.response.AvailabilityForAssignmentResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.vehicle.VehicleLookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.vehicle.VehicleResponse;
-import com.kernotec.driverscheduleservice.rest.dto.resource.response.vehicle.VehicleScheduleConflictResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.resource.response.vehicle.VehicleResponseMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
@@ -38,6 +39,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -80,6 +82,7 @@ public class VehicleController {
     private final VehicleCsvImportGetDtoCmd vehicleCsvImportGetDtoCmd;
     private final VehicleCsvImportSaveCmd vehicleCsvImportSaveCmd;
     private final ProcessVehiclePatchRequestCmd processVehiclePatchRequestCmd;
+    private final AvailabilityForAssignmentService availabilityForAssignmentService;
 
     @Operation(summary = "find all vehicles")
     @GetMapping
@@ -197,25 +200,23 @@ public class VehicleController {
     @PostMapping("{vehicleId}/schedule-conflicts")
     @ResponseStatus(HttpStatus.OK)
     @CanReadVehicle
-    public SingleResponse<VehicleScheduleConflictResponse> findVehicleScheduleConflicts(
+    public SingleResponse<AvailabilityForAssignmentResponse> findVehicleScheduleConflicts(
         @PathVariable("vehicleId") UUID vehicleId,
         @RequestBody VehicleScheduleConflictRequest request)
     {
-        ZonedDateTime from = zonedDateTimeUtil.getDateScheduleNormalized(
-            request.getConflictValidationFrom());
-        ZonedDateTime to = zonedDateTimeUtil.getDateScheduleNormalized(
-            request.getConflictValidationTo());
 
-        List<ScheduleTransportation> scheduleTransportationList = scheduleTransportationService.findConflictByVehicleId(
-            vehicleId, from, to, request.getZoneId(), request.getScheduleTransportationExcludeId());
+        AvailabilityForAssignmentResponse availabilityForAssignmentResponse = availabilityForAssignmentService.checkVehicleIsAvailable(
+            AvailabilityForAssignmentRequest.builder()
+                .vehicleIds(Set.of(vehicleId))
+                .dateFrom(request.getConflictValidationFrom())
+                .dateTo(request.getConflictValidationTo())
+                .zoneId(request.getZoneId())
+                .scheduleTransportationExcludeId(request.getScheduleTransportationExcludeId())
+                .build());
 
-        return SingleResponse.<VehicleScheduleConflictResponse>builder()
+        return SingleResponse.<AvailabilityForAssignmentResponse>builder()
             .code(HttpStatus.OK.value())
-            .data(VehicleScheduleConflictResponse.builder()
-                .hasConflict(!scheduleTransportationList.isEmpty())
-                .scheduleTransportationConflicts(
-                    scheduleTransportationResponseMapper.toResponse(scheduleTransportationList))
-                .build())
+            .data(availabilityForAssignmentResponse)
             .build();
     }
 

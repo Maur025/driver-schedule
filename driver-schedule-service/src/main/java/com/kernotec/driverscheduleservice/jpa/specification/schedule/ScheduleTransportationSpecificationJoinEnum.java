@@ -1,5 +1,9 @@
 package com.kernotec.driverscheduleservice.jpa.specification.schedule;
 
 public enum ScheduleTransportationSpecificationJoinEnum {
-    SCHEDULE_TRANSPORTATION_STATE_JOIN, TRIP_ASSIGNMENT_JOIN, TRANSPORTATION_REQUEST_JOIN;
+    SCHEDULE_TRANSPORTATION_STATE_JOIN,
+    TRIP_ASSIGNMENT_JOIN,
+    TRANSPORTATION_REQUEST_JOIN,
+    TRIP_JOIN,
+    TRIP_STATE_JOIN;
 }

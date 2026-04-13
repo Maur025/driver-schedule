@@ -9,8 +9,8 @@ import com.kernotec.driverscheduleservice.common.annotation.person.CanCreatePers
 import com.kernotec.driverscheduleservice.common.annotation.person.CanReadPerson;
 import com.kernotec.driverscheduleservice.common.annotation.person.CanUpdatePerson;
 import com.kernotec.driverscheduleservice.jpa.entity.resource.Person;
-import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.enums.resource.PersonTypeEnum;
+import com.kernotec.driverscheduleservice.jpa.service.resource.AvailabilityForAssignmentService;
 import com.kernotec.driverscheduleservice.jpa.service.resource.PersonService;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.PersonSpec;
@@ -21,18 +21,18 @@ import com.kernotec.driverscheduleservice.rest.command.resource.person.ProcessPe
 import com.kernotec.driverscheduleservice.rest.command.resource.person.ProcessPersonUpdateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.dto.common.response.LookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.PersonCsvImportDto;
+import com.kernotec.driverscheduleservice.rest.dto.resource.request.AvailabilityForAssignmentRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.person.PersonCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.person.PersonScheduleConflictRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.person.PersonUpdateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.resource.response.AvailabilityForAssignmentResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.person.PersonLookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.person.PersonResponse;
-import com.kernotec.driverscheduleservice.rest.dto.resource.response.person.PersonScheduleConflictResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.resource.response.person.PersonResponseMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -72,6 +72,7 @@ public class PersonController {
     private final PersonCsvImportGetDtoCmd personCsvImportGetDtoCmd;
     private final PersonCsvImportSaveCmd personCsvImportSaveCmd;
     private final ProcessPersonUpdateRequestCmd processPersonUpdateRequestCmd;
+    private final AvailabilityForAssignmentService availabilityForAssignmentService;
 
     @Operation(summary = "find all persons")
     @GetMapping
@@ -168,25 +169,21 @@ public class PersonController {
     @PostMapping("{driverId}/schedule-conflicts")
     @ResponseStatus(HttpStatus.OK)
     @CanReadPerson
-    public SingleResponse<PersonScheduleConflictResponse> findPersonScheduleConflicts(
+    public SingleResponse<AvailabilityForAssignmentResponse> findPersonScheduleConflicts(
         @PathVariable("driverId") UUID driverId, @RequestBody PersonScheduleConflictRequest request)
     {
-        ZonedDateTime from = zonedDateTimeUtil.getDateScheduleNormalized(
-            request.getConflictValidationFrom());
+        AvailabilityForAssignmentResponse availabilityForAssignmentResponse = availabilityForAssignmentService.checkDriverIsAvailable(
+            AvailabilityForAssignmentRequest.builder()
+                .driverIds(List.of(driverId))
+                .dateFrom(request.getConflictValidationFrom())
+                .dateTo(request.getConflictValidationTo())
+                .zoneId(request.getZoneId())
+                .scheduleTransportationExcludeId(request.getScheduleTransportationExcludeId())
+                .build());
 
-        ZonedDateTime to = zonedDateTimeUtil.getDateScheduleNormalized(
-            request.getConflictValidationTo());
-
-        List<ScheduleTransportation> scheduleTransportationList = scheduleTransportationService.findConflictByDriverId(
-            driverId, from, to, request.getZoneId(), request.getScheduleTransportationExcludeId());
-
-        return SingleResponse.<PersonScheduleConflictResponse>builder()
+        return SingleResponse.<AvailabilityForAssignmentResponse>builder()
             .code(HttpStatus.OK.value())
-            .data(PersonScheduleConflictResponse.builder()
-                .hasConflict(!scheduleTransportationList.isEmpty())
-                .scheduleTransportationConflicts(
-                    scheduleTransportationResponseMapper.toResponse(scheduleTransportationList))
-                .build())
+            .data(availabilityForAssignmentResponse)
             .build();
     }
 
