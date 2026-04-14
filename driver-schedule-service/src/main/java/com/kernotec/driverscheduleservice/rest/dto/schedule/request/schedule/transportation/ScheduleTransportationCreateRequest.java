@@ -6,7 +6,6 @@ import com.kernotec.core.rest.dto.request.BaseRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.trip.assignment.TripAssignmentCreateRequest;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -24,8 +23,6 @@ public class ScheduleTransportationCreateRequest extends BaseRequest {
     private ZonedDateTime requestedStartTime;
     @NotNull
     private ZonedDateTime requestedEndTime;
-    @NotNull
-    private LocalDateTime requestedDate;
     @NotNull
     private UUID transportationRequestId;
     private String zoneId;

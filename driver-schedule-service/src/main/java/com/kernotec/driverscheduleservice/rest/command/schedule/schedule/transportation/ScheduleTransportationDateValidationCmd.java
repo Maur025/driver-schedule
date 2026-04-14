@@ -2,8 +2,9 @@ package com.kernotec.driverscheduleservice.rest.command.schedule.schedule.transp
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.exception.schedule.ScheduleTransportationException;
-import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
-import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationService;
+import com.kernotec.driverscheduleservice.jpa.service.resource.AvailabilityForAssignmentService;
+import com.kernotec.driverscheduleservice.rest.dto.resource.request.AvailabilityForAssignmentRequest;
+import com.kernotec.driverscheduleservice.rest.dto.resource.response.AvailabilityForAssignmentResponse;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
@@ -23,7 +24,7 @@ public class ScheduleTransportationDateValidationCmd extends
 {
 
     private final ZonedDateTimeUtil zonedDateTimeUtil;
-    private final ScheduleTransportationService scheduleTransportationService;
+    private final AvailabilityForAssignmentService availabilityForAssignmentService;
 
     @Override
     protected Void run(Request request) {
@@ -38,31 +39,42 @@ public class ScheduleTransportationDateValidationCmd extends
                 "to.less.or.equal.from", "", HttpStatus.BAD_REQUEST.value());
         }
 
-        ZonedDateTime timeNow = ZonedDateTime.now();
+        ZonedDateTime timeNow = ZonedDateTime.now()
+            .minusMinutes(15)
+            .withSecond(0)
+            .withNano(0);
 
         if (scheduledFrom.isBefore(timeNow)) {
             throw new ScheduleTransportationException(
                 "invalid.range.date", "", HttpStatus.BAD_REQUEST.value());
         }
 
-        List<ScheduleTransportation> vehicleConflictList = scheduleTransportationService.findConflictByVehicleIds(
-            request.vehicleIdList, scheduledFrom, scheduledTo, request.zoneId,
-            request.scheduleTransportationExcludeId
-        );
+        AvailabilityForAssignmentResponse vehicleAvailabilityResponse = availabilityForAssignmentService.checkVehicleIsAvailable(
+            AvailabilityForAssignmentRequest.builder()
+                .vehicleIds(request.vehicleIdList)
+                .dateFrom(scheduledFrom)
+                .dateTo(scheduledTo)
+                .zoneId(request.zoneId)
+                .scheduleTransportationExcludeId(request.scheduleTransportationExcludeId)
+                .build());
 
-        if (!vehicleConflictList.isEmpty()) {
+        if (vehicleAvailabilityResponse.isHasConflict()) {
             throw new ScheduleTransportationException(
                 "vehicle.conflict", "",
                 HttpStatus.CONFLICT.value()
             );
         }
 
-        List<ScheduleTransportation> driverConflictList = scheduleTransportationService.findConflictByDriverIds(
-            request.driverIdList, scheduledFrom, scheduledTo, request.zoneId,
-            request.scheduleTransportationExcludeId
-        );
+        AvailabilityForAssignmentResponse driverAvailabilityResponse = availabilityForAssignmentService.checkDriverIsAvailable(
+            AvailabilityForAssignmentRequest.builder()
+                .driverIds(request.driverIdList)
+                .dateFrom(scheduledFrom)
+                .dateTo(scheduledTo)
+                .zoneId(request.zoneId)
+                .scheduleTransportationExcludeId(request.scheduleTransportationExcludeId)
+                .build());
 
-        if (!driverConflictList.isEmpty()) {
+        if (driverAvailabilityResponse.isHasConflict()) {
             throw new ScheduleTransportationException(
                 "driver.conflict", "",
                 HttpStatus.CONFLICT.value()

@@ -1,8 +1,9 @@
 package com.kernotec.driverscheduleservice.jpa.specification.schedule.criteria;
 
 import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.trip.TripStateEnum;
 import java.time.ZonedDateTime;
-import java.util.List;
+import java.util.Collection;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,7 @@ public class ScheduleTransportationSpecificationCriteria {
     private String zoneId;
     private UUID scheduleTransportationExcludeId;
     private ScheduleTransportationStateEnum scheduleTransportationState;
-    private List<ScheduleTransportationStateEnum> scheduleTransportationStates;
+    private Collection<ScheduleTransportationStateEnum> scheduleTransportationStates;
 
     private ZonedDateTime simpleDate;
     private ZonedDateTime fromDate;
@@ -29,10 +30,12 @@ public class ScheduleTransportationSpecificationCriteria {
 
     private UUID personRequestedId;
 
-    private List<UUID> vehicleIds;
-    private List<UUID> driverIds;
+    private Collection<UUID> vehicleIds;
+    private Collection<UUID> driverIds;
 
     private String keyword;
 
     private ZonedDateTime greaterThanOrEqualDate;
+
+    private Collection<TripStateEnum> tripStates;
 }
