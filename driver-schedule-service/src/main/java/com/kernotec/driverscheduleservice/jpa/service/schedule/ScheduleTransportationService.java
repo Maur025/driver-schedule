@@ -55,7 +55,10 @@ public class ScheduleTransportationService extends BaseServiceImpl<ScheduleTrans
                     ScheduleTransportationStateEnum.SCHEDULED,
                     ScheduleTransportationStateEnum.RESCHEDULED,
                     ScheduleTransportationStateEnum.IN_PROGRESS
-                )), pageable
+                ))
+                .withTripStates(
+                    Set.of(TripStateEnum.ON_ROUTE, TripStateEnum.WAITING, TripStateEnum.EMERGENCY)),
+            pageable
         );
     }
 
