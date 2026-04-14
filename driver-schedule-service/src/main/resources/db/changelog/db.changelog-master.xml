@@ -186,8 +186,22 @@
     <sqlFile path="data/reason/type/reason_type_update1.sql" relativeToChangelogFile="true"/>
   </changeSet>
 
+  <!-- trip emergency state - initial data-->
   <changeSet id="1775594328253-1" author="Maur025">
     <sqlFile path="data/trip/emergency/state/trip_emergency_state_seed.sql"
       relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <include file="db/changelog/2026/04/14-01-changelog-49.xml"/>
+
+  <!-- emergency response type - initial data -->
+  <changeSet id="1776186506402-1" author="Maur025">
+    <sqlFile path="data/emergency/response/type/emergency_response_type_seed.sql"
+      relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- reason - update reason with emergency and emergency reject reasons -->
+  <changeSet id="1776192478333-1" author="Maur025">
+    <sqlFile path="data/reason/reason_update1.sql" relativeToChangelogFile="true"/>
   </changeSet>
 </databaseChangeLog>

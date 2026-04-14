@@ -3,16 +3,16 @@ package com.kernotec.driverscheduleservice.rest.command.resource.vehicle;
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.core.exception.custom.base.DefaultMultipleException;
 import com.kernotec.driverscheduleservice.command.resource.vehicle.VehicleUpdateCmd;
-import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.entity.resource.Vehicle;
-import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationService;
+import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.service.resource.VehicleService;
-import com.kernotec.driverscheduleservice.rest.dto.resource.request.vehicle.VehiclePatchRequest;
-import com.kernotec.driverscheduleservice.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
-import com.kernotec.driverscheduleservice.rest.dto.resource.response.vehicle.VehicleResponse;
+import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
+import com.kernotec.driverscheduleservice.rest.dto.resource.request.vehicle.VehiclePatchRequest;
+import com.kernotec.driverscheduleservice.rest.dto.resource.response.vehicle.VehicleResponse;
+import com.kernotec.driverscheduleservice.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.resource.response.vehicle.VehicleResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.Valid;
@@ -24,10 +24,12 @@ import java.util.Map;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ProcessVehiclePatchRequestCmd extends
@@ -53,9 +55,8 @@ public class ProcessVehiclePatchRequestCmd extends
         Page<ScheduleTransportation> scheduleTransportationPage = scheduleTransportationService.findWhichVehicleBusy(
             request.vehicleId);
 
-        if (scheduleTransportationPage.getContent()
-            .isEmpty())
-        {
+        if (scheduleTransportationPage.isEmpty()) {
+            log.debug(" ");
             return;
         }
 
