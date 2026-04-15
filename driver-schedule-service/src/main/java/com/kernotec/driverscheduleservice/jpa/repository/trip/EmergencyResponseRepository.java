@@ -1,0 +1,11 @@
+package com.kernotec.driverscheduleservice.jpa.repository.trip;
+
+import com.kernotec.core.jpa.repository.BaseRepository;
+import com.kernotec.driverscheduleservice.jpa.entity.trip.EmergencyResponse;
+import java.util.UUID;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface EmergencyResponseRepository extends BaseRepository<EmergencyResponse, UUID> {
+
+}

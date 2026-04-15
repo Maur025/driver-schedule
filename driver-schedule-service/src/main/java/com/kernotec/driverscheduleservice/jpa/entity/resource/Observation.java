@@ -17,7 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "obsevations",
+@Table(name = "observations",
        uniqueConstraints = @UniqueConstraint(name = "UC_observation_code_type",
                                              columnNames = {"code", "observation_type_id"}))
 public class Observation extends BaseAuditEntity {

@@ -19,9 +19,6 @@ import lombok.Setter;
 @Table(name = "emergency_responses")
 public class EmergencyResponse extends BaseAuditEntityUser {
 
-    @Column(name = "other_response_detail", length = 1024)
-    private String otherResponseDetail;
-
     @Column(name = "detail", length = 1024)
     private String detail;
 

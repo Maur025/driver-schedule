@@ -10,6 +10,7 @@ import com.kernotec.driverscheduleservice.jpa.enums.resource.PersonTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.repository.resource.PersonRepository;
 import com.kernotec.driverscheduleservice.jpa.specification.resource.PersonSpecification;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.person.PersonLookupResponse;
+import com.kernotec.driverscheduleservice.util.CommonUtil;
 import com.kernotec.driverscheduleservice.webflux.user.client.rest.UserServiceApiClient;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserCreateRequest;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserDeleteRequest;
@@ -100,9 +101,10 @@ public class PersonService extends BaseServiceImpl<Person, UUID> {
     public Page<PersonLookupResponse> findAllToLookup(String keyword, PersonTypeEnum personType,
         Pageable pageable)
     {
+        String keywordStr = CommonUtil.getSafeString(keyword);
         String personTypeStr = personType != null ? personType.toString() : null;
 
-        return repository.findAllToLookup(keyword, personTypeStr, pageable);
+        return repository.findAllToLookup(keywordStr, personTypeStr, pageable);
     }
 
     public UUID findIdByUserIdAuthenticateThrow() {
