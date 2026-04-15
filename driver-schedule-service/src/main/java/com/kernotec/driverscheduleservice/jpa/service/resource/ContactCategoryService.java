@@ -7,6 +7,7 @@ import com.kernotec.driverscheduleservice.jpa.entity.resource.ContactCategory;
 import com.kernotec.driverscheduleservice.jpa.enums.resource.ContactCategoryEnum;
 import com.kernotec.driverscheduleservice.jpa.repository.resource.ContactCategoryRepository;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.contact.category.ContactCategoryLookupResponse;
+import com.kernotec.driverscheduleservice.util.CommonUtil;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -33,7 +34,8 @@ public class ContactCategoryService extends BaseServiceImpl<ContactCategory, UUI
 
     public Page<ContactCategoryLookupResponse> findAllToLookup(String keyword, Pageable pageable)
     {
-        return repository.findAllToLookup(keyword, pageable);
+        String keywordStr = CommonUtil.getSafeString(keyword);
+        return repository.findAllToLookup(keywordStr, pageable);
     }
 
     public Optional<ContactCategory> findByCode(ContactCategoryEnum code) {

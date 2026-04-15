@@ -204,4 +204,17 @@
   <changeSet id="1776192478333-1" author="Maur025">
     <sqlFile path="data/reason/reason_update1.sql" relativeToChangelogFile="true"/>
   </changeSet>
+
+  <include file="db/changelog/2026/04/15-01-changelog-50.xml"/>
+  <include file="db/changelog/2026/04/15-01-changelog-51.xml"/>
+
+  <!-- observation type - initial data -->
+  <changeSet id="1776264266863-1" author="Maur025">
+    <sqlFile path="data/observation/type/observation_type_seed.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- reason - update name with conflict in enum -->
+  <changeSet id="1776265248785-1" author="Maur025">
+    <sqlFile path="data/reason/reason_update2.sql" relativeToChangelogFile="true"/>
+  </changeSet>
 </databaseChangeLog>

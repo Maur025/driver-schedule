@@ -5,6 +5,7 @@ import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.driverscheduleservice.jpa.entity.resource.PlaceCategory;
 import com.kernotec.driverscheduleservice.jpa.repository.resource.PlaceCategoryRepository;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.place.category.PlaceCategoryLookupResponse;
+import com.kernotec.driverscheduleservice.util.CommonUtil;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,7 @@ public class PlaceCategoryService extends BaseServiceImpl<PlaceCategory, UUID> {
     }
 
     public Page<PlaceCategoryLookupResponse> findAllToLookup(String keyword, Pageable pageable) {
-        return repository.findAllToLookup(keyword, pageable);
+        String keywordStr = CommonUtil.getSafeString(keyword);
+        return repository.findAllToLookup(keywordStr, pageable);
     }
 }

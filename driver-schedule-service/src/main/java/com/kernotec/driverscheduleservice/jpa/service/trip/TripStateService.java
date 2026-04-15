@@ -7,6 +7,7 @@ import com.kernotec.driverscheduleservice.jpa.entity.trip.TripState;
 import com.kernotec.driverscheduleservice.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverscheduleservice.jpa.repository.trip.TripStateRepository;
 import com.kernotec.driverscheduleservice.rest.dto.trip.response.trip.state.TripStateLookupResponse;
+import com.kernotec.driverscheduleservice.util.CommonUtil;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -32,7 +33,8 @@ public class TripStateService extends BaseServiceImpl<TripState, UUID> {
     }
 
     public Page<TripStateLookupResponse> findAllToLookup(String keyword, Pageable pageable) {
-        return repository.findAllToLookup(keyword, pageable);
+        String keywordStr = CommonUtil.getSafeString(keyword);
+        return repository.findAllToLookup(keywordStr, pageable);
     }
 
     public Optional<TripState> findByCode(TripStateEnum code) {
