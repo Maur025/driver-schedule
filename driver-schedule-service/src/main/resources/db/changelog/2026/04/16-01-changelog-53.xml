@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+  <changeSet id="1776353081687-2" author="mmoya@PragmaInvest.com">
+    <addUniqueConstraint columnNames="code" constraintName="uc_trip_assignment_states_code"
+      tableName="trip_assignment_states"/>
+  </changeSet>
+  <changeSet id="1776353081687-1" author="mmoya@PragmaInvest.com">
+    <addNotNullConstraint columnDataType="UUID" columnName="trip_assignment_state_id"
+      tableName="trip_assignments" validate="true"/>
+  </changeSet>
+
+</databaseChangeLog>

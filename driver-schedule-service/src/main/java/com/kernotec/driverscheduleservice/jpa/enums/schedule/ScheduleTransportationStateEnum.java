@@ -4,14 +4,15 @@ import java.util.Map;
 import java.util.Set;
 
 public enum ScheduleTransportationStateEnum {
-    SCHEDULED, CANCELLED, RESCHEDULED, IN_PROGRESS, FINALIZED;
+    SCHEDULED, CANCELLED, RESCHEDULED, IN_PROGRESS, FINALIZED, NEEDS_ACTION;
 
     private static final Map<ScheduleTransportationStateEnum, Set<ScheduleTransportationStateEnum>> TRANSITIONS = Map.of(
-        SCHEDULED, Set.of(CANCELLED, RESCHEDULED, IN_PROGRESS),
+        SCHEDULED, Set.of(CANCELLED, RESCHEDULED, IN_PROGRESS, NEEDS_ACTION),
         CANCELLED, Set.of(),
-        RESCHEDULED, Set.of(RESCHEDULED, IN_PROGRESS, CANCELLED),
+        RESCHEDULED, Set.of(RESCHEDULED, IN_PROGRESS, CANCELLED, NEEDS_ACTION),
         IN_PROGRESS, Set.of(IN_PROGRESS, FINALIZED),
-        FINALIZED, Set.of()
+        FINALIZED, Set.of(),
+        NEEDS_ACTION, Set.of(RESCHEDULED, CANCELLED)
     );
 
     public static ScheduleTransportationStateEnum fromValue(String value) {

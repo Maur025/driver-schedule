@@ -16,15 +16,16 @@ import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransport
 import com.kernotec.driverscheduleservice.report.jpa.enums.ReportDispositionEnum;
 import com.kernotec.driverscheduleservice.report.rest.command.pdf.PdfExportCmd;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.ScheduleTransportationSpec;
+import com.kernotec.driverscheduleservice.rest.command.schedule.schedule.transportation.ProcessScheduleAddAssignmentRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.schedule.schedule.transportation.ProcessScheduleTransportationCancelRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.schedule.schedule.transportation.ProcessScheduleTransportationCreateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.schedule.schedule.transportation.ProcessScheduleTransportationUpdateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.schedule.schedule.transportation.VoucherScheduleTransportationPdfExportCmd;
+import com.kernotec.driverscheduleservice.rest.dto.common.response.SingleHateoasResponse;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleTransportationCancelRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleTransportationCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleTransportationFilterRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleTransportationUpdateRequest;
-import com.kernotec.driverscheduleservice.rest.dto.common.response.SingleHateoasResponse;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -61,6 +62,7 @@ public class ScheduleTransportationController {
     private final ProcessScheduleTransportationCancelRequestCmd processScheduleTransportationCancelRequestCmd;
     private final PdfExportCmd pdfExportCmd;
     private final VoucherScheduleTransportationPdfExportCmd voucherScheduleTransportationPdfExportCmd;
+    private final ProcessScheduleAddAssignmentRequestCmd processScheduleAddAssignmentRequestCmd;
 
     @Operation(summary = "find all schedule transportations")
     @GetMapping
@@ -199,6 +201,24 @@ public class ScheduleTransportationController {
                 ScheduleTransportationController.class).scheduleTransportationExportVoucher(
                 scheduleTransportationId, null, ReportDispositionEnum.inline)).withRel("voucher")
                 .expand()))
+            .build();
+    }
+
+    @Operation(summary = "add asignments to schedule transportation")
+    @PostMapping("{scheduleTransportationId}/assignments")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<ScheduleTransportationResponse> addAssignments(
+        @PathVariable("scheduleTransportationId") UUID scheduleTransportationId)
+    {
+        processScheduleAddAssignmentRequestCmd.withRequest(
+                ProcessScheduleAddAssignmentRequestCmd.Request.builder()
+                    .scheduleTransportationId(scheduleTransportationId)
+                    .build())
+            .execute();
+
+        return SingleResponse.<ScheduleTransportationResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("Add assignments successful")
             .build();
     }
 

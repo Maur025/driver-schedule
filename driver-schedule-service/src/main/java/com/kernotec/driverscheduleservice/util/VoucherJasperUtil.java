@@ -65,6 +65,7 @@ public class VoucherJasperUtil {
             case CANCELLED -> "CANCELADO";
             case IN_PROGRESS -> "EN PROGRESO";
             case FINALIZED -> "FINALIZADO";
+            case NEEDS_ACTION -> "ACCION REQUERIDA";
         };
     }
 
