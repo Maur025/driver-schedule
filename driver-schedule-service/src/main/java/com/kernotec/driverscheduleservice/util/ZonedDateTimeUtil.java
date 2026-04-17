@@ -1,5 +1,6 @@
 package com.kernotec.driverscheduleservice.util;
 
+import com.kernotec.core.exception.custom.base.DefaultApiException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -7,6 +8,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -43,6 +45,11 @@ public class ZonedDateTimeUtil {
     }
 
     public ZonedDateTime getDateScheduleNormalized(ZonedDateTime zonedDateTime) {
+        if (zonedDateTime == null) {
+            throw new DefaultApiException(
+                "param.not.null", "dateTime", HttpStatus.BAD_REQUEST.value());
+        }
+
         return zonedDateTime.withSecond(0)
             .withNano(0)
             .withZoneSameInstant(ZoneOffset.UTC);

@@ -18,6 +18,7 @@ import com.kernotec.driverscheduleservice.rest.dto.schedule.request.trip.assignm
 import com.kernotec.driverscheduleservice.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
 import com.kernotec.driverscheduleservice.util.ScheduleTransportationUtil;
+import com.kernotec.driverscheduleservice.util.ScheduleTransportationUtil.RegistryTripAssignmentRequest;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
@@ -122,10 +123,13 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
 
         tripAssignmentService.deleteAllByScheduleTransportationId(request.scheduleTransportationId);
 
-        scheduleTransportationUtil.registryTripAssignments(
-            scheduleTransportationUpdateRequest.getTripAssignments(),
-            request.scheduleTransportationId
-        );
+        scheduleTransportationUtil.registryTripAssignments(RegistryTripAssignmentRequest.builder()
+            .tripAssignmentCreateRequestList(
+                scheduleTransportationUpdateRequest.getTripAssignments())
+            .scheduleTransportationId(request.scheduleTransportationId)
+            .estimatedStartTime(scheduledFrom)
+            .estimatedEndTime(scheduledTo)
+            .build());
 
         scheduleTransportationLogCreateCmd.withRequest(
                 ScheduleTransportationLogCreateCmd.Request.builder()

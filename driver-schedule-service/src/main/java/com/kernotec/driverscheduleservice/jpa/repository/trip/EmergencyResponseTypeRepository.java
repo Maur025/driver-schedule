@@ -16,7 +16,7 @@ public interface EmergencyResponseTypeRepository extends
 {
 
     @Query("""
-        SELECT ert.id as id, ert.name as name
+        SELECT ert.id as id, ert.name as name, ert.code as code
         FROM EmergencyResponseType ert
         WHERE ert.deleted = false
         AND (:keyword IS NULL OR LOWER(ert.name) LIKE LOWER(CONCAT('%',:keyword,'%')))

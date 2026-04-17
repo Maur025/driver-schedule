@@ -2,6 +2,7 @@ package com.kernotec.driverscheduleservice.jpa.specification.schedule;
 
 import com.kernotec.driverscheduleservice.jpa.entity.schedule.TripAssignment;
 import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.schedule.TripAssignmentStateCodeEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverscheduleservice.jpa.specification.schedule.criteria.TripAssignmentSpecificationCriteria;
 import com.kernotec.driverscheduleservice.util.CommonSpecification;
@@ -11,16 +12,19 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 
+@Slf4j
 public record TripAssignmentSpecification(TripAssignmentSpecificationCriteria criteria) implements
     Specification<TripAssignment>
 {
@@ -65,7 +69,7 @@ public record TripAssignmentSpecification(TripAssignmentSpecificationCriteria cr
     {
         if (!joinMap.containsKey(TripAssignmentSpecificationJoinEnum.TRIP_JOIN)) {
             joinMap.put(
-                TripAssignmentSpecificationJoinEnum.TRIP_JOIN, root.join("trips", JoinType.INNER));
+                TripAssignmentSpecificationJoinEnum.TRIP_JOIN, root.join("trips", JoinType.LEFT));
         }
 
         return joinMap.get(TripAssignmentSpecificationJoinEnum.TRIP_JOIN);
@@ -77,11 +81,24 @@ public record TripAssignmentSpecification(TripAssignmentSpecificationCriteria cr
         if (!joinMap.containsKey(TripAssignmentSpecificationJoinEnum.TRIP_STATE_JOIN)) {
             joinMap.put(
                 TripAssignmentSpecificationJoinEnum.TRIP_STATE_JOIN,
-                getOrCreateTripJoin(joinMap, root).join("tripState", JoinType.INNER)
+                getOrCreateTripJoin(joinMap, root).join("tripState", JoinType.LEFT)
             );
         }
 
         return joinMap.get(TripAssignmentSpecificationJoinEnum.TRIP_STATE_JOIN);
+    }
+
+    private Join<?, ?> getOrCreateTripAssignmentStateJoin(
+        Map<TripAssignmentSpecificationJoinEnum, Join<?, ?>> joinMap, Root<?> root)
+    {
+        if (!joinMap.containsKey(TripAssignmentSpecificationJoinEnum.TRIP_ASSIGNMENT_STATE)) {
+            joinMap.put(
+                TripAssignmentSpecificationJoinEnum.TRIP_ASSIGNMENT_STATE,
+                root.join("tripAssignmentState", JoinType.INNER)
+            );
+        }
+
+        return joinMap.get(TripAssignmentSpecificationJoinEnum.TRIP_ASSIGNMENT_STATE);
     }
 
     @Override
@@ -99,6 +116,13 @@ public record TripAssignmentSpecification(TripAssignmentSpecificationCriteria cr
         addDriverIdFilter(root, cb).ifPresent(predicateList::add);
         addVehicleIdFilter(root, cb).ifPresent(predicateList::add);
         addTripStatesFilter(root, cb, joinMap).ifPresent(predicateList::add);
+        addVehicleIdsFilter(root, cb).ifPresent(predicateList::add);
+        addDriverIdsFilter(root, cb).ifPresent(predicateList::add);
+        addGreaterThanOrEqualDateFilter(root, cb).ifPresent(predicateList::add);
+        addAvailabilityValidationFilter(root, cb).ifPresent(predicateList::add);
+        addExistingTripStatesFilter(root, cb, joinMap).ifPresent(predicateList::add);
+        addTripAssignmentStatesFilter(root, joinMap).ifPresent(predicateList::add);
+        addScheduleTransportationExcludeIdFilter(root, cb).ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -177,7 +201,7 @@ public record TripAssignmentSpecification(TripAssignmentSpecificationCriteria cr
     }
 
     public TripAssignmentSpecification withScheduleTransportationStates(
-        Set<ScheduleTransportationStateEnum> scheduleTransportationStates)
+        Collection<ScheduleTransportationStateEnum> scheduleTransportationStates)
     {
         this.criteria.setScheduleTransportationStates(scheduleTransportationStates);
         return this;
@@ -204,6 +228,17 @@ public record TripAssignmentSpecification(TripAssignmentSpecificationCriteria cr
             .map(driverId -> cb.equal(root.get("driverId"), driverId));
     }
 
+    public TripAssignmentSpecification withDriverIds(Collection<UUID> driverIds) {
+        this.criteria.setDriverIds(driverIds);
+        return this;
+    }
+
+    private Optional<Predicate> addDriverIdsFilter(Root<TripAssignment> root, CriteriaBuilder cb) {
+        return Optional.ofNullable(criteria.getDriverIds())
+            .map(driverIds -> root.get("driverId")
+                .in(driverIds));
+    }
+
     public TripAssignmentSpecification withVehicleId(UUID vehicleId) {
         this.criteria.setVehicleId(vehicleId);
         return this;
@@ -214,7 +249,18 @@ public record TripAssignmentSpecification(TripAssignmentSpecificationCriteria cr
             .map(vehicleId -> cb.equal(root.get("vehicleId"), vehicleId));
     }
 
-    public TripAssignmentSpecification withTripStates(Set<TripStateEnum> tripStates) {
+    public TripAssignmentSpecification withVehicleIds(Collection<UUID> vehicleIds) {
+        this.criteria.setVehicleIds(vehicleIds);
+        return this;
+    }
+
+    private Optional<Predicate> addVehicleIdsFilter(Root<TripAssignment> root, CriteriaBuilder cb) {
+        return Optional.ofNullable(criteria.getVehicleIds())
+            .map(vehicleIds -> root.get("vehicleId")
+                .in(vehicleIds));
+    }
+
+    public TripAssignmentSpecification withTripStates(Collection<TripStateEnum> tripStates) {
         this.criteria.setTripStates(tripStates);
         return this;
     }
@@ -227,5 +273,109 @@ public record TripAssignmentSpecification(TripAssignmentSpecificationCriteria cr
                 .in(tripStates.stream()
                     .map(String::valueOf)
                     .toList()));
+    }
+
+    public TripAssignmentSpecification withExistingTripStates(Collection<TripStateEnum> tripStates)
+    {
+        this.criteria.setExistingTripStates(tripStates);
+        return this;
+    }
+
+    private Optional<Predicate> addExistingTripStatesFilter(Root<TripAssignment> root,
+        CriteriaBuilder cb, Map<TripAssignmentSpecificationJoinEnum, Join<?, ?>> joinMap)
+    {
+        return Optional.ofNullable(criteria.getExistingTripStates())
+            .map(tripStates -> cb.or(
+                cb.isNull(getOrCreateTripJoin(joinMap, root).get("id")), getOrCreateTripStateJoin(
+                    joinMap, root).get("code")
+                    .in(tripStates.stream()
+                        .map(String::valueOf)
+                        .toList())
+            ));
+    }
+
+    public TripAssignmentSpecification withGreaterThanOrEqualDate(ZonedDateTime dateTime) {
+        this.criteria.setGreaterThanOrEqualDate(dateTime);
+        return this;
+    }
+
+    private Optional<Predicate> addGreaterThanOrEqualDateFilter(Root<TripAssignment> root,
+        CriteriaBuilder cb)
+    {
+        return Optional.ofNullable(criteria.getGreaterThanOrEqualDate())
+            .map(dateTime -> {
+                ZonedDateTime dateTimeNormalized = dateTime.withZoneSameInstant(ZoneOffset.UTC);
+                return cb.greaterThanOrEqualTo(root.get("estimatedStartTime"), dateTimeNormalized);
+            });
+    }
+
+    public TripAssignmentSpecification withAvailabilityValidation(ZonedDateTime availabilityFrom,
+        ZonedDateTime availabilityTo)
+    {
+        this.criteria.setAvailableFrom(availabilityFrom);
+        this.criteria.setAvailableTo(availabilityTo);
+        return this;
+    }
+
+    private Optional<Predicate> addAvailabilityValidationFilter(Root<TripAssignment> root,
+        CriteriaBuilder cb)
+    {
+        ZonedDateTime from = criteria.getAvailableFrom();
+        ZonedDateTime to = criteria.getAvailableTo();
+
+        if (from == null || to == null) {
+            return Optional.empty();
+        }
+
+        ZonedDateTime fromRegularized = from.withSecond(0)
+            .withNano(0);
+
+        ZonedDateTime toRegularized = to.withSecond(0)
+            .withNano(0);
+
+        log.info("from regularized: {}", fromRegularized);
+        log.info("to regularized: {}", toRegularized);
+
+        return Optional.of(
+            cb.and(
+                cb.lessThan(root.get("estimatedStartTime"), toRegularized),
+                cb.greaterThan(root.get("estimatedEndTime"), fromRegularized)
+            ));
+    }
+
+    public TripAssignmentSpecification withTripAssignmentStates(
+        Collection<TripAssignmentStateCodeEnum> tripAssignmentStates)
+    {
+        this.criteria.setTripAssignmentStates(tripAssignmentStates);
+        return this;
+    }
+
+    private Optional<Predicate> addTripAssignmentStatesFilter(Root<TripAssignment> root,
+        Map<TripAssignmentSpecificationJoinEnum, Join<?, ?>> joinMap)
+    {
+        return Optional.ofNullable(criteria.getTripAssignmentStates())
+            .map(tripAssignmentStates -> getOrCreateTripAssignmentStateJoin(joinMap, root).get(
+                    "code")
+                .in(tripAssignmentStates.stream()
+                    .map(String::valueOf)
+                    .toList()));
+    }
+
+    public TripAssignmentSpecification withScheduleTransportationExcludeId(
+        UUID scheduleTransportationExcludeId)
+    {
+        this.criteria.setScheduleTransportationExcludeId(scheduleTransportationExcludeId);
+        return this;
+    }
+
+    private Optional<Predicate> addScheduleTransportationExcludeIdFilter(Root<TripAssignment> root,
+        CriteriaBuilder cb)
+    {
+        return Optional.ofNullable(criteria.getScheduleTransportationExcludeId())
+            .map(
+                scheduleTransportationExcludeId -> cb.notEqual(
+                    root.get("scheduleTransportationId"),
+                    scheduleTransportationExcludeId
+                ));
     }
 }

@@ -2,14 +2,12 @@ package com.kernotec.driverscheduleservice.rest.mapper.request.response.transpor
 
 import com.kernotec.driverscheduleservice.jpa.entity.request.TransportationRequest;
 import com.kernotec.driverscheduleservice.rest.dto.request.response.transportation.request.TransportationRequestResponse;
-import com.kernotec.driverscheduleservice.util.DateResponseUtil;
-import com.kernotec.driverscheduleservice.util.GeoJsonUtil;
 import java.util.List;
 import java.util.Set;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(uses = {GeoJsonUtil.class, DateResponseUtil.class})
+@Mapper
 public interface TransportationRequestResponseFlatMapper {
 
     @Mapping(target = "personRequested", ignore = true)
@@ -17,8 +15,13 @@ public interface TransportationRequestResponseFlatMapper {
     @Mapping(target = "cancelReasons", ignore = true)
     @Mapping(target = "scheduleTransportations", ignore = true)
     @Mapping(target = "requestCoords", ignore = true)
-    @Mapping(target = "createdAt", qualifiedByName = "mapToZonedDateTimeResponse")
-    @Mapping(target = "updatedAt", qualifiedByName = "mapToZonedDateTimeResponse")
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "updatedBy", ignore = true)
+    @Mapping(target = "createdByUser", ignore = true)
+    @Mapping(target = "updatedByUser", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
     TransportationRequestResponse toResponse(TransportationRequest transportationRequest);
 
     List<TransportationRequestResponse> toResponse(

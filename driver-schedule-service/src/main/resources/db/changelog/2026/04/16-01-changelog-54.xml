@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+  <changeSet id="1776355536713-1" author="mmoya@PragmaInvest.com">
+    <addColumn tableName="trip_assignments">
+      <column name="estimated_end_time" type="DATETIME"/>
+      <column name="estimated_start_time" type="DATETIME"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="1776355536713-3" author="mmoya@PragmaInvest.com">
+    <dropColumn columnName="estimated_from" tableName="trip_assignments"/>
+
+    <dropColumn columnName="estimated_to" tableName="trip_assignments"/>
+  </changeSet>
+
+</databaseChangeLog>

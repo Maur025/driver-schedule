@@ -7,4 +7,6 @@ public interface EmergencyResponseTypeLookupResponse {
     UUID getId();
 
     String getName();
+
+    String getCode();
 }

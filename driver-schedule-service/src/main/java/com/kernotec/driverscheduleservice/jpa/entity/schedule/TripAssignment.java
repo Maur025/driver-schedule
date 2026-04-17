@@ -27,11 +27,11 @@ import lombok.Setter;
 @Table(name = "trip_assignments")
 public class TripAssignment extends BaseAuditEntityUser {
 
-    @Column(name = "estimated_from")
+    @Column(name = "estimated_start_time")
     @Convert(converter = SafeZoneDateTimeConverter.class)
     private ZonedDateTime estimatedStartTime;
 
-    @Column(name = "estimated_to")
+    @Column(name = "estimated_end_time")
     @Convert(converter = SafeZoneDateTimeConverter.class)
     private ZonedDateTime estimatedEndTime;
 
