@@ -4,6 +4,7 @@ import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.driverscheduleservice.jpa.entity.trip.EmergencyRejectReason;
 import com.kernotec.driverscheduleservice.jpa.repository.trip.EmergencyRejectReasonRepository;
+import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,5 +23,9 @@ public class EmergencyRejectReasonService extends BaseServiceImpl<EmergencyRejec
     @Override
     protected BaseRepository<EmergencyRejectReason, UUID> repository() {
         return repository;
+    }
+
+    public List<EmergencyRejectReason> findByTripEmergencyId(UUID tripEmergencyId) {
+        return repository.findByTripEmergencyId(tripEmergencyId);
     }
 }

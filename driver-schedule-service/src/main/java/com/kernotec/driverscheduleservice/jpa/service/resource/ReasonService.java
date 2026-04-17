@@ -7,6 +7,8 @@ import com.kernotec.driverscheduleservice.jpa.enums.resource.ReasonTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.repository.resource.ReasonRepository;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.reason.ReasonLookupResponse;
 import com.kernotec.driverscheduleservice.util.CommonUtil;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -40,5 +42,9 @@ public class ReasonService extends BaseServiceImpl<Reason, UUID> {
         String reasonTypeStr = reasonType != null ? String.valueOf(reasonType) : null;
 
         return repository.findAllToLookup(keywordStr, reasonTypeId, reasonTypeStr, pageable);
+    }
+
+    public List<Reason> findByIdIn(Collection<UUID> ids) {
+        return repository.findByIdIn(ids);
     }
 }

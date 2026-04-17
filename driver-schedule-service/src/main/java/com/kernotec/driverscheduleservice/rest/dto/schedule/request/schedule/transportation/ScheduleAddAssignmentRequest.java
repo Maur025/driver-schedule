@@ -25,6 +25,9 @@ public class ScheduleAddAssignmentRequest extends BaseRequest {
     private ZonedDateTime assignTo;
 
     @NotNull
+    private String zoneId;
+
+    @NotNull
     @NotEmpty
     private List<TripAssignmentCreateRequest> tripAssignments;
 }

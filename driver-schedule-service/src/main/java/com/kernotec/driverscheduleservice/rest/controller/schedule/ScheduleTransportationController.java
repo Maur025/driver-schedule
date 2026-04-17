@@ -22,6 +22,7 @@ import com.kernotec.driverscheduleservice.rest.command.schedule.schedule.transpo
 import com.kernotec.driverscheduleservice.rest.command.schedule.schedule.transportation.ProcessScheduleTransportationUpdateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.schedule.schedule.transportation.VoucherScheduleTransportationPdfExportCmd;
 import com.kernotec.driverscheduleservice.rest.dto.common.response.SingleHateoasResponse;
+import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleAddAssignmentRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleTransportationCancelRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleTransportationCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleTransportationFilterRequest;
@@ -208,7 +209,8 @@ public class ScheduleTransportationController {
     @PostMapping("{scheduleTransportationId}/assignments")
     @ResponseStatus(HttpStatus.OK)
     public SingleResponse<ScheduleTransportationResponse> addAssignments(
-        @PathVariable("scheduleTransportationId") UUID scheduleTransportationId)
+        @PathVariable("scheduleTransportationId") UUID scheduleTransportationId,
+        @RequestBody ScheduleAddAssignmentRequest request)
     {
         processScheduleAddAssignmentRequestCmd.withRequest(
                 ProcessScheduleAddAssignmentRequestCmd.Request.builder()
