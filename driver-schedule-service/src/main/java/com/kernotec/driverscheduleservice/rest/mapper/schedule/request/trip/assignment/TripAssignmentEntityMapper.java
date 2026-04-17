@@ -10,10 +10,11 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface TripAssignmentEntityMapper {
 
-    TripAssignment toEntity(TripAssignmentCreateRequest request, UUID scheduleTransportationId);
+    TripAssignment toEntity(TripAssignmentCreateRequest request, UUID scheduleTransportationId,
+        UUID tripAssignmentStateId);
 
     default List<TripAssignment> toEntity(List<TripAssignmentCreateRequest> requestList,
-        UUID scheduleTransportationId)
+        UUID scheduleTransportationId, UUID tripAssignmentStateId)
     {
         if (requestList == null) {
             return null;
@@ -22,7 +23,10 @@ public interface TripAssignmentEntityMapper {
         List<TripAssignment> list = new ArrayList<>(requestList.size());
 
         for (TripAssignmentCreateRequest tripAssignmentCreateRequest : requestList) {
-            list.add(toEntity(tripAssignmentCreateRequest, scheduleTransportationId));
+            list.add(toEntity(
+                tripAssignmentCreateRequest, scheduleTransportationId,
+                tripAssignmentStateId
+            ));
         }
 
         return list;

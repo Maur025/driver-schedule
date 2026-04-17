@@ -2,13 +2,20 @@ package com.kernotec.driverscheduleservice.jpa.service.schedule;
 
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
+import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.driverscheduleservice.common.security.SecurityAuthProvider;
 import com.kernotec.driverscheduleservice.jpa.entity.schedule.TripAssignment;
 import com.kernotec.driverscheduleservice.jpa.enums.resource.PersonTypeEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.schedule.TripAssignmentStateCodeEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverscheduleservice.jpa.repository.schedule.TripAssignmentRepository;
 import com.kernotec.driverscheduleservice.jpa.service.resource.PersonService;
 import com.kernotec.driverscheduleservice.jpa.specification.schedule.TripAssignmentSpecification;
+import com.kernotec.driverscheduleservice.rest.dto.resource.request.AvailabilityForAssignmentRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.trip.assignment.TripAssignmentFilterRequest;
+import java.time.ZonedDateTime;
+import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -62,6 +69,70 @@ public class TripAssignmentService extends BaseServiceImpl<TripAssignment, UUID>
                 .withDriverId(driverId)
                 .withVehicleId(filterRequest.getVehicleId())
                 .withTripStates(filterRequest.getTripStates()), pageable
+        );
+    }
+
+    public Page<TripAssignment> findConflictByVehicleIds(AvailabilityForAssignmentRequest request) {
+        Pageable pageable = PageableUtil.of(0, 10, "createdAt", false);
+
+        return repository.findAll(
+            TripAssignmentSpecification.builder()
+                .withAvailabilityValidation(request.dateFrom(), request.dateTo())
+                .withVehicleIds(request.vehicleIds())
+                .withZoneId(request.zoneId())
+                .withScheduleTransportationExcludeId(request.scheduleTransportationExcludeId())
+                .withScheduleTransportationStates(Set.of(
+                    ScheduleTransportationStateEnum.SCHEDULED,
+                    ScheduleTransportationStateEnum.RESCHEDULED,
+                    ScheduleTransportationStateEnum.IN_PROGRESS
+                ))
+                .withExistingTripStates(
+                    Set.of(TripStateEnum.ON_ROUTE, TripStateEnum.WAITING, TripStateEnum.EMERGENCY))
+                .withTripAssignmentStates(Set.of(TripAssignmentStateCodeEnum.ACTIVE)), pageable
+        );
+    }
+
+    public Page<TripAssignment> findConflictByDriverIds(AvailabilityForAssignmentRequest request) {
+        Pageable pageable = PageableUtil.of(0, 10, "createdAt", false);
+
+        return repository.findAll(
+            TripAssignmentSpecification.builder()
+                .withAvailabilityValidation(request.dateFrom(), request.dateTo())
+                .withDriverIds(request.driverIds())
+                .withZoneId(request.zoneId())
+                .withScheduleTransportationExcludeId(request.scheduleTransportationExcludeId())
+                .withScheduleTransportationStates(Set.of(
+                    ScheduleTransportationStateEnum.SCHEDULED,
+                    ScheduleTransportationStateEnum.RESCHEDULED,
+                    ScheduleTransportationStateEnum.IN_PROGRESS
+                ))
+                .withExistingTripStates(
+                    Set.of(TripStateEnum.ON_ROUTE, TripStateEnum.WAITING, TripStateEnum.EMERGENCY))
+                .withTripAssignmentStates(Set.of(TripAssignmentStateCodeEnum.ACTIVE)), pageable
+        );
+    }
+
+    public Page<TripAssignment> findConflictsToDisableVehicle(UUID vehicleId) {
+        return findConflictsToDisableVehicle(vehicleId, null);
+    }
+
+    public Page<TripAssignment> findConflictsToDisableVehicle(UUID vehicleId,
+        ZonedDateTime dateTime)
+    {
+        Pageable pageable = PageableUtil.of(0, 10, "scheduleFrom", true);
+
+        return repository.findAll(
+            TripAssignmentSpecification.builder()
+                .withVehicleId(vehicleId)
+                .withGreaterThanOrEqualDate(dateTime)
+                .withScheduleTransportationStates(Set.of(
+                    ScheduleTransportationStateEnum.SCHEDULED,
+                    ScheduleTransportationStateEnum.RESCHEDULED,
+                    ScheduleTransportationStateEnum.IN_PROGRESS
+                ))
+                .withExistingTripStates(
+                    Set.of(TripStateEnum.ON_ROUTE, TripStateEnum.WAITING, TripStateEnum.EMERGENCY))
+                .withTripAssignmentStates(Set.of(TripAssignmentStateCodeEnum.ACTIVE)), pageable
         );
     }
 }

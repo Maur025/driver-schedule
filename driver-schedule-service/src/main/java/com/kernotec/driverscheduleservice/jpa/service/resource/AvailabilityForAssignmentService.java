@@ -1,11 +1,11 @@
 package com.kernotec.driverscheduleservice.jpa.service.resource;
 
 import com.kernotec.core.util.MessageUtil;
-import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
-import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationService;
+import com.kernotec.driverscheduleservice.jpa.entity.schedule.TripAssignment;
+import com.kernotec.driverscheduleservice.jpa.service.schedule.TripAssignmentService;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.AvailabilityForAssignmentRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.AvailabilityForAssignmentResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.trip.assignment.TripAssignmentToAvailabilityMapper;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -13,19 +13,21 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AvailabilityForAssignmentService {
 
     private final MessageSource messageSource;
     private final ZonedDateTimeUtil zonedDateTimeUtil;
-    private final ScheduleTransportationService scheduleTransportationService;
-    private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
+    private final TripAssignmentService tripAssignmentService;
+    private final TripAssignmentToAvailabilityMapper tripAssignmentToAvailabilityMapper;
 
     public AvailabilityForAssignmentResponse checkDriverIsAvailable(
         AvailabilityForAssignmentRequest request)
@@ -35,7 +37,7 @@ public class AvailabilityForAssignmentService {
         return checkIsAvailable(
             request,
             availabilityRequestBuilder -> availabilityRequestBuilder.driverIds(request.driverIds())
-                .build(), scheduleTransportationService::findConflictByDriverIds, resource
+                .build(), tripAssignmentService::findConflictByDriverIds, resource
         );
     }
 
@@ -47,14 +49,14 @@ public class AvailabilityForAssignmentService {
         return checkIsAvailable(
             request, availabilityRequestBuilder -> availabilityRequestBuilder.vehicleIds(
                     request.vehicleIds())
-                .build(), scheduleTransportationService::findConflictByVehicleIds, resource
+                .build(), tripAssignmentService::findConflictByVehicleIds, resource
         );
     }
 
     private AvailabilityForAssignmentResponse checkIsAvailable(
         AvailabilityForAssignmentRequest request,
         Function<AvailabilityForAssignmentRequest.AvailabilityForAssignmentRequestBuilder, AvailabilityForAssignmentRequest> completeBuildFn,
-        Function<AvailabilityForAssignmentRequest, Page<ScheduleTransportation>> getScheduleConflictsFn,
+        Function<AvailabilityForAssignmentRequest, Page<TripAssignment>> getScheduleConflictsFn,
         String resource)
     {
         ZonedDateTime from = getDateNormalized(request.dateFrom());
@@ -79,16 +81,17 @@ public class AvailabilityForAssignmentService {
                 .zoneId(request.zoneId())
                 .scheduleTransportationExcludeId(request.scheduleTransportationExcludeId()));
 
-        Page<ScheduleTransportation> scheduleTransportationPage = getScheduleConflictsFn.apply(
-            requestToService);
+        Page<TripAssignment> tripAssignmentPage = getScheduleConflictsFn.apply(requestToService);
+
+        log.info("Trip assignment size: {}", tripAssignmentPage.getTotalElements());
 
         return AvailabilityForAssignmentResponse.builder()
-            .hasConflict(!scheduleTransportationPage.isEmpty())
-            .scheduleTransportationConflicts(scheduleTransportationResponseMapper.toResponse(
-                scheduleTransportationPage.getContent()))
-            .scheduleTransportationCount(scheduleTransportationPage.getTotalElements())
+            .hasConflict(!tripAssignmentPage.isEmpty())
+            .availabilityConflicts(
+                tripAssignmentToAvailabilityMapper.toResponse(tripAssignmentPage.getContent()))
+            .scheduleTransportationCount(tripAssignmentPage.getTotalElements())
             .conflictReason(
-                getScheduleConflictMessage(resource, scheduleTransportationPage.getTotalElements()))
+                getScheduleConflictMessage(resource, tripAssignmentPage.getTotalElements()))
             .build();
     }
 

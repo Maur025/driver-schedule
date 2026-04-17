@@ -6,7 +6,9 @@ import com.kernotec.driverscheduleservice.audit.user.dto.response.AuditEntityUse
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.person.PersonResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.vehicle.VehicleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
+import com.kernotec.driverscheduleservice.rest.dto.schedule.response.trip.assignment.state.TripAssignmentStateResponse;
 import com.kernotec.driverscheduleservice.rest.dto.trip.response.trip.TripResponse;
+import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
@@ -19,6 +21,9 @@ import lombok.Setter;
 @JsonInclude(Include.NON_NULL)
 public class TripAssignmentResponse extends AuditEntityUserResponse {
 
+    private ZonedDateTime estimatedStartTime;
+    private ZonedDateTime estimatedEndTime;
+
     private UUID vehicleId;
     private VehicleResponse vehicle;
 
@@ -27,6 +32,9 @@ public class TripAssignmentResponse extends AuditEntityUserResponse {
 
     private UUID scheduleTransportationId;
     private ScheduleTransportationResponse scheduleTransportation;
+
+    private UUID tripAssignmentStateId;
+    private TripAssignmentStateResponse tripAssignmentState;
 
     private Set<TripResponse> trips;
 }

@@ -3,7 +3,7 @@ package com.kernotec.driverscheduleservice.rest.dto.resource.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.response.data.EntityResponse;
-import com.kernotec.driverscheduleservice.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
+import com.kernotec.driverscheduleservice.rest.dto.schedule.response.trip.assignment.TripAssignmentResponse;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +14,8 @@ import lombok.Getter;
 public class AvailabilityForAssignmentResponse extends EntityResponse {
 
     private boolean hasConflict;
-    private List<ScheduleTransportationResponse> scheduleTransportationConflicts;
+    private List<TripAssignmentResponse> availabilityConflicts;
+
     private long scheduleTransportationCount;
     private String conflictReason;
 }

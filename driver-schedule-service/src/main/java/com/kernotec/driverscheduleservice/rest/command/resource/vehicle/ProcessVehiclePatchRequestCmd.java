@@ -4,15 +4,15 @@ import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.core.exception.custom.base.DefaultMultipleException;
 import com.kernotec.driverscheduleservice.command.resource.vehicle.VehicleUpdateCmd;
 import com.kernotec.driverscheduleservice.jpa.entity.resource.Vehicle;
-import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
+import com.kernotec.driverscheduleservice.jpa.entity.schedule.TripAssignment;
 import com.kernotec.driverscheduleservice.jpa.service.resource.VehicleService;
-import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationService;
+import com.kernotec.driverscheduleservice.jpa.service.schedule.TripAssignmentService;
 import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.vehicle.VehiclePatchRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.vehicle.VehicleResponse;
-import com.kernotec.driverscheduleservice.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
+import com.kernotec.driverscheduleservice.rest.dto.schedule.response.trip.assignment.TripAssignmentResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.resource.response.vehicle.VehicleResponseMapper;
-import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.trip.assignment.TripAssignmentResponseMapper;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.Valid;
@@ -41,8 +41,8 @@ public class ProcessVehiclePatchRequestCmd extends
 
     private final VehicleUpdateCmd vehicleUpdateCmd;
     private final WebSocketHandler webSocketHandler;
-    private final ScheduleTransportationService scheduleTransportationService;
-    private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
+    private final TripAssignmentService tripAssignmentService;
+    private final TripAssignmentResponseMapper tripAssignmentResponseMapper;
 
     @Override
     protected void validate(Request request) {
@@ -52,19 +52,19 @@ public class ProcessVehiclePatchRequestCmd extends
             return;
         }
 
-        Page<ScheduleTransportation> scheduleTransportationPage = scheduleTransportationService.findWhichVehicleBusy(
+        Page<TripAssignment> tripAssignmentPage = tripAssignmentService.findConflictsToDisableVehicle(
             request.vehicleId);
 
-        if (scheduleTransportationPage.isEmpty()) {
-            log.debug(" ");
+        if (tripAssignmentPage.isEmpty()) {
+            log.debug("No conflicts found for vehicle with id: {}", request.vehicleId);
             return;
         }
 
-        List<ScheduleTransportationResponse> scheduleTransportationResponseList = scheduleTransportationResponseMapper.toResponse(
-            scheduleTransportationPage.getContent());
+        List<TripAssignmentResponse> tripAssignmentResponseList = tripAssignmentResponseMapper.toResponse(
+            tripAssignmentPage.getContent());
 
         List<Map<String, String>> errorList = getErrorListOfResponseData(
-            scheduleTransportationResponseList);
+            tripAssignmentResponseList);
 
         throw new DefaultMultipleException(HttpStatus.CONFLICT.value(), errorList);
     }
@@ -93,20 +93,23 @@ public class ProcessVehiclePatchRequestCmd extends
     }
 
     private List<Map<String, String>> getErrorListOfResponseData(
-        List<ScheduleTransportationResponse> scheduleTransportationResponseList)
+        List<TripAssignmentResponse> scheduleTransportationResponseList)
     {
         List<Map<String, String>> errors = new ArrayList<>();
         String messageKey = "expection.vehicle.request.pending.error.message";
 
-        for (ScheduleTransportationResponse scheduleResponse : scheduleTransportationResponseList) {
-            String requestNumber = scheduleResponse.getTransportationRequest()
+        for (TripAssignmentResponse tripAssignmentResponse : scheduleTransportationResponseList) {
+            String requestNumber = tripAssignmentResponse.getScheduleTransportation()
+                .getTransportationRequest()
                 .getCorrelative()
                 .toString();
 
-            String requestId = scheduleResponse.getTransportationRequest()
+            String requestId = tripAssignmentResponse.getScheduleTransportation()
+                .getTransportationRequest()
                 .getCode();
 
-            String state = scheduleResponse.getScheduleTransportationState()
+            String state = tripAssignmentResponse.getScheduleTransportation()
+                .getScheduleTransportationState()
                 .getCode();
 
             errors.add(getErrorMapToList(messageKey, state, requestNumber, requestId));
