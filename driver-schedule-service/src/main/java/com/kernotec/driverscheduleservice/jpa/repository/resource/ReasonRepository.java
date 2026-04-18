@@ -3,6 +3,8 @@ package com.kernotec.driverscheduleservice.jpa.repository.resource;
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.driverscheduleservice.jpa.entity.resource.Reason;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.reason.ReasonLookupResponse;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,4 +37,6 @@ public interface ReasonRepository extends BaseRepository<Reason, UUID> {
     Page<ReasonLookupResponse> findAllToLookup(@Param("keyword") String keyword,
         @Param("reasonTypeId") UUID reasonTypeId, @Param("reasonType") String reasonType,
         Pageable pageable);
+
+    List<Reason> findByIdIn(Collection<UUID> ids);
 }

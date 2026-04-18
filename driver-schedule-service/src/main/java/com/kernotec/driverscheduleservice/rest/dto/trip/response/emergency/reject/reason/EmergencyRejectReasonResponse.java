@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.response.data.EntityResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.reason.ReasonResponse;
+import com.kernotec.driverscheduleservice.rest.dto.resource.response.reason.WithReason;
 import com.kernotec.driverscheduleservice.rest.dto.trip.response.trip.emergency.TripEmergencyResponse;
 import java.util.UUID;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(Include.NON_NULL)
-public class EmergencyRejectReasonResponse extends EntityResponse {
+public class EmergencyRejectReasonResponse extends EntityResponse implements WithReason {
 
     private String otherReason;
 
