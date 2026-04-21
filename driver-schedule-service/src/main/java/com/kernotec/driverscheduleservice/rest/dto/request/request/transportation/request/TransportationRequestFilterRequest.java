@@ -6,6 +6,7 @@ import com.kernotec.core.rest.dto.request.BaseRequest;
 import com.kernotec.driverscheduleservice.jpa.enums.request.TransportationRequestStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.request.TripTypeEnum;
 import java.time.ZonedDateTime;
+import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,4 +31,6 @@ public class TransportationRequestFilterRequest extends BaseRequest {
     private String zoneId;
 
     private String keyword;
+
+    private Set<TransportationRequestStateEnum> transportationRequestStates;
 }

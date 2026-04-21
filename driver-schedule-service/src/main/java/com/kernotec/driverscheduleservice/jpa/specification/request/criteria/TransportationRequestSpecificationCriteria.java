@@ -3,6 +3,7 @@ package com.kernotec.driverscheduleservice.jpa.specification.request.criteria;
 import com.kernotec.driverscheduleservice.jpa.enums.request.TransportationRequestStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.request.TripTypeEnum;
 import java.time.ZonedDateTime;
+import java.util.Collection;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,4 +27,6 @@ public class TransportationRequestSpecificationCriteria {
     private ZonedDateTime yearDate;
 
     private String keyword;
+
+    private Collection<TransportationRequestStateEnum> transportationRequestStates;
 }
