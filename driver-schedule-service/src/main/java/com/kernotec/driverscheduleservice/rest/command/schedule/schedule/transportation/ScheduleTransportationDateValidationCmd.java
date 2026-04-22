@@ -8,7 +8,7 @@ import com.kernotec.driverscheduleservice.rest.dto.resource.response.Availabilit
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -85,7 +85,7 @@ public class ScheduleTransportationDateValidationCmd extends
     }
 
     @Builder
-    public record Request(@NotNull List<UUID> vehicleIdList, @NotNull List<UUID> driverIdList,
+    public record Request(@NotNull Set<UUID> vehicleIdList, @NotNull Set<UUID> driverIdList,
                           @NotNull ZonedDateTime requestedStartTime,
                           @NotNull ZonedDateTime requestedEndTime, String zoneId,
                           UUID scheduleTransportationExcludeId)

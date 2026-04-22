@@ -8,25 +8,20 @@ import com.kernotec.driverscheduleservice.command.schedule.schedule.transportati
 import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.log.ScheduleTransportationLogCreateCmd;
 import com.kernotec.driverscheduleservice.exception.schedule.ScheduleTransportationException;
 import com.kernotec.driverscheduleservice.jpa.dto.request.TransportationRequestDto;
-import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.enums.request.TransportationRequestStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestStateService;
-import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationStateService;
-import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleTransportationCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.trip.assignment.TripAssignmentCreateRequest;
-import com.kernotec.driverscheduleservice.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
+import com.kernotec.driverscheduleservice.rest.socket.schedule.ScheduleTransportationSocketHadler;
 import com.kernotec.driverscheduleservice.util.ScheduleTransportationUtil;
 import com.kernotec.driverscheduleservice.util.ScheduleTransportationUtil.RegistryTripAssignmentRequest;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
-import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -41,11 +36,8 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
     AbstractTransactionalRequiredCommand<ProcessScheduleTransportationCreateRequestCmd.Request, UUID>
 {
 
-    private final ScheduleTransportationService scheduleTransportationService;
     private final ScheduleTransportationStateService scheduleTransportationStateService;
     private final TransportationRequestStateService transportationRequestStateService;
-
-    private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
 
     private final TransportationRequestGetDtoCmd transportationRequestGetDtoCmd;
     private final ScheduleTransportationCreateCmd scheduleTransportationCreateCmd;
@@ -54,23 +46,23 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
     private final ScheduleTransportationLogCreateCmd scheduleTransportationLogCreateCmd;
     private final TransportationRequestLogCreateCmd transportationRequestLogCreateCmd;
 
-    private final WebSocketHandler webSocketHandler;
     private final ZonedDateTimeUtil zonedDateTimeUtil;
     private final ScheduleTransportationUtil scheduleTransportationUtil;
+    private final ScheduleTransportationSocketHadler scheduleTransportationSocketHadler;
 
     @Override
     protected void validate(Request request) {
         ScheduleTransportationCreateRequest scheduleTransportationCreateRequest = request.scheduleTransportationCreateRequest;
 
-        List<UUID> vehicleIds = scheduleTransportationCreateRequest.getTripAssignments()
-            .stream()
-            .map(TripAssignmentCreateRequest::getVehicleId)
-            .toList();
+        Set<UUID> vehicleIds = scheduleTransportationUtil.getValuesOfTripAssignmentRequest(
+            scheduleTransportationCreateRequest.getTripAssignments(),
+            TripAssignmentCreateRequest::getVehicleId
+        );
 
-        List<UUID> driverIds = scheduleTransportationCreateRequest.getTripAssignments()
-            .stream()
-            .map(TripAssignmentCreateRequest::getDriverId)
-            .toList();
+        Set<UUID> driverIds = scheduleTransportationUtil.getValuesOfTripAssignmentRequest(
+            scheduleTransportationCreateRequest.getTripAssignments(),
+            TripAssignmentCreateRequest::getDriverId
+        );
 
         scheduleTransportationDateValidationCmd.withRequest(
                 ScheduleTransportationDateValidationCmd.Request.builder()
@@ -159,34 +151,30 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
                     .build())
             .execute();
 
-        emitSocketMessage(scheduleTransportationId, transportationRequestDto);
+        socketHandler(scheduleTransportationId, transportationRequestDto);
 
         return scheduleTransportationId;
     }
 
 
-    private void emitSocketMessage(UUID scheduleTransportationId,
+    private void socketHandler(UUID scheduleTransportationId,
         TransportationRequestDto transportationRequestDto)
     {
-        ScheduleTransportation scheduleTransportation = scheduleTransportationService.findByIdThrow(
-            scheduleTransportationId);
+        UUID userToEmit = transportationRequestDto.getPersonRequested()
+            .getUserId();
 
-        var socketResponse = WebSocketSingleResponse.<ScheduleTransportationResponse>builder()
-            .timestamp(ZonedDateTime.now())
-            .data(scheduleTransportationResponseMapper.toResponse(scheduleTransportation));
+        scheduleTransportationSocketHadler.emitMessage(
+            ScheduleTransportationSocketHadler.Request.builder()
+                .scheduleTransportationId(scheduleTransportationId)
+                .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_CREATED)
+                .build());
 
-        webSocketHandler.emitMessage(
-            WebSocketTopic.SCHEDULE_TRANSPORTATION_CREATED,
-            socketResponse.topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_CREATED)
-                .build()
-        );
-
-        webSocketHandler.emitMessageToUser(
-            transportationRequestDto.getPersonRequested()
-                .getUserId(), WebSocketTopic.SCHEDULE_TRANSPORTATION_CREATED_TO_USER,
-            socketResponse.topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_CREATED_TO_USER)
-                .build()
-        );
+        scheduleTransportationSocketHadler.emitMessage(
+            ScheduleTransportationSocketHadler.Request.builder()
+                .scheduleTransportationId(scheduleTransportationId)
+                .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_CREATED_TO_USER)
+                .toList(Set.of(userToEmit))
+                .build());
     }
 
     @Builder

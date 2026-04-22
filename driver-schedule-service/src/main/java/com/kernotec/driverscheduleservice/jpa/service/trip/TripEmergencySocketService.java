@@ -18,7 +18,6 @@ import com.kernotec.driverscheduleservice.rest.dto.trip.response.emergency.rejec
 import com.kernotec.driverscheduleservice.rest.dto.trip.response.trip.emergency.TripEmergencyResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.resource.response.person.PersonResponseWithContactMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.resource.response.reason.ReasonResponseFlatMapper;
-import com.kernotec.driverscheduleservice.rest.mapper.resource.response.reason.ReasonResponseMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationToAvailabilityMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.trip.response.emergency.reason.EmergencyReasonResponseMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.trip.response.emergency.reject.reason.EmergencyRejectReasonResponseMapper;
@@ -44,6 +43,7 @@ public class TripEmergencySocketService {
     private final TripEmergencyStateService tripEmergencyStateService;
     private final EmergencyReasonService emergencyReasonService;
     private final EmergencyRejectReasonService emergencyRejectReasonService;
+    private final ReasonService reasonService;
 
     private final TripEmergencyResponseMapper tripEmergencyResponseMapper;
     private final PersonResponseWithContactMapper personResponseWithContactMapper;
@@ -52,8 +52,6 @@ public class TripEmergencySocketService {
     private final EmergencyReasonResponseMapper emergencyReasonResponseMapper;
     private final EmergencyRejectReasonResponseMapper emergencyRejectReasonResponseMapper;
     private final TripResponseToEmergencyMapper tripResponseToEmergencyMapper;
-    private final ReasonService reasonService;
-    private final ReasonResponseMapper reasonResponseMapper;
     private final ReasonResponseFlatMapper reasonResponseFlatMapper;
 
     public TripEmergencyResponse getResponseWithAllRelations(UUID tripEmergencyId) {
