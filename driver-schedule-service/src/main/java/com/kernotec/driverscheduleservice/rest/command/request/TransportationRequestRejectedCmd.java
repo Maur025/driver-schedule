@@ -4,6 +4,7 @@ import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.command.request.reject.reason.RejectReasonCreateCmd;
 import com.kernotec.driverscheduleservice.command.request.transportation.request.TransportationRequestGetDtoCmd;
 import com.kernotec.driverscheduleservice.command.request.transportation.request.TransportationRequestUpdateCmd;
+import com.kernotec.driverscheduleservice.command.request.transportation.request.log.TransportationRequestLogCreateCmd;
 import com.kernotec.driverscheduleservice.exception.request.TransportationRequestException;
 import com.kernotec.driverscheduleservice.jpa.dto.request.TransportationRequestDto;
 import com.kernotec.driverscheduleservice.jpa.enums.request.TransportationRequestStateEnum;
@@ -28,6 +29,7 @@ public class TransportationRequestRejectedCmd extends
     private final TransportationRequestStateService transportationRequestStateService;
     private final TransportationRequestUpdateCmd transportationRequestUpdateCmd;
     private final RejectReasonCreateCmd rejectReasonCreateCmd;
+    private final TransportationRequestLogCreateCmd transportationRequestLogCreateCmd;
 
     @Override
     protected void validate(Request request) {
@@ -67,6 +69,13 @@ public class TransportationRequestRejectedCmd extends
                 .reasonId(rejectReasonRequest.getReasonId())
                 .otherReason(rejectReasonRequest.getOtherReason())
                 .build())
+            .execute();
+
+        transportationRequestLogCreateCmd.withRequest(
+                TransportationRequestLogCreateCmd.Request.builder()
+                    .transportationRequestId(request.transportationRequestId())
+                    .transportationRequestStateId(transportationRequestStateRejectedId)
+                    .build())
             .execute();
 
         return null;

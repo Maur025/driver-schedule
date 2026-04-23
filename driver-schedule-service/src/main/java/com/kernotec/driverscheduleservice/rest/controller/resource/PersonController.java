@@ -12,7 +12,6 @@ import com.kernotec.driverscheduleservice.jpa.entity.resource.Person;
 import com.kernotec.driverscheduleservice.jpa.enums.resource.PersonTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.service.resource.AvailabilityForAssignmentService;
 import com.kernotec.driverscheduleservice.jpa.service.resource.PersonService;
-import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.PersonSpec;
 import com.kernotec.driverscheduleservice.rest.command.csv.imports.CsvImportCmd;
 import com.kernotec.driverscheduleservice.rest.command.resource.person.PersonCsvImportGetDtoCmd;
@@ -29,8 +28,6 @@ import com.kernotec.driverscheduleservice.rest.dto.resource.response.Availabilit
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.person.PersonLookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.person.PersonResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.resource.response.person.PersonResponseMapper;
-import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
-import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -61,11 +58,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class PersonController {
 
     private final PersonService personService;
-    private final ScheduleTransportationService scheduleTransportationService;
-    private final ZonedDateTimeUtil zonedDateTimeUtil;
 
     private final PersonResponseMapper personResponseMapper;
-    private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
 
     private final ProcessPersonCreateRequestCmd processPersonCreateRequestCmd;
     private final CsvImportCmd<PersonCsvImportDto> csvImportCmd;

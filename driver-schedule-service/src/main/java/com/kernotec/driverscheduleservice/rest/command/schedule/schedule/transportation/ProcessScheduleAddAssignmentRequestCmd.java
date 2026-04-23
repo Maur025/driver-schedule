@@ -8,7 +8,7 @@ import com.kernotec.driverscheduleservice.jpa.dto.schedule.TripAssignmentDto;
 import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleAddAssignmentRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.trip.assignment.TripAssignmentCreateRequest;
-import com.kernotec.driverscheduleservice.rest.socket.schedule.ScheduleTransportationSocketHadler;
+import com.kernotec.driverscheduleservice.rest.socket.schedule.ScheduleTransportationSocketHandler;
 import com.kernotec.driverscheduleservice.util.ScheduleTransportationUtil;
 import com.kernotec.driverscheduleservice.util.ScheduleTransportationUtil.RegistryTripAssignmentRequest;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
@@ -31,7 +31,7 @@ public class ProcessScheduleAddAssignmentRequestCmd extends
     private final ScheduleTransportationGetDtoCmd scheduleTransportationGetDtoCmd;
     private final ScheduleTransportationDateValidationCmd scheduleTransportationDateValidationCmd;
     private final ScheduleTransportationUtil scheduleTransportationUtil;
-    private final ScheduleTransportationSocketHadler scheduleTransportationSocketHadler;
+    private final ScheduleTransportationSocketHandler scheduleTransportationSocketHadler;
 
     @Override
     protected void validate(Request request) {
@@ -111,7 +111,7 @@ public class ProcessScheduleAddAssignmentRequestCmd extends
             .build());
 
         scheduleTransportationSocketHadler.emitMessage(
-            ScheduleTransportationSocketHadler.Request.builder()
+            ScheduleTransportationSocketHandler.Request.builder()
                 .scheduleTransportationId(request.scheduleTransportationId())
                 .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_CREATED)
                 .build());

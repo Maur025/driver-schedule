@@ -3,21 +3,15 @@ package com.kernotec.driverscheduleservice.rest.command.resource.vehicle;
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.core.exception.custom.base.DefaultMultipleException;
 import com.kernotec.driverscheduleservice.command.resource.vehicle.VehicleUpdateCmd;
-import com.kernotec.driverscheduleservice.jpa.entity.resource.Vehicle;
 import com.kernotec.driverscheduleservice.jpa.entity.schedule.TripAssignment;
-import com.kernotec.driverscheduleservice.jpa.service.resource.VehicleService;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.TripAssignmentService;
-import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.vehicle.VehiclePatchRequest;
-import com.kernotec.driverscheduleservice.rest.dto.resource.response.vehicle.VehicleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.response.trip.assignment.TripAssignmentResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.resource.response.vehicle.VehicleResponseMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.trip.assignment.TripAssignmentResponseMapper;
-import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
+import com.kernotec.driverscheduleservice.rest.socket.resource.VehicleSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,13 +30,10 @@ public class ProcessVehiclePatchRequestCmd extends
     AbstractTransactionalRequiredCommand<ProcessVehiclePatchRequestCmd.Request, Void>
 {
 
-    private final VehicleService vehicleService;
-    private final VehicleResponseMapper vehicleResponseMapper;
-
     private final VehicleUpdateCmd vehicleUpdateCmd;
-    private final WebSocketHandler webSocketHandler;
     private final TripAssignmentService tripAssignmentService;
     private final TripAssignmentResponseMapper tripAssignmentResponseMapper;
+    private final VehicleSocketHandler vehicleSocketHandler;
 
     @Override
     protected void validate(Request request) {
@@ -79,15 +70,10 @@ public class ProcessVehiclePatchRequestCmd extends
                 .build())
             .execute();
 
-        Vehicle vehicle = vehicleService.findByIdThrow(request.vehicleId);
-
-        webSocketHandler.emitMessage(
-            WebSocketTopic.VEHICLE_UPDATED, WebSocketSingleResponse.<VehicleResponse>builder()
-                .topic(WebSocketTopic.VEHICLE_UPDATED)
-                .timestamp(ZonedDateTime.now())
-                .data(vehicleResponseMapper.toResponse(vehicle))
-                .build()
-        );
+        vehicleSocketHandler.emitMessage(VehicleSocketHandler.Request.builder()
+            .vehicleId(request.vehicleId())
+            .topic(WebSocketTopic.VEHICLE_UPDATED)
+            .build());
 
         return null;
     }

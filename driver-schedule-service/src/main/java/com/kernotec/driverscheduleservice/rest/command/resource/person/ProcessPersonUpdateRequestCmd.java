@@ -7,22 +7,17 @@ import com.kernotec.driverscheduleservice.command.resource.person.assign.type.Pe
 import com.kernotec.driverscheduleservice.common.ContactProcessCommon;
 import com.kernotec.driverscheduleservice.config.AuthConfigProperties;
 import com.kernotec.driverscheduleservice.jpa.dto.resource.PersonDto;
-import com.kernotec.driverscheduleservice.jpa.entity.resource.Person;
 import com.kernotec.driverscheduleservice.jpa.entity.resource.PersonAssignType;
 import com.kernotec.driverscheduleservice.jpa.service.resource.PersonAssignTypeService;
 import com.kernotec.driverscheduleservice.jpa.service.resource.PersonService;
 import com.kernotec.driverscheduleservice.jpa.service.resource.PersonTypeService;
 import com.kernotec.driverscheduleservice.rest.command.resource.person.assign.type.PersonAssignTypeGetManyRequestCmd;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.person.PersonUpdateRequest;
-import com.kernotec.driverscheduleservice.rest.dto.resource.response.person.PersonResponse;
-import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.resource.response.person.PersonResponseMapper;
-import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
+import com.kernotec.driverscheduleservice.rest.socket.resource.PersonSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserUpdateRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -42,15 +37,14 @@ public class ProcessPersonUpdateRequestCmd extends
     private final PersonService personService;
     private final PersonAssignTypeService personAssignTypeService;
 
-    private final PersonResponseMapper personResponseMapper;
-
     private final PersonValidationCmd personValidationCmd;
     private final PersonGetDtoCmd personGetDtoCmd;
     private final PersonUpdateCmd personUpdateCmd;
     private final PersonAssignTypeGetManyRequestCmd personAssignTypeGetManyRequestCmd;
     private final PersonAssignTypeManyCreateCmd personAssignTypeManyCreateCmd;
     private final ContactProcessCommon contactProcessCommon;
-    private final WebSocketHandler webSocketHandler;
+
+    private final PersonSocketHandler personSocketHandler;
 
     @Override
     protected void validate(Request request) {
@@ -118,15 +112,10 @@ public class ProcessPersonUpdateRequestCmd extends
         contactProcessCommon.registerManyContactsForPerson(
             personUpdateRequest.getContacts(), request.personId, true);
 
-        Person person = personService.findByIdThrow(request.personId);
-
-        webSocketHandler.emitMessage(
-            WebSocketTopic.PERSON_UPDATED, WebSocketSingleResponse.<PersonResponse>builder()
-                .topic(WebSocketTopic.PERSON_UPDATED)
-                .timestamp(ZonedDateTime.now())
-                .data(personResponseMapper.toResponse(person))
-                .build()
-        );
+        personSocketHandler.emitMessage(PersonSocketHandler.Request.builder()
+            .personId(request.personId())
+            .topic(WebSocketTopic.PERSON_UPDATED)
+            .build());
 
         return null;
     }

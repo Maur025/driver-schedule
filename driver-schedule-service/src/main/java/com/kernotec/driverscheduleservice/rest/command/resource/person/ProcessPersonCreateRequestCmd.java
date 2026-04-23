@@ -3,19 +3,15 @@ package com.kernotec.driverscheduleservice.rest.command.resource.person;
 import com.kernotec.core.command.AbstractCommand;
 import com.kernotec.driverscheduleservice.common.ContactProcessCommon;
 import com.kernotec.driverscheduleservice.config.AuthConfigProperties;
-import com.kernotec.driverscheduleservice.jpa.entity.resource.Person;
 import com.kernotec.driverscheduleservice.jpa.service.resource.PersonService;
 import com.kernotec.driverscheduleservice.jpa.service.resource.PersonTypeService;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.person.PersonCreateRequest;
-import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.resource.response.person.PersonResponseMapper;
-import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
+import com.kernotec.driverscheduleservice.rest.socket.resource.PersonSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserCreateRequest;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.response.UserCreateResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
@@ -35,12 +31,10 @@ public class ProcessPersonCreateRequestCmd extends
     private final PersonService personService;
     private final PersonTypeService personTypeService;
 
-    private final PersonResponseMapper personResponseMapper;
-
     private final PersonCreateWithTypeCmd personCreateWithTypeCmd;
     private final PersonValidationCmd personValidationCmd;
-    private final WebSocketHandler webSocketHandler;
     private final ContactProcessCommon contactProcessCommon;
+    private final PersonSocketHandler personSocketHandler;
 
     @Override
     protected void validate(Request request) {
@@ -81,15 +75,10 @@ public class ProcessPersonCreateRequestCmd extends
         contactProcessCommon.registerManyContactsForPerson(
             personCreateRequest.getContacts(), personId);
 
-        Person person = personService.findByIdThrow(personId);
-
-        webSocketHandler.emitMessage(
-            WebSocketTopic.PERSON_CREATED, WebSocketSingleResponse.builder()
-                .topic(WebSocketTopic.PERSON_CREATED)
-                .timestamp(ZonedDateTime.now())
-                .data(personResponseMapper.toResponse(person))
-                .build()
-        );
+        personSocketHandler.emitMessage(PersonSocketHandler.Request.builder()
+            .personId(personId)
+            .topic(WebSocketTopic.PERSON_CREATED)
+            .build());
 
         return personId;
     }

@@ -3,6 +3,7 @@ package com.kernotec.driverscheduleservice.rest.command.request;
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.command.request.request.coord.RequestCoordManyCreateCmd;
 import com.kernotec.driverscheduleservice.command.request.transportation.request.TransportationRequestCreateCmd;
+import com.kernotec.driverscheduleservice.command.request.transportation.request.log.TransportationRequestLogCreateCmd;
 import com.kernotec.driverscheduleservice.jpa.entity.request.RequestCoord;
 import com.kernotec.driverscheduleservice.jpa.enums.request.TransportationRequestStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestStateService;
@@ -37,6 +38,7 @@ public class TransportationRequestFlowCreateCmd extends
     private final TransportationRequestCreateCmd transportationRequestCreateCmd;
     private final RequestCoordManyCreateCmd requestCoordManyCreateCmd;
     private final ZonedDateTimeUtil zonedDateTimeUtil;
+    private final TransportationRequestLogCreateCmd transportationRequestLogCreateCmd;
 
     @Override
     protected void validate(Request request) {
@@ -60,17 +62,11 @@ public class TransportationRequestFlowCreateCmd extends
 
         UUID personId = getPersonId(request.transportationRequestCreateRequest);
 
-        log.info("REQUEST time start: {}", transportationRequestCreateRequest.getStartTime());
-        log.info("REQUEST time end: {}", transportationRequestCreateRequest.getEndTime());
-
         ZonedDateTime requestedFrom = zonedDateTimeUtil.getDateScheduleNormalized(
             transportationRequestCreateRequest.getStartTime());
 
         ZonedDateTime requestedTo = zonedDateTimeUtil.getDateScheduleNormalized(
             transportationRequestCreateRequest.getEndTime());
-
-        log.info("requested from: {}", requestedFrom);
-        log.info("requested to: {}", requestedTo);
 
         UUID transportationRequestId = transportationRequestCreateCmd.withRequest(
                 TransportationRequestCreateCmd.Request.builder()
@@ -100,6 +96,13 @@ public class TransportationRequestFlowCreateCmd extends
 
         registryRequestCoords(
             transportationRequestCreateRequest.getRequestCoords(), transportationRequestId);
+
+        transportationRequestLogCreateCmd.withRequest(
+                TransportationRequestLogCreateCmd.Request.builder()
+                    .transportationRequestId(transportationRequestId)
+                    .transportationRequestStateId(transportationRequestStateRequestedId)
+                    .build())
+            .execute();
 
         return transportationRequestId;
     }

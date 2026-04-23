@@ -13,17 +13,13 @@ import com.kernotec.driverscheduleservice.jpa.enums.trip.TripEmergencyStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.resource.LocationService;
 import com.kernotec.driverscheduleservice.jpa.service.resource.PersonService;
-import com.kernotec.driverscheduleservice.jpa.service.trip.TripEmergencySocketService;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripEmergencyStateService;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripStateService;
 import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
-import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyRequest;
-import com.kernotec.driverscheduleservice.rest.dto.trip.response.trip.emergency.TripEmergencyResponse;
-import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
+import com.kernotec.driverscheduleservice.rest.socket.trip.TripEmergencySocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.UUID;
 import lombok.Builder;
@@ -43,7 +39,6 @@ public class ProcessTripEmergencyRequestCmd extends
     private final LocationService locationService;
     private final TripEmergencyStateService tripEmergencyStateService;
     private final PersonService personService;
-    private final TripEmergencySocketService tripEmergencySocketService;
 
     private final TripGetDtoCmd tripGetDtoCmd;
     private final TripUpdateCmd tripUpdateCmd;
@@ -51,12 +46,13 @@ public class ProcessTripEmergencyRequestCmd extends
     private final TripEmergencyCreateCmd tripEmergencyCreateCmd;
     private final EmergencyReasonCreateCmd emergencyReasonCreateCmd;
     private final TripEmergencyLogCreateCmd tripEmergencyLogCreateCmd;
-    private final WebSocketHandler webSocketHandler;
+
+    private final TripEmergencySocketHandler tripEmergencySocketHandler;
 
     @Override
     protected Void run(Request request) {
         TripDto tripDto = tripGetDtoCmd.withRequest(TripGetDtoCmd.Request.builder()
-                .tripId(request.tripId)
+                .tripId(request.tripId())
                 .build())
             .execute();
 
@@ -70,16 +66,19 @@ public class ProcessTripEmergencyRequestCmd extends
             );
         }
 
-        TripEmergencyRequest tripEmergencyRequest = request.tripEmergencyRequest;
+        TripEmergencyRequest tripEmergencyRequest = request.tripEmergencyRequest();
 
         Coordinate coordinate = locationService.getCoordinateOfList(
             Arrays.asList(tripEmergencyRequest.getLongitude(), tripEmergencyRequest.getLatitude()));
 
-        UUID tripEmergencyId = createTripEmergency(request.tripId, tripDto, tripEmergencyRequest);
+        UUID tripEmergencyId = createTripEmergency(request.tripId(), tripDto, tripEmergencyRequest);
 
-        markTripInEmergency(request.tripId, coordinate);
+        markTripInEmergency(request.tripId(), coordinate);
 
-        emitWebSocketMessage(tripEmergencyId);
+        tripEmergencySocketHandler.emitMessage(TripEmergencySocketHandler.Request.builder()
+            .tripEmergencyId(tripEmergencyId)
+            .topic(WebSocketTopic.TRIP_EMERGENCY_REPORTED)
+            .build());
 
         return null;
     }
@@ -133,17 +132,6 @@ public class ProcessTripEmergencyRequestCmd extends
                 .coordinate(coordinate)
                 .build())
             .execute();
-    }
-
-    private void emitWebSocketMessage(UUID tripEmergencyId) {
-        webSocketHandler.emitMessage(
-            WebSocketTopic.TRIP_EMERGENCY_REPORTED,
-            WebSocketSingleResponse.<TripEmergencyResponse>builder()
-                .timestamp(ZonedDateTime.now())
-                .data(tripEmergencySocketService.getResponseWithAllRelations(tripEmergencyId))
-                .topic(WebSocketTopic.TRIP_EMERGENCY_REPORTED)
-                .build()
-        );
     }
 
     @Builder

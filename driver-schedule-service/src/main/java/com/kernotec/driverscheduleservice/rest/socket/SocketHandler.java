@@ -2,10 +2,13 @@ package com.kernotec.driverscheduleservice.rest.socket;
 
 import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
+import jakarta.validation.Valid;
 import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.UUID;
+import org.springframework.validation.annotation.Validated;
 
+@Validated
 public abstract class SocketHandler<T, R> {
 
     private final WebSocketHandler webSocketHandler;
@@ -27,7 +30,7 @@ public abstract class SocketHandler<T, R> {
 
     protected abstract Set<UUID> getToList(T t);
 
-    public void emitMessage(T t) {
+    public void emitMessage(@Valid T t) {
         String topic = getTopic(t);
         R r = getResponseData(t);
 

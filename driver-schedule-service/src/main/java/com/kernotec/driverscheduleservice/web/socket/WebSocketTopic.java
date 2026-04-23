@@ -62,6 +62,12 @@ public class WebSocketTopic {
 
     public static final String TRIP_EMERGENCY_REPORTED = BROKER_PREFIX + "/trip.emergency.reported";
 
+    public static final String TRIP_EMERGENCY_DISMISSED =
+        PRIVATE_MESSAGE_PREFIX + "/trip.emergency.dismissed";
+
+    public static final String TRIP_EMERGENCY_HANDLED =
+        PRIVATE_MESSAGE_PREFIX + "/trip.emergency.handled";
+
     public static final String TEST_MESSAGE = "/test.message";
 
     private WebSocketTopic() {

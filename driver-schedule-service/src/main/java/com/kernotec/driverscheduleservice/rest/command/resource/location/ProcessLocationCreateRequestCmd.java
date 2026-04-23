@@ -3,17 +3,13 @@ package com.kernotec.driverscheduleservice.rest.command.resource.location;
 import com.kernotec.core.command.AbstractCommand;
 import com.kernotec.driverscheduleservice.command.resource.location.LocationCreateCmd;
 import com.kernotec.driverscheduleservice.exception.resource.LocationException;
-import com.kernotec.driverscheduleservice.jpa.entity.resource.Location;
 import com.kernotec.driverscheduleservice.jpa.service.resource.LocationService;
 import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.location.LocationCreateRequest;
-import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.resource.response.location.LocationResponseMapper;
-import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
+import com.kernotec.driverscheduleservice.rest.socket.resource.LocationSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +23,8 @@ public class ProcessLocationCreateRequestCmd extends
 {
 
     private final LocationCreateCmd locationCreateCmd;
-    private final WebSocketHandler webSocketHandler;
-    private final LocationResponseMapper locationResponseMapper;
     private final LocationService locationService;
+    private final LocationSocketHandler locationSocketHandler;
 
     @Override
     protected void validate(Request request) {
@@ -59,15 +54,10 @@ public class ProcessLocationCreateRequestCmd extends
                 .build())
             .execute();
 
-        Location location = locationService.findByIdThrow(locationId);
-
-        webSocketHandler.emitMessage(
-            WebSocketTopic.LOCATION_CREATED, WebSocketSingleResponse.builder()
-                .topic(WebSocketTopic.LOCATION_CREATED)
-                .timestamp(ZonedDateTime.now())
-                .data(locationResponseMapper.toResponse(location))
-                .build()
-        );
+        locationSocketHandler.emitMessage(LocationSocketHandler.Request.builder()
+            .locationId(locationId)
+            .topic(WebSocketTopic.LOCATION_CREATED)
+            .build());
 
         return locationId;
     }

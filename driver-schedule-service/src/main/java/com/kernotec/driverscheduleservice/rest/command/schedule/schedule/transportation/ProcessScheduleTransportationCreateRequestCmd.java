@@ -14,7 +14,7 @@ import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequ
 import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationStateService;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleTransportationCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.trip.assignment.TripAssignmentCreateRequest;
-import com.kernotec.driverscheduleservice.rest.socket.schedule.ScheduleTransportationSocketHadler;
+import com.kernotec.driverscheduleservice.rest.socket.schedule.ScheduleTransportationSocketHandler;
 import com.kernotec.driverscheduleservice.util.ScheduleTransportationUtil;
 import com.kernotec.driverscheduleservice.util.ScheduleTransportationUtil.RegistryTripAssignmentRequest;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
@@ -48,7 +48,7 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
 
     private final ZonedDateTimeUtil zonedDateTimeUtil;
     private final ScheduleTransportationUtil scheduleTransportationUtil;
-    private final ScheduleTransportationSocketHadler scheduleTransportationSocketHadler;
+    private final ScheduleTransportationSocketHandler scheduleTransportationSocketHadler;
 
     @Override
     protected void validate(Request request) {
@@ -164,13 +164,13 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
             .getUserId();
 
         scheduleTransportationSocketHadler.emitMessage(
-            ScheduleTransportationSocketHadler.Request.builder()
+            ScheduleTransportationSocketHandler.Request.builder()
                 .scheduleTransportationId(scheduleTransportationId)
                 .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_CREATED)
                 .build());
 
         scheduleTransportationSocketHadler.emitMessage(
-            ScheduleTransportationSocketHadler.Request.builder()
+            ScheduleTransportationSocketHandler.Request.builder()
                 .scheduleTransportationId(scheduleTransportationId)
                 .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_CREATED_TO_USER)
                 .toList(Set.of(userToEmit))

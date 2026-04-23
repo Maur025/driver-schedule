@@ -13,14 +13,14 @@ import lombok.Builder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ScheduleTransportationSocketHadler extends
-    SocketHandler<ScheduleTransportationSocketHadler.Request, ScheduleTransportationResponse>
+public class ScheduleTransportationSocketHandler extends
+    SocketHandler<ScheduleTransportationSocketHandler.Request, ScheduleTransportationResponse>
 {
 
     private final ScheduleTransportationService scheduleTransportationService;
     private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
 
-    public ScheduleTransportationSocketHadler(WebSocketHandler webSocketHandler,
+    public ScheduleTransportationSocketHandler(WebSocketHandler webSocketHandler,
         ScheduleTransportationService service, ScheduleTransportationResponseMapper mapper)
     {
         super(webSocketHandler);
