@@ -1,12 +1,12 @@
 package com.kernotec.driverscheduleservice.common;
 
-import com.kernotec.driverscheduleservice.command.contact.ContactManyCreateCmd;
-import com.kernotec.driverscheduleservice.jpa.entity.Contact;
-import com.kernotec.driverscheduleservice.jpa.enums.ContactCategoryEnum;
-import com.kernotec.driverscheduleservice.jpa.service.ContactCategoryService;
-import com.kernotec.driverscheduleservice.jpa.service.ContactService;
-import com.kernotec.driverscheduleservice.rest.dto.request.contact.ContactCreateRequest;
-import com.kernotec.driverscheduleservice.rest.mapper.request.contact.ContactEntityMapper;
+import com.kernotec.driverscheduleservice.command.resource.contact.ContactManyCreateCmd;
+import com.kernotec.driverscheduleservice.jpa.entity.resource.Contact;
+import com.kernotec.driverscheduleservice.jpa.enums.resource.ContactCategoryEnum;
+import com.kernotec.driverscheduleservice.jpa.service.resource.ContactCategoryService;
+import com.kernotec.driverscheduleservice.jpa.service.resource.ContactService;
+import com.kernotec.driverscheduleservice.rest.dto.resource.request.contact.ContactCreateRequest;
+import com.kernotec.driverscheduleservice.rest.mapper.resource.request.contact.ContactEntityMapper;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;

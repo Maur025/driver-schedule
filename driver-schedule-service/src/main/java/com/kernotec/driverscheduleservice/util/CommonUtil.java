@@ -40,4 +40,12 @@ public class CommonUtil {
 
         return value.toUpperCase();
     }
+
+    public static String getSafeString(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+
+        return value.trim();
+    }
 }

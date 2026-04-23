@@ -11,8 +11,10 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class AuthConfigProperties {
 
-    private String secretKey;
+    private String host;
     private String realm;
     private String resource;
+    private String secretKey;
     private String audience;
+    private String issuerUri;
 }

@@ -1,8 +1,8 @@
 package com.kernotec.driverscheduleauth.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverscheduleauth.command.TokenSignCmd;
 import com.kernotec.driverscheduleauth.command.TokenJWTClaimSetBuildCmd;
+import com.kernotec.driverscheduleauth.command.TokenSignCmd;
 import com.kernotec.driverscheduleauth.command.token.TokenCreateCmd;
 import com.kernotec.driverscheduleauth.config.AuthConfigProperties;
 import com.kernotec.driverscheduleauth.exception.UserException;
@@ -66,6 +66,7 @@ public class ResourceOwnerPasswordCredentialsCmd extends
                     .user(user)
                     .tokenExp(accessExp)
                     .clientId(grantPasswordCredentialsRequest.getClientId())
+                    .realm(grantPasswordCredentialsRequest.getRealm())
                     .build())
             .execute();
 
@@ -75,6 +76,7 @@ public class ResourceOwnerPasswordCredentialsCmd extends
                     .tokenExp(refreshExp)
                     .refreshTokenId(refreshTokenId)
                     .clientId(grantPasswordCredentialsRequest.getClientId())
+                    .realm(grantPasswordCredentialsRequest.getRealm())
                     .build())
             .execute();
 

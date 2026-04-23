@@ -1,0 +1,5 @@
+UPDATE reasons
+SET code = 'DUPLICATE_REQUEST_EMERGENCY_REJECTED'
+WHERE code = 'DUPLICATE_REQUEST'
+  AND
+    reason_type_id = (SELECT rt.id FROM reason_types rt WHERE rt.code = 'TRIP_EMERGENCY_REJECTED');

@@ -1,6 +1,6 @@
 package com.kernotec.driverscheduleservice.web.socket;
 
-import com.kernotec.driverscheduleservice.rest.dto.response.web.socket.WebSocketBaseResponse;
+import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketBaseResponse;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +17,7 @@ public class WebSocketHandler {
 
     public void emitMessage(String topic, WebSocketBaseResponse message) {
         try {
+            log.info("SEND MESSAGE TO TOPIC: [{}]", topic);
             template.convertAndSend(topic, message);
         } catch (MessagingException ex) {
             log.error(

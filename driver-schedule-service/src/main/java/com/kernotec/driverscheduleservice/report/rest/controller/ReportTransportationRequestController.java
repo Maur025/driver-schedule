@@ -3,12 +3,12 @@ package com.kernotec.driverscheduleservice.report.rest.controller;
 import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
-import com.kernotec.driverscheduleservice.jpa.entity.TransportationRequest;
+import com.kernotec.driverscheduleservice.jpa.entity.request.TransportationRequest;
 import com.kernotec.driverscheduleservice.report.jpa.service.ReportTransportationRequestService;
 import com.kernotec.driverscheduleservice.report.rest.dto.request.ReportTransportationRequestRequest;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.ReportSpec;
-import com.kernotec.driverscheduleservice.rest.dto.response.transportation.request.TransportationRequestResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.response.transportation.request.TransportationRequestResponseMapper;
+import com.kernotec.driverscheduleservice.rest.dto.request.response.transportation.request.TransportationRequestResponse;
+import com.kernotec.driverscheduleservice.rest.mapper.request.response.transportation.request.TransportationRequestResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,7 +33,7 @@ public class ReportTransportationRequestController {
     private final ReportTransportationRequestService reportTransportationRequestService;
     private final TransportationRequestResponseMapper transportationRequestResponseMapper;
 
-    @Operation(summary = "transportation request report preview with filters")
+    @Operation(summary = "transportation request12 report preview with filters")
     @PostMapping("transportation-requests/report")
     @ResponseStatus(HttpStatus.OK)
     public PageResponse<TransportationRequestResponse> findAllWithFilters(
@@ -58,7 +58,7 @@ public class ReportTransportationRequestController {
             .build();
     }
 
-    @Operation(summary = "export transportation request report to excel with filters")
+    @Operation(summary = "export transportation request12 report to excel with filters")
     @PostMapping("transportation-requests/report/excel")
     @ResponseStatus(HttpStatus.OK)
     public void exportTrasportationRequestReportToExcel(HttpServletResponse response,

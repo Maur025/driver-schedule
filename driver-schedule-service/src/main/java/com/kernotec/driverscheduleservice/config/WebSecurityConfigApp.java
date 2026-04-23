@@ -25,12 +25,17 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @EnableWebSecurity
 public class WebSecurityConfigApp {
 
-    private static final AntPathRequestMatcher[] AUTH_WHITELIST = {new AntPathRequestMatcher(
-        "/v3/api-docs/**"), new AntPathRequestMatcher("/swagger-ui/**"), new AntPathRequestMatcher(
-        "/swagger-ui.html"), new AntPathRequestMatcher("/webjars/**"), new AntPathRequestMatcher(
-        "/*/v3/api-docs/**"), new AntPathRequestMatcher("/*/swagger-ui/**"),
-        new AntPathRequestMatcher("/*/swagger-ui.html"), new AntPathRequestMatcher("/actuator/**"),
-        new AntPathRequestMatcher("/ws-driver-schedule/**")};
+    private static final AntPathRequestMatcher[] AUTH_WHITELIST = {
+        new AntPathRequestMatcher("/v3/api-docs/**"),
+        new AntPathRequestMatcher("/swagger-ui/**"),
+        new AntPathRequestMatcher("/swagger-ui.html"),
+        new AntPathRequestMatcher("/webjars/**"),
+        new AntPathRequestMatcher("/*/v3/api-docs/**"),
+        new AntPathRequestMatcher("/*/swagger-ui/**"),
+        new AntPathRequestMatcher("/*/swagger-ui.html"),
+        new AntPathRequestMatcher("/actuator/**"),
+        new AntPathRequestMatcher("/ws-driver-schedule/**")
+    };
 
     @Autowired
     @Qualifier("webAuthenticationEntryPoint")

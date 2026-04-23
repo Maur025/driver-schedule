@@ -17,7 +17,8 @@ public enum LoginProtocolParams {
     AUDIENCE_PARAM("audience"),
     SUBJECT_TOKEN_PARAM("subject_token"),
     SUBJECT_TOKEN_TYPE_PARAM("subject_token_type"),
-    ISSUED_TOKEN_TYPE_PARAM("issued_token_type");
+    ISSUED_TOKEN_TYPE_PARAM("issued_token_type"),
+    REALM_PARAM("realm");
 
     private final String value;
 

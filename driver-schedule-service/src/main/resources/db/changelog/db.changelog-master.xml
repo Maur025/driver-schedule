@@ -175,4 +175,69 @@
     <sqlFile path="data/schedule/transportation/state/schedule_transportation_state_update2.sql"
       relativeToChangelogFile="true"/>
   </changeSet>
+
+  <include file="db/changelog/2026/03/30-01-changelog-45.xml"/>
+  <include file="db/changelog/2026/03/30-01-changelog-46.xml"/>
+  <include file="db/changelog/2026/04/02-01-changelog-47.xml"/>
+  <include file="db/changelog/2026/04/02-01-changelog-48.xml"/>
+
+  <!-- reason type - add 2 new reason types -->
+  <changeSet id="1775575593580-1" author="Maur025">
+    <sqlFile path="data/reason/type/reason_type_update1.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- trip emergency state - initial data-->
+  <changeSet id="1775594328253-1" author="Maur025">
+    <sqlFile path="data/trip/emergency/state/trip_emergency_state_seed.sql"
+      relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <include file="db/changelog/2026/04/14-01-changelog-49.xml"/>
+
+  <!-- emergency response type - initial data -->
+  <changeSet id="1776186506402-1" author="Maur025">
+    <sqlFile path="data/emergency/response/type/emergency_response_type_seed.sql"
+      relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- reason - update reason with emergency and emergency reject reasons -->
+  <changeSet id="1776192478333-1" author="Maur025">
+    <sqlFile path="data/reason/reason_update1.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <include file="db/changelog/2026/04/15-01-changelog-50.xml"/>
+  <include file="db/changelog/2026/04/15-01-changelog-51.xml"/>
+
+  <!-- observation type - initial data -->
+  <changeSet id="1776264266863-1" author="Maur025">
+    <sqlFile path="data/observation/type/observation_type_seed.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- reason - update name with conflict in enum -->
+  <changeSet id="1776265248785-1" author="Maur025">
+    <sqlFile path="data/reason/reason_update2.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- schedule transportation state - add state NEEDS_ACTION -->
+  <changeSet id="1776282447343-1" author="Maur025">
+    <sqlFile path="data/schedule/transportation/state/schedule_transportation_state_update3.sql"
+      relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <include file="db/changelog/2026/04/16-01-changelog-52.xml"/>
+
+  <!-- trip assignment state - initial data -->
+  <changeSet id="1776352487724-1" author="Maur025">
+    <sqlFile path="data/trip/assignment/state/trip_assignment_state_seed.sql"
+      relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <!-- trip assignment - update all state to ACTIVE -->
+  <changeSet id="1776352888401-1" author="Maur025">
+    <sqlFile path="data/trip/assignment/trip_assignment_update1.sql"
+      relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <include file="db/changelog/2026/04/16-01-changelog-53.xml"/>
+  <include file="db/changelog/2026/04/16-01-changelog-54.xml"/>
 </databaseChangeLog>

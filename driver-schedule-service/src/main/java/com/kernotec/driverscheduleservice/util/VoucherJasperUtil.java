@@ -5,18 +5,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kernotec.driverscheduleservice.audit.user.json.AuthUserData;
 import com.kernotec.driverscheduleservice.config.KernotecApiDefinition;
-import com.kernotec.driverscheduleservice.jpa.enums.LabelTypeCodeEnum;
-import com.kernotec.driverscheduleservice.jpa.enums.ReasonCodeEnum;
-import com.kernotec.driverscheduleservice.jpa.enums.ScheduleTransportationStateEnum;
-import com.kernotec.driverscheduleservice.jpa.enums.TransportationRequestStateEnum;
-import com.kernotec.driverscheduleservice.jpa.enums.TripTypeEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.request.TransportationRequestStateEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.request.TripTypeEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.resource.LabelTypeCodeEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.resource.ReasonCodeEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.util.dto.VoucherContactDto;
 import com.kernotec.driverscheduleservice.util.dto.VoucherReasonDto;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -67,6 +65,7 @@ public class VoucherJasperUtil {
             case CANCELLED -> "CANCELADO";
             case IN_PROGRESS -> "EN PROGRESO";
             case FINALIZED -> "FINALIZADO";
+            case NEEDS_ACTION -> "ACCION REQUERIDA";
         };
     }
 
@@ -160,27 +159,21 @@ public class VoucherJasperUtil {
         return cancelReasonCount > 0 || rescheduleReasonCount > 0;
     }
 
-    public static String getDateWithConcatDateAndTime(Timestamp date, Timestamp time, String zoneId)
+    public static String getDateWithConcatDateAndTime(Timestamp dateTime, String zoneId)
     {
-        if (date == null || time == null) {
+        if (dateTime == null) {
             return "N/A";
         }
 
         ZoneId clientZoneId = ZonedDateTimeUtil.getClientZoneId(zoneId);
 
-        var timeZonedDateTime = ZonedDateTime.ofInstant(time.toInstant(), ZoneOffset.UTC);
-        var dateZonedDateTime = ZonedDateTime.ofInstant(date.toInstant(), ZoneOffset.UTC);
+        var timeZonedDateTime = ZonedDateTime.ofInstant(dateTime.toInstant(), ZoneOffset.UTC);
 
-        LocalTime clientTime = timeZonedDateTime.withSecond(0)
+        ZonedDateTime clientTimeWithSameUserZoneId = timeZonedDateTime.withSecond(0)
             .withNano(0)
-            .withZoneSameInstant(clientZoneId)
-            .toLocalTime();
+            .withZoneSameInstant(clientZoneId);
 
-        LocalDate clientDate = dateZonedDateTime.toLocalDate();
-
-        ZonedDateTime combinedDateTime = ZonedDateTime.of(clientDate, clientTime, clientZoneId);
-
-        return combinedDateTime.format(
+        return clientTimeWithSameUserZoneId.format(
             DateTimeFormatter.ofPattern("MMM dd, yyyy - hh:mm a", Locale.ENGLISH));
     }
 

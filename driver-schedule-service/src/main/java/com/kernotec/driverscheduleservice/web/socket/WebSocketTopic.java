@@ -48,6 +48,26 @@ public class WebSocketTopic {
     public static final String SCHEDULE_TRANSPORTATION_CANCELLED_TO_USER =
         PRIVATE_MESSAGE_PREFIX + "/schedule.transportation.cancelled";
 
+    public static final String SCHEDULE_TRANSPORTATION_ON_PROGRESS =
+        BROKER_PREFIX + "/schedule.transportation.on.progress";
+
+    public static final String SCHEDULE_TRANSPORTATION_FINALIZED =
+        BROKER_PREFIX + "/schedule.transportation.finalized";
+
+    public static final String TRIP_STARTED = BROKER_PREFIX + "/trip.started";
+
+    public static final String TRIP_CHANGED = BROKER_PREFIX + "/trip.changed";
+
+    public static final String TRIP_FINALIZED = BROKER_PREFIX + "/trip.finalized";
+
+    public static final String TRIP_EMERGENCY_REPORTED = BROKER_PREFIX + "/trip.emergency.reported";
+
+    public static final String TRIP_EMERGENCY_DISMISSED_TO_USER =
+        PRIVATE_MESSAGE_PREFIX + "/trip.emergency.dismissed";
+
+    public static final String TRIP_EMERGENCY_HANDLED_TO_USER =
+        PRIVATE_MESSAGE_PREFIX + "/trip.emergency.handled";
+
     public static final String TEST_MESSAGE = "/test.message";
 
     private WebSocketTopic() {
