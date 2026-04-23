@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.command.trip.trip.emergency;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverscheduleservice.jpa.dto.mapper.trip.TripEmergencyDtoFlatMapper;
+import com.kernotec.driverscheduleservice.jpa.dto.mapper.trip.TripEmergencyDtoMapper;
 import com.kernotec.driverscheduleservice.jpa.dto.trip.TripEmergencyDto;
 import com.kernotec.driverscheduleservice.jpa.entity.trip.TripEmergency;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripEmergencyService;
@@ -18,12 +18,12 @@ public class TripEmergencyGetDtoCmd extends
 {
 
     private final TripEmergencyService tripEmergencyService;
-    private final TripEmergencyDtoFlatMapper tripEmergencyDtoFlatMapper;
+    private final TripEmergencyDtoMapper tripEmergencyDtoMapper;
 
     @Override
     protected TripEmergencyDto run(Request request) {
         TripEmergency tripEmergency = tripEmergencyService.findByIdThrow(request.tripEmergencyId);
-        return tripEmergencyDtoFlatMapper.toDto(tripEmergency);
+        return tripEmergencyDtoMapper.toDto(tripEmergency);
     }
 
     @Builder
