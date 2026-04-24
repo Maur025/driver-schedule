@@ -2,14 +2,15 @@ package com.kernotec.driverscheduleservice.rest.mapper.trip.response.emergency.r
 
 import com.kernotec.driverscheduleservice.jpa.entity.trip.EmergencyRejectReason;
 import com.kernotec.driverscheduleservice.rest.dto.trip.response.emergency.reject.reason.EmergencyRejectReasonResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.trip.response.trip.emergency.TripEmergencyResponseFlatMapper;
 import java.util.List;
 import java.util.Set;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Mapper(uses = TripEmergencyResponseFlatMapper.class)
-public interface EmergencyRejectReasonResponseMapper {
+@Mapper
+public interface EmergencyRejectWithReasonResponseMapper {
 
+    @Mapping(target = "tripEmergency", ignore = true)
     EmergencyRejectReasonResponse toResponse(EmergencyRejectReason emergencyRejectReason);
 
     List<EmergencyRejectReasonResponse> toResponse(
