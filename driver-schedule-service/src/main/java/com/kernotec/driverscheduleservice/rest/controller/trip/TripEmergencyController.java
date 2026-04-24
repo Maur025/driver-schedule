@@ -8,6 +8,9 @@ import com.kernotec.driverscheduleservice.jpa.entity.trip.TripEmergency;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripEmergencyService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.TripEmergencySpec;
 import com.kernotec.driverscheduleservice.rest.command.trip.trip.emergency.ProcessTripEmergencyPatchRequestCmd;
+import com.kernotec.driverscheduleservice.rest.command.trip.trip.emergency.TripEmergencyDismissCmd;
+import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyHandledRequest;
+import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyDismissRequest;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyPatchRequest;
 import com.kernotec.driverscheduleservice.rest.dto.trip.response.trip.emergency.TripEmergencyResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.trip.response.trip.emergency.TripEmergencyResponseMapper;
@@ -21,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,6 +40,7 @@ public class TripEmergencyController {
     private final TripEmergencyService tripEmergencyService;
     private final TripEmergencyResponseMapper tripEmergencyResponseMapper;
     private final ProcessTripEmergencyPatchRequestCmd processTripEmergencyPatchRequestCmd;
+    private final TripEmergencyDismissCmd tripEmergencyDismissCmd;
 
     @Operation(summary = "find all")
     @GetMapping
@@ -73,7 +78,7 @@ public class TripEmergencyController {
             .build();
     }
 
-    @Operation(summary = "update ")
+    @Operation(summary = "update")
     @PatchMapping("{tripEmergencyId}")
     @ResponseStatus(HttpStatus.OK)
     public SingleResponse<TripEmergencyResponse> updatePatch(
@@ -90,6 +95,37 @@ public class TripEmergencyController {
         return SingleResponse.<TripEmergencyResponse>builder()
             .code(HttpStatus.OK.value())
             .message("TripEmergency updated successfully")
+            .build();
+    }
+
+    @Operation(summary = "trip emergency dismissed")
+    @PostMapping("{tripEmergencyId}/dismissed")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<TripEmergencyResponse> tripEmergencyDismissed(
+        @PathVariable("tripEmergencyId") UUID tripEmergencyId, TripEmergencyDismissRequest request)
+    {
+        tripEmergencyDismissCmd.withRequest(TripEmergencyDismissCmd.Request.builder()
+                .tripEmergencyId(tripEmergencyId)
+                .tripEmergencyDismissRequest(request)
+                .build())
+            .execute();
+
+        return SingleResponse.<TripEmergencyResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("TripEmergency dismissed successfully")
+            .build();
+    }
+
+    @Operation(summary = "trip emergency handled")
+    @PostMapping("{tripEmergencyId}/handled")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<TripEmergencyResponse> tripEmergencyHandled(
+        @PathVariable("tripEmergencyId") UUID tripEmergencyId,
+        @RequestBody TripEmergencyHandledRequest request)
+    {
+
+
+        return SingleResponse.<TripEmergencyResponse>builder()
             .build();
     }
 }

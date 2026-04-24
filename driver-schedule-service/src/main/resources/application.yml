@@ -114,3 +114,7 @@ modules-app:
     scheme: ${MS_AUTH_SCHEME:http}
     host: ${MS_AUTH_HOST:localhost}
     port: ${MS_AUTH_PORT:443}
+
+# FIREBASE CONFIG
+firebase-config-props:
+  key-path: "${FIREBASE_KEY_PATH:classpath:firebase/firebase-key.json}"

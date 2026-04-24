@@ -2,14 +2,20 @@ package com.kernotec.driverscheduleservice.util;
 
 import com.kernotec.driverscheduleservice.command.schedule.trip.assignment.TripAssignmentManyCreateCmd;
 import com.kernotec.driverscheduleservice.exception.schedule.ScheduleTransportationException;
+import com.kernotec.driverscheduleservice.jpa.dto.schedule.ScheduleTransportationDto;
 import com.kernotec.driverscheduleservice.jpa.entity.schedule.TripAssignment;
+import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.schedule.TripAssignmentStateCodeEnum;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.TripAssignmentStateService;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.trip.assignment.TripAssignmentCreateRequest;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.request.trip.assignment.TripAssignmentEntityMapper;
 import java.time.ZonedDateTime;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +66,37 @@ public class ScheduleTransportationUtil {
         if (tripAssignmentCreateRequestList == null || tripAssignmentCreateRequestList.isEmpty()) {
             throw new ScheduleTransportationException(
                 "assignments.not.found", "", HttpStatus.BAD_REQUEST.value());
+        }
+    }
+
+    public <T> Set<T> getValuesOfTripAssignmentRequest(
+        Collection<TripAssignmentCreateRequest> tripAssignmentRequestCollection,
+        Function<TripAssignmentCreateRequest, T> getValueFn)
+    {
+        return tripAssignmentRequestCollection.stream()
+            .map(getValueFn)
+            .collect(Collectors.toSet());
+    }
+
+    public ScheduleTransportationStateEnum getCurrentScheduleStateOfDto(
+        ScheduleTransportationDto scheduleTransportationDto)
+    {
+        return ScheduleTransportationStateEnum.fromValue(
+            scheduleTransportationDto.getScheduleTransportationState()
+                .getCode());
+    }
+
+    public void validateTransitionOfDto(ScheduleTransportationDto scheduleTransportationDto,
+        ScheduleTransportationStateEnum nextState)
+    {
+        ScheduleTransportationStateEnum currentState = getCurrentScheduleStateOfDto(
+            scheduleTransportationDto);
+
+        if (!currentState.canTransitionTo(nextState)) {
+            throw new ScheduleTransportationException(
+                "invalid.state.to.action",
+                "'" + currentState + "'", HttpStatus.CONFLICT.value()
+            );
         }
     }
 

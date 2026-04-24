@@ -7,20 +7,14 @@ import com.kernotec.driverscheduleservice.command.request.transportation.request
 import com.kernotec.driverscheduleservice.command.request.transportation.request.log.TransportationRequestLogCreateCmd;
 import com.kernotec.driverscheduleservice.exception.request.TransportationRequestException;
 import com.kernotec.driverscheduleservice.jpa.dto.request.TransportationRequestDto;
-import com.kernotec.driverscheduleservice.jpa.entity.request.TransportationRequest;
 import com.kernotec.driverscheduleservice.jpa.enums.request.TransportationRequestStateEnum;
-import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestService;
 import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestStateService;
 import com.kernotec.driverscheduleservice.jpa.service.resource.PersonService;
-import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.request.request.cancel.request.reason.CancelRequestReasonRequest;
-import com.kernotec.driverscheduleservice.rest.dto.request.response.transportation.request.TransportationRequestResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.request.response.transportation.request.TransportationRequestResponseMapper;
-import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
+import com.kernotec.driverscheduleservice.rest.socket.request.TransportationRequestSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -36,16 +30,14 @@ public class ProcessTransportationRequestCancelledCmd extends
 {
 
     private final TransportationRequestStateService transportationRequestStateService;
-    private final TransportationRequestService transportationRequestService;
-
-    private final TransportationRequestResponseMapper transportationRequestResponseMapper;
+    private final PersonService personService;
 
     private final TransportationRequestGetDtoCmd transportationRequestGetDtoCmd;
     private final CancelRequestReasonCreateCmd cancelRequestReasonCreateCmd;
     private final TransportationRequestUpdateCmd transportationRequestUpdateCmd;
     private final TransportationRequestLogCreateCmd transportationRequestLogCreateCmd;
-    private final WebSocketHandler webSocketHandler;
-    private final PersonService personService;
+
+    private final TransportationRequestSocketHandler transportationRequestSocketHandler;
 
     @Override
     protected void validate(Request request) {
@@ -101,17 +93,11 @@ public class ProcessTransportationRequestCancelledCmd extends
                     .build())
             .execute();
 
-        TransportationRequest transportationRequest = transportationRequestService.findByIdThrow(
-            request.transportationRequestId);
-
-        webSocketHandler.emitMessage(
-            WebSocketTopic.TRANSPORTATION_REQUEST_CANCELLED,
-            WebSocketSingleResponse.<TransportationRequestResponse>builder()
+        transportationRequestSocketHandler.emitMessage(
+            TransportationRequestSocketHandler.Request.builder()
+                .transportationRequestId(request.transportationRequestId())
                 .topic(WebSocketTopic.TRANSPORTATION_REQUEST_CANCELLED)
-                .timestamp(ZonedDateTime.now())
-                .data(transportationRequestResponseMapper.toResponse(transportationRequest))
-                .build()
-        );
+                .build());
 
         return null;
     }

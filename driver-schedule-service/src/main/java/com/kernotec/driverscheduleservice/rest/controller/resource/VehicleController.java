@@ -11,7 +11,7 @@ import com.kernotec.driverscheduleservice.common.annotation.vehicle.CanUpdateVeh
 import com.kernotec.driverscheduleservice.jpa.entity.resource.Vehicle;
 import com.kernotec.driverscheduleservice.jpa.service.resource.AvailabilityForAssignmentService;
 import com.kernotec.driverscheduleservice.jpa.service.resource.VehicleService;
-import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationService;
+import com.kernotec.driverscheduleservice.notification.NotificationOrchestrator;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.VehicleSpec;
 import com.kernotec.driverscheduleservice.rest.command.csv.imports.CsvImportCmd;
 import com.kernotec.driverscheduleservice.rest.command.resource.vehicle.ProcessVehicleCreateRequestCmd;
@@ -31,8 +31,6 @@ import com.kernotec.driverscheduleservice.rest.dto.resource.response.Availabilit
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.vehicle.VehicleLookupResponse;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.vehicle.VehicleResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.resource.response.vehicle.VehicleResponseMapper;
-import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
-import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import io.swagger.v3.oas.annotations.Operation;
@@ -69,20 +67,18 @@ import org.springframework.web.multipart.MultipartFile;
 public class VehicleController {
 
     private final VehicleService vehicleService;
-    private final ScheduleTransportationService scheduleTransportationService;
 
     private final VehicleResponseMapper vehicleResponseMapper;
-    private final ScheduleTransportationResponseMapper scheduleTransportationResponseMapper;
 
     private final ProcessVehicleCreateRequestCmd processVehicleCreateRequestCmd;
     private final ProcessVehicleUpdateRequestCmd processVehicleUpdateRequestCmd;
     private final WebSocketHandler webSocketHandler;
-    private final ZonedDateTimeUtil zonedDateTimeUtil;
     private final CsvImportCmd<VehicleCsvImportDto> csvImportCmd;
     private final VehicleCsvImportGetDtoCmd vehicleCsvImportGetDtoCmd;
     private final VehicleCsvImportSaveCmd vehicleCsvImportSaveCmd;
     private final ProcessVehiclePatchRequestCmd processVehiclePatchRequestCmd;
     private final AvailabilityForAssignmentService availabilityForAssignmentService;
+    private final NotificationOrchestrator notificationOrchestrator;
 
     @Operation(summary = "find all vehicles")
     @GetMapping
@@ -280,6 +276,19 @@ public class VehicleController {
         return LookupResponse.<List<VehicleLookupResponse>>builder()
             .code(HttpStatus.OK.value())
             .data(vehicleLookupResponsePage.getContent())
+            .build();
+    }
+
+    @Operation(summary = "test push notification")
+    @PostMapping("test-push-notification")
+    @ResponseStatus(HttpStatus.OK)
+    public MessageResponse testPushNotification() {
+
+        notificationOrchestrator.sendAsyncNotification();
+
+        return MessageResponse.builder()
+            .code(HttpStatus.OK.value())
+            .message("Push notification sent successfull")
             .build();
     }
 }

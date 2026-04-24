@@ -5,7 +5,6 @@ import com.kernotec.driverscheduleservice.command.schedule.cancel.reason.CancelR
 import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.ScheduleTransportationGetDtoCmd;
 import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.ScheduleTransportationUpdateCmd;
 import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.log.ScheduleTransportationLogCreateCmd;
-import com.kernotec.driverscheduleservice.exception.schedule.ScheduleTransportationException;
 import com.kernotec.driverscheduleservice.jpa.dto.schedule.ScheduleTransportationDto;
 import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
@@ -15,6 +14,7 @@ import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.We
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleTransportationCancelRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
+import com.kernotec.driverscheduleservice.util.ScheduleTransportationUtil;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.Valid;
@@ -24,7 +24,6 @@ import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -44,6 +43,7 @@ public class ProcessScheduleTransportationCancelRequestCmd extends
     private final CancelReasonCreateCmd cancelReasonCreateCmd;
     private final ScheduleTransportationLogCreateCmd scheduleTransportationLogCreateCmd;
     private final WebSocketHandler webSocketHandler;
+    private final ScheduleTransportationUtil scheduleTransportationUtil;
 
     @Override
     protected void validate(Request request) {
@@ -53,16 +53,8 @@ public class ProcessScheduleTransportationCancelRequestCmd extends
                     .build())
             .execute();
 
-        ScheduleTransportationStateEnum scheduleStateCurrent = ScheduleTransportationStateEnum.fromValue(
-            scheduleTransportationDto.getScheduleTransportationState()
-                .getCode());
-
-        if (!scheduleStateCurrent.canTransitionTo(ScheduleTransportationStateEnum.CANCELLED)) {
-            throw new ScheduleTransportationException(
-                "already.cancelled", "'" + request.scheduleTransportationId + "'",
-                HttpStatus.CONFLICT.value()
-            );
-        }
+        scheduleTransportationUtil.validateTransitionOfDto(
+            scheduleTransportationDto, ScheduleTransportationStateEnum.CANCELLED);
     }
 
     @Override

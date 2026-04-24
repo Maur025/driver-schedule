@@ -215,6 +215,7 @@ public class ScheduleTransportationController {
         processScheduleAddAssignmentRequestCmd.withRequest(
                 ProcessScheduleAddAssignmentRequestCmd.Request.builder()
                     .scheduleTransportationId(scheduleTransportationId)
+
                     .build())
             .execute();
 

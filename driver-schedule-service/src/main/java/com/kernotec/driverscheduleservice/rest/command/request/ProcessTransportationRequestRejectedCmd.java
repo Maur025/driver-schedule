@@ -2,19 +2,13 @@ package com.kernotec.driverscheduleservice.rest.command.request;
 
 import com.kernotec.core.command.AbstractCommand;
 import com.kernotec.driverscheduleservice.command.request.transportation.request.TransportationRequestGetDtoCmd;
-import com.kernotec.driverscheduleservice.command.request.transportation.request.log.TransportationRequestLogCreateCmd;
 import com.kernotec.driverscheduleservice.jpa.dto.request.TransportationRequestDto;
-import com.kernotec.driverscheduleservice.jpa.entity.request.TransportationRequest;
-import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestService;
 import com.kernotec.driverscheduleservice.rest.dto.request.request.reject.reason.RejectReasonRequest;
-import com.kernotec.driverscheduleservice.rest.dto.request.response.transportation.request.TransportationRequestResponse;
-import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.request.response.transportation.request.TransportationRequestResponseMapper;
-import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
+import com.kernotec.driverscheduleservice.rest.socket.request.TransportationRequestSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.time.ZonedDateTime;
+import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -26,14 +20,9 @@ public class ProcessTransportationRequestRejectedCmd extends
     AbstractCommand<ProcessTransportationRequestRejectedCmd.Request, Void>
 {
 
-    private final TransportationRequestService transportationRequestService;
-
-    private final TransportationRequestResponseMapper transportationRequestResponseMapper;
-
     private final TransportationRequestRejectedCmd transportationRequestRejectedCmd;
-    private final WebSocketHandler webSocketHandler;
     private final TransportationRequestGetDtoCmd transportationRequestGetDtoCmd;
-    private final TransportationRequestLogCreateCmd transportationRequestLogCreateCmd;
+    private final TransportationRequestSocketHandler transportationRequestSocketHandler;
 
     @Override
     protected Void run(Request request) {
@@ -44,70 +33,29 @@ public class ProcessTransportationRequestRejectedCmd extends
                     .build())
             .execute();
 
-        TransportationRequestResponse transportationRequestResponse = getTransportationRequestResponseWithFix(
-            request.transportationRequestId);
-
-        transportationRequestLogCreateCmd.withRequest(
-                TransportationRequestLogCreateCmd.Request.builder()
-                    .transportationRequestId(request.transportationRequestId)
-                    .transportationRequestStateId(
-                        transportationRequestResponse.getTransportationRequestStateId())
-                    .build())
-            .execute();
-
-        emitSocketMessage(request.transportationRequestId, transportationRequestResponse);
-
-        return null;
-    }
-
-    private void emitSocketMessage(UUID transportationRequestId,
-        TransportationRequestResponse transportationRequestResponse)
-    {
-        var socketResponse = WebSocketSingleResponse.<TransportationRequestResponse>builder()
-            .timestamp(ZonedDateTime.now())
-            .data(transportationRequestResponse);
-
-        webSocketHandler.emitMessage(
-            WebSocketTopic.TRANSPORTATION_REQUEST_REJECTED,
-            socketResponse.topic(WebSocketTopic.TRANSPORTATION_REQUEST_REJECTED)
-                .build()
-        );
-
         TransportationRequestDto transportationRequestDto = transportationRequestGetDtoCmd.withRequest(
                 TransportationRequestGetDtoCmd.Request.builder()
-                    .transportationRequestId(transportationRequestId)
+                    .transportationRequestId(request.transportationRequestId())
                     .build())
             .execute();
 
-        webSocketHandler.emitMessageToUser(
-            transportationRequestDto.getPersonRequested()
-                .getUserId(), WebSocketTopic.TRANSPORTATION_REQUEST_REJECTED_TO_USER,
-            socketResponse.topic(WebSocketTopic.TRANSPORTATION_REQUEST_REJECTED_TO_USER)
-                .build()
-        );
-    }
+        UUID userToEmit = transportationRequestDto.getPersonRequested()
+            .getUserId();
 
-    /* TODO: Review util, remove because reason structure changed */
-    private TransportationRequestResponse getTransportationRequestResponseWithFix(
-        UUID transportationRequestId)
-    {
-        TransportationRequest transportationRequest = transportationRequestService.findByIdThrow(
-            transportationRequestId);
+        transportationRequestSocketHandler.emitMessage(
+            TransportationRequestSocketHandler.Request.builder()
+                .transportationRequestId(request.transportationRequestId())
+                .topic(WebSocketTopic.TRANSPORTATION_REQUEST_REJECTED)
+                .build());
 
-        /*Set<Reason> reasonSet = reasonService.findRejectByTransportationRequestId(
-            transportationRequestId);*/
+        transportationRequestSocketHandler.emitMessage(
+            TransportationRequestSocketHandler.Request.builder()
+                .transportationRequestId(request.transportationRequestId())
+                .topic(WebSocketTopic.TRANSPORTATION_REQUEST_REJECTED_TO_USER)
+                .toList(Set.of(userToEmit))
+                .build());
 
-        TransportationRequestResponse transportationRequestResponse = transportationRequestResponseMapper.toResponse(
-            transportationRequest);
-
-        if (transportationRequestResponse.getRejectReasons()
-            .isEmpty())
-        {
-            /*transportationRequestResponse.setRejectReasons(
-                reasonResponseMapper.toResponse(reasonSet));*/
-        }
-
-        return transportationRequestResponse;
+        return null;
     }
 
     @Builder

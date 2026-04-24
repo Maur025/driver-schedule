@@ -6,19 +6,14 @@ import com.kernotec.driverscheduleservice.command.trip.trip.TripUpdateCmd;
 import com.kernotec.driverscheduleservice.command.trip.trip.log.TripLogCreateCmd;
 import com.kernotec.driverscheduleservice.exception.trip.TripException;
 import com.kernotec.driverscheduleservice.jpa.dto.trip.TripDto;
-import com.kernotec.driverscheduleservice.jpa.entity.trip.Trip;
 import com.kernotec.driverscheduleservice.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.resource.LocationService;
-import com.kernotec.driverscheduleservice.jpa.service.trip.TripService;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripStateService;
 import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
-import com.kernotec.driverscheduleservice.rest.dto.common.response.web.socket.WebSocketSingleResponse;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.TripUpdatePatchRequest;
-import com.kernotec.driverscheduleservice.rest.mapper.trip.response.trip.TripResponseMapper;
-import com.kernotec.driverscheduleservice.web.socket.WebSocketHandler;
+import com.kernotec.driverscheduleservice.rest.socket.trip.TripSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.UUID;
 import lombok.Builder;
@@ -34,25 +29,23 @@ public class ProcessTripPatchUpdateRequestCmd extends
 
     private final TripStateService tripStateService;
     private final LocationService locationService;
-    private final TripService tripService;
-
-    private final TripResponseMapper tripResponseMapper;
 
     private final TripUpdateCmd tripUpdateCmd;
     private final TripLogCreateCmd tripLogCreateCmd;
-    private final WebSocketHandler webSocketHandler;
     private final TripGetDtoCmd tripGetDtoCmd;
+
+    private final TripSocketHandler tripSocketHandler;
 
     @Override
     protected void validate(Request request) {
-        TripUpdatePatchRequest tripUpdatePatchRequest = request.tripUpdatePatchRequest;
+        TripUpdatePatchRequest tripUpdatePatchRequest = request.tripUpdatePatchRequest();
 
         if (tripUpdatePatchRequest.getTripStateCode() == null) {
             return;
         }
 
         TripDto tripDto = tripGetDtoCmd.withRequest(TripGetDtoCmd.Request.builder()
-                .tripId(request.tripId)
+                .tripId(request.tripId())
                 .build())
             .execute();
 
@@ -69,13 +62,13 @@ public class ProcessTripPatchUpdateRequestCmd extends
 
     @Override
     protected Void run(Request request) {
-        TripUpdatePatchRequest tripUpdatePatchRequest = request.tripUpdatePatchRequest;
+        TripUpdatePatchRequest tripUpdatePatchRequest = request.tripUpdatePatchRequest();
 
         UUID tripStateId = tripStateService.findIdByCodeThrow(
             tripUpdatePatchRequest.getTripStateCode());
 
         tripUpdateCmd.withRequest(TripUpdateCmd.Request.builder()
-                .tripId(request.tripId)
+                .tripId(request.tripId())
                 .tripStateId(tripStateId)
                 .build())
             .execute();
@@ -88,28 +81,19 @@ public class ProcessTripPatchUpdateRequestCmd extends
                 ));
 
             tripLogCreateCmd.withRequest(TripLogCreateCmd.Request.builder()
-                    .tripId(request.tripId)
+                    .tripId(request.tripId())
                     .tripStateId(tripStateId)
                     .coordinate(coordinate)
                     .build())
                 .execute();
         }
 
-        emitWebSocketMessage(request.tripId);
+        tripSocketHandler.emitMessage(TripSocketHandler.Request.builder()
+            .tripId(request.tripId())
+            .topic(WebSocketTopic.TRIP_CHANGED)
+            .build());
 
         return null;
-    }
-
-    private void emitWebSocketMessage(UUID tripId) {
-        Trip trip = tripService.findByIdThrow(tripId);
-
-        webSocketHandler.emitMessage(
-            WebSocketTopic.TRIP_CHANGED, WebSocketSingleResponse.builder()
-                .timestamp(ZonedDateTime.now())
-                .data(tripResponseMapper.toResponse(trip))
-                .topic(WebSocketTopic.TRIP_CHANGED)
-                .build()
-        );
     }
 
     @Builder

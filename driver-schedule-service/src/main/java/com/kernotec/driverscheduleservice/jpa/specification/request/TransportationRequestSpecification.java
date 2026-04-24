@@ -13,6 +13,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,7 @@ public record TransportationRequestSpecification(
         addYearDateFilter(root, cb).ifPresent(predicateList::add);
         addOnlyRecordsOfPersonIdFilter(root, cb).ifPresent(predicateList::add);
         addKeywordFilter(root, cb).ifPresent(predicateList::add);
+        addTransportationRequestStatesFilter(root, cb, joinMap).ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -141,6 +143,27 @@ public record TransportationRequestSpecification(
                     getOrCreateTransportationRequestStateJoin(joinMap, root).get("code"),
                     String.valueOf(transportationRequestState)
                 ));
+    }
+
+    public TransportationRequestSpecification withTransportationRequestStates(
+        Collection<TransportationRequestStateEnum> transportationRequestStates)
+    {
+        this.criteria.setTransportationRequestStates(transportationRequestStates);
+        return this;
+    }
+
+    private Optional<Predicate> addTransportationRequestStatesFilter(
+        Root<TransportationRequest> root, CriteriaBuilder cb,
+        Map<TransportationRequestSpecificationJoinEnum, Join<?, ?>> joinMap)
+    {
+        return Optional.ofNullable(criteria.getTransportationRequestStates())
+            .map(transportationRequestStates -> getOrCreateTransportationRequestStateJoin(
+                joinMap,
+                root
+            ).get("code")
+                .in(transportationRequestStates.stream()
+                    .map(String::valueOf)
+                    .toList()));
     }
 
     public TransportationRequestSpecification withZoneId(String zoneId) {

@@ -5,7 +5,6 @@ import com.kernotec.driverscheduleservice.command.schedule.reschedule.reason.Res
 import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.ScheduleTransportationGetDtoCmd;
 import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.ScheduleTransportationUpdateCmd;
 import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.log.ScheduleTransportationLogCreateCmd;
-import com.kernotec.driverscheduleservice.exception.schedule.ScheduleTransportationException;
 import com.kernotec.driverscheduleservice.jpa.dto.schedule.ScheduleTransportationDto;
 import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
@@ -25,12 +24,11 @@ import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -65,26 +63,18 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
                     .build())
             .execute();
 
-        ScheduleTransportationStateEnum scheduleStateCurrent = ScheduleTransportationStateEnum.fromValue(
-            scheduleTransportationDto.getScheduleTransportationState()
-                .getCode());
+        scheduleTransportationUtil.validateTransitionOfDto(
+            scheduleTransportationDto, ScheduleTransportationStateEnum.RESCHEDULED);
 
-        if (!scheduleStateCurrent.canTransitionTo(ScheduleTransportationStateEnum.RESCHEDULED)) {
-            throw new ScheduleTransportationException(
-                "invalid.state.to.action",
-                "'" + scheduleStateCurrent + "'", HttpStatus.CONFLICT.value()
-            );
-        }
+        Set<UUID> vehicleIds = scheduleTransportationUtil.getValuesOfTripAssignmentRequest(
+            scheduleTransportationUpdateRequest.getTripAssignments(),
+            TripAssignmentCreateRequest::getVehicleId
+        );
 
-        List<UUID> vehicleIds = scheduleTransportationUpdateRequest.getTripAssignments()
-            .stream()
-            .map(TripAssignmentCreateRequest::getVehicleId)
-            .toList();
-
-        List<UUID> driverIds = scheduleTransportationUpdateRequest.getTripAssignments()
-            .stream()
-            .map(TripAssignmentCreateRequest::getDriverId)
-            .toList();
+        Set<UUID> driverIds = scheduleTransportationUtil.getValuesOfTripAssignmentRequest(
+            scheduleTransportationUpdateRequest.getTripAssignments(),
+            TripAssignmentCreateRequest::getDriverId
+        );
 
         scheduleTransportationDateValidationCmd.withRequest(
                 ScheduleTransportationDateValidationCmd.Request.builder()

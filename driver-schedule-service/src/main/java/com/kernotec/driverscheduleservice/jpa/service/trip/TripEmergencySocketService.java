@@ -18,10 +18,9 @@ import com.kernotec.driverscheduleservice.rest.dto.trip.response.emergency.rejec
 import com.kernotec.driverscheduleservice.rest.dto.trip.response.trip.emergency.TripEmergencyResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.resource.response.person.PersonResponseWithContactMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.resource.response.reason.ReasonResponseFlatMapper;
-import com.kernotec.driverscheduleservice.rest.mapper.resource.response.reason.ReasonResponseMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationToAvailabilityMapper;
-import com.kernotec.driverscheduleservice.rest.mapper.trip.response.emergency.reason.EmergencyReasonResponseMapper;
-import com.kernotec.driverscheduleservice.rest.mapper.trip.response.emergency.reject.reason.EmergencyRejectReasonResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.trip.response.emergency.reason.EmergencyReasonWithReasonResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.trip.response.emergency.reject.reason.EmergencyRejectWithReasonResponseMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.trip.response.trip.TripResponseToEmergencyMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.trip.response.trip.emergency.TripEmergencyResponseMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.trip.response.trip.emergency.state.TripEmergencyStateResponseMapper;
@@ -44,17 +43,17 @@ public class TripEmergencySocketService {
     private final TripEmergencyStateService tripEmergencyStateService;
     private final EmergencyReasonService emergencyReasonService;
     private final EmergencyRejectReasonService emergencyRejectReasonService;
+    private final ReasonService reasonService;
 
     private final TripEmergencyResponseMapper tripEmergencyResponseMapper;
     private final PersonResponseWithContactMapper personResponseWithContactMapper;
     private final ScheduleTransportationToAvailabilityMapper scheduleTransportationToAvailabilityMapper;
     private final TripEmergencyStateResponseMapper tripEmergencyStateResponseMapper;
-    private final EmergencyReasonResponseMapper emergencyReasonResponseMapper;
-    private final EmergencyRejectReasonResponseMapper emergencyRejectReasonResponseMapper;
+    private final EmergencyReasonWithReasonResponseMapper emergencyReasonWithReasonResponseMapper;
+    private final EmergencyRejectWithReasonResponseMapper emergencyRejectWithReasonResponseMapper;
     private final TripResponseToEmergencyMapper tripResponseToEmergencyMapper;
-    private final ReasonService reasonService;
-    private final ReasonResponseMapper reasonResponseMapper;
     private final ReasonResponseFlatMapper reasonResponseFlatMapper;
+
 
     public TripEmergencyResponse getResponseWithAllRelations(UUID tripEmergencyId) {
         TripEmergency tripEmergency = tripEmergencyService.findByIdThrow(tripEmergencyId);
@@ -110,7 +109,7 @@ public class TripEmergencySocketService {
         List<EmergencyReason> emergencyReasonList = emergencyReasonService.findByTripEmergencyId(
             tripEmergencyResponse.getId());
 
-        List<EmergencyReasonResponse> emergencyReasonResponseList = emergencyReasonResponseMapper.toResponse(
+        List<EmergencyReasonResponse> emergencyReasonResponseList = emergencyReasonWithReasonResponseMapper.toResponse(
             emergencyReasonList);
 
         setReasonsInResponse(emergencyReasonResponseList);
@@ -122,7 +121,7 @@ public class TripEmergencySocketService {
         List<EmergencyRejectReason> emergencyRejectReasonList = emergencyRejectReasonService.findByTripEmergencyId(
             tripEmergencyResponse.getId());
 
-        List<EmergencyRejectReasonResponse> emergencyRejectReasonResponseList = emergencyRejectReasonResponseMapper.toResponse(
+        List<EmergencyRejectReasonResponse> emergencyRejectReasonResponseList = emergencyRejectWithReasonResponseMapper.toResponse(
             emergencyRejectReasonList);
 
         setReasonsInResponse(emergencyRejectReasonResponseList);

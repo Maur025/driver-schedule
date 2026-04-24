@@ -50,6 +50,7 @@ public class TransportationRequestService extends BaseServiceImpl<Transportation
                 .withTransportationRequestStateId(filterRequest.getTransportationRequestStateId())
                 .withPersonRequestedId(filterRequest.getPersonRequestedId())
                 .withTransportationRequestState(filterRequest.getTransportationRequestState())
+                .withTransportationRequestStates(filterRequest.getTransportationRequestStates())
                 .withTripType(filterRequest.getTripType())
                 .withZoneId(filterRequest.getZoneId())
                 .withSimpleDate(filterRequest.getSimpleDate())
