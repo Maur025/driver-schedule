@@ -9,6 +9,7 @@ import com.kernotec.driverscheduleservice.jpa.service.trip.TripEmergencyService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.TripEmergencySpec;
 import com.kernotec.driverscheduleservice.rest.command.trip.trip.emergency.ProcessTripEmergencyPatchRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.trip.trip.emergency.TripEmergencyDismissCmd;
+import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyHandledRequest;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyDismissRequest;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyPatchRequest;
 import com.kernotec.driverscheduleservice.rest.dto.trip.response.trip.emergency.TripEmergencyResponse;
@@ -112,6 +113,19 @@ public class TripEmergencyController {
         return SingleResponse.<TripEmergencyResponse>builder()
             .code(HttpStatus.OK.value())
             .message("TripEmergency dismissed successfully")
+            .build();
+    }
+
+    @Operation(summary = "trip emergency handled")
+    @PostMapping("{tripEmergencyId}/handled")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<TripEmergencyResponse> tripEmergencyHandled(
+        @PathVariable("tripEmergencyId") UUID tripEmergencyId,
+        @RequestBody TripEmergencyHandledRequest request)
+    {
+
+
+        return SingleResponse.<TripEmergencyResponse>builder()
             .build();
     }
 }
