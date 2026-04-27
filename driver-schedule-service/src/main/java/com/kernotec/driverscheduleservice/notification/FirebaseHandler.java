@@ -1,10 +1,16 @@
 package com.kernotec.driverscheduleservice.notification;
 
+import com.google.firebase.messaging.AndroidConfig;
+import com.google.firebase.messaging.AndroidNotification;
+import com.google.firebase.messaging.ApnsConfig;
+import com.google.firebase.messaging.Aps;
 import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.MulticastMessage;
 import com.google.firebase.messaging.Notification;
+import com.google.firebase.messaging.WebpushConfig;
+import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +52,23 @@ public class FirebaseHandler implements NotificationHandler {
         MulticastMessage message = MulticastMessage.builder()
             .addAllTokens(tokens)
             .setNotification(notification)
+            .setAndroidConfig(AndroidConfig.builder()
+                .setTtl(Duration.ofMinutes(30)
+                    .toMillis())
+                .setNotification(AndroidNotification.builder()
+                    .setClickAction("OPEN_BOOKING_APP")
+                    .setChannelId("kerno-booking-channel")
+                    .build())
+                .build())
+            .setApnsConfig(ApnsConfig.builder()
+                .setAps(Aps.builder()
+                    .setBadge(1)
+                    .setSound("default")
+                    .build())
+                .build())
+            .setWebpushConfig(WebpushConfig.builder()
+                .putHeader("Urgency", "high")
+                .build())
             .build();
 
         try {
