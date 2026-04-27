@@ -11,6 +11,7 @@ import com.kernotec.driverscheduleservice.common.annotation.vehicle.CanUpdateVeh
 import com.kernotec.driverscheduleservice.jpa.entity.resource.Vehicle;
 import com.kernotec.driverscheduleservice.jpa.service.resource.AvailabilityForAssignmentService;
 import com.kernotec.driverscheduleservice.jpa.service.resource.VehicleService;
+import com.kernotec.driverscheduleservice.notification.NotificationOrchestrator;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.VehicleSpec;
 import com.kernotec.driverscheduleservice.rest.command.csv.imports.CsvImportCmd;
 import com.kernotec.driverscheduleservice.rest.command.resource.vehicle.ProcessVehicleCreateRequestCmd;
@@ -77,6 +78,7 @@ public class VehicleController {
     private final VehicleCsvImportSaveCmd vehicleCsvImportSaveCmd;
     private final ProcessVehiclePatchRequestCmd processVehiclePatchRequestCmd;
     private final AvailabilityForAssignmentService availabilityForAssignmentService;
+    private final NotificationOrchestrator notificationOrchestrator;
 
     @Operation(summary = "find all vehicles")
     @GetMapping
@@ -274,6 +276,19 @@ public class VehicleController {
         return LookupResponse.<List<VehicleLookupResponse>>builder()
             .code(HttpStatus.OK.value())
             .data(vehicleLookupResponsePage.getContent())
+            .build();
+    }
+
+    @Operation(summary = "test push notification")
+    @PostMapping("test-push-notification")
+    @ResponseStatus(HttpStatus.OK)
+    public MessageResponse testPushNotification() {
+
+        notificationOrchestrator.sendAsyncNotification();
+
+        return MessageResponse.builder()
+            .code(HttpStatus.OK.value())
+            .message("Push notification sent successfull")
             .build();
     }
 }
