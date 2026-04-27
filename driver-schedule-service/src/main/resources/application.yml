@@ -117,4 +117,14 @@ modules-app:
 
 # FIREBASE CONFIG
 firebase-config-props:
-  key-path: "${FIREBASE_KEY_PATH:classpath:firebase/firebase-key.json}"
+  type: "${FIREBASE_TYPE:service_account}"
+  project-id: "${FIREBASE_PROJECT_ID:project-id}"
+  private-key-id: "${FIREBASE_PRIVATE_KEY_ID:private-key-id}"
+  private-key: "${FIREBASE_PRIVATE_KEY:private-key}"
+  client-email: "${FIREBASE_CLIENT_EMAIL:client-email}"
+  client-id: "${FIREBASE_CLIENT_ID:client-id}"
+  auth-uri: "${FIREBASE_AUTH_URI:https://accounts.google.com/o/oauth2/auth}"
+  token-uri: "${FIREBASE_TOKEN_URI:https://oauth2.googleapis.com/token}"
+  auth-provider-x509-cert-url: "${FIREBASE_AUTH_PROVIDER_X509_CERT_URL:https://www.googleapis.com/oauth2/v1/certs}"
+  client-x509-cert-url: "${FIREBASE_CLIENT_X509_CERT_URL:client-x509-cert-url}"
+  universe-domain: "${FIREBASE_UNIVERSE:googleapis.com}"
