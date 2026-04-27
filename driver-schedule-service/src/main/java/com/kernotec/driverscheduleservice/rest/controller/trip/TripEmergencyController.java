@@ -9,8 +9,9 @@ import com.kernotec.driverscheduleservice.jpa.service.trip.TripEmergencyService;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.TripEmergencySpec;
 import com.kernotec.driverscheduleservice.rest.command.trip.trip.emergency.ProcessTripEmergencyPatchRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.trip.trip.emergency.TripEmergencyDismissCmd;
-import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyHandledRequest;
+import com.kernotec.driverscheduleservice.rest.command.trip.trip.emergency.TripEmergencyHandledCmd;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyDismissRequest;
+import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyHandledRequest;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyPatchRequest;
 import com.kernotec.driverscheduleservice.rest.dto.trip.response.trip.emergency.TripEmergencyResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.trip.response.trip.emergency.TripEmergencyResponseMapper;
@@ -41,6 +42,7 @@ public class TripEmergencyController {
     private final TripEmergencyResponseMapper tripEmergencyResponseMapper;
     private final ProcessTripEmergencyPatchRequestCmd processTripEmergencyPatchRequestCmd;
     private final TripEmergencyDismissCmd tripEmergencyDismissCmd;
+    private final TripEmergencyHandledCmd tripEmergencyHandledCmd;
 
     @Operation(summary = "find all")
     @GetMapping
@@ -123,9 +125,15 @@ public class TripEmergencyController {
         @PathVariable("tripEmergencyId") UUID tripEmergencyId,
         @RequestBody TripEmergencyHandledRequest request)
     {
-
+        tripEmergencyHandledCmd.withRequest(TripEmergencyHandledCmd.Request.builder()
+                .tripEmergencyId(tripEmergencyId)
+                .tripEmergencyHandledRequest(request)
+                .build())
+            .execute();
 
         return SingleResponse.<TripEmergencyResponse>builder()
+            .code(HttpStatus.OK.value())
+            .message("TripEmergency handled successfully")
             .build();
     }
 }

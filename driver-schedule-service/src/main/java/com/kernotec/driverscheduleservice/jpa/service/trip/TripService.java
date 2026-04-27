@@ -10,6 +10,7 @@ import com.kernotec.driverscheduleservice.jpa.repository.trip.TripRepository;
 import com.kernotec.driverscheduleservice.jpa.service.resource.PersonService;
 import com.kernotec.driverscheduleservice.jpa.specification.trip.TripSpecification;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.TripFilterRequest;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -75,5 +76,13 @@ public class TripService extends BaseServiceImpl<Trip, UUID> {
             0, Math.max(tripAssignmentIds.size(), 1), "createdAt", false);
 
         return repository.findByTripAssignmentIdInAndDeleted(tripAssignmentIds, deleted, pageable);
+    }
+
+    public List<Trip> findByIdInAndDeleted(Set<UUID> tripIds, Boolean deleted) {
+        return repository.findByIdInAndDeleted(tripIds, deleted);
+    }
+
+    public List<Trip> findByIdIn(Set<UUID> tripIds) {
+        return findByIdInAndDeleted(tripIds, false);
     }
 }

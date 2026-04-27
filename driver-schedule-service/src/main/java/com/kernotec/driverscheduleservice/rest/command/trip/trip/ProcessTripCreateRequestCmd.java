@@ -64,7 +64,8 @@ public class ProcessTripCreateRequestCmd extends
         TripFilterRequest filterRequest = new TripFilterRequest();
         filterRequest.setDriverId(driverId);
         filterRequest.setDeleted(false);
-        filterRequest.setTripStates(Set.of(TripStateEnum.ON_ROUTE, TripStateEnum.WAITING));
+        filterRequest.setTripStates(
+            Set.of(TripStateEnum.ON_ROUTE, TripStateEnum.WAITING, TripStateEnum.EMERGENCY));
 
         Page<Trip> tripPage = tripService.findAllBySearch(filterRequest, pageable);
 

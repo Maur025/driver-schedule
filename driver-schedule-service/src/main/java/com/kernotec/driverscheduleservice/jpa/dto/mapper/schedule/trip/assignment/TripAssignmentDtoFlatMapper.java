@@ -1,5 +1,6 @@
 package com.kernotec.driverscheduleservice.jpa.dto.mapper.schedule.trip.assignment;
 
+import com.kernotec.driverscheduleservice.jpa.dto.mapper.trip.TripDtoFlatMapper;
 import com.kernotec.driverscheduleservice.jpa.dto.schedule.TripAssignmentDto;
 import com.kernotec.driverscheduleservice.jpa.entity.schedule.TripAssignment;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.Set;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper
+@Mapper(uses = TripDtoFlatMapper.class)
 public interface TripAssignmentDtoFlatMapper {
 
     @Mapping(target = "vehicle", ignore = true)
