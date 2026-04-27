@@ -8,7 +8,7 @@ public enum TripEmergencyStateEnum {
 
     private static final Map<TripEmergencyStateEnum, Set<TripEmergencyStateEnum>> TRANSITIONS = Map.of(
         REPORTED, Set.of(ACKNOWLEDGED),
-        ACKNOWLEDGED, Set.of(HANDLED, DISMISSED),
+        ACKNOWLEDGED, Set.of(ACKNOWLEDGED, HANDLED, DISMISSED),
         HANDLED, Set.of(),
         DISMISSED, Set.of()
     );

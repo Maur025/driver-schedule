@@ -363,4 +363,14 @@ public class ApiSpec {
         private TripObservationSpec() {
         }
     }
+
+    public static final class NotificationConfigurationSpec {
+
+        public static final String BASE_PATH = ROOT_PATH + "/notification-configurations";
+        public static final String TAG_NAME = "NOTIFICATION CONFIGURATION";
+        public static final String TAG_DESCRIPTION = "Notification Configuration management";
+
+        private NotificationConfigurationSpec() {
+        }
+    }
 }
