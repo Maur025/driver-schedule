@@ -1,14 +1,17 @@
 package com.kernotec.driverscheduleservice.rest.controller.notification;
 
 import com.kernotec.core.jpa.util.PageableUtil;
+import com.kernotec.core.rest.dto.response.MessageResponse;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.notification.NotificationConfiguration;
 import com.kernotec.driverscheduleservice.jpa.service.notification.NotificationConfigurationService;
+import com.kernotec.driverscheduleservice.notification.service.NotificationOrchestrator;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.NotificationConfigurationSpec;
 import com.kernotec.driverscheduleservice.rest.command.notification.ProcessNotificationConfigurationCreateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.dto.notification.request.NotificationConfigurationCreateRequest;
+import com.kernotec.driverscheduleservice.rest.dto.notification.request.NotificationSendRequest;
 import com.kernotec.driverscheduleservice.rest.dto.notification.response.NotificationConfigurationResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.notification.response.NotificationConfigurationResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,6 +40,7 @@ public class NotificationConfigurationController {
     private final NotificationConfigurationService notificationConfigurationService;
     private final NotificationConfigurationResponseMapper notificationConfigurationResponseMapper;
     private final ProcessNotificationConfigurationCreateRequestCmd processNotificationConfigurationCreateRequestCmd;
+    private final NotificationOrchestrator notificationOrchestrator;
 
     @Operation(summary = "find all notification configurations")
     @GetMapping
@@ -92,6 +96,22 @@ public class NotificationConfigurationController {
         return SingleResponse.<NotificationConfigurationResponse>builder()
             .code(HttpStatus.CREATED.value())
             .data(notificationConfigurationResponseMapper.toResponse(notificationConfigurationId))
+            .build();
+    }
+
+    @Operation(summary = "test send notification")
+    @PostMapping("test-notification")
+    @ResponseStatus(HttpStatus.OK)
+    public MessageResponse testSendNotification(@RequestBody NotificationSendRequest request)
+    {
+
+        notificationOrchestrator.sendAsyncNotification(NotificationOrchestrator.Request.builder()
+            .notificationSendRequest(request)
+            .build());
+
+        return MessageResponse.builder()
+            .code(HttpStatus.OK.value())
+            .message("Send notification sucessful")
             .build();
     }
 }

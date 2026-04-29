@@ -128,3 +128,5 @@ firebase-config-props:
   auth-provider-x509-cert-url: "${FIREBASE_AUTH_PROVIDER_X509_CERT_URL:https://www.googleapis.com/oauth2/v1/certs}"
   client-x509-cert-url: "${FIREBASE_CLIENT_X509_CERT_URL:client-x509-cert-url}"
   universe-domain: "${FIREBASE_UNIVERSE:googleapis.com}"
+  connection-timeout: "${FIREBASE_CONNECTION_TIMEOUT:5000}"
+  read-timeout: "${FIREBASE_READ_TIMEOUT:10000}"

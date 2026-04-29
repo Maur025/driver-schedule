@@ -43,6 +43,8 @@ public class FirebaseConfig {
 
         FirebaseOptions options = FirebaseOptions.builder()
             .setCredentials(getCredentials(jsonBytes))
+            .setConnectTimeout(firebaseConfigProps.getConnectionTimeout())
+            .setReadTimeout(firebaseConfigProps.getReadTimeout())
             .build();
 
         return FirebaseApp.initializeApp(options);
