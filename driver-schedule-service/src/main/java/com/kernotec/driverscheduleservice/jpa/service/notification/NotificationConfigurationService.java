@@ -5,6 +5,8 @@ import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.driverscheduleservice.jpa.entity.notification.NotificationConfiguration;
 import com.kernotec.driverscheduleservice.jpa.repository.notification.NotificationConfigurationRepository;
 import com.kernotec.driverscheduleservice.util.CommonUtil;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -38,5 +40,23 @@ public class NotificationConfigurationService extends
     public Optional<NotificationConfiguration> findByToken(String token)
     {
         return findByTokenAndDeleted(token, false);
+    }
+    
+    public List<NotificationConfiguration> findByPersonIdInAndActivedAndDeleted(
+        Collection<UUID> personIds, boolean actived, boolean deleted)
+    {
+        return repository.findByPersonIdInAndActivedAndDeleted(personIds, actived, deleted);
+    }
+
+    public List<NotificationConfiguration> findByPersonIdInAndActived(Collection<UUID> personIds,
+        boolean actived)
+    {
+        return findByPersonIdInAndActivedAndDeleted(personIds, actived, false);
+    }
+
+    public List<NotificationConfiguration> findByPersonIdInForNotification(
+        Collection<UUID> personIds)
+    {
+        return findByPersonIdInAndActived(personIds, true);
     }
 }

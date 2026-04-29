@@ -10,7 +10,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.MulticastMessage;
 import com.google.firebase.messaging.Notification;
 import com.google.firebase.messaging.WebpushConfig;
-import java.time.Duration;
+import com.kernotec.driverscheduleservice.notification.enums.NotificationErrorCode;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class FirebaseHandler implements NotificationHandler {
+
+    private static final long EXPIRATION_IN_MINUTES = 60L;
 
     private final FirebaseMessaging firebaseMessaging;
 
@@ -49,24 +51,33 @@ public class FirebaseHandler implements NotificationHandler {
     }
 
     private BatchResponse send(Set<String> tokens, Notification notification) {
+        long expiration_seconds = getExpirationInSeconds();
+        long iosExpirationLong = (System.currentTimeMillis() / 1000) + expiration_seconds;
+
+        String webExpiration = String.valueOf(expiration_seconds);
+        String iosExpiration = String.valueOf(iosExpirationLong);
+        long androidExpiration = getExpirationInMilliseconds();
+
         MulticastMessage message = MulticastMessage.builder()
             .addAllTokens(tokens)
             .setNotification(notification)
             .setAndroidConfig(AndroidConfig.builder()
-                .setTtl(Duration.ofMinutes(30)
-                    .toMillis())
+                .setTtl(androidExpiration)
                 .setNotification(AndroidNotification.builder()
                     .setClickAction("OPEN_BOOKING_APP")
                     .setChannelId("kerno-booking-channel")
                     .build())
                 .build())
             .setApnsConfig(ApnsConfig.builder()
+                .putHeader("apns-expiration", iosExpiration)
                 .setAps(Aps.builder()
                     .setBadge(1)
                     .setSound("default")
+                    .setThreadId("kerno-booking-thread")
                     .build())
                 .build())
             .setWebpushConfig(WebpushConfig.builder()
+                .putHeader("TTL", webExpiration)
                 .putHeader("Urgency", "high")
                 .build())
             .build();
@@ -86,8 +97,21 @@ public class FirebaseHandler implements NotificationHandler {
             .map(externalResponse -> SendResponse.builder()
                 .messageId(externalResponse.getMessageId())
                 .exception(externalResponse.getException())
+                .notificationErrorCode(externalResponse.isSuccessful() ? null
+                    : NotificationErrorCode.fromValue(externalResponse.getException()
+                                                      .getMessagingErrorCode()
+                                                      .toString()))
                 .isSuccessful(externalResponse.isSuccessful())
                 .build())
             .toList();
     }
+
+    private long getExpirationInMilliseconds() {
+        return EXPIRATION_IN_MINUTES * 60L * 1000L;
+    }
+
+    private long getExpirationInSeconds() {
+        return EXPIRATION_IN_MINUTES * 60L;
+    }
 }
+

@@ -22,4 +22,6 @@ public class FirebaseConfigProps {
     private String authProviderX509CertUrl;
     private String clientX509CertUrl;
     private String universeDomain;
+    private Integer connectionTimeout;
+    private Integer readTimeout;
 }
