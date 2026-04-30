@@ -11,5 +11,17 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class FirebaseConfigProps {
 
-    private String keyPath;
+    private String type;
+    private String projectId;
+    private String privateKeyId;
+    private String privateKey;
+    private String client_email;
+    private String clientId;
+    private String authUri;
+    private String tokenUri;
+    private String authProviderX509CertUrl;
+    private String clientX509CertUrl;
+    private String universeDomain;
+    private Integer connectionTimeout;
+    private Integer readTimeout;
 }

@@ -2,6 +2,7 @@ package com.kernotec.driverscheduleservice.jpa.repository.trip;
 
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.driverscheduleservice.jpa.entity.trip.Trip;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -16,4 +17,6 @@ public interface TripRepository extends BaseRepository<Trip, UUID> {
 
     Page<Trip> findByTripAssignmentIdInAndDeleted(Set<UUID> tripAssignmentIds, Boolean deleted,
         Pageable pageable);
+
+    List<Trip> findByIdInAndDeleted(Set<UUID> tripIds, Boolean deleted);
 }

@@ -17,6 +17,7 @@ import com.kernotec.driverscheduleservice.report.jpa.enums.ReportDispositionEnum
 import com.kernotec.driverscheduleservice.report.rest.command.pdf.PdfExportCmd;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.ScheduleTransportationSpec;
 import com.kernotec.driverscheduleservice.rest.command.schedule.schedule.transportation.ProcessScheduleAddAssignmentRequestCmd;
+import com.kernotec.driverscheduleservice.rest.command.schedule.schedule.transportation.ProcessScheduleFinalizedRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.schedule.schedule.transportation.ProcessScheduleTransportationCancelRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.schedule.schedule.transportation.ProcessScheduleTransportationCreateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.schedule.schedule.transportation.ProcessScheduleTransportationUpdateRequestCmd;
@@ -64,6 +65,7 @@ public class ScheduleTransportationController {
     private final PdfExportCmd pdfExportCmd;
     private final VoucherScheduleTransportationPdfExportCmd voucherScheduleTransportationPdfExportCmd;
     private final ProcessScheduleAddAssignmentRequestCmd processScheduleAddAssignmentRequestCmd;
+    private final ProcessScheduleFinalizedRequestCmd processScheduleFinalizedRequestCmd;
 
     @Operation(summary = "find all schedule transportations")
     @GetMapping
@@ -231,9 +233,15 @@ public class ScheduleTransportationController {
     public SingleResponse<ScheduleTransportationResponse> finalize(
         @PathVariable("scheduleTransportationId") UUID scheduleTransportationId)
     {
+        processScheduleFinalizedRequestCmd.withRequest(
+                ProcessScheduleFinalizedRequestCmd.Request.builder()
+                    .scheduleTransportationId(scheduleTransportationId)
+                    .build())
+            .execute();
+
         return SingleResponse.<ScheduleTransportationResponse>builder()
             .code(HttpStatus.OK.value())
-            .message("Finalization successful")
+            .message("Schedule finalized with all dependencies successfully")
             .build();
     }
 
