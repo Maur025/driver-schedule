@@ -7,7 +7,8 @@ public enum NotificationErrorCode {
     QUOTA_EXCEEDED,
     SENDER_ID_MISMATCH,
     UNAVAILABLE,
-    UNREGISTERED;
+    UNREGISTERED,
+    INTERNAL_SERVER_ERROR;
 
     public static NotificationErrorCode fromValue(String value) {
         if (value == null || value.isBlank()) {

@@ -10,7 +10,7 @@ import com.kernotec.driverscheduleservice.notification.NotificationHandler;
 import com.kernotec.driverscheduleservice.notification.NotificationHandlerRequest;
 import com.kernotec.driverscheduleservice.notification.NotificationHandlerResponse;
 import com.kernotec.driverscheduleservice.notification.dto.NotificationFlowResponse;
-import com.kernotec.driverscheduleservice.rest.dto.notification.request.NotificationSendRequest;
+import com.kernotec.driverscheduleservice.notification.dto.NotificationSendRequest;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,13 +36,13 @@ public class NotificationOnlyUserStrategy implements NotificationFlowStrategy {
 
     @Override
     public NotificationFlowResponse sendNotification(NotificationSendRequest request) {
-        if (request.getPersonIds()
+        if (request.personIds()
             .isEmpty())
         {
             throw new DefaultApiException("PersonIds cannot be empty for ONLY_USER strategy");
         }
 
-        UUID personId = request.getPersonIds()
+        UUID personId = request.personIds()
             .iterator()
             .next();
 
@@ -63,8 +63,9 @@ public class NotificationOnlyUserStrategy implements NotificationFlowStrategy {
         NotificationHandlerResponse notificationResponse = notificationHandler.pushNotification(
             NotificationHandlerRequest.builder()
                 .tokens(tokens)
-                .title(request.getTitle())
-                .body(request.getBody())
+                .title(request.title())
+                .body(request.body())
+                .dataMap(request.dataMap())
                 .build());
 
         return NotificationFlowResponse.builder()

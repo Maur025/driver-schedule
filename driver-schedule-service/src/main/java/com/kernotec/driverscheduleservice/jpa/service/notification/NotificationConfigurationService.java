@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @AllArgsConstructor
 @Service
@@ -41,7 +42,7 @@ public class NotificationConfigurationService extends
     {
         return findByTokenAndDeleted(token, false);
     }
-    
+
     public List<NotificationConfiguration> findByPersonIdInAndActivedAndDeleted(
         Collection<UUID> personIds, boolean actived, boolean deleted)
     {
@@ -58,5 +59,10 @@ public class NotificationConfigurationService extends
         Collection<UUID> personIds)
     {
         return findByPersonIdInAndActived(personIds, true);
+    }
+
+    @Transactional
+    public void deleteAllByIdIn(Collection<UUID> ids) {
+        repository.deleteAllByIdIn(ids);
     }
 }

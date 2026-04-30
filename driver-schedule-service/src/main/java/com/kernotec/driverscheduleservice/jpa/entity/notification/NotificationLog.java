@@ -40,7 +40,7 @@ public class NotificationLog extends BaseAuditEntityUser {
     @Column(name = "user_id", nullable = false)
     private UUID userId;
 
-    @Column(name = "device_id", nullable = false, unique = true)
+    @Column(name = "device_id", nullable = false)
     private String deviceId;
 
     @OptimisticLock(excluded = true)
