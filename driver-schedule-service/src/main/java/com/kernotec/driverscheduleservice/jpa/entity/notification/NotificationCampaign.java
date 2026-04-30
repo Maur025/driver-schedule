@@ -33,7 +33,7 @@ public class NotificationCampaign extends BaseAuditEntityUser {
     @Column(name = "campaign_recipient", nullable = false)
     private CampaignRecipientEnum campaignRecipient;
 
-    @Column(name = "person_ids", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "person_ids", columnDefinition = "TEXT")
     private String personIds;
 
     @OneToMany(mappedBy = "notificationCampaign", fetch = FetchType.LAZY)

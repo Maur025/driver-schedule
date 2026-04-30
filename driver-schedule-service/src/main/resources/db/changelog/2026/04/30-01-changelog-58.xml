@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+  <changeSet id="1777576984334-1" author="mmoya@PragmaInvest.com">
+    <createTable tableName="person_notifications">
+      <column defaultValueComputed="uuid_generate_v4()" name="id" type="uuid">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person_notifications"/>
+      </column>
+      <column name="created_by_user" type="jsonb"/>
+      <column name="updated_by_user" type="jsonb"/>
+      <column defaultValueComputed="now()" name="created_at" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by" type="VARCHAR(255)"/>
+      <column defaultValueComputed="now()" name="updated_at" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="updated_by" type="VARCHAR(255)"/>
+      <column defaultValueNumeric="0" name="version" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column defaultValueBoolean="false" name="deleted" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="title" type="VARCHAR(512)"/>
+      <column name="body" type="VARCHAR(2048)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="data" type="jsonb"/>
+      <column name="state" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="person_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="1777576984334-2" author="mmoya@PragmaInvest.com">
+    <addForeignKeyConstraint baseColumnNames="person_id" baseTableName="person_notifications"
+      constraintName="FK_PERSON_NOTIFICATIONS_ON_PERSON" referencedColumnNames="id"
+      referencedTableName="person"/>
+  </changeSet>
+
+</databaseChangeLog>

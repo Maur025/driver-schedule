@@ -33,8 +33,7 @@ public class NotificationCampaignCreateCmd extends
 
     @Builder
     public record Request(@NotNull String title, @NotNull String body,
-                          @NotNull CampaignRecipientEnum campaignRecipient,
-                          @NotNull String personIds)
+                          @NotNull CampaignRecipientEnum campaignRecipient, String personIds)
     {
 
     }
