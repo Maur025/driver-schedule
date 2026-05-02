@@ -106,14 +106,12 @@ public class NotificationConfigurationController {
     public MessageResponse testSendNotification(@RequestBody NotificationSendToTestRequest request)
     {
 
-        notificationOrchestrator.sendAsyncNotification(NotificationOrchestrator.Request.builder()
-            .notificationSendRequest(NotificationSendRequest.builder()
-                .title(request.getTitle())
-                .body(request.getBody())
-                .dataMap(request.getDataMap())
-                .personIds(request.getPersonIds())
-                .campaignRecipient(request.getCampaignRecipient())
-                .build())
+        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
+            .title(request.getTitle())
+            .body(request.getBody())
+            .dataMap(request.getDataMap())
+            .personIds(request.getPersonIds())
+            .campaignRecipient(request.getCampaignRecipient())
             .build());
 
         return MessageResponse.builder()

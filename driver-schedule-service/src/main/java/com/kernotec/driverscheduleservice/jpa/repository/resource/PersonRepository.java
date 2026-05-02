@@ -3,6 +3,7 @@ package com.kernotec.driverscheduleservice.jpa.repository.resource;
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.driverscheduleservice.jpa.entity.resource.Person;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.person.PersonLookupResponse;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,4 +37,16 @@ public interface PersonRepository extends BaseRepository<Person, UUID> {
         """)
     Page<PersonLookupResponse> findAllToLookup(@Param("keyword") String keyword,
         @Param("personType") String personType, Pageable pageable);
+
+    @Query("""
+        SELECT p
+        FROM Person p
+        INNER JOIN PersonAssignType pat ON pat.personId = p.id
+        INNER JOIN PersonType pt ON pt.id = pat.personTypeId
+        WHERE p.deleted = :deleted
+        AND pt.code IN :personTypes
+        GROUP BY p.id, p.name, p.lastName
+        """)
+    List<Person> findAllByPersonTypesAndDeleted(
+        @Param("personTypes") Collection<String> personTypes, @Param("deleted") boolean deleted);
 }

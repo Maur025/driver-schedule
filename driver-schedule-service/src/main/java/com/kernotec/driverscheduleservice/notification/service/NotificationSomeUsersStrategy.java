@@ -1,18 +1,19 @@
 package com.kernotec.driverscheduleservice.notification.service;
 
-import com.kernotec.core.exception.custom.base.DefaultApiException;
 import com.kernotec.driverscheduleservice.jpa.enums.notification.CampaignRecipientEnum;
 import com.kernotec.driverscheduleservice.jpa.service.notification.NotificationConfigurationService;
 import com.kernotec.driverscheduleservice.notification.NotificationHandler;
 import com.kernotec.driverscheduleservice.notification.dto.NotificationSendRequest;
 import java.util.Set;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
-public class NotificationOnlyUserStrategy extends NotificationFlowStrategy {
+public class NotificationSomeUsersStrategy extends NotificationFlowStrategy {
 
-    public NotificationOnlyUserStrategy(
+    public NotificationSomeUsersStrategy(
         NotificationConfigurationService notificationConfigurationService,
         NotificationHandler notificationHandler)
     {
@@ -20,8 +21,8 @@ public class NotificationOnlyUserStrategy extends NotificationFlowStrategy {
     }
 
     @Override
-    public CampaignRecipientEnum getFlowType() {
-        return CampaignRecipientEnum.ONLY_USER;
+    protected CampaignRecipientEnum getFlowType() {
+        return CampaignRecipientEnum.SOME_USERS;
     }
 
     @Override
@@ -29,13 +30,10 @@ public class NotificationOnlyUserStrategy extends NotificationFlowStrategy {
         if (request.personIds() == null || request.personIds()
             .isEmpty())
         {
-            throw new DefaultApiException("PersonIds cannot be empty for ONLY_USER strategy");
+            log.debug("No person selected ... skiping");
+            return null;
         }
 
-        UUID personId = request.personIds()
-            .iterator()
-            .next();
-
-        return Set.of(personId);
+        return request.personIds();
     }
 }
