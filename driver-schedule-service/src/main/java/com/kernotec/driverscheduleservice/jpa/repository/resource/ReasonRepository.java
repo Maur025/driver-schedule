@@ -25,7 +25,7 @@ public interface ReasonRepository extends BaseRepository<Reason, UUID> {
         @Param("transportationRequestId") UUID transportationRequestId);*/
 
     @Query("""
-        SELECT r.id as id, r.value as value
+        SELECT r.id as id, r.value as value, r.code as code
         FROM Reason r
         LEFT JOIN ReasonType rt ON r.reasonTypeId = rt.id
         WHERE r.deleted = false

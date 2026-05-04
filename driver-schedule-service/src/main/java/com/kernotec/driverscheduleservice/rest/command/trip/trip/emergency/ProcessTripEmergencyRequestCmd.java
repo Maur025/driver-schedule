@@ -16,11 +16,15 @@ import com.kernotec.driverscheduleservice.jpa.service.resource.PersonService;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripEmergencyStateService;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripStateService;
 import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
+import com.kernotec.driverscheduleservice.notification.dto.NotificationSendRequest;
+import com.kernotec.driverscheduleservice.notification.service.NotificationOrchestrator;
+import com.kernotec.driverscheduleservice.notification.templates.NotificationTemplate.TripEmergencyReportedTemplate;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyRequest;
 import com.kernotec.driverscheduleservice.rest.socket.trip.TripEmergencySocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +52,7 @@ public class ProcessTripEmergencyRequestCmd extends
     private final TripEmergencyLogCreateCmd tripEmergencyLogCreateCmd;
 
     private final TripEmergencySocketHandler tripEmergencySocketHandler;
+    private final NotificationOrchestrator notificationOrchestrator;
 
     @Override
     protected Void run(Request request) {
@@ -74,6 +79,13 @@ public class ProcessTripEmergencyRequestCmd extends
         UUID tripEmergencyId = createTripEmergency(request.tripId(), tripDto, tripEmergencyRequest);
 
         markTripInEmergency(request.tripId(), coordinate);
+
+        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
+            .title(TripEmergencyReportedTemplate.TITLE)
+            .body(TripEmergencyReportedTemplate.BODY)
+            .campaignRecipient(TripEmergencyReportedTemplate.RECEIVER)
+            .dataMap(Map.of("screen", "trip-emergency/" + tripEmergencyId))
+            .build());
 
         tripEmergencySocketHandler.emitMessage(TripEmergencySocketHandler.Request.builder()
             .tripEmergencyId(tripEmergencyId)
