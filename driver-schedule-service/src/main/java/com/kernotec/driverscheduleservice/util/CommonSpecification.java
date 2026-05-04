@@ -1,5 +1,6 @@
 package com.kernotec.driverscheduleservice.util;
 
+import com.kernotec.driverscheduleservice.jpa.specification.common.criteria.CriteriaDate;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Path;
@@ -9,6 +10,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Optional;
+import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -25,6 +28,16 @@ public class CommonSpecification {
         query.orderBy(isDescending ? cb.desc(root.get(orderBy)) : cb.asc(root.get(orderBy)));
     }
 
+    public static <T extends CriteriaDate> Optional<Predicate> addSimpleDateFilter(Root<?> root,
+        CriteriaBuilder cb, T criteria, Supplier<Path<ZonedDateTime>> getDatePathFun)
+    {
+        return Optional.ofNullable(criteria.getSimpleDate())
+            .map(simpleDate -> CommonSpecification.simpleDatePredicate(
+                cb, getDatePathFun.get(),
+                simpleDate, criteria.getZoneId()
+            ));
+    }
+
     public static Predicate simpleDatePredicate(CriteriaBuilder cb, Path<ZonedDateTime> datePath,
         ZonedDateTime simpleDateInput, String zoneId)
     {
@@ -39,6 +52,21 @@ public class CommonSpecification {
         log.debug("startOfDay: {}, endOfDay: {}", startOfDay, endOfDay);
 
         return cb.between(datePath, startOfDay, endOfDay);
+    }
+
+    public static <T extends CriteriaDate> Optional<Predicate> addDateRangeFilter(Root<?> root,
+        CriteriaBuilder cb, T criteria, Supplier<Path<ZonedDateTime>> getDatePathFun)
+    {
+        ZonedDateTime from = criteria.getFromDate();
+        ZonedDateTime to = criteria.getToDate();
+
+        if (from != null && to != null) {
+            return Optional.of(
+                CommonSpecification.dateRangePredicate(
+                    cb, getDatePathFun.get(), from, to, criteria.getZoneId()));
+        }
+
+        return Optional.empty();
     }
 
     public static Predicate dateRangePredicate(CriteriaBuilder cb, Path<ZonedDateTime> datePath,
@@ -58,6 +86,16 @@ public class CommonSpecification {
         return cb.between(datePath, startOfFromDate, endOfToDate);
     }
 
+    public static <T extends CriteriaDate> Optional<Predicate> addMonthDateFilter(Root<?> root,
+        CriteriaBuilder cb, T criteria, Supplier<Path<ZonedDateTime>> getDatePathFun)
+    {
+        return Optional.ofNullable(criteria.getMonthDate())
+            .map(monthDate -> CommonSpecification.monthDatePredicate(
+                cb, getDatePathFun.get(),
+                monthDate, criteria.getZoneId()
+            ));
+    }
+
     public static Predicate monthDatePredicate(CriteriaBuilder cb, Path<ZonedDateTime> datePath,
         ZonedDateTime monthDateInput, String zoneId)
     {
@@ -74,6 +112,16 @@ public class CommonSpecification {
         log.debug("startOfMonth: {}, endOfMonth: {}", startOfMonth, endOfMonth);
 
         return cb.between(datePath, startOfMonth, endOfMonth);
+    }
+
+    public static <T extends CriteriaDate> Optional<Predicate> addYearDateFilter(Root<?> root,
+        CriteriaBuilder cb, T criteria, Supplier<Path<ZonedDateTime>> getDatePathFun)
+    {
+        return Optional.ofNullable(criteria.getYearDate())
+            .map(yearDate -> CommonSpecification.yearDatePredicate(
+                cb, getDatePathFun.get(),
+                yearDate, criteria.getZoneId()
+            ));
     }
 
     public static Predicate yearDatePredicate(CriteriaBuilder cb, Path<ZonedDateTime> datePath,

@@ -108,10 +108,6 @@ public record TripAssignmentSpecification(TripAssignmentSpecificationCriteria cr
         List<Predicate> predicateList = new ArrayList<>();
         Map<TripAssignmentSpecificationJoinEnum, Join<?, ?>> joinMap = new HashMap<>();
 
-        addSimpleDateFilter(root, cb, joinMap).ifPresent(predicateList::add);
-        addDateRangeFilter(root, cb, joinMap).ifPresent(predicateList::add);
-        addMonthDateFilter(root, cb, joinMap).ifPresent(predicateList::add);
-        addYearDateFilter(root, cb, joinMap).ifPresent(predicateList::add);
         addScheduleTransportationStatesFilter(root, cb, joinMap).ifPresent(predicateList::add);
         addDriverIdFilter(root, cb).ifPresent(predicateList::add);
         addVehicleIdFilter(root, cb).ifPresent(predicateList::add);
@@ -123,6 +119,24 @@ public record TripAssignmentSpecification(TripAssignmentSpecificationCriteria cr
         addExistingTripStatesFilter(root, cb, joinMap).ifPresent(predicateList::add);
         addTripAssignmentStatesFilter(root, joinMap).ifPresent(predicateList::add);
         addScheduleTransportationExcludeIdFilter(root, cb).ifPresent(predicateList::add);
+
+        Join<?, ?> scheduleJoin = getOrCreateScheduleTransportationJoin(joinMap, root);
+
+        CommonSpecification.addSimpleDateFilter(
+                root, cb, criteria, () -> scheduleJoin.get("scheduleFrom"))
+            .ifPresent(predicateList::add);
+
+        CommonSpecification.addDateRangeFilter(
+                root, cb, criteria, () -> scheduleJoin.get("scheduleFrom"))
+            .ifPresent(predicateList::add);
+
+        CommonSpecification.addMonthDateFilter(
+                root, cb, criteria, () -> scheduleJoin.get("scheduleFrom"))
+            .ifPresent(predicateList::add);
+
+        CommonSpecification.addYearDateFilter(
+                root, cb, criteria, () -> scheduleJoin.get("scheduleFrom"))
+            .ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -138,15 +152,6 @@ public record TripAssignmentSpecification(TripAssignmentSpecificationCriteria cr
         return this;
     }
 
-    private Optional<Predicate> addSimpleDateFilter(Root<TripAssignment> root, CriteriaBuilder cb,
-        Map<TripAssignmentSpecificationJoinEnum, Join<?, ?>> joinMap)
-    {
-        return Optional.ofNullable(criteria.getSimpleDate())
-            .map(simpleDate -> CommonSpecification.simpleDatePredicate(
-                cb, getOrCreateScheduleTransportationJoin(joinMap, root).get("scheduleFrom"),
-                simpleDate, criteria.getZoneId()
-            ));
-    }
 
     public TripAssignmentSpecification withDateRange(ZonedDateTime fromDate, ZonedDateTime toDate) {
         this.criteria.setFromDate(fromDate);
@@ -154,50 +159,14 @@ public record TripAssignmentSpecification(TripAssignmentSpecificationCriteria cr
         return this;
     }
 
-    private Optional<Predicate> addDateRangeFilter(Root<TripAssignment> root, CriteriaBuilder cb,
-        Map<TripAssignmentSpecificationJoinEnum, Join<?, ?>> joinMap)
-    {
-        ZonedDateTime from = criteria.getFromDate();
-        ZonedDateTime to = criteria.getToDate();
-
-        if (from != null && to != null) {
-            return Optional.of(CommonSpecification.dateRangePredicate(
-                cb, getOrCreateScheduleTransportationJoin(joinMap, root).get("scheduleFrom"), from,
-                to, criteria.getZoneId()
-            ));
-        }
-
-        return Optional.empty();
-    }
-
     public TripAssignmentSpecification withMonthDate(ZonedDateTime monthDate) {
         this.criteria.setMonthDate(monthDate);
         return this;
     }
 
-    private Optional<Predicate> addMonthDateFilter(Root<TripAssignment> root, CriteriaBuilder cb,
-        Map<TripAssignmentSpecificationJoinEnum, Join<?, ?>> joinMap)
-    {
-        return Optional.ofNullable(criteria.getMonthDate())
-            .map(monthDate -> CommonSpecification.monthDatePredicate(
-                cb, getOrCreateScheduleTransportationJoin(joinMap, root).get("scheduleFrom"),
-                monthDate, criteria.getZoneId()
-            ));
-    }
-
     public TripAssignmentSpecification withYearDate(ZonedDateTime yearDate) {
         this.criteria.setYearDate(yearDate);
         return this;
-    }
-
-    private Optional<Predicate> addYearDateFilter(Root<TripAssignment> root, CriteriaBuilder cb,
-        Map<TripAssignmentSpecificationJoinEnum, Join<?, ?>> joinMap)
-    {
-        return Optional.ofNullable(criteria.getYearDate())
-            .map(yearDate -> CommonSpecification.yearDatePredicate(
-                cb, getOrCreateScheduleTransportationJoin(joinMap, root).get("scheduleFrom"),
-                yearDate, criteria.getZoneId()
-            ));
     }
 
     public TripAssignmentSpecification withScheduleTransportationStates(
