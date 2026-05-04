@@ -3,6 +3,7 @@ package com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.request.BaseRequest;
+import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleAddAssignmentRequest;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,4 +17,6 @@ public class TripEmergencyHandledRequest extends BaseRequest {
 
     private UUID emergencyResponseTypeId;
     private String detail;
+
+    private ScheduleAddAssignmentRequest addAssignment;
 }

@@ -27,7 +27,7 @@ public class NotificationTemplate {
     public static final class RequestCancelledTemplate {
 
         public static final String TITLE = "Solicitud cancelada por el solicitante";
-        public static final String BODY = "El solicitante cancelo si solicitud de transporte. Por favor, revisa los detalles.";
+        public static final String BODY = "El solicitante cancelo su solicitud de transporte. Por favor, revisa los detalles.";
         public static final CampaignRecipientEnum RECEIVER = CampaignRecipientEnum.ALL_SCHEDULERS;
 
         private RequestCancelledTemplate() {
