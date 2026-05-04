@@ -52,9 +52,20 @@ public class ProcessTripPatchUpdateRequestCmd extends
         TripStateEnum tripStateCurrent = TripStateEnum.fromValue(tripDto.getTripState()
             .getCode());
 
-        if (!tripStateCurrent.canTransitionTo(tripUpdatePatchRequest.getTripStateCode())) {
+        TripStateEnum nextTripState = tripUpdatePatchRequest.getTripStateCode();
+
+        if (nextTripState.equals(TripStateEnum.FINALIZED) || nextTripState.equals(
+            TripStateEnum.EMERGENCY) || nextTripState.equals(TripStateEnum.SYSTEM_CLOSED))
+        {
             throw new TripException(
-                "action.not.available", "'" + tripUpdatePatchRequest.getTripStateCode() + "'",
+                "action.no.available", "'" + nextTripState + "'",
+                HttpStatus.BAD_REQUEST.value()
+            );
+        }
+
+        if (!tripStateCurrent.canTransitionTo(nextTripState)) {
+            throw new TripException(
+                "action.not.available", "'" + nextTripState + "'",
                 HttpStatus.CONFLICT.value()
             );
         }

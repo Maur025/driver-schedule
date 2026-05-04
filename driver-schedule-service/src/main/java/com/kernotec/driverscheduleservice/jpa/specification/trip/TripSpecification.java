@@ -56,14 +56,22 @@ public record TripSpecification(TripSpecificationCriteria criteria) implements S
         List<Predicate> predicateList = new ArrayList<>();
         Map<TripSpecificationJoinEnum, Join<?, ?>> joinMap = new HashMap<>();
 
-        addSimpleDateFilter(root, cb).ifPresent(predicateList::add);
-        addDateRangeFilter(root, cb).ifPresent(predicateList::add);
-        addMonthDateFilter(root, cb).ifPresent(predicateList::add);
-        addYearDateFilter(root, cb).ifPresent(predicateList::add);
         addDriverIdFilter(root, cb, joinMap).ifPresent(predicateList::add);
         addVehicleIdFilter(root, cb, joinMap).ifPresent(predicateList::add);
         addTripStatesFilter(root, cb, joinMap).ifPresent(predicateList::add);
         addDeletedFilter(root, cb).ifPresent(predicateList::add);
+
+        CommonSpecification.addSimpleDateFilter(root, cb, criteria, () -> root.get("createdAt"))
+            .ifPresent(predicateList::add);
+
+        CommonSpecification.addDateRangeFilter(root, cb, criteria, () -> root.get("createdAt"))
+            .ifPresent(predicateList::add);
+
+        CommonSpecification.addMonthDateFilter(root, cb, criteria, () -> root.get("createdAt"))
+            .ifPresent(predicateList::add);
+
+        CommonSpecification.addYearDateFilter(root, cb, criteria, () -> root.get("createdAt"))
+            .ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -79,32 +87,10 @@ public record TripSpecification(TripSpecificationCriteria criteria) implements S
         return this;
     }
 
-    private Optional<Predicate> addSimpleDateFilter(Root<Trip> root, CriteriaBuilder cb) {
-        return Optional.ofNullable(criteria.getSimpleDate())
-            .map(simpleDate -> CommonSpecification.simpleDatePredicate(
-                cb, root.get("createdAt"),
-                simpleDate, criteria.getZoneId()
-            ));
-    }
-
     public TripSpecification withDateRange(ZonedDateTime fromDate, ZonedDateTime toDate) {
         this.criteria.setFromDate(fromDate);
         this.criteria.setToDate(toDate);
         return this;
-    }
-
-    private Optional<Predicate> addDateRangeFilter(Root<Trip> root, CriteriaBuilder cb) {
-        ZonedDateTime from = criteria.getFromDate();
-        ZonedDateTime to = criteria.getToDate();
-
-        if (from != null && to != null) {
-            return Optional.of(
-                CommonSpecification.dateRangePredicate(
-                    cb, root.get("createdAt"), from, to,
-                    criteria.getZoneId()
-                ));
-        }
-        return Optional.empty();
     }
 
     public TripSpecification withMonthDate(ZonedDateTime monthDate) {
@@ -112,25 +98,9 @@ public record TripSpecification(TripSpecificationCriteria criteria) implements S
         return this;
     }
 
-    private Optional<Predicate> addMonthDateFilter(Root<Trip> root, CriteriaBuilder cb) {
-        return Optional.ofNullable(criteria.getMonthDate())
-            .map(monthDate -> CommonSpecification.monthDatePredicate(
-                cb, root.get("createdAt"),
-                monthDate, criteria.getZoneId()
-            ));
-    }
-
     public TripSpecification withYearDate(ZonedDateTime yearDate) {
         this.criteria.setYearDate(yearDate);
         return this;
-    }
-
-    private Optional<Predicate> addYearDateFilter(Root<Trip> root, CriteriaBuilder cb) {
-        return Optional.ofNullable(criteria.getYearDate())
-            .map(yearDate -> CommonSpecification.yearDatePredicate(
-                cb, root.get("createdAt"),
-                yearDate, criteria.getZoneId()
-            ));
     }
 
     public TripSpecification withDriverId(UUID driverId) {

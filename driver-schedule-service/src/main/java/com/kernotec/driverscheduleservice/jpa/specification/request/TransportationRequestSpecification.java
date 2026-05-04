@@ -61,13 +61,21 @@ public record TransportationRequestSpecification(
         addPersonRequestedIdFilter(root, cb).ifPresent(predicateList::add);
         addTripTypeFilter(root, cb).ifPresent(predicateList::add);
         addTransportationRequestStateFilter(root, cb, joinMap).ifPresent(predicateList::add);
-        addSimpleDateFilter(root, cb).ifPresent(predicateList::add);
-        addDateRangeFilter(root, cb).ifPresent(predicateList::add);
-        addMonthDateFilter(root, cb).ifPresent(predicateList::add);
-        addYearDateFilter(root, cb).ifPresent(predicateList::add);
         addOnlyRecordsOfPersonIdFilter(root, cb).ifPresent(predicateList::add);
         addKeywordFilter(root, cb).ifPresent(predicateList::add);
         addTransportationRequestStatesFilter(root, cb, joinMap).ifPresent(predicateList::add);
+
+        CommonSpecification.addSimpleDateFilter(root, cb, criteria, () -> root.get("requestedFrom"))
+            .ifPresent(predicateList::add);
+
+        CommonSpecification.addDateRangeFilter(root, cb, criteria, () -> root.get("requestedFrom"))
+            .ifPresent(predicateList::add);
+
+        CommonSpecification.addMonthDateFilter(root, cb, criteria, () -> root.get("requestedFrom"))
+            .ifPresent(predicateList::add);
+
+        CommonSpecification.addYearDateFilter(root, cb, criteria, () -> root.get("requestedFrom"))
+            .ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -176,15 +184,6 @@ public record TransportationRequestSpecification(
         return this;
     }
 
-    private Optional<Predicate> addSimpleDateFilter(Root<TransportationRequest> root,
-        CriteriaBuilder cb)
-    {
-        return Optional.ofNullable(criteria.getSimpleDate())
-            .map(
-                simpleDate -> CommonSpecification.simpleDatePredicate(
-                    cb, root.get("requestedFrom"), simpleDate, criteria.getZoneId()));
-    }
-
     public TransportationRequestSpecification withDateRange(ZonedDateTime fromDate,
         ZonedDateTime toDate)
     {
@@ -193,51 +192,14 @@ public record TransportationRequestSpecification(
         return this;
     }
 
-    private Optional<Predicate> addDateRangeFilter(Root<TransportationRequest> root,
-        CriteriaBuilder cb)
-    {
-        ZonedDateTime from = criteria.getFromDate();
-        ZonedDateTime to = criteria.getToDate();
-
-        if (from != null && to != null) {
-            return Optional.of(
-                CommonSpecification.dateRangePredicate(
-                    cb, root.get("requestedFrom"), from, to,
-                    criteria.getZoneId()
-                ));
-        }
-
-        return Optional.empty();
-    }
-
     public TransportationRequestSpecification withMonthDate(ZonedDateTime monthDate) {
         this.criteria.setMonthDate(monthDate);
         return this;
     }
 
-    private Optional<Predicate> addMonthDateFilter(Root<TransportationRequest> root,
-        CriteriaBuilder cb)
-    {
-        return Optional.ofNullable(criteria.getMonthDate())
-            .map(monthDate -> CommonSpecification.monthDatePredicate(
-                cb, root.get("requestedFrom"),
-                monthDate, criteria.getZoneId()
-            ));
-    }
-
     public TransportationRequestSpecification withYearDate(ZonedDateTime yearDate) {
         this.criteria.setYearDate(yearDate);
         return this;
-    }
-
-    private Optional<Predicate> addYearDateFilter(Root<TransportationRequest> root,
-        CriteriaBuilder cb)
-    {
-        return Optional.ofNullable(criteria.getYearDate())
-            .map(yearDate -> CommonSpecification.yearDatePredicate(
-                cb, root.get("requestedFrom"),
-                yearDate, criteria.getZoneId()
-            ));
     }
 
     public TransportationRequestSpecification withOnlyRecordsOfPersonId(UUID personId) {
