@@ -12,6 +12,10 @@ import com.kernotec.driverscheduleservice.jpa.enums.request.TransportationReques
 import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestStateService;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationStateService;
+import com.kernotec.driverscheduleservice.notification.dto.NotificationSendRequest;
+import com.kernotec.driverscheduleservice.notification.service.NotificationOrchestrator;
+import com.kernotec.driverscheduleservice.notification.templates.NotificationTemplate.DriverAssignmentTemplate;
+import com.kernotec.driverscheduleservice.notification.templates.NotificationTemplate.ScheduleApprovedTemplate;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleTransportationCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.trip.assignment.TripAssignmentCreateRequest;
 import com.kernotec.driverscheduleservice.rest.socket.schedule.ScheduleTransportationSocketHandler;
@@ -21,6 +25,7 @@ import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
@@ -49,6 +54,7 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
     private final ZonedDateTimeUtil zonedDateTimeUtil;
     private final ScheduleTransportationUtil scheduleTransportationUtil;
     private final ScheduleTransportationSocketHandler scheduleTransportationSocketHadler;
+    private final NotificationOrchestrator notificationOrchestrator;
 
     @Override
     protected void validate(Request request) {
@@ -92,8 +98,8 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
 
         if (!requestStateCurrent.canTransitionTo(TransportationRequestStateEnum.APPROVED)) {
             throw new ScheduleTransportationException(
-                "invalid.state.to.action", "'" + requestStateCurrent + "'",
-                HttpStatus.BAD_REQUEST.value()
+                "invalid.state.to.action",
+                "'" + requestStateCurrent + "'", HttpStatus.BAD_REQUEST.value()
             );
         }
 
@@ -151,15 +157,38 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
                     .build())
             .execute();
 
-        socketHandler(scheduleTransportationId, transportationRequestDto);
+        handleMessagesEmit(
+            scheduleTransportationId, transportationRequestDto,
+            scheduleTransportationCreateRequest
+        );
 
         return scheduleTransportationId;
     }
 
 
-    private void socketHandler(UUID scheduleTransportationId,
-        TransportationRequestDto transportationRequestDto)
+    private void handleMessagesEmit(UUID scheduleTransportationId,
+        TransportationRequestDto transportationRequestDto,
+        ScheduleTransportationCreateRequest scheduleCreateRequest)
     {
+        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
+            .title(ScheduleApprovedTemplate.TITLE)
+            .body(ScheduleApprovedTemplate.BODY)
+            .campaignRecipient(ScheduleApprovedTemplate.RECEIVER)
+            .dataMap(Map.of("screen", "schedule/" + scheduleTransportationId))
+            .personIds(Set.of(transportationRequestDto.getPersonRequestedId()))
+            .build());
+
+        Set<UUID> driverIds = scheduleTransportationUtil.getValuesOfTripAssignmentRequest(
+            scheduleCreateRequest.getTripAssignments(), TripAssignmentCreateRequest::getDriverId);
+
+        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
+            .title(DriverAssignmentTemplate.TITLE)
+            .body(DriverAssignmentTemplate.BODY)
+            .campaignRecipient(DriverAssignmentTemplate.RECEIVER)
+            .dataMap(Map.of("screen", "schedule/" + scheduleTransportationId))
+            .personIds(driverIds)
+            .build());
+
         UUID userToEmit = transportationRequestDto.getPersonRequested()
             .getUserId();
 

@@ -10,11 +10,15 @@ import com.kernotec.driverscheduleservice.jpa.dto.request.TransportationRequestD
 import com.kernotec.driverscheduleservice.jpa.enums.request.TransportationRequestStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestStateService;
 import com.kernotec.driverscheduleservice.jpa.service.resource.PersonService;
+import com.kernotec.driverscheduleservice.notification.dto.NotificationSendRequest;
+import com.kernotec.driverscheduleservice.notification.service.NotificationOrchestrator;
+import com.kernotec.driverscheduleservice.notification.templates.NotificationTemplate.RequestCancelledTemplate;
 import com.kernotec.driverscheduleservice.rest.dto.request.request.cancel.request.reason.CancelRequestReasonRequest;
 import com.kernotec.driverscheduleservice.rest.socket.request.TransportationRequestSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.util.Map;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +42,7 @@ public class ProcessTransportationRequestCancelledCmd extends
     private final TransportationRequestLogCreateCmd transportationRequestLogCreateCmd;
 
     private final TransportationRequestSocketHandler transportationRequestSocketHandler;
+    private final NotificationOrchestrator notificationOrchestrator;
 
     @Override
     protected void validate(Request request) {
@@ -92,6 +97,13 @@ public class ProcessTransportationRequestCancelledCmd extends
                     .transportationRequestStateId(transportationRequestStateCancelledId)
                     .build())
             .execute();
+
+        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
+            .title(RequestCancelledTemplate.TITLE)
+            .body(RequestCancelledTemplate.BODY)
+            .campaignRecipient(RequestCancelledTemplate.RECEIVER)
+            .dataMap(Map.of("screen", "request/" + request.transportationRequestId()))
+            .build());
 
         transportationRequestSocketHandler.emitMessage(
             TransportationRequestSocketHandler.Request.builder()

@@ -5,7 +5,7 @@ import com.kernotec.driverscheduleservice.jpa.entity.request.TransportationReque
 import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestService;
 import com.kernotec.driverscheduleservice.notification.dto.NotificationSendRequest;
 import com.kernotec.driverscheduleservice.notification.service.NotificationOrchestrator;
-import com.kernotec.driverscheduleservice.notification.templates.RequestCreateNotificationTemplate;
+import com.kernotec.driverscheduleservice.notification.templates.NotificationTemplate.RequestCreateTemplate;
 import com.kernotec.driverscheduleservice.rest.dto.request.request.transportation.request.TransportationRequestCreateRequest;
 import com.kernotec.driverscheduleservice.rest.socket.request.TransportationRequestSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
@@ -37,18 +37,18 @@ public class ProcessTransportationRequestCreateRequestCmd extends
                     .build())
             .execute();
 
+        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
+            .title(RequestCreateTemplate.TITLE)
+            .body(RequestCreateTemplate.BODY)
+            .campaignRecipient(RequestCreateTemplate.RECEIVER)
+            .dataMap(Map.of("screen", "request/" + transportationRequestId))
+            .build());
+
         transportationRequestSocketHandler.emitMessage(
             TransportationRequestSocketHandler.Request.builder()
                 .transportationRequestId(transportationRequestId)
                 .topic(WebSocketTopic.TRANSPORTATION_REQUEST_CREATED)
                 .build());
-
-        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
-            .title(RequestCreateNotificationTemplate.TITLE)
-            .body(RequestCreateNotificationTemplate.BODY)
-            .campaignRecipient(RequestCreateNotificationTemplate.RECIPIENT)
-            .dataMap(Map.of("screen", "request/" + transportationRequestId))
-            .build());
 
         return transportationRequestService.findByIdThrow(transportationRequestId);
     }

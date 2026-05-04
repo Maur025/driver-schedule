@@ -3,11 +3,15 @@ package com.kernotec.driverscheduleservice.rest.command.request;
 import com.kernotec.core.command.AbstractCommand;
 import com.kernotec.driverscheduleservice.command.request.transportation.request.TransportationRequestGetDtoCmd;
 import com.kernotec.driverscheduleservice.jpa.dto.request.TransportationRequestDto;
+import com.kernotec.driverscheduleservice.notification.dto.NotificationSendRequest;
+import com.kernotec.driverscheduleservice.notification.service.NotificationOrchestrator;
+import com.kernotec.driverscheduleservice.notification.templates.NotificationTemplate.RequestRejectedTemplate;
 import com.kernotec.driverscheduleservice.rest.dto.request.request.reject.reason.RejectReasonRequest;
 import com.kernotec.driverscheduleservice.rest.socket.request.TransportationRequestSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
@@ -23,6 +27,7 @@ public class ProcessTransportationRequestRejectedCmd extends
     private final TransportationRequestRejectedCmd transportationRequestRejectedCmd;
     private final TransportationRequestGetDtoCmd transportationRequestGetDtoCmd;
     private final TransportationRequestSocketHandler transportationRequestSocketHandler;
+    private final NotificationOrchestrator notificationOrchestrator;
 
     @Override
     protected Void run(Request request) {
@@ -41,6 +46,14 @@ public class ProcessTransportationRequestRejectedCmd extends
 
         UUID userToEmit = transportationRequestDto.getPersonRequested()
             .getUserId();
+
+        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
+            .title(RequestRejectedTemplate.TITLE)
+            .body(RequestRejectedTemplate.BODY)
+            .campaignRecipient(RequestRejectedTemplate.RECEIVER)
+            .dataMap(Map.of("screen", "request/" + request.transportationRequestId()))
+            .personIds(Set.of(transportationRequestDto.getPersonRequestedId()))
+            .build());
 
         transportationRequestSocketHandler.emitMessage(
             TransportationRequestSocketHandler.Request.builder()
