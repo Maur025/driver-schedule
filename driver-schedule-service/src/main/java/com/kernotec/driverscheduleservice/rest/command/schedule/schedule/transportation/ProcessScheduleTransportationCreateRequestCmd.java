@@ -157,16 +157,18 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
                     .build())
             .execute();
 
-        handleMessagesEmit(
+        handleNotification(
             scheduleTransportationId, transportationRequestDto,
             scheduleTransportationCreateRequest
         );
+
+        handleSocket(scheduleTransportationId, transportationRequestDto);
 
         return scheduleTransportationId;
     }
 
 
-    private void handleMessagesEmit(UUID scheduleTransportationId,
+    private void handleNotification(UUID scheduleTransportationId,
         TransportationRequestDto transportationRequestDto,
         ScheduleTransportationCreateRequest scheduleCreateRequest)
     {
@@ -188,7 +190,11 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
             .dataMap(Map.of("screen", "schedule/" + scheduleTransportationId))
             .personIds(driverIds)
             .build());
+    }
 
+    private void handleSocket(UUID scheduleTransportationId,
+        TransportationRequestDto transportationRequestDto)
+    {
         UUID userToEmit = transportationRequestDto.getPersonRequested()
             .getUserId();
 
