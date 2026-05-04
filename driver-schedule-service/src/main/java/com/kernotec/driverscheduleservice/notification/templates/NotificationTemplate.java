@@ -104,13 +104,13 @@ public class NotificationTemplate {
         }
     }
 
-    public static final class DriverAssignmentCancelleTemplate {
+    public static final class DriverAssignmentCancelledTemplate {
 
         public static final String TITLE = "Asignación de viaje cancelada";
         public static final String BODY = "Se canceló tu asignacion al viaje programado. Por favor, revisa los detalles.";
         public static final CampaignRecipientEnum RECEIVER = CampaignRecipientEnum.SOME_USERS;
 
-        private DriverAssignmentCancelleTemplate() {
+        private DriverAssignmentCancelledTemplate() {
         }
     }
 }

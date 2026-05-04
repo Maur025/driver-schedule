@@ -6,10 +6,12 @@ import com.kernotec.driverscheduleservice.command.schedule.schedule.transportati
 import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.ScheduleTransportationUpdateCmd;
 import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.log.ScheduleTransportationLogCreateCmd;
 import com.kernotec.driverscheduleservice.jpa.dto.schedule.ScheduleTransportationDto;
+import com.kernotec.driverscheduleservice.jpa.dto.schedule.TripAssignmentDto;
 import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationStateService;
 import com.kernotec.driverscheduleservice.notification.dto.NotificationSendRequest;
 import com.kernotec.driverscheduleservice.notification.service.NotificationOrchestrator;
+import com.kernotec.driverscheduleservice.notification.templates.NotificationTemplate.DriverAssignmentCancelledTemplate;
 import com.kernotec.driverscheduleservice.notification.templates.NotificationTemplate.ScheduleCancelledTemplate;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleTransportationCancelRequest;
 import com.kernotec.driverscheduleservice.rest.socket.schedule.ScheduleTransportationSocketHandler;
@@ -20,6 +22,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,12 +86,12 @@ public class ProcessScheduleTransportationCancelRequestCmd extends
                     .build())
             .execute();
 
-        emitSocketMessage(request.scheduleTransportationId);
+        handleMessagesEmit(request.scheduleTransportationId);
 
         return null;
     }
 
-    private void emitSocketMessage(UUID scheduleTransportationId)
+    private void handleMessagesEmit(UUID scheduleTransportationId)
     {
         ScheduleTransportationDto scheduleTransportationDto = scheduleTransportationGetDtoCmd.withRequest(
                 ScheduleTransportationGetDtoCmd.Request.builder()
@@ -96,12 +99,25 @@ public class ProcessScheduleTransportationCancelRequestCmd extends
                     .build())
             .execute();
 
+        Set<UUID> driverIds = scheduleTransportationDto.getTripAssignments()
+            .stream()
+            .map(TripAssignmentDto::getDriverId)
+            .collect(Collectors.toSet());
+
         notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
             .title(ScheduleCancelledTemplate.TITLE)
             .body(ScheduleCancelledTemplate.BODY)
             .campaignRecipient(ScheduleCancelledTemplate.RECEIVER)
             .dataMap(Map.of("screen", "schedule/" + scheduleTransportationId))
             .personIds(Set.of(scheduleTransportationDto.getPersonRequestedId()))
+            .build());
+
+        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
+            .title(DriverAssignmentCancelledTemplate.TITLE)
+            .body(DriverAssignmentCancelledTemplate.BODY)
+            .campaignRecipient(DriverAssignmentCancelledTemplate.RECEIVER)
+            .dataMap(Map.of("screen", "schedule/" + scheduleTransportationId))
+            .personIds(driverIds)
             .build());
 
         UUID userToEmit = scheduleTransportationDto.getPersonRequested()

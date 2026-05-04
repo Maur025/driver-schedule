@@ -12,7 +12,7 @@ import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransport
 import com.kernotec.driverscheduleservice.jpa.service.schedule.TripAssignmentService;
 import com.kernotec.driverscheduleservice.notification.dto.NotificationSendRequest;
 import com.kernotec.driverscheduleservice.notification.service.NotificationOrchestrator;
-import com.kernotec.driverscheduleservice.notification.templates.NotificationTemplate.DriverAssignmentCancelleTemplate;
+import com.kernotec.driverscheduleservice.notification.templates.NotificationTemplate.DriverAssignmentTemplate;
 import com.kernotec.driverscheduleservice.notification.templates.NotificationTemplate.ScheduleRescheduleTemplate;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleTransportationUpdateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.request.trip.assignment.TripAssignmentCreateRequest;
@@ -94,6 +94,12 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
     protected Void run(Request request) {
         ScheduleTransportationUpdateRequest scheduleTransportationUpdateRequest = request.scheduleTransportationUpdateRequest;
 
+        ScheduleTransportationDto scheduleTransportationDto = scheduleTransportationGetDtoCmd.withRequest(
+                ScheduleTransportationGetDtoCmd.Request.builder()
+                    .scheduleTransportationId(request.scheduleTransportationId())
+                    .build())
+            .execute();
+
         UUID scheduleTransportationStateRescheduledId = scheduleTransportationStateService.findIdByCodeThrow(
             ScheduleTransportationStateEnum.RESCHEDULED);
 
@@ -137,23 +143,20 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
                 .build())
             .execute();
 
-        handleMessagesEmit(request.scheduleTransportationId());
+        handleNotification(
+            request.scheduleTransportationId(), scheduleTransportationDto,
+            scheduleTransportationUpdateRequest
+        );
+
+        handleSocket(scheduleTransportationDto);
 
         return null;
     }
 
-    private void handleMessagesEmit(UUID scheduleTransportationId) {
-        ScheduleTransportationDto scheduleTransportationDto = scheduleTransportationGetDtoCmd.withRequest(
-                ScheduleTransportationGetDtoCmd.Request.builder()
-                    .scheduleTransportationId(scheduleTransportationId)
-                    .build())
-            .execute();
-
-        Set<UUID> driverIds = scheduleTransportationDto.getTripAssignments()
-            .stream()
-            .map(TripAssignmentDto::getDriverId)
-            .collect(Collectors.toSet());
-
+    private void handleNotification(UUID scheduleTransportationId,
+        ScheduleTransportationDto scheduleTransportationDto,
+        ScheduleTransportationUpdateRequest scheduleUpdateRequest)
+    {
         notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
             .title(ScheduleRescheduleTemplate.TITLE)
             .body(ScheduleRescheduleTemplate.BODY)
@@ -162,26 +165,44 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
             .personIds(Set.of(scheduleTransportationDto.getPersonRequestedId()))
             .build());
 
+        Set<UUID> driverRegisterIds = scheduleTransportationDto.getTripAssignments()
+            .stream()
+            .map(TripAssignmentDto::getDriverId)
+            .collect(Collectors.toSet());
+
+        Set<UUID> driverRequestIds = scheduleTransportationUtil.getValuesOfTripAssignmentRequest(
+            scheduleUpdateRequest.getTripAssignments(), TripAssignmentCreateRequest::getDriverId);
+
+        Set<UUID> driverIds = driverRequestIds.stream()
+            .filter(driverId -> !driverRegisterIds.contains(driverId))
+            .collect(Collectors.toSet());
+
+        if (driverIds.isEmpty()) {
+            return;
+        }
+
         notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
-            .title(DriverAssignmentCancelleTemplate.TITLE)
-            .body(DriverAssignmentCancelleTemplate.BODY)
-            .campaignRecipient(DriverAssignmentCancelleTemplate.RECEIVER)
+            .title(DriverAssignmentTemplate.TITLE)
+            .body(DriverAssignmentTemplate.BODY)
+            .campaignRecipient(DriverAssignmentTemplate.RECEIVER)
             .dataMap(Map.of("screen", "schedule/" + scheduleTransportationId))
             .personIds(driverIds)
             .build());
+    }
 
+    private void handleSocket(ScheduleTransportationDto scheduleTransportationDto) {
         UUID userToEmit = scheduleTransportationDto.getPersonRequested()
             .getUserId();
 
         scheduleTransportationSocketHandler.emitMessage(
             ScheduleTransportationSocketHandler.Request.builder()
-                .scheduleTransportationId(scheduleTransportationId)
+                .scheduleTransportationId(scheduleTransportationDto.getId())
                 .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_RESCHEDULED)
                 .build());
 
         scheduleTransportationSocketHandler.emitMessage(
             ScheduleTransportationSocketHandler.Request.builder()
-                .scheduleTransportationId(scheduleTransportationId)
+                .scheduleTransportationId(scheduleTransportationDto.getId())
                 .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_RESCHEDULED_TO_USER)
                 .toList(Set.of(userToEmit))
                 .build());
