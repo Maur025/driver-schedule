@@ -135,9 +135,6 @@ public class TripEmergencyController {
         @PathVariable("tripEmergencyId") UUID tripEmergencyId,
         @RequestBody TripEmergencyDismissRequest request)
     {
-
-        log.info("request reason Id: {}", request.getReasonId());
-
         tripEmergencyDismissCmd.withRequest(TripEmergencyDismissCmd.Request.builder()
                 .tripEmergencyId(tripEmergencyId)
                 .tripEmergencyDismissRequest(request)
