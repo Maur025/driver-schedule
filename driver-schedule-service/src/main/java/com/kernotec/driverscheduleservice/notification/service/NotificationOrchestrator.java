@@ -55,7 +55,7 @@ public class NotificationOrchestrator {
                     .body(request.body())
                     .campaignRecipient(request.campaignRecipient())
                     .personIds(request.personIds() == null ? null : Arrays.toString(request.personIds()
-                                                                                    .toArray()))
+                        .toArray()))
                     .build())
             .execute();
 
@@ -122,6 +122,7 @@ public class NotificationOrchestrator {
             personNotification.setBody(request.body());
             personNotification.setData(
                 request.dataMap() == null ? new HashMap<>() : request.dataMap());
+            personNotification.setSentAt(ZonedDateTime.now());
             personNotification.setState(PersonNotificationState.CREATED);
             personNotification.setPersonId(personId);
 
