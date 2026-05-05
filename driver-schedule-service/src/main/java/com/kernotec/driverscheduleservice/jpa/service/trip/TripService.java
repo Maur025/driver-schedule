@@ -4,8 +4,10 @@ import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.driverscheduleservice.common.security.SecurityAuthProvider;
+import com.kernotec.driverscheduleservice.exception.trip.TripException;
 import com.kernotec.driverscheduleservice.jpa.entity.trip.Trip;
 import com.kernotec.driverscheduleservice.jpa.enums.resource.PersonTypeEnum;
+import com.kernotec.driverscheduleservice.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverscheduleservice.jpa.repository.trip.TripRepository;
 import com.kernotec.driverscheduleservice.jpa.service.resource.PersonService;
 import com.kernotec.driverscheduleservice.jpa.specification.trip.TripSpecification;
@@ -17,6 +19,7 @@ import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
@@ -84,5 +87,35 @@ public class TripService extends BaseServiceImpl<Trip, UUID> {
 
     public List<Trip> findByIdIn(Set<UUID> tripIds) {
         return findByIdInAndDeleted(tripIds, false);
+    }
+
+    public Page<Trip> findCurrentTrips() {
+        boolean userHasRoleDriver = securityAuthProvider.userContainsRole(PersonTypeEnum.DRIVER);
+
+        if (!userHasRoleDriver) {
+            throw new TripException("", "", HttpStatus.CONFLICT.value());
+        }
+
+        Pageable pageable = PageableUtil.of(0, 3, "createdAt", false);
+        UUID driverId = personService.findIdByUserIdAuthenticateThrow();
+
+        return repository.findAll(
+            TripSpecification.builder()
+                .withTripStates(
+                    Set.of(TripStateEnum.ON_ROUTE, TripStateEnum.WAITING, TripStateEnum.EMERGENCY))
+                .withDriverId(driverId)
+                .withDeleted(false), pageable
+        );
+    }
+
+    public Trip findCurrentTrip() {
+        Page<Trip> tripPage = findCurrentTrips();
+
+        if (tripPage.isEmpty()) {
+            return null;
+        }
+
+        return tripPage.getContent()
+            .get(0);
     }
 }
