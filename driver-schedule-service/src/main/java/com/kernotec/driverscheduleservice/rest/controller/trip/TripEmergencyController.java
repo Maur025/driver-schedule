@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @Tag(name = TripEmergencySpec.TAG_NAME, description = TripEmergencySpec.TAG_DESCRIPTION)
 @RequestMapping(path = TripEmergencySpec.BASE_PATH)
 @AllArgsConstructor
@@ -130,8 +132,12 @@ public class TripEmergencyController {
     @PostMapping("{tripEmergencyId}/dismissed")
     @ResponseStatus(HttpStatus.OK)
     public SingleResponse<TripEmergencyResponse> tripEmergencyDismissed(
-        @PathVariable("tripEmergencyId") UUID tripEmergencyId, TripEmergencyDismissRequest request)
+        @PathVariable("tripEmergencyId") UUID tripEmergencyId,
+        @RequestBody TripEmergencyDismissRequest request)
     {
+
+        log.info("request reason Id: {}", request.getReasonId());
+
         tripEmergencyDismissCmd.withRequest(TripEmergencyDismissCmd.Request.builder()
                 .tripEmergencyId(tripEmergencyId)
                 .tripEmergencyDismissRequest(request)

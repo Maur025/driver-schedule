@@ -6,6 +6,7 @@ import com.kernotec.driverscheduleservice.rest.mapper.resource.response.person.P
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationToAvailabilityMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.trip.response.emergency.reason.EmergencyReasonWithReasonResponseMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.trip.response.emergency.reject.reason.EmergencyRejectWithReasonResponseMapper;
+import com.kernotec.driverscheduleservice.rest.mapper.trip.response.emergency.response.EmergencyResponseResponseToTripMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.trip.response.trip.TripResponseFlatMapper;
 import java.util.List;
 import java.util.Set;
@@ -14,7 +15,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(uses = {TripResponseFlatMapper.class, ScheduleTransportationToAvailabilityMapper.class,
     PersonResponseWithContactMapper.class, EmergencyReasonWithReasonResponseMapper.class,
-    EmergencyRejectWithReasonResponseMapper.class})
+    EmergencyRejectWithReasonResponseMapper.class, EmergencyResponseResponseToTripMapper.class})
 public interface TripEmergencyResponseMapper {
 
     TripEmergencyResponse toResponse(TripEmergency tripEmergency);
