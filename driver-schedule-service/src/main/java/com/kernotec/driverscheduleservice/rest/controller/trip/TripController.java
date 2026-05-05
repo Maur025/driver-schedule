@@ -4,6 +4,7 @@ import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
+import com.kernotec.core.rest.dto.response.SingleResponse.SingleResponseBuilder;
 import com.kernotec.driverscheduleservice.common.annotation.trip.CanCreateTrip;
 import com.kernotec.driverscheduleservice.common.annotation.trip.CanEmergencyTrip;
 import com.kernotec.driverscheduleservice.common.annotation.trip.CanFinishTrip;
@@ -22,6 +23,7 @@ import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.TripFinaliz
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.TripUpdatePatchRequest;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyRequest;
 import com.kernotec.driverscheduleservice.rest.dto.trip.response.trip.TripResponse;
+import com.kernotec.driverscheduleservice.rest.mapper.trip.response.trip.TripCurrentResponseMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.trip.response.trip.TripResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -54,6 +56,7 @@ public class TripController {
     private final ProcessTripPatchUpdateRequestCmd processTripPatchUpdateRequestCmd;
     private final ProcessFlowTripFinalizeRequestCmd processFlowTripFinalizeRequestCmd;
     private final ProcessTripEmergencyRequestCmd processTripEmergencyRequestCmd;
+    private final TripCurrentResponseMapper tripCurrentResponseMapper;
 
     @Operation(summary = "find all trips")
     @GetMapping
@@ -191,5 +194,24 @@ public class TripController {
             .code(HttpStatus.OK.value())
             .message("emergency reported successfully")
             .build();
+    }
+
+    @Operation(summary = "find trip currently in progress")
+    @GetMapping("current")
+    @ResponseStatus(HttpStatus.OK)
+    public SingleResponse<TripResponse> findCurrentInProgress() {
+        Trip trip = tripService.findCurrentTrip();
+
+        SingleResponseBuilder<TripResponse> responseBuilder = SingleResponse.<TripResponse>builder()
+            .code(HttpStatus.OK.value());
+
+        if (trip != null) {
+            responseBuilder.data(tripCurrentResponseMapper.toResponse(trip));
+        } else {
+            responseBuilder.data(null)
+                .message("No current trip in progress");
+        }
+
+        return responseBuilder.build();
     }
 }
