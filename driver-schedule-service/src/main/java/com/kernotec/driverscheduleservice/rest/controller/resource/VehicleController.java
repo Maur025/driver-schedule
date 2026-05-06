@@ -8,6 +8,7 @@ import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.common.annotation.vehicle.CanCreateVehicle;
 import com.kernotec.driverscheduleservice.common.annotation.vehicle.CanReadVehicle;
 import com.kernotec.driverscheduleservice.common.annotation.vehicle.CanUpdateVehicle;
+import com.kernotec.driverscheduleservice.exception.resource.VehicleException;
 import com.kernotec.driverscheduleservice.jpa.entity.resource.Vehicle;
 import com.kernotec.driverscheduleservice.jpa.service.resource.AvailabilityForAssignmentService;
 import com.kernotec.driverscheduleservice.jpa.service.resource.VehicleService;
@@ -198,6 +199,12 @@ public class VehicleController {
         @PathVariable("vehicleId") UUID vehicleId,
         @RequestBody VehicleScheduleConflictRequest request)
     {
+        List<Vehicle> vehicleNotUsableList = vehicleService.findCanNotUsed(Set.of(vehicleId));
+
+        if (!vehicleNotUsableList.isEmpty()) {
+            throw new VehicleException(
+                "not.usable", "'" + vehicleId + "'", HttpStatus.CONFLICT.value());
+        }
 
         AvailabilityForAssignmentResponse availabilityForAssignmentResponse = availabilityForAssignmentService.checkVehicleIsAvailable(
             AvailabilityForAssignmentRequest.builder()

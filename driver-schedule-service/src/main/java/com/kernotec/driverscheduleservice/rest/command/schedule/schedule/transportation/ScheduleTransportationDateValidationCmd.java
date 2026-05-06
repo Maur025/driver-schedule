@@ -2,12 +2,17 @@ package com.kernotec.driverscheduleservice.rest.command.schedule.schedule.transp
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.exception.schedule.ScheduleTransportationException;
+import com.kernotec.driverscheduleservice.jpa.entity.resource.Person;
+import com.kernotec.driverscheduleservice.jpa.entity.resource.Vehicle;
 import com.kernotec.driverscheduleservice.jpa.service.resource.AvailabilityForAssignmentService;
+import com.kernotec.driverscheduleservice.jpa.service.resource.PersonService;
+import com.kernotec.driverscheduleservice.jpa.service.resource.VehicleService;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.AvailabilityForAssignmentRequest;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.AvailabilityForAssignmentResponse;
 import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
@@ -25,6 +30,8 @@ public class ScheduleTransportationDateValidationCmd extends
 
     private final ZonedDateTimeUtil zonedDateTimeUtil;
     private final AvailabilityForAssignmentService availabilityForAssignmentService;
+    private final VehicleService vehicleService;
+    private final PersonService personService;
 
     @Override
     protected Void run(Request request) {
@@ -49,39 +56,67 @@ public class ScheduleTransportationDateValidationCmd extends
                 "invalid.range.date", "", HttpStatus.BAD_REQUEST.value());
         }
 
+        validateVehiclesUsability(request.vehicleIdList());
+        validateVehiclesAvailability(request, scheduledFrom, scheduledTo);
+
+        validatePersonUsability(request.driverIdList());
+        validatePersonAvailability(request, scheduledFrom, scheduledTo);
+
+        return null;
+    }
+
+    private void validateVehiclesUsability(Set<UUID> vehicleSet) {
+        List<Vehicle> vehicleNotUsableList = vehicleService.findCanNotUsed(vehicleSet);
+
+        if (!vehicleNotUsableList.isEmpty()) {
+            throw new ScheduleTransportationException(
+                "vehicle.conflic", "", HttpStatus.CONFLICT.value());
+        }
+    }
+
+    private void validateVehiclesAvailability(Request request, ZonedDateTime scheduledFrom,
+        ZonedDateTime scheduledTo)
+    {
         AvailabilityForAssignmentResponse vehicleAvailabilityResponse = availabilityForAssignmentService.checkVehicleIsAvailable(
             AvailabilityForAssignmentRequest.builder()
-                .vehicleIds(request.vehicleIdList)
+                .vehicleIds(request.vehicleIdList())
                 .dateFrom(scheduledFrom)
                 .dateTo(scheduledTo)
-                .zoneId(request.zoneId)
-                .scheduleTransportationExcludeId(request.scheduleTransportationExcludeId)
+                .zoneId(request.zoneId())
+                .scheduleTransportationExcludeId(request.scheduleTransportationExcludeId())
                 .build());
 
         if (vehicleAvailabilityResponse.isHasConflict()) {
             throw new ScheduleTransportationException(
-                "vehicle.conflict", "",
-                HttpStatus.CONFLICT.value()
-            );
+                "vehicle.conflict", "", HttpStatus.CONFLICT.value());
         }
+    }
 
+    private void validatePersonUsability(Set<UUID> personSet) {
+        List<Person> personNotUsableList = personService.canNotBeUsedAsDriver(personSet);
+
+        if (!personNotUsableList.isEmpty()) {
+            throw new ScheduleTransportationException(
+                "driver.conflict", "", HttpStatus.CONFLICT.value());
+        }
+    }
+
+    private void validatePersonAvailability(Request request, ZonedDateTime scheduledFrom,
+        ZonedDateTime scheduledTo)
+    {
         AvailabilityForAssignmentResponse driverAvailabilityResponse = availabilityForAssignmentService.checkDriverIsAvailable(
             AvailabilityForAssignmentRequest.builder()
-                .driverIds(request.driverIdList)
+                .driverIds(request.driverIdList())
                 .dateFrom(scheduledFrom)
                 .dateTo(scheduledTo)
-                .zoneId(request.zoneId)
-                .scheduleTransportationExcludeId(request.scheduleTransportationExcludeId)
+                .zoneId(request.zoneId())
+                .scheduleTransportationExcludeId(request.scheduleTransportationExcludeId())
                 .build());
 
         if (driverAvailabilityResponse.isHasConflict()) {
             throw new ScheduleTransportationException(
-                "driver.conflict", "",
-                HttpStatus.CONFLICT.value()
-            );
+                "driver.conflict", "", HttpStatus.CONFLICT.value());
         }
-
-        return null;
     }
 
     @Builder

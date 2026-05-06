@@ -8,6 +8,7 @@ import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.common.annotation.person.CanCreatePerson;
 import com.kernotec.driverscheduleservice.common.annotation.person.CanReadPerson;
 import com.kernotec.driverscheduleservice.common.annotation.person.CanUpdatePerson;
+import com.kernotec.driverscheduleservice.exception.resource.PersonException;
 import com.kernotec.driverscheduleservice.jpa.entity.resource.Person;
 import com.kernotec.driverscheduleservice.jpa.enums.resource.PersonTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.service.resource.AvailabilityForAssignmentService;
@@ -31,6 +32,7 @@ import com.kernotec.driverscheduleservice.rest.mapper.resource.response.person.P
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -166,6 +168,13 @@ public class PersonController {
     public SingleResponse<AvailabilityForAssignmentResponse> findPersonScheduleConflicts(
         @PathVariable("driverId") UUID driverId, @RequestBody PersonScheduleConflictRequest request)
     {
+        List<Person> personNotUsableList = personService.canNotBeUsedAsDriver(Set.of(driverId));
+
+        if (!personNotUsableList.isEmpty()) {
+            throw new PersonException(
+                "not.usable", "'" + driverId + "'", HttpStatus.CONFLICT.value());
+        }
+
         AvailabilityForAssignmentResponse availabilityForAssignmentResponse = availabilityForAssignmentService.checkDriverIsAvailable(
             AvailabilityForAssignmentRequest.builder()
                 .driverIds(List.of(driverId))

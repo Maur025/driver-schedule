@@ -18,4 +18,6 @@ public class TripCreateRequest extends BaseRequest {
 
     private Double latitude;
     private Double longitude;
+
+    private String zoneId;
 }

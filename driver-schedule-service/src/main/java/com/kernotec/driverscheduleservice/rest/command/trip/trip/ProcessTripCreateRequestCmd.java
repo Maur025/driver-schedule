@@ -8,6 +8,7 @@ import com.kernotec.driverscheduleservice.command.trip.trip.TripCreateCmd;
 import com.kernotec.driverscheduleservice.command.trip.trip.log.TripLogCreateCmd;
 import com.kernotec.driverscheduleservice.exception.schedule.ScheduleTransportationException;
 import com.kernotec.driverscheduleservice.exception.trip.TripException;
+import com.kernotec.driverscheduleservice.jpa.dto.schedule.ScheduleTransportationDto;
 import com.kernotec.driverscheduleservice.jpa.dto.schedule.TripAssignmentDto;
 import com.kernotec.driverscheduleservice.jpa.entity.trip.Trip;
 import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
@@ -22,6 +23,7 @@ import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.TripCreateR
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.TripFilterRequest;
 import com.kernotec.driverscheduleservice.rest.socket.schedule.ScheduleTransportationSocketHandler;
 import com.kernotec.driverscheduleservice.rest.socket.trip.TripSocketHandler;
+import com.kernotec.driverscheduleservice.util.ZonedDateTimeUtil;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
@@ -30,13 +32,11 @@ import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ProcessTripCreateRequestCmd extends
@@ -79,34 +79,21 @@ public class ProcessTripCreateRequestCmd extends
     protected UUID run(Request request) {
         TripCreateRequest tripCreateRequest = request.tripCreateRequest();
 
-        UUID driverId = personService.findIdByUserIdAuthenticateThrow();
-
         TripAssignmentDto tripAssignmentDto = tripAssignmentGetDtoCmd.withRequest(
                 TripAssignmentGetDtoCmd.Request.builder()
                     .tripAssignmentId(tripCreateRequest.getTripAssignmentId())
                     .build())
             .execute();
 
-        if (!tripAssignmentDto.getDriverId()
-            .equals(driverId))
-        {
-            throw new TripException("driver.assignment.conflict", "", HttpStatus.CONFLICT.value());
-        }
+        validateBelongingDriver(tripAssignmentDto.getDriverId());
 
-        ScheduleTransportationStateEnum scheduleStateCurrent = ScheduleTransportationStateEnum.fromValue(
-            tripAssignmentDto.getScheduleTransportation()
-                .getScheduleTransportationState()
-                .getCode());
-
-        if (!scheduleStateCurrent.canTransitionTo(ScheduleTransportationStateEnum.IN_PROGRESS)) {
-            throw new ScheduleTransportationException(
-                "not.supported.state",
-                "'" + scheduleStateCurrent + "'", HttpStatus.CONFLICT.value()
-            );
-        }
+        validateDateToStart(
+            tripAssignmentDto.getEstimatedStartTime(), tripCreateRequest.getZoneId());
 
         updateScheduleStateToInProgress(
-            scheduleStateCurrent, tripAssignmentDto.getScheduleTransportationId());
+            tripAssignmentDto.getScheduleTransportation(),
+            tripAssignmentDto.getScheduleTransportationId()
+        );
 
         UUID tripStateOnRouteId = tripStateService.findIdByCodeThrow(TripStateEnum.ON_ROUTE);
 
@@ -138,10 +125,31 @@ public class ProcessTripCreateRequestCmd extends
         return tripId;
     }
 
+    private void validateBelongingDriver(UUID registerDriverId) {
+        UUID driverId = personService.findIdByUserIdAuthenticateThrow();
+
+        if (!registerDriverId.equals(driverId)) {
+            throw new TripException("driver.assignment.conflict", "", HttpStatus.CONFLICT.value());
+        }
+    }
+
+    private void validateDateToStart(ZonedDateTime startDateTime, String zoneId) {
+        if (!ZonedDateTimeUtil.isSameDay(startDateTime, zoneId)) {
+            throw new TripException(
+                "should.start.not.on.scheduled.day", "", HttpStatus.CONFLICT.value());
+        }
+    }
+
     private void updateScheduleStateToInProgress(
-        ScheduleTransportationStateEnum scheduleTransportationState, UUID scheduleTransportationId)
+        ScheduleTransportationDto scheduleTransportationDto, UUID scheduleTransportationId)
     {
-        if (ScheduleTransportationStateEnum.IN_PROGRESS.equals(scheduleTransportationState)) {
+        ScheduleTransportationStateEnum scheduleCurrentState = ScheduleTransportationStateEnum.fromValue(
+            scheduleTransportationDto.getScheduleTransportationState()
+                .getCode());
+
+        validateScheduleStateTransition(scheduleCurrentState);
+
+        if (ScheduleTransportationStateEnum.IN_PROGRESS.equals(scheduleCurrentState)) {
             return;
         }
 
@@ -160,6 +168,17 @@ public class ProcessTripCreateRequestCmd extends
                 .scheduleTransportationId(scheduleTransportationId)
                 .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_ON_PROGRESS)
                 .build());
+    }
+
+    private void validateScheduleStateTransition(
+        ScheduleTransportationStateEnum scheduleCurrentState)
+    {
+        if (!scheduleCurrentState.canTransitionTo(ScheduleTransportationStateEnum.IN_PROGRESS)) {
+            throw new ScheduleTransportationException(
+                "not.supported.state",
+                "'" + scheduleCurrentState + "'", HttpStatus.CONFLICT.value()
+            );
+        }
     }
 
     @Builder

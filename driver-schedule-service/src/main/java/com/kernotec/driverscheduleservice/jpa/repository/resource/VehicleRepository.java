@@ -3,6 +3,8 @@ package com.kernotec.driverscheduleservice.jpa.repository.resource;
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.driverscheduleservice.jpa.entity.resource.Vehicle;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.vehicle.VehicleLookupResponse;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,4 +23,6 @@ public interface VehicleRepository extends BaseRepository<Vehicle, UUID> {
         """)
     Page<VehicleLookupResponse> findAllToLookup(@Param("keyword") String keyword,
         Pageable pageable);
+
+    List<Vehicle> findByIdInAndDeleted(Collection<UUID> ids, boolean deleted);
 }
