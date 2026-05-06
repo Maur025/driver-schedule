@@ -24,6 +24,24 @@ public class ZonedDateTimeUtil {
         return ZoneId.systemDefault();
     }
 
+    public static boolean isSameDay(ZonedDateTime dateTime, String zoneId) {
+        ZoneId clientZoneId = getClientZoneId(zoneId);
+
+        ZonedDateTime dateTimeUtc = dateTime.withZoneSameInstant(ZoneOffset.UTC);
+
+        ZonedDateTime now = ZonedDateTime.now();
+        LocalDate nowLocalDate = now.toLocalDate();
+
+        ZonedDateTime nowStartOfDay = nowLocalDate.atStartOfDay(clientZoneId);
+        ZonedDateTime nowStartOfDayUtc = nowStartOfDay.withZoneSameInstant(ZoneOffset.UTC);
+
+        ZonedDateTime nowEndOfDay = nowLocalDate.atTime(LocalTime.MAX)
+            .atZone(clientZoneId);
+        ZonedDateTime nowEndOfDayUtc = nowEndOfDay.withZoneSameInstant(ZoneOffset.UTC);
+
+        return dateTimeUtc.isAfter(nowStartOfDayUtc) && dateTimeUtc.isBefore(nowEndOfDayUtc);
+    }
+
     public ZonedDateTime getNewOfDateAndTime(ZonedDateTime date, ZonedDateTime time, String zoneId)
     {
         ZoneId clientZoneId = getClientZoneId(zoneId);

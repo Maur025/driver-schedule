@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.command.notification;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.core.exception.custom.base.DefaultApiException;
+import com.kernotec.driverscheduleservice.exception.notification.PersonNotificationException;
 import com.kernotec.driverscheduleservice.jpa.entity.notification.PersonNotification;
 import com.kernotec.driverscheduleservice.jpa.enums.notification.PersonNotificationState;
 import com.kernotec.driverscheduleservice.jpa.service.notification.PersonNotificationService;
@@ -10,6 +10,7 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -28,7 +29,8 @@ public class PersonNotificationUpdateCmd extends
         if (!personNotification.getPersonId()
             .equals(request.personId()))
         {
-            throw new DefaultApiException("PersonNotification does not belong");
+            throw new PersonNotificationException(
+                "does.not.belong", "", HttpStatus.CONFLICT.value());
         }
 
         if (request.readAt() != null) {

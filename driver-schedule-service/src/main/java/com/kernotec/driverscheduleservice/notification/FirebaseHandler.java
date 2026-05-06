@@ -70,7 +70,6 @@ public class FirebaseHandler implements NotificationHandler {
             .setAndroidConfig(AndroidConfig.builder()
                 .setTtl(androidExpiration)
                 .setNotification(AndroidNotification.builder()
-                    .setClickAction("OPEN_BOOKING_APP")
                     .setChannelId("kerno-booking-channel")
                     .build())
                 .build())

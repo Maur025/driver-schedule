@@ -49,4 +49,17 @@ public interface PersonRepository extends BaseRepository<Person, UUID> {
         """)
     List<Person> findAllByPersonTypesAndDeleted(
         @Param("personTypes") Collection<String> personTypes, @Param("deleted") boolean deleted);
+
+    @Query("""
+        SELECT p
+        FROM Person p
+        INNER JOIN PersonAssignType pat ON pat.personId = p.id
+        INNER JOIN PersonType pt ON pt.id = pat.personTypeId
+        WHERE p.id IN :ids
+        AND p.deleted = :deleted
+        AND pt.code NOT IN :personTypes
+        GROUP BY p.id, p.name, p.lastName
+        """)
+    List<Person> findByIdInAndDeletedAndPersonTypesNotIn(@Param("ids") Collection<UUID> ids,
+        @Param("deleted") boolean deleted, @Param("personTypes") Collection<String> personTypes);
 }

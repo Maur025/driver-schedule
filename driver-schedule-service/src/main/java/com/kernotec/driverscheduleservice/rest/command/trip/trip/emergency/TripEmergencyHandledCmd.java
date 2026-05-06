@@ -28,6 +28,7 @@ import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.T
 import com.kernotec.driverscheduleservice.rest.socket.trip.TripEmergencySocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
+import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -158,6 +159,7 @@ public class TripEmergencyHandledCmd extends
         tripUpdateCmd.withRequest(TripUpdateCmd.Request.builder()
                 .tripId(tripEmergencyDto.getTripId())
                 .tripStateId(tripStateFinalizedId)
+                .tripEnd(ZonedDateTime.now())
                 .build())
             .execute();
 

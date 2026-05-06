@@ -87,7 +87,9 @@ public class PersonService extends BaseServiceImpl<Person, UUID> {
     public Person findByUserIdThrow(UUID userId) {
         return findByUserId(userId).orElseThrow(
             () -> new PersonException(
-                "not.found.by.user.id", "'" + userId + "'", HttpStatus.BAD_REQUEST.value()));
+                "not.found.by.user.id", "'" + userId + "'",
+                HttpStatus.BAD_REQUEST.value()
+            ));
     }
 
     public UUID findIdByUserIdThrow(UUID userId) {
@@ -133,5 +135,19 @@ public class PersonService extends BaseServiceImpl<Person, UUID> {
     public List<PersonDto> findAllDtoByPersonTypesToNotification(Set<PersonTypeEnum> personTypes) {
         List<Person> personList = findAllByPersonTypesToNotification(personTypes);
         return personDtoFlatMapper.toDto(personList);
+    }
+
+    public List<Person> findByIdInAndDeletedAndPersonTypesNotIn(Collection<UUID> ids,
+        boolean deleted, Collection<PersonTypeEnum> personTypes)
+    {
+        List<String> personTypesStr = personTypes.stream()
+            .map(String::valueOf)
+            .toList();
+
+        return repository.findByIdInAndDeletedAndPersonTypesNotIn(ids, deleted, personTypesStr);
+    }
+
+    public List<Person> canNotBeUsedAsDriver(Collection<UUID> ids) {
+        return findByIdInAndDeletedAndPersonTypesNotIn(ids, true, Set.of(PersonTypeEnum.DRIVER));
     }
 }

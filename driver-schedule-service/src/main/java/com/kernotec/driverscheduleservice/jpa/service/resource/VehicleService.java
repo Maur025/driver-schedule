@@ -6,6 +6,8 @@ import com.kernotec.driverscheduleservice.jpa.entity.resource.Vehicle;
 import com.kernotec.driverscheduleservice.jpa.repository.resource.VehicleRepository;
 import com.kernotec.driverscheduleservice.rest.dto.resource.response.vehicle.VehicleLookupResponse;
 import com.kernotec.driverscheduleservice.util.CommonUtil;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -35,5 +37,13 @@ public class VehicleService extends BaseServiceImpl<Vehicle, UUID> {
         String keywordStr = CommonUtil.getSafeString(keyword);
 
         return repository.findAllToLookup(keywordStr, pageable);
+    }
+
+    public List<Vehicle> findByIdInAndDeleted(Collection<UUID> ids, boolean deleted) {
+        return repository.findByIdInAndDeleted(ids, deleted);
+    }
+
+    public List<Vehicle> findCanNotUsed(Collection<UUID> vehicleIds) {
+        return findByIdInAndDeleted(vehicleIds, true);
     }
 }
