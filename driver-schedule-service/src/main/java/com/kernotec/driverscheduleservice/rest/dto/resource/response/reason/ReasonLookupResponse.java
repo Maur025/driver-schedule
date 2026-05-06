@@ -7,4 +7,6 @@ public interface ReasonLookupResponse {
     UUID getId();
 
     String getValue();
+
+    String getCode();
 }

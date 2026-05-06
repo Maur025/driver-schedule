@@ -18,18 +18,27 @@ import com.kernotec.driverscheduleservice.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.trip.EmergencyResponseTypeService;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripEmergencyStateService;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripStateService;
+import com.kernotec.driverscheduleservice.notification.dto.NotificationSendRequest;
+import com.kernotec.driverscheduleservice.notification.service.NotificationOrchestrator;
+import com.kernotec.driverscheduleservice.notification.templates.NotificationTemplate.TripEmergencyHandledTemplate;
+import com.kernotec.driverscheduleservice.rest.command.schedule.schedule.transportation.ProcessScheduleAddAssignmentRequestCmd;
 import com.kernotec.driverscheduleservice.rest.command.trip.trip.TripVerifyAndUpdateScheduleCmd;
+import com.kernotec.driverscheduleservice.rest.dto.schedule.request.schedule.transportation.ScheduleAddAssignmentRequest;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyHandledRequest;
 import com.kernotec.driverscheduleservice.rest.socket.trip.TripEmergencySocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
+import java.time.ZonedDateTime;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class TripEmergencyHandledCmd extends
@@ -45,10 +54,12 @@ public class TripEmergencyHandledCmd extends
     private final TripUpdateCmd tripUpdateCmd;
     private final TripEmergencyGetDtoCmd tripEmergencyGetDtoCmd;
     private final TripLogCreateCmd tripLogCreateCmd;
-
-    private final TripEmergencySocketHandler tripEmergencySocketHandler;
     private final TripVerifyAndUpdateScheduleCmd tripVerifyAndUpdateScheduleCmd;
     private final TripGetDtoCmd tripGetDtoCmd;
+    private final ProcessScheduleAddAssignmentRequestCmd processScheduleAddAssignmentRequestCmd;
+
+    private final TripEmergencySocketHandler tripEmergencySocketHandler;
+    private final NotificationOrchestrator notificationOrchestrator;
 
     @Override
     protected Void run(Request request) {
@@ -68,10 +79,65 @@ public class TripEmergencyHandledCmd extends
         EmergencyResponseTypeCodeEnum emergencyResponseTypeCode = EmergencyResponseTypeCodeEnum.fromValue(
             emergencyResponseType.getCode());
 
+        assignmentDriversInSchedule(
+            emergencyResponseTypeCode, tripEmergencyHandledRequest.getAddAssignment(),
+            tripEmergencyDto
+        );
+
+        handledEmergencyResponse(request);
+
+        updateTripState(tripEmergencyDto);
+
+        updateSchedule(tripEmergencyDto.getTripId(), emergencyResponseTypeCode);
+
+        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
+            .title(TripEmergencyHandledTemplate.TITLE)
+            .body(TripEmergencyHandledTemplate.BODY)
+            .campaignRecipient(TripEmergencyHandledTemplate.RECEIVER)
+            .dataMap(Map.of("screen", "trip-emergency/" + request.tripEmergencyId()))
+            .personIds(Set.of(tripEmergencyDto.getPersonEmergencyReportedId()))
+            .build());
+
+        tripEmergencySocketHandler.emitMessage(TripEmergencySocketHandler.Request.builder()
+            .tripEmergencyId(request.tripEmergencyId())
+            .topic(WebSocketTopic.TRIP_EMERGENCY_HANDLED_TO_USER)
+            .toList(Set.of(tripEmergencyDto.getPersonEmergencyReported()
+                .getUserId()))
+            .build());
+
+        return null;
+    }
+
+    private void validateEmergencyHandled(TripEmergencyDto tripEmergencyDto)
+    {
+        TripEmergencyStateEnum emergencyCurrentState = TripEmergencyStateEnum.fromValue(
+            tripEmergencyDto.getTripEmergencyState()
+                .getCode());
+
+        if (!emergencyCurrentState.canTransitionTo(TripEmergencyStateEnum.HANDLED)) {
+            throw new TripEmergencyException(
+                "transition.not.allowed",
+                "'" + TripEmergencyStateEnum.HANDLED + "'", HttpStatus.CONFLICT.value()
+            );
+        }
+
+        TripStateEnum tripCurrentState = TripStateEnum.fromValue(tripEmergencyDto.getTrip()
+            .getTripState()
+            .getCode());
+
+        if (!tripCurrentState.equals(TripStateEnum.EMERGENCY)) {
+            throw new TripException(
+                "action.not.available",
+                "'" + TripEmergencyStateEnum.HANDLED + "'", HttpStatus.CONFLICT.value()
+            );
+        }
+    }
+
+    private void handledEmergencyResponse(Request request) {
+        TripEmergencyHandledRequest tripEmergencyHandledRequest = request.tripEmergencyHandledRequest();
+
         UUID tripEmergencyStateHandledId = tripEmergencyStateService.findIdByCodeThrow(
             TripEmergencyStateEnum.HANDLED);
-
-        UUID tripStateFinalizedId = tripStateService.findIdByCodeThrow(TripStateEnum.FINALIZED);
 
         emergencyResponseCreateCmd.withRequest(EmergencyResponseCreateCmd.Request.builder()
                 .tripEmergencyId(request.tripEmergencyId())
@@ -85,10 +151,15 @@ public class TripEmergencyHandledCmd extends
                 .tripEmergencyStateId(tripEmergencyStateHandledId)
                 .build())
             .execute();
+    }
+
+    private void updateTripState(TripEmergencyDto tripEmergencyDto) {
+        UUID tripStateFinalizedId = tripStateService.findIdByCodeThrow(TripStateEnum.FINALIZED);
 
         tripUpdateCmd.withRequest(TripUpdateCmd.Request.builder()
                 .tripId(tripEmergencyDto.getTripId())
                 .tripStateId(tripStateFinalizedId)
+                .tripEnd(ZonedDateTime.now())
                 .build())
             .execute();
 
@@ -97,48 +168,41 @@ public class TripEmergencyHandledCmd extends
                 .tripStateId(tripStateFinalizedId)
                 .build())
             .execute();
+    }
 
+    private void assignmentDriversInSchedule(
+        EmergencyResponseTypeCodeEnum emergencyResponseTypeCode,
+        ScheduleAddAssignmentRequest scheduleAddAssignmentRequest,
+        TripEmergencyDto tripEmergencyDto)
+    {
         if (!emergencyResponseTypeCode.equals(
             EmergencyResponseTypeCodeEnum.SEND_REPLACEMENT_UNIT))
         {
-            updateSchedule(tripEmergencyDto.getTripId());
+            log.debug("This action not available to states distinct to SEND_REPLACEMENT_UNIT");
+            return;
         }
 
-        tripEmergencySocketHandler.emitMessage(TripEmergencySocketHandler.Request.builder()
-            .tripEmergencyId(request.tripEmergencyId())
-            .topic(WebSocketTopic.TRIP_EMERGENCY_HANDLED_TO_USER)
-            .toList(Set.of(tripEmergencyDto.getPersonEmergencyReported()
-                .getUserId()))
-            .build());
-
-        return null;
-    }
-
-    private void validateEmergencyHandled(TripEmergencyDto tripEmergencyDto) {
-        TripEmergencyStateEnum emergencyCurrentState = TripEmergencyStateEnum.fromValue(
-            tripEmergencyDto.getTripEmergencyState()
-                .getCode());
-
-        if (!emergencyCurrentState.canTransitionTo(TripEmergencyStateEnum.HANDLED)) {
+        if (scheduleAddAssignmentRequest == null) {
             throw new TripEmergencyException(
-                "transition.not.allowed", "'" + TripEmergencyStateEnum.HANDLED + "'",
-                HttpStatus.CONFLICT.value()
-            );
+                "add.assignment.not.null", "", HttpStatus.BAD_REQUEST.value());
         }
 
-        TripStateEnum tripCurrentState = TripStateEnum.fromValue(tripEmergencyDto.getTrip()
-            .getTripState()
-            .getCode());
-
-        if (!tripCurrentState.equals(TripStateEnum.EMERGENCY)) {
-            throw new TripException(
-                "action.not.available", "'" + TripEmergencyStateEnum.HANDLED + "'",
-                HttpStatus.CONFLICT.value()
-            );
-        }
+        processScheduleAddAssignmentRequestCmd.withRequest(
+                ProcessScheduleAddAssignmentRequestCmd.Request.builder()
+                    .scheduleTransportationId(tripEmergencyDto.getScheduleTransportationId())
+                    .scheduleAddAssignmentRequest(scheduleAddAssignmentRequest)
+                    .build())
+            .execute();
     }
 
-    private void updateSchedule(UUID tripId) {
+    private void updateSchedule(UUID tripId,
+        EmergencyResponseTypeCodeEnum emergencyResponseTypeCode)
+    {
+        if (emergencyResponseTypeCode.equals(EmergencyResponseTypeCodeEnum.SEND_REPLACEMENT_UNIT)) {
+            log.debug("Action selected not trigger a update schedule");
+            return;
+        }
+
         TripDto tripDto = tripGetDtoCmd.withRequest(TripGetDtoCmd.Request.builder()
                 .tripId(tripId)
                 .build())

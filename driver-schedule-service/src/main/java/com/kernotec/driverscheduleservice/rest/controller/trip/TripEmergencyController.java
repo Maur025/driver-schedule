@@ -11,6 +11,7 @@ import com.kernotec.driverscheduleservice.rest.command.trip.trip.emergency.Proce
 import com.kernotec.driverscheduleservice.rest.command.trip.trip.emergency.TripEmergencyDismissCmd;
 import com.kernotec.driverscheduleservice.rest.command.trip.trip.emergency.TripEmergencyHandledCmd;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyDismissRequest;
+import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyFilterRequest;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyHandledRequest;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyPatchRequest;
 import com.kernotec.driverscheduleservice.rest.dto.trip.response.trip.emergency.TripEmergencyResponse;
@@ -19,6 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @Tag(name = TripEmergencySpec.TAG_NAME, description = TripEmergencySpec.TAG_DESCRIPTION)
 @RequestMapping(path = TripEmergencySpec.BASE_PATH)
 @AllArgsConstructor
@@ -50,11 +53,36 @@ public class TripEmergencyController {
     public PageResponse<TripEmergencyResponse> findAll(
         @RequestParam(name = "page", defaultValue = "0") Integer page,
         @RequestParam(name = "size", defaultValue = "20") Integer size,
-        @RequestParam(name = "sortBy", defaultValue = "createdBy") String sortBy,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
         @RequestParam(name = "descending", defaultValue = "false") Boolean descending)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
         Page<TripEmergency> tripEmergencyPage = tripEmergencyService.findAll(pageable);
+
+        return PageResponse.<TripEmergencyResponse>builder()
+            .code(HttpStatus.OK.value())
+            .data(tripEmergencyResponseMapper.toResponse(tripEmergencyPage.getContent()))
+            .pagination(PaginationResponse.builder()
+                .count(tripEmergencyPage.getTotalElements())
+                .pages(tripEmergencyPage.getTotalPages())
+                .build())
+            .build();
+    }
+
+    @Operation(summary = "search trip emergencies")
+    @PostMapping("search")
+    @ResponseStatus(HttpStatus.OK)
+    public PageResponse<TripEmergencyResponse> search(
+        @RequestParam(name = "page", defaultValue = "0") Integer page,
+        @RequestParam(name = "size", defaultValue = "20") Integer size,
+        @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(name = "descending", defaultValue = "false") Boolean descending,
+        @RequestBody TripEmergencyFilterRequest request)
+    {
+        Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
+
+        Page<TripEmergency> tripEmergencyPage = tripEmergencyService.findAllBySearch(
+            request, pageable);
 
         return PageResponse.<TripEmergencyResponse>builder()
             .code(HttpStatus.OK.value())
@@ -104,7 +132,8 @@ public class TripEmergencyController {
     @PostMapping("{tripEmergencyId}/dismissed")
     @ResponseStatus(HttpStatus.OK)
     public SingleResponse<TripEmergencyResponse> tripEmergencyDismissed(
-        @PathVariable("tripEmergencyId") UUID tripEmergencyId, TripEmergencyDismissRequest request)
+        @PathVariable("tripEmergencyId") UUID tripEmergencyId,
+        @RequestBody TripEmergencyDismissRequest request)
     {
         tripEmergencyDismissCmd.withRequest(TripEmergencyDismissCmd.Request.builder()
                 .tripEmergencyId(tripEmergencyId)

@@ -2,6 +2,8 @@ package com.kernotec.driverscheduleservice.jpa.service.notification;
 
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
+import com.kernotec.driverscheduleservice.jpa.dto.mapper.notification.NotificationConfigurationDtoFlatMapper;
+import com.kernotec.driverscheduleservice.jpa.dto.notification.NotificationConfigurationDto;
 import com.kernotec.driverscheduleservice.jpa.entity.notification.NotificationConfiguration;
 import com.kernotec.driverscheduleservice.jpa.repository.notification.NotificationConfigurationRepository;
 import com.kernotec.driverscheduleservice.util.CommonUtil;
@@ -11,6 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @AllArgsConstructor
 @Service
@@ -19,6 +22,7 @@ public class NotificationConfigurationService extends
 {
 
     private final NotificationConfigurationRepository repository;
+    private final NotificationConfigurationDtoFlatMapper notificationConfigurationDtoFlatMapper;
 
     @Override
     protected String resourceName() {
@@ -41,7 +45,7 @@ public class NotificationConfigurationService extends
     {
         return findByTokenAndDeleted(token, false);
     }
-    
+
     public List<NotificationConfiguration> findByPersonIdInAndActivedAndDeleted(
         Collection<UUID> personIds, boolean actived, boolean deleted)
     {
@@ -58,5 +62,19 @@ public class NotificationConfigurationService extends
         Collection<UUID> personIds)
     {
         return findByPersonIdInAndActived(personIds, true);
+    }
+
+    public List<NotificationConfigurationDto> findDtoByPersonIdInForNotification(
+        Collection<UUID> personIds)
+    {
+        List<NotificationConfiguration> notificationConfigurationList = findByPersonIdInForNotification(
+            personIds);
+
+        return notificationConfigurationDtoFlatMapper.toDto(notificationConfigurationList);
+    }
+
+    @Transactional
+    public void deleteAllByIdIn(Collection<UUID> ids) {
+        repository.deleteAllByIdIn(ids);
     }
 }

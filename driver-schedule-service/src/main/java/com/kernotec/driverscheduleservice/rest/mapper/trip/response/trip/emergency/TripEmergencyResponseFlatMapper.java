@@ -16,6 +16,11 @@ public interface TripEmergencyResponseFlatMapper {
     @Mapping(target = "tripEmergencyState", ignore = true)
     @Mapping(target = "emergencyReasons", ignore = true)
     @Mapping(target = "emergencyRejectReasons", ignore = true)
+    @Mapping(target = "emergencyResponses", ignore = true)
+    @Mapping(target = "createdByUser", ignore = true)
+    @Mapping(target = "updatedByUser", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     TripEmergencyResponse toResponse(TripEmergency tripEmergency);
 
     List<TripEmergencyResponse> toResponse(List<TripEmergency> tripEmergencyList);

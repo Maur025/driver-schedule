@@ -5,6 +5,8 @@ import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.common.security.SecurityAuthProvider;
 import com.kernotec.driverscheduleservice.exception.resource.PersonException;
+import com.kernotec.driverscheduleservice.jpa.dto.mapper.resource.PersonDtoFlatMapper;
+import com.kernotec.driverscheduleservice.jpa.dto.resource.PersonDto;
 import com.kernotec.driverscheduleservice.jpa.entity.resource.Person;
 import com.kernotec.driverscheduleservice.jpa.enums.resource.PersonTypeEnum;
 import com.kernotec.driverscheduleservice.jpa.repository.resource.PersonRepository;
@@ -16,8 +18,10 @@ import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.Use
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserDeleteRequest;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.request.UserUpdateRequest;
 import com.kernotec.driverscheduleservice.webflux.user.spec.rest.dto.response.UserCreateResponse;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,6 +36,7 @@ public class PersonService extends BaseServiceImpl<Person, UUID> {
     private final PersonRepository repository;
     private final UserServiceApiClient userServiceApiClient;
     private final SecurityAuthProvider securityAuthProvider;
+    private final PersonDtoFlatMapper personDtoFlatMapper;
 
     @Override
     protected String resourceName() {
@@ -111,5 +116,38 @@ public class PersonService extends BaseServiceImpl<Person, UUID> {
         UUID userId = securityAuthProvider.getUserId();
 
         return findIdByUserIdThrow(userId);
+    }
+
+    public List<Person> findAllByPersonTypesAndDeleted(Collection<PersonTypeEnum> personTypes,
+        boolean deleted)
+    {
+        return repository.findAllByPersonTypesAndDeleted(
+            personTypes.stream()
+                .map(String::valueOf)
+                .toList(), deleted
+        );
+    }
+
+    public List<Person> findAllByPersonTypesToNotification(Collection<PersonTypeEnum> personTypes) {
+        return findAllByPersonTypesAndDeleted(personTypes, false);
+    }
+
+    public List<PersonDto> findAllDtoByPersonTypesToNotification(Set<PersonTypeEnum> personTypes) {
+        List<Person> personList = findAllByPersonTypesToNotification(personTypes);
+        return personDtoFlatMapper.toDto(personList);
+    }
+
+    public List<Person> findByIdInAndDeletedAndPersonTypesNotIn(Collection<UUID> ids,
+        boolean deleted, Collection<PersonTypeEnum> personTypes)
+    {
+        List<String> personTypesStr = personTypes.stream()
+            .map(String::valueOf)
+            .toList();
+
+        return repository.findByIdInAndDeletedAndPersonTypesNotIn(ids, deleted, personTypesStr);
+    }
+
+    public List<Person> canNotBeUsedAsDriver(Collection<UUID> ids) {
+        return findByIdInAndDeletedAndPersonTypesNotIn(ids, true, Set.of(PersonTypeEnum.DRIVER));
     }
 }

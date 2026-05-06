@@ -7,11 +7,12 @@ import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverscheduleservice.jpa.entity.notification.NotificationConfiguration;
 import com.kernotec.driverscheduleservice.jpa.service.notification.NotificationConfigurationService;
+import com.kernotec.driverscheduleservice.notification.dto.NotificationSendRequest;
 import com.kernotec.driverscheduleservice.notification.service.NotificationOrchestrator;
 import com.kernotec.driverscheduleservice.rest.ApiSpec.NotificationConfigurationSpec;
 import com.kernotec.driverscheduleservice.rest.command.notification.ProcessNotificationConfigurationCreateRequestCmd;
 import com.kernotec.driverscheduleservice.rest.dto.notification.request.NotificationConfigurationCreateRequest;
-import com.kernotec.driverscheduleservice.rest.dto.notification.request.NotificationSendRequest;
+import com.kernotec.driverscheduleservice.rest.dto.notification.request.NotificationSendToTestRequest;
 import com.kernotec.driverscheduleservice.rest.dto.notification.response.NotificationConfigurationResponse;
 import com.kernotec.driverscheduleservice.rest.mapper.notification.response.NotificationConfigurationResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -102,11 +103,15 @@ public class NotificationConfigurationController {
     @Operation(summary = "test send notification")
     @PostMapping("test-notification")
     @ResponseStatus(HttpStatus.OK)
-    public MessageResponse testSendNotification(@RequestBody NotificationSendRequest request)
+    public MessageResponse testSendNotification(@RequestBody NotificationSendToTestRequest request)
     {
 
-        notificationOrchestrator.sendAsyncNotification(NotificationOrchestrator.Request.builder()
-            .notificationSendRequest(request)
+        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
+            .title(request.getTitle())
+            .body(request.getBody())
+            .dataMap(request.getDataMap())
+            .personIds(request.getPersonIds())
+            .campaignRecipient(request.getCampaignRecipient())
             .build());
 
         return MessageResponse.builder()
@@ -115,3 +120,5 @@ public class NotificationConfigurationController {
             .build();
     }
 }
+
+

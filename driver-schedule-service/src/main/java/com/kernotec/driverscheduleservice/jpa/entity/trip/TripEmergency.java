@@ -61,4 +61,7 @@ public class TripEmergency extends BaseAuditEntityUser {
 
     @OneToMany(mappedBy = "tripEmergency", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<EmergencyRejectReason> emergencyRejectReasons;
+
+    @OneToMany(mappedBy = "tripEmergency", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<EmergencyResponse> emergencyResponses;
 }

@@ -3,11 +3,15 @@ package com.kernotec.driverscheduleservice.rest.command.request;
 import com.kernotec.core.command.AbstractCommand;
 import com.kernotec.driverscheduleservice.jpa.entity.request.TransportationRequest;
 import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestService;
+import com.kernotec.driverscheduleservice.notification.dto.NotificationSendRequest;
+import com.kernotec.driverscheduleservice.notification.service.NotificationOrchestrator;
+import com.kernotec.driverscheduleservice.notification.templates.NotificationTemplate.RequestCreateTemplate;
 import com.kernotec.driverscheduleservice.rest.dto.request.request.transportation.request.TransportationRequestCreateRequest;
 import com.kernotec.driverscheduleservice.rest.socket.request.TransportationRequestSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.util.Map;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +27,7 @@ public class ProcessTransportationRequestCreateRequestCmd extends
 
     private final TransportationRequestFlowCreateCmd transportationRequestFlowCreateCmd;
     private final TransportationRequestSocketHandler transportationRequestSocketHandler;
+    private final NotificationOrchestrator notificationOrchestrator;
 
     @Override
     protected TransportationRequest run(Request request) {
@@ -31,6 +36,13 @@ public class ProcessTransportationRequestCreateRequestCmd extends
                     .transportationRequestCreateRequest(request.transportationRequestCreateRequest)
                     .build())
             .execute();
+
+        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
+            .title(RequestCreateTemplate.TITLE)
+            .body(RequestCreateTemplate.BODY)
+            .campaignRecipient(RequestCreateTemplate.RECEIVER)
+            .dataMap(Map.of("screen", "request/" + transportationRequestId))
+            .build());
 
         transportationRequestSocketHandler.emitMessage(
             TransportationRequestSocketHandler.Request.builder()

@@ -13,10 +13,15 @@ import com.kernotec.driverscheduleservice.jpa.enums.trip.TripEmergencyStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripEmergencyStateService;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripStateService;
+import com.kernotec.driverscheduleservice.notification.dto.NotificationSendRequest;
+import com.kernotec.driverscheduleservice.notification.service.NotificationOrchestrator;
+import com.kernotec.driverscheduleservice.notification.templates.NotificationTemplate.TripEmergencyDissmisedTemplate;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.emergency.TripEmergencyDismissRequest;
 import com.kernotec.driverscheduleservice.rest.socket.trip.TripEmergencySocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
+import java.time.ZonedDateTime;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
@@ -38,6 +43,7 @@ public class TripEmergencyDismissCmd extends
     private final TripUpdateCmd tripUpdateCmd;
     private final TripEmergencySocketHandler tripEmergencySocketHandler;
     private final TripLogCreateCmd tripLogCreateCmd;
+    private final NotificationOrchestrator notificationOrchestrator;
 
     @Override
     protected Void run(Request request) {
@@ -72,6 +78,7 @@ public class TripEmergencyDismissCmd extends
         tripUpdateCmd.withRequest(TripUpdateCmd.Request.builder()
                 .tripId(tripEmergencyDto.getTripId())
                 .tripStateId(tripWaitingStateId)
+                .tripEnd(ZonedDateTime.now())
                 .build())
             .execute();
 
@@ -80,6 +87,14 @@ public class TripEmergencyDismissCmd extends
                 .tripStateId(tripWaitingStateId)
                 .build())
             .execute();
+
+        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
+            .title(TripEmergencyDissmisedTemplate.TITLE)
+            .body(TripEmergencyDissmisedTemplate.BODY)
+            .campaignRecipient(TripEmergencyDissmisedTemplate.RECEIVER)
+            .dataMap(Map.of("screen", "trip-emergency/" + request.tripEmergencyId()))
+            .personIds(Set.of(tripEmergencyDto.getPersonEmergencyReportedId()))
+            .build());
 
         tripEmergencySocketHandler.emitMessage(TripEmergencySocketHandler.Request.builder()
             .tripEmergencyId(request.tripEmergencyId())

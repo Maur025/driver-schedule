@@ -53,39 +53,68 @@ variables for your local setup.
 
 Here a fast overview of important variables:
 
-```Text
-DB_HOST=localhost                                   # Database host for the application
-DB_PORT=5540                                        # Database port for the application
-DB_NAME=driver_schedule_db                          # Database name for the application
-DB_USERNAME=postgres                                # Database username for the application
-DB_PASSWORD=your-pass                               # Database password for the application
+### MAIN SERVICE
 
-SERVER_PORT_APP=7801                                # Application server port
-APP_SERVER_URL=http://localhost:7801                # Application server URL
+| Variable Name   | Example value         | Description                           |
+|-----------------|-----------------------|---------------------------------------|
+| DB_HOST         | localhost             | Database host for the application     |
+| DB_PORT         | 5540                  | Database port for the application     |
+| DB_NAME         | driver_schedule_db    | Database name for the application     |
+| DB_USERNAME     | postgres              | Database username for the application |
+| DB_PASSWORD     | your-pass             | Database password for the application |
+| SERVER_PORT_APP | 7801                  | Application server port               |
+| APP_SERVER_URL  | http://localhost:7801 | Application server URL                |
 
-# == AUTH CONFIG ==
+### AUTH SERVER
 
-DB_HOST_AUTH=localhost                              # Auth Database host
-DB_PORT_AUTH=5541                                   # Auth Database port
-DB_NAME_AUTH=driver_schedule_auth_db                # Auth Database name
-DB_USERNAME_AUTH=postgres                           # Auth Database username
-DB_PASSWORD_AUTH=your-pass                          # Auth Database password
+| Variable Name                 | Example value           | Description                          |
+|-------------------------------|-------------------------|--------------------------------------|
+| DB_HOST_AUTH                  | localhost               | Auth Database host                   |
+| DB_PORT_AUTH                  | 5541                    | Auth Database port                   |
+| DB_NAME_AUTH                  | driver_schedule_auth_db | Auth Database name                   |
+| DB_USERNAME_AUTH              | postgres                | Auth Database username               |
+| DB_PASSWORD_AUTH              | your-pass               | Auth Database password               |
+| SERVER_PORT_AUTH              | 7800                    | Auth server port                     |
+| APP_SERVER_URL_AUTH           | http://localhost:7800   | Auth server URL                      |
+| APP_CORS_ALLOWED_ORIGINS_AUTH | http://localhost:4200   | CORS allowed origins for auth server |
 
-SERVER_PORT_AUTH=7800                               # Auth server port
-APP_SERVER_URL_AUTH=http://localhost:7800           # Auth server URL
+### OAUTH2 CONFIG
 
-OAUTH2_JWT_SECRET=your-jwt-secret                   # JWT secret for token signing with at least 32 characters
-OAUTH2_JWT_ACCESS_TOKEN_EXP=4                       # Access token expiration time
-OAUTH2_JWT_ACCESS_TOKEN_EXP_TYPE=hours              # Access token expiration time type (e.g., minutes, hours, days)
-OAUTH2_JWT_REFRESH_TOKEN_EXP=7                      # Refresh token expiration time
-OAUTH2_JWT_REFRESH_TOKEN_EXP_TYPE=days              # Refresh token expiration time type (e.g., minutes, hours, days)
-OAUTH2_JWT_REFRESH_TOKEN_SECURE=dev                 # Set security values (e.g., dev, prod)
-APP_CORS_ALLOWED_ORIGINS_AUTH=http://localhost:4200 # CORS allowed origins for auth server
-OAUTH2_ADMIN_PASSWORD=admin-pass                    # Admin password for initial setup
+| Variable Name                     | Example value   | Description                                                     |
+|-----------------------------------|-----------------|-----------------------------------------------------------------|
+| OAUTH2_JWT_SECRET                 | your-jwt-secret | JWT secret for token signing with at least 32 characters        |
+| OAUTH2_JWT_ACCESS_TOKEN_EXP       | 30              | Access token expiration time                                    |
+| OAUTH2_JWT_ACCESS_TOKEN_EXP_TYPE  | minutes         | Access token expiration time type (e.g., minutes, hours, days)  |
+| OAUTH2_JWT_REFRESH_TOKEN_EXP      | 7               | Refresh token expiration time                                   |
+| OAUTH2_JWT_REFRESH_TOKEN_EXP_TYPE | days            | Refresh token expiration time type (e.g., minutes, hours, days) |
+| OAUTH2_JWT_REFRESH_TOKEN_SECURE   | dev             | Set security values (e.g., dev, prod)                           |
+| OAUTH2_ADMIN_PASSWORD             | admin-pass      | Admin password for initial setup                                |
 
-MS_AUTH_SCHEME=http                                 # Auth microservice scheme (e.g., http, https)
-MS_AUTH_HOST=localhost                              # Auth microservice host (same as auth host defined)
-```
+### MICROSERVICE CONFIG
+
+| Variable Name  | Example value | Description                                                        |
+|----------------|---------------|--------------------------------------------------------------------|
+| MS_AUTH_SCHEME | http          | Auth microservice scheme (e.g., http, https)                       |
+| MS_AUTH_HOST   | localhost     | Auth microservice host (same as auth host defined)                 |
+| MS_AUTH_PORT   | 7800          | Auth microservice port (same as auth host defined or 443 in https) |
+
+### FIREBASE CONFIG
+
+| Variable Name                        | Example value                              | Description                          |
+|--------------------------------------|--------------------------------------------|--------------------------------------|
+| FIREBASE_CONNECTION_TIMEOUT          | 5000                                       | Timeout to firebase connection       |
+| FIREBASE_READ_TIMEOUT                | 10000                                      | Timeout to firebase responses        |
+| FIREBASE_TYPE                        | service_account                            | Ways to connect to firebase          |
+| FIREBASE_PROJECT_ID                  | your-project-id                            | Firebase project ID                  |
+| FIREBASE_PRIVATE_KEY_ID              | your-private-key-id                        | Firebase private key ID              |
+| FIREBASE_PRIVATE_KEY                 | your-private-key                           | Firebase private key                 |
+| FIREBASE_CLIENT_EMAIL                | your-client-email                          | Firebase client email                |
+| FIREBASE_CLIENT_ID                   | your-client-id                             | Firebase client id                   |
+| FIREBASE_AUTH_URI                    | https://accounts.google.com/o/oauth2/auth  | public oauth uri of firebase         |
+| FIREBASE_TOKEN_URI                   | https://oauth2.googleapis.com/token        | public token uri of firebase         |
+| FIREBASE_AUTH_PROVIDER_X509_CERT_URL | https://www.googleapis.com/oauth2/v1/certs | public cert provider uri of firebase |
+| FIREBASE_CLIENT_X509_CERT_URL        | https://www.googleapis.com/...             | Firebase client id                   |
+| FIREBASE_UNIVERSE                    | googleapis.com                             | Firebase universe value              |
 
 ## Database Structure
 
