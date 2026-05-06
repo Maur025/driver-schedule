@@ -373,4 +373,14 @@ public class ApiSpec {
         private NotificationConfigurationSpec() {
         }
     }
+
+    public static final class PersonNotificationSpec {
+
+        public static final String BASE_PATH = ROOT_PATH + "/person-notifications";
+        public static final String TAG_NAME = "PERSON NOTIFICATION";
+        public static final String TAG_DESCRIPTION = "Person Notification management";
+
+        private PersonNotificationSpec() {
+        }
+    }
 }
