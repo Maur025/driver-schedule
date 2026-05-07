@@ -3,7 +3,7 @@ package com.kernotec.driverscheduleservice.command.resource.location;
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverscheduleservice.jpa.entity.resource.Location;
 import com.kernotec.driverscheduleservice.jpa.service.resource.LocationService;
-import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
+import com.kernotec.driverscheduleservice.common.dto.Coordinate;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.Builder;

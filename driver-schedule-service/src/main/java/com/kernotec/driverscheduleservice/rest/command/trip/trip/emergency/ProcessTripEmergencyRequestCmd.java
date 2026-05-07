@@ -15,7 +15,7 @@ import com.kernotec.driverscheduleservice.jpa.service.resource.LocationService;
 import com.kernotec.driverscheduleservice.jpa.service.resource.PersonService;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripEmergencyStateService;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripStateService;
-import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
+import com.kernotec.driverscheduleservice.common.dto.Coordinate;
 import com.kernotec.driverscheduleservice.notification.dto.NotificationSendRequest;
 import com.kernotec.driverscheduleservice.notification.service.NotificationOrchestrator;
 import com.kernotec.driverscheduleservice.notification.templates.NotificationTemplate.TripEmergencyReportedTemplate;

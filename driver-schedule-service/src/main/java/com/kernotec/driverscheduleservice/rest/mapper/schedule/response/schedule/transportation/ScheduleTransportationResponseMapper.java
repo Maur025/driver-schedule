@@ -3,7 +3,7 @@ package com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedul
 import com.kernotec.driverscheduleservice.audit.user.mapper.AuthUserDataResponseMapper;
 import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.request.response.transportation.request.TransportationReqToScheduleResponseMapper;
+import com.kernotec.driverscheduleservice.request.rest.mapper.response.TransportationReqToScheduleResponseMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.resource.response.person.PersonResponseWithContactMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.cancel.reason.CancelReasonWithReasonResponseMapper;
 import com.kernotec.driverscheduleservice.rest.mapper.schedule.response.reschedule.reason.RescheduleReasonWithReasonResponseMapper;

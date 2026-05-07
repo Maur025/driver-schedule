@@ -4,7 +4,7 @@ import com.kernotec.core.command.AbstractCommand;
 import com.kernotec.driverscheduleservice.command.resource.location.LocationCreateCmd;
 import com.kernotec.driverscheduleservice.exception.resource.LocationException;
 import com.kernotec.driverscheduleservice.jpa.service.resource.LocationService;
-import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
+import com.kernotec.driverscheduleservice.common.dto.Coordinate;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.location.LocationCreateRequest;
 import com.kernotec.driverscheduleservice.rest.socket.resource.LocationSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;

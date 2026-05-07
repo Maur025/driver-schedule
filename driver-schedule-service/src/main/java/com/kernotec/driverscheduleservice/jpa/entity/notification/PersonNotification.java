@@ -49,6 +49,9 @@ public class PersonNotification extends BaseAuditEntityUser {
     @Column(name = "state", nullable = false)
     private PersonNotificationState state;
 
+    @Column(name = "message_id")
+    private UUID messageId;
+
     @Column(name = "person_id", nullable = false)
     private UUID personId;
 

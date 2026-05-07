@@ -18,7 +18,7 @@ import com.kernotec.driverscheduleservice.jpa.service.resource.PersonService;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationStateService;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripService;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripStateService;
-import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
+import com.kernotec.driverscheduleservice.common.dto.Coordinate;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.TripCreateRequest;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.TripFilterRequest;
 import com.kernotec.driverscheduleservice.rest.socket.schedule.ScheduleTransportationSocketHandler;

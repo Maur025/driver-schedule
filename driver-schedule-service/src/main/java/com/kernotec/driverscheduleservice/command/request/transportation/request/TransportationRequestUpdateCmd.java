@@ -1,9 +1,9 @@
 package com.kernotec.driverscheduleservice.command.request.transportation.request;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverscheduleservice.jpa.entity.request.TransportationRequest;
-import com.kernotec.driverscheduleservice.jpa.enums.request.TripTypeEnum;
-import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestService;
+import com.kernotec.driverscheduleservice.request.jpa.entity.TransportationRequest;
+import com.kernotec.driverscheduleservice.request.jpa.enums.TripTypeEnum;
+import com.kernotec.driverscheduleservice.request.jpa.service.TransportationRequestService;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.UUID;

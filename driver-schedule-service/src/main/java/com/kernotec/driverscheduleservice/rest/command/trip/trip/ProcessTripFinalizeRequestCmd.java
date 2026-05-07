@@ -6,7 +6,7 @@ import com.kernotec.driverscheduleservice.command.trip.trip.log.TripLogCreateCmd
 import com.kernotec.driverscheduleservice.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.resource.LocationService;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripStateService;
-import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
+import com.kernotec.driverscheduleservice.common.dto.Coordinate;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.TripFinalizeRequest;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;

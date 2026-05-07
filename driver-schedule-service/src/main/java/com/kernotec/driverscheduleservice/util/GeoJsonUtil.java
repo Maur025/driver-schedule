@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.util;
 
-import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
-import com.kernotec.driverscheduleservice.rest.dto.request.request.request.coord.RequestCoordCreateRequest;
+import com.kernotec.driverscheduleservice.common.dto.Coordinate;
+import com.kernotec.driverscheduleservice.request.rest.dto.request.RequestCoordCreateRequest;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Named;

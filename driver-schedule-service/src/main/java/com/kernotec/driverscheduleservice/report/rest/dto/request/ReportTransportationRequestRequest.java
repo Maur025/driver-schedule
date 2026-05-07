@@ -2,8 +2,8 @@ package com.kernotec.driverscheduleservice.report.rest.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.kernotec.driverscheduleservice.jpa.enums.request.TransportationRequestStateEnum;
-import com.kernotec.driverscheduleservice.jpa.enums.request.TripTypeEnum;
+import com.kernotec.driverscheduleservice.request.jpa.enums.TransportationRequestStateEnum;
+import com.kernotec.driverscheduleservice.request.jpa.enums.TripTypeEnum;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,8 +1,8 @@
 package com.kernotec.driverscheduleservice.command.request.cancel.request.reason;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverscheduleservice.jpa.entity.request.CancelRequestReason;
-import com.kernotec.driverscheduleservice.jpa.service.request.CancelRequestReasonService;
+import com.kernotec.driverscheduleservice.request.jpa.entity.CancelRequestReason;
+import com.kernotec.driverscheduleservice.request.jpa.service.CancelRequestReasonService;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.Builder;

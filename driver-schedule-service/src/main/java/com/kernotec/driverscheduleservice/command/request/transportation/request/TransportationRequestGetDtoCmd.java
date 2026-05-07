@@ -1,10 +1,10 @@
 package com.kernotec.driverscheduleservice.command.request.transportation.request;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverscheduleservice.jpa.dto.request.TransportationRequestDto;
-import com.kernotec.driverscheduleservice.jpa.dto.mapper.request.TransportationRequestDtoMapper;
-import com.kernotec.driverscheduleservice.jpa.entity.request.TransportationRequest;
-import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestService;
+import com.kernotec.driverscheduleservice.request.jpa.dto.TransportationRequestDto;
+import com.kernotec.driverscheduleservice.request.jpa.mapper.TransportationRequestDtoMapper;
+import com.kernotec.driverscheduleservice.request.jpa.entity.TransportationRequest;
+import com.kernotec.driverscheduleservice.request.jpa.service.TransportationRequestService;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.Builder;

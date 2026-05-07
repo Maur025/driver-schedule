@@ -3,7 +3,7 @@ package com.kernotec.driverscheduleservice.rest.command.resource.location;
 import com.kernotec.core.command.AbstractCommand;
 import com.kernotec.driverscheduleservice.command.resource.location.LocationUpdateCmd;
 import com.kernotec.driverscheduleservice.jpa.service.resource.LocationService;
-import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
+import com.kernotec.driverscheduleservice.common.dto.Coordinate;
 import com.kernotec.driverscheduleservice.rest.dto.resource.request.location.LocationUpdateRequest;
 import com.kernotec.driverscheduleservice.rest.socket.resource.LocationSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;

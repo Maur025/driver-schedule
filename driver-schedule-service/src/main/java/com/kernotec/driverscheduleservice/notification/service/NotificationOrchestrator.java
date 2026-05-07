@@ -49,6 +49,8 @@ public class NotificationOrchestrator {
         NotificationFlowStrategy flowStrategy = notificationFlowFactory.getStrategy(
             request.campaignRecipient());
 
+        UUID messageId = UUID.randomUUID();
+
         UUID notificationCampaignId = notificationCampaignCreateCmd.withRequest(
                 NotificationCampaignCreateCmd.Request.builder()
                     .title(request.title())
@@ -59,7 +61,8 @@ public class NotificationOrchestrator {
                     .build())
             .execute();
 
-        NotificationFlowResponse notificationFlowResponse = flowStrategy.sendNotification(request);
+        NotificationFlowResponse notificationFlowResponse = flowStrategy.sendNotification(
+            request, messageId);
 
         if (notificationFlowResponse == null) {
             log.warn(
@@ -67,7 +70,7 @@ public class NotificationOrchestrator {
             return;
         }
 
-        registerPersonNotifications(notificationFlowResponse.personIds(), request);
+        registerPersonNotifications(notificationFlowResponse.personIds(), request, messageId);
 
         Map<String, NotificationConfigurationDto> notificationConfigDtoMap = notificationFlowResponse.notificationConfigDtoList()
             .stream()
@@ -106,7 +109,8 @@ public class NotificationOrchestrator {
             .execute();
     }
 
-    private void registerPersonNotifications(Set<UUID> personIds, NotificationSendRequest request)
+    private void registerPersonNotifications(Set<UUID> personIds, NotificationSendRequest request,
+        UUID messageId)
     {
         if (personIds == null || personIds.isEmpty()) {
             log.debug("No person ids to register notifications");
@@ -125,6 +129,7 @@ public class NotificationOrchestrator {
             personNotification.setSentAt(ZonedDateTime.now());
             personNotification.setState(PersonNotificationState.CREATED);
             personNotification.setPersonId(personId);
+            personNotification.setMessageId(messageId);
 
             personNotificationList.add(personNotification);
         }

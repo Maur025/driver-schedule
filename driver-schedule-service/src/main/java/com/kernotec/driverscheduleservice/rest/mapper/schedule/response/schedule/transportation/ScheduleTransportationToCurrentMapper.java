@@ -2,7 +2,7 @@ package com.kernotec.driverscheduleservice.rest.mapper.schedule.response.schedul
 
 import com.kernotec.driverscheduleservice.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverscheduleservice.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
-import com.kernotec.driverscheduleservice.rest.mapper.request.response.transportation.request.TransportationRequestToCurrentMapper;
+import com.kernotec.driverscheduleservice.request.rest.mapper.response.TransportationRequestToCurrentMapper;
 import java.util.List;
 import java.util.Set;
 import org.mapstruct.Mapper;

@@ -1,8 +1,8 @@
 package com.kernotec.driverscheduleservice.command.request.transportation.request.log;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverscheduleservice.jpa.entity.request.TransportationRequestLog;
-import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestLogService;
+import com.kernotec.driverscheduleservice.request.jpa.entity.TransportationRequestLog;
+import com.kernotec.driverscheduleservice.request.jpa.service.TransportationRequestLogService;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.Builder;

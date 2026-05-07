@@ -1,7 +1,7 @@
 package com.kernotec.driverscheduleservice.jpa.entity.trip;
 
 import com.kernotec.driverscheduleservice.audit.user.BaseAuditEntityUser;
-import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
+import com.kernotec.driverscheduleservice.common.dto.Coordinate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;

@@ -1,9 +1,9 @@
 package com.kernotec.driverscheduleservice.command.request.request.coord;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverscheduleservice.jpa.entity.request.RequestCoord;
-import com.kernotec.driverscheduleservice.jpa.service.request.RequestCoordService;
-import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
+import com.kernotec.driverscheduleservice.request.jpa.entity.RequestCoord;
+import com.kernotec.driverscheduleservice.request.jpa.service.RequestCoordService;
+import com.kernotec.driverscheduleservice.common.dto.Coordinate;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.UUID;

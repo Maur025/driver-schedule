@@ -6,7 +6,7 @@ import com.kernotec.driverscheduleservice.exception.resource.LocationException;
 import com.kernotec.driverscheduleservice.jpa.entity.resource.Location;
 import com.kernotec.driverscheduleservice.jpa.repository.resource.LocationRepository;
 import com.kernotec.driverscheduleservice.jpa.specification.resource.LocationSpecification;
-import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
+import com.kernotec.driverscheduleservice.common.dto.Coordinate;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;

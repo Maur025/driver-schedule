@@ -8,8 +8,10 @@ import com.kernotec.driverscheduleservice.notification.NotificationHandlerReques
 import com.kernotec.driverscheduleservice.notification.NotificationHandlerResponse;
 import com.kernotec.driverscheduleservice.notification.dto.NotificationFlowResponse;
 import com.kernotec.driverscheduleservice.notification.dto.NotificationSendRequest;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -32,7 +34,9 @@ public abstract class NotificationFlowStrategy {
 
     protected abstract Set<UUID> getPersonIds(NotificationSendRequest request);
 
-    public NotificationFlowResponse sendNotification(NotificationSendRequest request) {
+    public NotificationFlowResponse sendNotification(NotificationSendRequest request,
+        UUID messageId)
+    {
         Set<UUID> personIds = getPersonIds(request);
 
         if (personIds == null) {
@@ -56,7 +60,7 @@ public abstract class NotificationFlowStrategy {
                 .tokens(tokens)
                 .title(request.title())
                 .body(request.body())
-                .dataMap(request.dataMap())
+                .dataMap(getDataMap(request.dataMap(), messageId))
                 .build());
 
         return NotificationFlowResponse.builder()
@@ -65,5 +69,16 @@ public abstract class NotificationFlowStrategy {
             .usedTokens(tokens)
             .personIds(personIds)
             .build();
+    }
+
+    private Map<String, String> getDataMap(Map<String, String> beforeDataMap, UUID messageId) {
+        Map<String, String> dataMap = new HashMap<>();
+        dataMap.put("messageId", String.valueOf(messageId));
+
+        if (beforeDataMap != null) {
+            dataMap.putAll(beforeDataMap);
+        }
+
+        return dataMap;
     }
 }

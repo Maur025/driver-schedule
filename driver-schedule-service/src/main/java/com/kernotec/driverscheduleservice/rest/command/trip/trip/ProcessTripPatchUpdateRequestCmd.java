@@ -9,7 +9,7 @@ import com.kernotec.driverscheduleservice.jpa.dto.trip.TripDto;
 import com.kernotec.driverscheduleservice.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverscheduleservice.jpa.service.resource.LocationService;
 import com.kernotec.driverscheduleservice.jpa.service.trip.TripStateService;
-import com.kernotec.driverscheduleservice.jpa.util.Coordinate;
+import com.kernotec.driverscheduleservice.common.dto.Coordinate;
 import com.kernotec.driverscheduleservice.rest.dto.trip.request.trip.TripUpdatePatchRequest;
 import com.kernotec.driverscheduleservice.rest.socket.trip.TripSocketHandler;
 import com.kernotec.driverscheduleservice.web.socket.WebSocketTopic;

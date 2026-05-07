@@ -7,10 +7,10 @@ import com.kernotec.driverscheduleservice.command.request.transportation.request
 import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.ScheduleTransportationCreateCmd;
 import com.kernotec.driverscheduleservice.command.schedule.schedule.transportation.log.ScheduleTransportationLogCreateCmd;
 import com.kernotec.driverscheduleservice.exception.schedule.ScheduleTransportationException;
-import com.kernotec.driverscheduleservice.jpa.dto.request.TransportationRequestDto;
-import com.kernotec.driverscheduleservice.jpa.enums.request.TransportationRequestStateEnum;
+import com.kernotec.driverscheduleservice.request.jpa.dto.TransportationRequestDto;
+import com.kernotec.driverscheduleservice.request.jpa.enums.TransportationRequestStateEnum;
 import com.kernotec.driverscheduleservice.jpa.enums.schedule.ScheduleTransportationStateEnum;
-import com.kernotec.driverscheduleservice.jpa.service.request.TransportationRequestStateService;
+import com.kernotec.driverscheduleservice.request.jpa.service.TransportationRequestStateService;
 import com.kernotec.driverscheduleservice.jpa.service.schedule.ScheduleTransportationStateService;
 import com.kernotec.driverscheduleservice.notification.dto.NotificationSendRequest;
 import com.kernotec.driverscheduleservice.notification.service.NotificationOrchestrator;

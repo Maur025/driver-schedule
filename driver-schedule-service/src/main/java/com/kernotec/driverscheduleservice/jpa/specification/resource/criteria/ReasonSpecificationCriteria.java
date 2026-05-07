@@ -1,6 +1,6 @@
 package com.kernotec.driverscheduleservice.jpa.specification.resource.criteria;
 
-import com.kernotec.driverscheduleservice.jpa.enums.request.TransportationRequestStateEnum;
+import com.kernotec.driverscheduleservice.request.jpa.enums.TransportationRequestStateEnum;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
