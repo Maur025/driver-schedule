@@ -28,6 +28,11 @@
   <dependencyManagement>
     <dependencies>
       <!-- INTERNAL DEPENDENCIES -->
+      <dependency>
+        <groupId>com.kernotec.driverschedule</groupId>
+        <artifactId>driver-schedule-notification</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <!-- EXTERNAL DEPENDENCIES -->
       <dependency>
