@@ -14,9 +14,114 @@
   <artifactId>driver-schedule-bom</artifactId>
   <packaging>pom</packaging>
 
+  <properties>
+    <org.springdoc.version>2.2.0</org.springdoc.version>
+    <poi.version>5.4.1</poi.version>
+    <open-csv.version>5.3</open-csv.version>
+    <commons-csv.version>1.8</commons-csv.version>
+    <jasperreports.version>6.21.5</jasperreports.version>
+    <firebase.version>9.8.0</firebase.version>
+    <logstash-logback.version>8.0</logstash-logback.version>
+  </properties>
+
 
   <dependencyManagement>
-    <dependencies></dependencies>
+    <dependencies>
+      <!-- INTERNAL DEPENDENCIES -->
+      <dependency>
+        <groupId>com.kernotec.driverschedule</groupId>
+        <artifactId>driver-schedule-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.kernotec.driverschedule</groupId>
+        <artifactId>driver-schedule-person</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.kernotec.driverschedule</groupId>
+        <artifactId>driver-schedule-notification</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.kernotec.driverschedule</groupId>
+        <artifactId>driver-schedule-user-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.kernotec.driverschedule</groupId>
+        <artifactId>driver-schedule-socket</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <!-- EXTERNAL DEPENDENCIES -->
+      <dependency>
+        <groupId>net.logstash.logback</groupId>
+        <artifactId>logstash-logback-encoder</artifactId>
+        <version>${logstash-logback.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        <version>${org.springdoc.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+        <version>${org.springdoc.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+        <version>${org.springdoc.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-starter-webflux-api</artifactId>
+        <version>${org.springdoc.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi</artifactId>
+        <version>${poi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi-ooxml</artifactId>
+        <version>${poi.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.opencsv</groupId>
+        <artifactId>opencsv</artifactId>
+        <version>${open-csv.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-csv</artifactId>
+        <version>${commons-csv.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.jasperreports</groupId>
+        <artifactId>jasperreports</artifactId>
+        <version>${jasperreports.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.firebase</groupId>
+        <artifactId>firebase-admin</artifactId>
+        <version>${firebase.version}</version>
+      </dependency>
+
+    </dependencies>
   </dependencyManagement>
 
 </project>
