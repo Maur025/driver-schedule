@@ -3,13 +3,12 @@ package com.kernotec.driverschedule.service.rest.mapper.schedule.response.trip.a
 import com.kernotec.driverschedule.service.jpa.entity.schedule.TripAssignment;
 import com.kernotec.driverschedule.service.rest.dto.schedule.response.trip.assignment.TripAssignmentResponse;
 import com.kernotec.driverschedule.service.rest.mapper.resource.response.vehicle.VehicleResponseFlatMapper;
-import com.kernotec.driverschedule.service.util.DateResponseUtil;
 import java.util.List;
 import java.util.Set;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(uses = {DateResponseUtil.class, VehicleResponseFlatMapper.class})
+@Mapper(uses = {com.kernotec.driverschedule.common.mapping.DateResponseMapper.class, VehicleResponseFlatMapper.class})
 public interface TripAssignmentToEmergencyMapper {
 
 

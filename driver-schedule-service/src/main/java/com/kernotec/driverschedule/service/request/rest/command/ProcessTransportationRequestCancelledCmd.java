@@ -9,7 +9,7 @@ import com.kernotec.driverschedule.service.exception.request.TransportationReque
 import com.kernotec.driverschedule.service.request.jpa.dto.TransportationRequestDto;
 import com.kernotec.driverschedule.service.request.jpa.enums.TransportationRequestStateEnum;
 import com.kernotec.driverschedule.service.request.jpa.service.TransportationRequestStateService;
-import com.kernotec.driverschedule.service.jpa.service.resource.PersonService;
+import com.kernotec.driverschedule.person.jpa.service.PersonService;
 import com.kernotec.driverschedule.service.notification.dto.NotificationSendRequest;
 import com.kernotec.driverschedule.service.notification.service.NotificationOrchestrator;
 import com.kernotec.driverschedule.service.notification.templates.NotificationTemplate.RequestCancelledTemplate;

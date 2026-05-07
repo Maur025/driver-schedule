@@ -13,16 +13,46 @@
   <artifactId>driver-schedule-notification</artifactId>
 
   <dependencies>
+    <!-- INTERNAL -->
+    <dependency>
+      <groupId>com.kernotec.driverschedule</groupId>
+      <artifactId>driver-schedule-common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.kernotec.driverschedule</groupId>
+      <artifactId>driver-schedule-person</artifactId>
+    </dependency>
+
     <!-- CORE -->
     <dependency>
       <groupId>com.kernotec</groupId>
       <artifactId>core-jpa</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.kernotec</groupId>
+      <artifactId>core-command</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.kernotec</groupId>
+      <artifactId>core-rest</artifactId>
+    </dependency>
+
     <!-- EXTERNAL -->
     <dependency>
       <groupId>com.google.firebase</groupId>
       <artifactId>firebase-admin</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
     </dependency>
   </dependencies>
 

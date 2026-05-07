@@ -14,7 +14,7 @@ import com.kernotec.driverschedule.service.jpa.entity.trip.Trip;
 import com.kernotec.driverschedule.service.jpa.enums.schedule.ScheduleTransportationStateEnum;
 import com.kernotec.driverschedule.service.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverschedule.service.jpa.service.resource.LocationService;
-import com.kernotec.driverschedule.service.jpa.service.resource.PersonService;
+import com.kernotec.driverschedule.person.jpa.service.PersonService;
 import com.kernotec.driverschedule.service.jpa.service.schedule.ScheduleTransportationStateService;
 import com.kernotec.driverschedule.service.jpa.service.trip.TripService;
 import com.kernotec.driverschedule.service.jpa.service.trip.TripStateService;

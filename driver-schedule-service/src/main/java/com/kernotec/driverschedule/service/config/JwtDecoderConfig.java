@@ -1,5 +1,6 @@
 package com.kernotec.driverschedule.service.config;
 
+import com.kernotec.driverschedule.common.properties.AuthConfigProperties;
 import java.util.List;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.context.annotation.Bean;

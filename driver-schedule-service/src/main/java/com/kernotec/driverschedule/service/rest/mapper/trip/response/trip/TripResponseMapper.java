@@ -3,14 +3,13 @@ package com.kernotec.driverschedule.service.rest.mapper.trip.response.trip;
 import com.kernotec.driverschedule.service.jpa.entity.trip.Trip;
 import com.kernotec.driverschedule.service.rest.dto.trip.response.trip.TripResponse;
 import com.kernotec.driverschedule.service.rest.mapper.schedule.response.trip.assignment.TripAssignmentToTripResponseMapper;
-import com.kernotec.driverschedule.service.util.DateResponseUtil;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(uses = {TripAssignmentToTripResponseMapper.class, DateResponseUtil.class})
+@Mapper(uses = {TripAssignmentToTripResponseMapper.class, com.kernotec.driverschedule.common.mapping.DateResponseMapper.class})
 public interface TripResponseMapper {
 
     @Mapping(target = "createdByUser", ignore = true)

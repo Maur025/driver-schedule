@@ -1,10 +1,9 @@
 package com.kernotec.driverschedule.service.rest.mapper.trip.response.trip.log;
 
-import com.kernotec.driverschedule.service.audit.user.mapper.AuthUserDataResponseMapper;
+import com.kernotec.driverschedule.common.audit.user.mapper.AuthUserDataResponseMapper;
 import com.kernotec.driverschedule.service.jpa.entity.trip.TripLog;
 import com.kernotec.driverschedule.service.rest.dto.trip.response.trip.log.TripLogResponse;
 import com.kernotec.driverschedule.service.rest.mapper.trip.response.trip.TripNAResponseFlatMapper;
-import com.kernotec.driverschedule.service.util.DateResponseUtil;
 import com.kernotec.driverschedule.service.util.GeoJsonUtil;
 import java.util.List;
 import java.util.Set;
@@ -13,7 +12,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(uses = {TripNAResponseFlatMapper.class, AuthUserDataResponseMapper.class, GeoJsonUtil.class,
-    DateResponseUtil.class})
+    com.kernotec.driverschedule.common.mapping.DateResponseMapper.class})
 public interface TripLogResponseMapper {
 
     @Mapping(target = "coordinates", source = "coordinate",

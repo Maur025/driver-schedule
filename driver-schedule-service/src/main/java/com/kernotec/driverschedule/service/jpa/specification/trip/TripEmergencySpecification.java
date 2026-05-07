@@ -4,7 +4,7 @@ import com.kernotec.driverschedule.service.jpa.entity.trip.TripEmergency;
 import com.kernotec.driverschedule.service.jpa.enums.trip.TripEmergencyStateEnum;
 import com.kernotec.driverschedule.service.jpa.specification.trip.criteria.TripEmergencySpecificationCriteria;
 import com.kernotec.driverschedule.service.util.CommonSpecification;
-import com.kernotec.driverschedule.service.util.CommonUtil;
+import com.kernotec.driverschedule.common.util.CommonUtil;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;

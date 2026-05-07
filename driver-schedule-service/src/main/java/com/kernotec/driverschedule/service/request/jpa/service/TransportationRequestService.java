@@ -2,11 +2,11 @@ package com.kernotec.driverschedule.service.request.jpa.service;
 
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
-import com.kernotec.driverschedule.service.common.security.SecurityAuthProvider;
+import com.kernotec.driverschedule.common.security.auth.SecurityAuthProvider;
 import com.kernotec.driverschedule.service.request.jpa.entity.TransportationRequest;
-import com.kernotec.driverschedule.service.jpa.enums.resource.PersonTypeEnum;
+import com.kernotec.driverschedule.person.jpa.enums.PersonTypeEnum;
 import com.kernotec.driverschedule.service.request.jpa.repository.TransportationRequestRepository;
-import com.kernotec.driverschedule.service.jpa.service.resource.PersonService;
+import com.kernotec.driverschedule.person.jpa.service.PersonService;
 import com.kernotec.driverschedule.service.request.jpa.specification.TransportationRequestSpecification;
 import com.kernotec.driverschedule.service.request.rest.dto.request.TransportationRequestFilterRequest;
 import java.util.UUID;

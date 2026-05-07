@@ -1,11 +1,10 @@
 package com.kernotec.driverschedule.service.request.rest.mapper.response;
 
-import com.kernotec.driverschedule.service.audit.user.mapper.AuthUserDataResponseMapper;
+import com.kernotec.driverschedule.common.audit.user.mapper.AuthUserDataResponseMapper;
 import com.kernotec.driverschedule.service.request.jpa.entity.TransportationRequest;
 import com.kernotec.driverschedule.service.request.rest.dto.response.TransportationRequestResponse;
-import com.kernotec.driverschedule.service.rest.mapper.resource.response.person.PersonResponseWithContactMapper;
+import com.kernotec.driverschedule.person.rest.mapper.response.PersonResponseWithContactMapper;
 import com.kernotec.driverschedule.service.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseToRequestMapper;
-import com.kernotec.driverschedule.service.util.DateResponseUtil;
 import com.kernotec.driverschedule.service.util.GeoJsonUtil;
 import java.util.List;
 import java.util.Set;
@@ -16,7 +15,7 @@ import org.mapstruct.Mapping;
 @Mapper(uses = {GeoJsonUtil.class, ScheduleTransportationResponseToRequestMapper.class,
     PersonResponseWithContactMapper.class, AuthUserDataResponseMapper.class,
     RequestCoordToRequestResponseMapper.class, RejectReasonWithReasonResponseMapper.class,
-    CancelReqReasonWithReasonResponseMapper.class, DateResponseUtil.class})
+    CancelReqReasonWithReasonResponseMapper.class, com.kernotec.driverschedule.common.mapping.DateResponseMapper.class})
 public interface TransportationRequestResponseMapper {
 
     @Mapping(target = "createdAt", qualifiedByName = "mapToZonedDateTimeResponse")

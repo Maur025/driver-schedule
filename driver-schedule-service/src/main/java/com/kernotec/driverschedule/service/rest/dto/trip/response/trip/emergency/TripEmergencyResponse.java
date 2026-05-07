@@ -2,8 +2,8 @@ package com.kernotec.driverschedule.service.rest.dto.trip.response.trip.emergenc
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.kernotec.driverschedule.service.audit.user.dto.response.AuditEntityUserResponse;
-import com.kernotec.driverschedule.service.rest.dto.resource.response.person.PersonResponse;
+import com.kernotec.driverschedule.common.audit.user.dto.response.AuditEntityUserResponse;
+import com.kernotec.driverschedule.person.rest.dto.response.PersonResponse;
 import com.kernotec.driverschedule.service.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverschedule.service.rest.dto.trip.response.emergency.reason.EmergencyReasonResponse;
 import com.kernotec.driverschedule.service.rest.dto.trip.response.emergency.reject.reason.EmergencyRejectReasonResponse;

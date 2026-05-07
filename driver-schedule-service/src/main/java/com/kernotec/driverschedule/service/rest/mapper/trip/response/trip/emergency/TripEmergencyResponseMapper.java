@@ -2,13 +2,12 @@ package com.kernotec.driverschedule.service.rest.mapper.trip.response.trip.emerg
 
 import com.kernotec.driverschedule.service.jpa.entity.trip.TripEmergency;
 import com.kernotec.driverschedule.service.rest.dto.trip.response.trip.emergency.TripEmergencyResponse;
-import com.kernotec.driverschedule.service.rest.mapper.resource.response.person.PersonResponseWithContactMapper;
+import com.kernotec.driverschedule.person.rest.mapper.response.PersonResponseWithContactMapper;
 import com.kernotec.driverschedule.service.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationToAvailabilityMapper;
 import com.kernotec.driverschedule.service.rest.mapper.trip.response.emergency.reason.EmergencyReasonWithReasonResponseMapper;
 import com.kernotec.driverschedule.service.rest.mapper.trip.response.emergency.reject.reason.EmergencyRejectWithReasonResponseMapper;
 import com.kernotec.driverschedule.service.rest.mapper.trip.response.emergency.response.EmergencyResponseResponseToTripMapper;
 import com.kernotec.driverschedule.service.rest.mapper.trip.response.trip.TripResponseToEmergencyMapper;
-import com.kernotec.driverschedule.service.util.DateResponseUtil;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -18,7 +17,7 @@ import org.mapstruct.Mapping;
 @Mapper(uses = {TripResponseToEmergencyMapper.class, ScheduleTransportationToAvailabilityMapper.class,
     PersonResponseWithContactMapper.class, EmergencyReasonWithReasonResponseMapper.class,
     EmergencyRejectWithReasonResponseMapper.class, EmergencyResponseResponseToTripMapper.class,
-    DateResponseUtil.class})
+    com.kernotec.driverschedule.common.mapping.DateResponseMapper.class})
 public interface TripEmergencyResponseMapper {
 
     @Mapping(target = "createdByUser", ignore = true)

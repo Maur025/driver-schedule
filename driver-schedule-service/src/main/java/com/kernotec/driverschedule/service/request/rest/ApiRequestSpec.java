@@ -1,6 +1,6 @@
 package com.kernotec.driverschedule.service.request.rest;
 
-import com.kernotec.driverschedule.service.rest.ApiSpec;
+import com.kernotec.driverschedule.common.rest.ApiSpec;
 
 public class ApiRequestSpec {
 

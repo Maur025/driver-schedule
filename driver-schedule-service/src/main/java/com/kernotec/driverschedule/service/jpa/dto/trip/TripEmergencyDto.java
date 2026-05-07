@@ -1,7 +1,7 @@
 package com.kernotec.driverschedule.service.jpa.dto.trip;
 
 import com.kernotec.core.jpa.dto.AuditEntityDto;
-import com.kernotec.driverschedule.service.jpa.dto.resource.PersonDto;
+import com.kernotec.driverschedule.person.jpa.dto.PersonDto;
 import com.kernotec.driverschedule.service.jpa.dto.schedule.ScheduleTransportationDto;
 import java.util.UUID;
 import lombok.Getter;

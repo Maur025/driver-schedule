@@ -6,7 +6,7 @@ import com.kernotec.driverschedule.service.jpa.entity.resource.Observation;
 import com.kernotec.driverschedule.service.jpa.enums.resource.ObservationTypeCodeEnum;
 import com.kernotec.driverschedule.service.jpa.repository.resource.ObservationRepository;
 import com.kernotec.driverschedule.service.rest.dto.resource.response.observation.ObservationLookupResponse;
-import com.kernotec.driverschedule.service.util.CommonUtil;
+import com.kernotec.driverschedule.common.util.CommonUtil;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

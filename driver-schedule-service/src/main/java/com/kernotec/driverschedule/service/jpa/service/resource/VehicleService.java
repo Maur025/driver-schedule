@@ -5,7 +5,7 @@ import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.driverschedule.service.jpa.entity.resource.Vehicle;
 import com.kernotec.driverschedule.service.jpa.repository.resource.VehicleRepository;
 import com.kernotec.driverschedule.service.rest.dto.resource.response.vehicle.VehicleLookupResponse;
-import com.kernotec.driverschedule.service.util.CommonUtil;
+import com.kernotec.driverschedule.common.util.CommonUtil;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;

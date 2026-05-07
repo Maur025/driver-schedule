@@ -1,6 +1,6 @@
 package com.kernotec.driverschedule.service.exception.trip;
 
-import static com.kernotec.driverschedule.service.util.ExceptionUtil.formatMessage;
+import static com.kernotec.driverschedule.common.exception.ExceptionMessage.formatMessage;
 
 import com.kernotec.core.exception.custom.base.ApiException;
 

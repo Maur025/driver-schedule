@@ -5,7 +5,7 @@ import com.kernotec.driverschedule.service.exception.schedule.ScheduleTransporta
 import com.kernotec.driverschedule.service.jpa.entity.resource.Person;
 import com.kernotec.driverschedule.service.jpa.entity.resource.Vehicle;
 import com.kernotec.driverschedule.service.jpa.service.resource.AvailabilityForAssignmentService;
-import com.kernotec.driverschedule.service.jpa.service.resource.PersonService;
+import com.kernotec.driverschedule.person.jpa.service.PersonService;
 import com.kernotec.driverschedule.service.jpa.service.resource.VehicleService;
 import com.kernotec.driverschedule.service.rest.dto.resource.request.AvailabilityForAssignmentRequest;
 import com.kernotec.driverschedule.service.rest.dto.resource.response.AvailabilityForAssignmentResponse;

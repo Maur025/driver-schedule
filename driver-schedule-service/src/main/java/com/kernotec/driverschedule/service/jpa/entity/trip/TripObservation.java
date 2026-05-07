@@ -1,6 +1,6 @@
 package com.kernotec.driverschedule.service.jpa.entity.trip;
 
-import com.kernotec.driverschedule.service.audit.user.BaseAuditEntityUser;
+import com.kernotec.driverschedule.common.audit.user.BaseAuditEntityUser;
 import com.kernotec.driverschedule.service.jpa.entity.resource.Observation;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

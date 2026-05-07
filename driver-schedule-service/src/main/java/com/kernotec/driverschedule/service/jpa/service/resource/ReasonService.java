@@ -6,7 +6,7 @@ import com.kernotec.driverschedule.service.jpa.entity.resource.Reason;
 import com.kernotec.driverschedule.service.jpa.enums.resource.ReasonTypeEnum;
 import com.kernotec.driverschedule.service.jpa.repository.resource.ReasonRepository;
 import com.kernotec.driverschedule.service.rest.dto.resource.response.reason.ReasonLookupResponse;
-import com.kernotec.driverschedule.service.util.CommonUtil;
+import com.kernotec.driverschedule.common.util.CommonUtil;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;

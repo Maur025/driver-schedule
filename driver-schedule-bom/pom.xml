@@ -30,7 +30,31 @@
       <!-- INTERNAL DEPENDENCIES -->
       <dependency>
         <groupId>com.kernotec.driverschedule</groupId>
+        <artifactId>driver-schedule-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.kernotec.driverschedule</groupId>
+        <artifactId>driver-schedule-person</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.kernotec.driverschedule</groupId>
         <artifactId>driver-schedule-notification</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.kernotec.driverschedule</groupId>
+        <artifactId>driver-schedule-user-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.kernotec.driverschedule</groupId>
+        <artifactId>driver-schedule-socket</artifactId>
         <version>${project.version}</version>
       </dependency>
 

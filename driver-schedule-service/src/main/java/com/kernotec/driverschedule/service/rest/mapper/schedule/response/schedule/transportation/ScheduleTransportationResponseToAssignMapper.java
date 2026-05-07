@@ -3,8 +3,7 @@ package com.kernotec.driverschedule.service.rest.mapper.schedule.response.schedu
 import com.kernotec.driverschedule.service.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverschedule.service.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverschedule.service.request.rest.mapper.response.TransportationReqToScheduleResponseMapper;
-import com.kernotec.driverschedule.service.rest.mapper.resource.response.person.PersonResponseWithContactMapper;
-import com.kernotec.driverschedule.service.util.DateResponseUtil;
+import com.kernotec.driverschedule.person.rest.mapper.response.PersonResponseWithContactMapper;
 import java.util.List;
 import java.util.Set;
 import org.mapstruct.Mapper;
@@ -12,7 +11,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(
     uses = {PersonResponseWithContactMapper.class, TransportationReqToScheduleResponseMapper.class,
-        DateResponseUtil.class})
+        com.kernotec.driverschedule.common.mapping.DateResponseMapper.class})
 public interface ScheduleTransportationResponseToAssignMapper {
 
     @Mapping(target = "cancelReasons", ignore = true)

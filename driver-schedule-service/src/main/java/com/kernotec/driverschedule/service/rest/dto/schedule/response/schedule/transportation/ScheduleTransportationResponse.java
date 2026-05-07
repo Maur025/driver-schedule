@@ -2,9 +2,9 @@ package com.kernotec.driverschedule.service.rest.dto.schedule.response.schedule.
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.kernotec.driverschedule.service.audit.user.dto.response.AuditEntityUserResponse;
+import com.kernotec.driverschedule.common.audit.user.dto.response.AuditEntityUserResponse;
 import com.kernotec.driverschedule.service.request.rest.dto.response.TransportationRequestResponse;
-import com.kernotec.driverschedule.service.rest.dto.resource.response.person.PersonResponse;
+import com.kernotec.driverschedule.person.rest.dto.response.PersonResponse;
 import com.kernotec.driverschedule.service.rest.dto.schedule.response.cancel.reason.CancelReasonResponse;
 import com.kernotec.driverschedule.service.rest.dto.schedule.response.reschedule.reason.RescheduleReasonResponse;
 import com.kernotec.driverschedule.service.rest.dto.schedule.response.schedule.transportation.state.ScheduleTransportationStateResponse;

@@ -20,6 +20,10 @@
     <module>driver-schedule-auth</module>
     <module>driver-schedule-service</module>
     <module>driver-schedule-notification</module>
+    <module>driver-schedule-common</module>
+    <module>driver-schedule-person</module>
+    <module>driver-schedule-user-api</module>
+    <module>driver-schedule-socket</module>
   </modules>
 
     <build>

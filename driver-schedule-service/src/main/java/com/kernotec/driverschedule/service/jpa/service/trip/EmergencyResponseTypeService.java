@@ -5,7 +5,7 @@ import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.driverschedule.service.jpa.entity.trip.EmergencyResponseType;
 import com.kernotec.driverschedule.service.jpa.repository.trip.EmergencyResponseTypeRepository;
 import com.kernotec.driverschedule.service.rest.dto.trip.response.emergency.response.type.EmergencyResponseTypeLookupResponse;
-import com.kernotec.driverschedule.service.util.CommonUtil;
+import com.kernotec.driverschedule.common.util.CommonUtil;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

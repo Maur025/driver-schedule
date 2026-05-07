@@ -7,7 +7,7 @@ import com.kernotec.driverschedule.service.jpa.entity.trip.TripState;
 import com.kernotec.driverschedule.service.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverschedule.service.jpa.repository.trip.TripStateRepository;
 import com.kernotec.driverschedule.service.rest.dto.trip.response.trip.state.TripStateLookupResponse;
-import com.kernotec.driverschedule.service.util.CommonUtil;
+import com.kernotec.driverschedule.common.util.CommonUtil;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;

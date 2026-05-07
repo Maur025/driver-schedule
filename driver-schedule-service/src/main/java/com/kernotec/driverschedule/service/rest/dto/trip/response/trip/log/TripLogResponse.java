@@ -2,7 +2,7 @@ package com.kernotec.driverschedule.service.rest.dto.trip.response.trip.log;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.kernotec.driverschedule.service.audit.user.dto.response.AuditEntityUserResponse;
+import com.kernotec.driverschedule.common.audit.user.dto.response.AuditEntityUserResponse;
 import com.kernotec.driverschedule.service.rest.dto.trip.response.trip.TripResponse;
 import com.kernotec.driverschedule.service.rest.dto.trip.response.trip.state.TripStateResponse;
 import java.util.List;

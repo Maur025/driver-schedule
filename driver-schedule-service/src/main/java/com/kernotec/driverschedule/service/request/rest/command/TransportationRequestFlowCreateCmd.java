@@ -7,11 +7,11 @@ import com.kernotec.driverschedule.service.command.request.transportation.reques
 import com.kernotec.driverschedule.service.request.jpa.entity.RequestCoord;
 import com.kernotec.driverschedule.service.request.jpa.enums.TransportationRequestStateEnum;
 import com.kernotec.driverschedule.service.request.jpa.service.TransportationRequestStateService;
-import com.kernotec.driverschedule.service.jpa.service.resource.PersonService;
+import com.kernotec.driverschedule.person.jpa.service.PersonService;
 import com.kernotec.driverschedule.service.request.rest.dto.request.RequestCoordCreateRequest;
 import com.kernotec.driverschedule.service.request.rest.dto.request.TransportationRequestCreateRequest;
 import com.kernotec.driverschedule.service.request.rest.mapper.request.RequestCoordEntityMapper;
-import com.kernotec.driverschedule.service.util.CommonUtil;
+import com.kernotec.driverschedule.common.util.CommonUtil;
 import com.kernotec.driverschedule.service.util.ZonedDateTimeUtil;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;

@@ -1,6 +1,6 @@
 package com.kernotec.driverschedule.service.jpa.dto.mapper.trip;
 
-import com.kernotec.driverschedule.service.jpa.dto.mapper.resource.PersonDtoFlatMapper;
+import com.kernotec.driverschedule.person.jpa.mapper.PersonDtoFlatMapper;
 import com.kernotec.driverschedule.service.jpa.dto.trip.TripEmergencyDto;
 import com.kernotec.driverschedule.service.jpa.entity.trip.TripEmergency;
 import java.util.List;

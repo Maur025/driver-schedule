@@ -1,6 +1,6 @@
 package com.kernotec.driverschedule.service.jpa.dto.trip;
 
-import com.kernotec.driverschedule.service.audit.user.dto.AuditEntityUserDto;
+import com.kernotec.driverschedule.common.audit.user.dto.AuditEntityUserDto;
 import com.kernotec.driverschedule.service.jpa.dto.schedule.TripAssignmentDto;
 import java.time.ZonedDateTime;
 import java.util.UUID;
