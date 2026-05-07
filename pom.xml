@@ -15,10 +15,6 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <modules>
-    <module>driver-schedule-service</module>
-  </modules>
-
   <distributionManagement>
     <snapshotRepository>
       <id>nexus</id>

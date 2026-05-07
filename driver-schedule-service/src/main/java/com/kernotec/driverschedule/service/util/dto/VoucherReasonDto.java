@@ -1,0 +1,13 @@
+package com.kernotec.driverschedule.service.util.dto;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class VoucherReasonDto {
+
+    private String reasonLabel;
+    private String reasonCode;
+    private String otherReason;
+}
