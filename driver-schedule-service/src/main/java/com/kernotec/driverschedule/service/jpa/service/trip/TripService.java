@@ -4,12 +4,12 @@ import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.driverschedule.common.security.auth.SecurityAuthProvider;
+import com.kernotec.driverschedule.common.security.auth.UserRoleType;
+import com.kernotec.driverschedule.person.jpa.service.PersonService;
 import com.kernotec.driverschedule.service.exception.trip.TripException;
 import com.kernotec.driverschedule.service.jpa.entity.trip.Trip;
-import com.kernotec.driverschedule.person.jpa.enums.PersonTypeEnum;
 import com.kernotec.driverschedule.service.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverschedule.service.jpa.repository.trip.TripRepository;
-import com.kernotec.driverschedule.person.jpa.service.PersonService;
 import com.kernotec.driverschedule.service.jpa.specification.trip.TripSpecification;
 import com.kernotec.driverschedule.service.rest.dto.trip.request.trip.TripFilterRequest;
 import java.util.List;
@@ -52,7 +52,7 @@ public class TripService extends BaseServiceImpl<Trip, UUID> {
         UUID driverId = filterRequest.getDriverId();
 
         boolean hasOnlyOneRole = securityAuthProvider.hasOnlyOneRole();
-        boolean isDriver = securityAuthProvider.userContainsRole(PersonTypeEnum.DRIVER);
+        boolean isDriver = securityAuthProvider.userContainsRole(UserRoleType.DRIVER);
 
         if (hasOnlyOneRole && isDriver) {
             driverId = personService.findIdByUserIdAuthenticateThrow();
@@ -90,7 +90,7 @@ public class TripService extends BaseServiceImpl<Trip, UUID> {
     }
 
     public Page<Trip> findCurrentTrips() {
-        boolean userHasRoleDriver = securityAuthProvider.userContainsRole(PersonTypeEnum.DRIVER);
+        boolean userHasRoleDriver = securityAuthProvider.userContainsRole(UserRoleType.DRIVER);
 
         if (!userHasRoleDriver) {
             throw new TripException("", "", HttpStatus.CONFLICT.value());

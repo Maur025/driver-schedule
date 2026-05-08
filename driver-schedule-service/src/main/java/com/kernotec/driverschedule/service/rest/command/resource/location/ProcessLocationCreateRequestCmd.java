@@ -7,7 +7,7 @@ import com.kernotec.driverschedule.service.jpa.service.resource.LocationService;
 import com.kernotec.driverschedule.service.common.dto.Coordinate;
 import com.kernotec.driverschedule.service.rest.dto.resource.request.location.LocationCreateRequest;
 import com.kernotec.driverschedule.service.rest.socket.resource.LocationSocketHandler;
-import com.kernotec.driverschedule.service.web.socket.WebSocketTopic;
+import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;

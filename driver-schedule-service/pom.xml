@@ -46,13 +46,25 @@
   </build>
 
   <dependencies>
+    <!-- INTERNAL -->
     <dependency>
       <groupId>com.kernotec.driverschedule</groupId>
       <artifactId>driver-schedule-common</artifactId>
     </dependency>
+
     <dependency>
       <groupId>com.kernotec.driverschedule</groupId>
       <artifactId>driver-schedule-person</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.kernotec.driverschedule</groupId>
+      <artifactId>driver-schedule-notification</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.kernotec.driverschedule</groupId>
+      <artifactId>driver-schedule-socket</artifactId>
     </dependency>
 
     <dependency>

@@ -4,7 +4,7 @@ import com.kernotec.core.command.AbstractCommand;
 import com.kernotec.driverschedule.service.command.resource.vehicle.VehicleCreateCmd;
 import com.kernotec.driverschedule.service.rest.dto.resource.request.vehicle.VehicleCreateRequest;
 import com.kernotec.driverschedule.service.rest.socket.resource.VehicleSocketHandler;
-import com.kernotec.driverschedule.service.web.socket.WebSocketTopic;
+import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.Builder;

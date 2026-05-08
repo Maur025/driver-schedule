@@ -4,8 +4,9 @@ import com.kernotec.driverschedule.service.request.jpa.entity.TransportationRequ
 import com.kernotec.driverschedule.service.request.jpa.service.TransportationRequestService;
 import com.kernotec.driverschedule.service.request.rest.dto.response.TransportationRequestResponse;
 import com.kernotec.driverschedule.service.request.rest.mapper.response.TransportationRequestResponseMapper;
-import com.kernotec.driverschedule.service.rest.socket.SocketHandler;
-import com.kernotec.driverschedule.service.web.socket.WebSocketHandler;
+import com.kernotec.driverschedule.service.request.socket.TransportationRequestSocketHandler.Request;
+import com.kernotec.driverschedule.socket.service.SocketHandler;
+import com.kernotec.driverschedule.socket.service.WebSocketHandler;
 import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 import java.util.UUID;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TransportationRequestSocketHandler extends
-    SocketHandler<TransportationRequestSocketHandler.Request, TransportationRequestResponse>
+    SocketHandler<Request, TransportationRequestResponse>
 {
 
     private final TransportationRequestService transportationRequestService;

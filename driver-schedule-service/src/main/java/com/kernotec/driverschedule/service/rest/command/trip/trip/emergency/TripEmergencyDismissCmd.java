@@ -1,6 +1,9 @@
 package com.kernotec.driverschedule.service.rest.command.trip.trip.emergency;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
+import com.kernotec.driverschedule.notification.notification.dto.NotificationSendRequest;
+import com.kernotec.driverschedule.notification.notification.service.NotificationOrchestrator;
+import com.kernotec.driverschedule.notification.notification.templates.NotificationTemplate.TripEmergencyDissmisedTemplate;
 import com.kernotec.driverschedule.service.command.trip.emergency.reject.reason.EmergencyRejectReasonCreateCmd;
 import com.kernotec.driverschedule.service.command.trip.trip.TripUpdateCmd;
 import com.kernotec.driverschedule.service.command.trip.trip.emergency.TripEmergencyGetDtoCmd;
@@ -13,12 +16,9 @@ import com.kernotec.driverschedule.service.jpa.enums.trip.TripEmergencyStateEnum
 import com.kernotec.driverschedule.service.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverschedule.service.jpa.service.trip.TripEmergencyStateService;
 import com.kernotec.driverschedule.service.jpa.service.trip.TripStateService;
-import com.kernotec.driverschedule.service.notification.dto.NotificationSendRequest;
-import com.kernotec.driverschedule.service.notification.service.NotificationOrchestrator;
-import com.kernotec.driverschedule.service.notification.templates.NotificationTemplate.TripEmergencyDissmisedTemplate;
 import com.kernotec.driverschedule.service.rest.dto.trip.request.trip.emergency.TripEmergencyDismissRequest;
 import com.kernotec.driverschedule.service.rest.socket.trip.TripEmergencySocketHandler;
-import com.kernotec.driverschedule.service.web.socket.WebSocketTopic;
+import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.Map;

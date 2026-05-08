@@ -1,11 +1,11 @@
 package com.kernotec.driverschedule.service.rest.command.schedule.schedule.transportation;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
+import com.kernotec.driverschedule.person.jpa.entity.Person;
+import com.kernotec.driverschedule.person.jpa.service.PersonService;
 import com.kernotec.driverschedule.service.exception.schedule.ScheduleTransportationException;
-import com.kernotec.driverschedule.service.jpa.entity.resource.Person;
 import com.kernotec.driverschedule.service.jpa.entity.resource.Vehicle;
 import com.kernotec.driverschedule.service.jpa.service.resource.AvailabilityForAssignmentService;
-import com.kernotec.driverschedule.person.jpa.service.PersonService;
 import com.kernotec.driverschedule.service.jpa.service.resource.VehicleService;
 import com.kernotec.driverschedule.service.rest.dto.resource.request.AvailabilityForAssignmentRequest;
 import com.kernotec.driverschedule.service.rest.dto.resource.response.AvailabilityForAssignmentResponse;

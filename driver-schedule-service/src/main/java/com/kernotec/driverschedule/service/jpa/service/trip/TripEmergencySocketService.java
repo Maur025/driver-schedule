@@ -1,6 +1,8 @@
 package com.kernotec.driverschedule.service.jpa.service.trip;
 
-import com.kernotec.driverschedule.service.jpa.entity.resource.Person;
+import com.kernotec.driverschedule.person.jpa.entity.Person;
+import com.kernotec.driverschedule.person.jpa.service.PersonService;
+import com.kernotec.driverschedule.person.rest.mapper.response.PersonResponseWithContactMapper;
 import com.kernotec.driverschedule.service.jpa.entity.resource.Reason;
 import com.kernotec.driverschedule.service.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverschedule.service.jpa.entity.trip.EmergencyReason;
@@ -8,7 +10,6 @@ import com.kernotec.driverschedule.service.jpa.entity.trip.EmergencyRejectReason
 import com.kernotec.driverschedule.service.jpa.entity.trip.Trip;
 import com.kernotec.driverschedule.service.jpa.entity.trip.TripEmergency;
 import com.kernotec.driverschedule.service.jpa.entity.trip.TripEmergencyState;
-import com.kernotec.driverschedule.person.jpa.service.PersonService;
 import com.kernotec.driverschedule.service.jpa.service.resource.ReasonService;
 import com.kernotec.driverschedule.service.jpa.service.schedule.ScheduleTransportationService;
 import com.kernotec.driverschedule.service.rest.dto.resource.response.reason.ReasonResponse;
@@ -16,7 +17,6 @@ import com.kernotec.driverschedule.service.rest.dto.resource.response.reason.Wit
 import com.kernotec.driverschedule.service.rest.dto.trip.response.emergency.reason.EmergencyReasonResponse;
 import com.kernotec.driverschedule.service.rest.dto.trip.response.emergency.reject.reason.EmergencyRejectReasonResponse;
 import com.kernotec.driverschedule.service.rest.dto.trip.response.trip.emergency.TripEmergencyResponse;
-import com.kernotec.driverschedule.person.rest.mapper.response.PersonResponseWithContactMapper;
 import com.kernotec.driverschedule.service.rest.mapper.resource.response.reason.ReasonResponseFlatMapper;
 import com.kernotec.driverschedule.service.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationToAvailabilityMapper;
 import com.kernotec.driverschedule.service.rest.mapper.trip.response.emergency.reason.EmergencyReasonWithReasonResponseMapper;
