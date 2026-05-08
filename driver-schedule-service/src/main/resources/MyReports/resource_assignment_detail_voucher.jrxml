@@ -12,7 +12,7 @@
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<import value="com.kernotec.driverscheduleservice.util.VoucherJasperUtil"/>
+	<import value="com.kernotec.driverschedule.service.util.VoucherJasperUtil"/>
 	<parameter name="SCHEDULE_TRANSPORTATION_ID" class="java.lang.String">
 		<defaultValueExpression><![CDATA["f19dfc57-daed-4aaf-9d30-4babd6454790"]]></defaultValueExpression>
 	</parameter>

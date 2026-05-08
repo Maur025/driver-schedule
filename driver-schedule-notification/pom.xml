@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.kernotec.driverschedule</groupId>
+    <artifactId>driver-schedule-bom</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../driver-schedule-bom</relativePath>
+  </parent>
+
+  <artifactId>driver-schedule-notification</artifactId>
+
+  <dependencies>
+    <!-- INTERNAL -->
+    <dependency>
+      <groupId>com.kernotec.driverschedule</groupId>
+      <artifactId>driver-schedule-common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.kernotec.driverschedule</groupId>
+      <artifactId>driver-schedule-person</artifactId>
+    </dependency>
+
+    <!-- CORE -->
+    <dependency>
+      <groupId>com.kernotec</groupId>
+      <artifactId>core-jpa</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.kernotec</groupId>
+      <artifactId>core-command</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.kernotec</groupId>
+      <artifactId>core-rest</artifactId>
+    </dependency>
+
+    <!-- EXTERNAL -->
+    <dependency>
+      <groupId>com.google.firebase</groupId>
+      <artifactId>firebase-admin</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>
