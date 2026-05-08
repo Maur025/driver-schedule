@@ -2,8 +2,9 @@ package com.kernotec.driverschedule.service.rest.socket.trip;
 
 import com.kernotec.driverschedule.service.jpa.service.trip.TripEmergencySocketService;
 import com.kernotec.driverschedule.service.rest.dto.trip.response.trip.emergency.TripEmergencyResponse;
-import com.kernotec.driverschedule.service.rest.socket.SocketHandler;
-import com.kernotec.driverschedule.service.web.socket.WebSocketHandler;
+import com.kernotec.driverschedule.service.rest.socket.trip.TripEmergencySocketHandler.Request;
+import com.kernotec.driverschedule.socket.service.SocketHandler;
+import com.kernotec.driverschedule.socket.service.WebSocketHandler;
 import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 import java.util.UUID;
@@ -11,9 +12,7 @@ import lombok.Builder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TripEmergencySocketHandler extends
-    SocketHandler<TripEmergencySocketHandler.Request, TripEmergencyResponse>
-{
+public class TripEmergencySocketHandler extends SocketHandler<Request, TripEmergencyResponse> {
 
     private final TripEmergencySocketService tripEmergencySocketService;
 

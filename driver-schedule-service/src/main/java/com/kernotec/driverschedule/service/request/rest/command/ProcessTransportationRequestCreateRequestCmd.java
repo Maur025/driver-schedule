@@ -1,14 +1,14 @@
 package com.kernotec.driverschedule.service.request.rest.command;
 
 import com.kernotec.core.command.AbstractCommand;
+import com.kernotec.driverschedule.notification.notification.dto.NotificationSendRequest;
+import com.kernotec.driverschedule.notification.notification.service.NotificationOrchestrator;
+import com.kernotec.driverschedule.notification.notification.templates.NotificationTemplate.RequestCreateTemplate;
 import com.kernotec.driverschedule.service.request.jpa.entity.TransportationRequest;
 import com.kernotec.driverschedule.service.request.jpa.service.TransportationRequestService;
-import com.kernotec.driverschedule.service.notification.dto.NotificationSendRequest;
-import com.kernotec.driverschedule.service.notification.service.NotificationOrchestrator;
-import com.kernotec.driverschedule.service.notification.templates.NotificationTemplate.RequestCreateTemplate;
 import com.kernotec.driverschedule.service.request.rest.dto.request.TransportationRequestCreateRequest;
 import com.kernotec.driverschedule.service.request.socket.TransportationRequestSocketHandler;
-import com.kernotec.driverschedule.service.web.socket.WebSocketTopic;
+import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.Map;

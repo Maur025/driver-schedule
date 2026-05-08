@@ -4,12 +4,12 @@ import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.driverschedule.common.security.auth.SecurityAuthProvider;
+import com.kernotec.driverschedule.common.security.auth.UserRoleType;
+import com.kernotec.driverschedule.person.jpa.service.PersonService;
 import com.kernotec.driverschedule.service.jpa.entity.schedule.ScheduleTransportation;
-import com.kernotec.driverschedule.person.jpa.enums.PersonTypeEnum;
 import com.kernotec.driverschedule.service.jpa.enums.schedule.ScheduleTransportationStateEnum;
 import com.kernotec.driverschedule.service.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverschedule.service.jpa.repository.schedule.ScheduleTransportationRepository;
-import com.kernotec.driverschedule.person.jpa.service.PersonService;
 import com.kernotec.driverschedule.service.jpa.specification.schedule.ScheduleTransportationSpecification;
 import com.kernotec.driverschedule.service.rest.dto.resource.request.AvailabilityForAssignmentRequest;
 import com.kernotec.driverschedule.service.rest.dto.schedule.request.schedule.transportation.ScheduleTransportationFilterRequest;
@@ -126,8 +126,8 @@ public class ScheduleTransportationService extends BaseServiceImpl<ScheduleTrans
             .withPersonRequestedId(filterRequest.getPersonRequestedId());
 
         boolean hasOnlyOneRole = securityAuthProvider.hasOnlyOneRole();
-        boolean isApplicant = securityAuthProvider.userContainsRole(PersonTypeEnum.APPLICANT);
-        boolean isDriver = securityAuthProvider.userContainsRole(PersonTypeEnum.DRIVER);
+        boolean isApplicant = securityAuthProvider.userContainsRole(UserRoleType.APPLICANT);
+        boolean isDriver = securityAuthProvider.userContainsRole(UserRoleType.DRIVER);
 
         UUID personAuthenticateId = personService.findIdByUserIdAuthenticateThrow();
 

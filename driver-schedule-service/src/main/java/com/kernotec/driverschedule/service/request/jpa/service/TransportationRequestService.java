@@ -3,10 +3,10 @@ package com.kernotec.driverschedule.service.request.jpa.service;
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.driverschedule.common.security.auth.SecurityAuthProvider;
-import com.kernotec.driverschedule.service.request.jpa.entity.TransportationRequest;
-import com.kernotec.driverschedule.person.jpa.enums.PersonTypeEnum;
-import com.kernotec.driverschedule.service.request.jpa.repository.TransportationRequestRepository;
+import com.kernotec.driverschedule.common.security.auth.UserRoleType;
 import com.kernotec.driverschedule.person.jpa.service.PersonService;
+import com.kernotec.driverschedule.service.request.jpa.entity.TransportationRequest;
+import com.kernotec.driverschedule.service.request.jpa.repository.TransportationRequestRepository;
 import com.kernotec.driverschedule.service.request.jpa.specification.TransportationRequestSpecification;
 import com.kernotec.driverschedule.service.request.rest.dto.request.TransportationRequestFilterRequest;
 import java.util.UUID;
@@ -37,7 +37,7 @@ public class TransportationRequestService extends BaseServiceImpl<Transportation
         TransportationRequestFilterRequest filterRequest, Pageable pageable)
     {
         boolean hasOnlyOneRole = securityAuthProvider.hasOnlyOneRole();
-        boolean isApplicant = securityAuthProvider.userContainsRole(PersonTypeEnum.APPLICANT);
+        boolean isApplicant = securityAuthProvider.userContainsRole(UserRoleType.APPLICANT);
 
         UUID onlyRecordsOfPersonId = null;
 

@@ -11,7 +11,7 @@ import com.kernotec.driverschedule.service.rest.dto.schedule.request.trip.assign
 import com.kernotec.driverschedule.service.rest.socket.schedule.ScheduleTransportationSocketHandler;
 import com.kernotec.driverschedule.service.util.ScheduleTransportationUtil;
 import com.kernotec.driverschedule.service.util.ScheduleTransportationUtil.RegistryTripAssignmentRequest;
-import com.kernotec.driverschedule.service.web.socket.WebSocketTopic;
+import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashSet;

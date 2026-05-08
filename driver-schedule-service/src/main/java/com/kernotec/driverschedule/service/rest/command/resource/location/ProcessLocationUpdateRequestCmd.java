@@ -2,11 +2,11 @@ package com.kernotec.driverschedule.service.rest.command.resource.location;
 
 import com.kernotec.core.command.AbstractCommand;
 import com.kernotec.driverschedule.service.command.resource.location.LocationUpdateCmd;
-import com.kernotec.driverschedule.service.jpa.service.resource.LocationService;
 import com.kernotec.driverschedule.service.common.dto.Coordinate;
+import com.kernotec.driverschedule.service.jpa.service.resource.LocationService;
 import com.kernotec.driverschedule.service.rest.dto.resource.request.location.LocationUpdateRequest;
 import com.kernotec.driverschedule.service.rest.socket.resource.LocationSocketHandler;
-import com.kernotec.driverschedule.service.web.socket.WebSocketTopic;
+import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.Builder;

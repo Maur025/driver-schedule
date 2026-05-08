@@ -16,7 +16,7 @@ import com.kernotec.driverschedule.service.jpa.service.schedule.ScheduleTranspor
 import com.kernotec.driverschedule.service.jpa.service.trip.TripService;
 import com.kernotec.driverschedule.service.jpa.service.trip.TripStateService;
 import com.kernotec.driverschedule.service.rest.socket.schedule.ScheduleTransportationSocketHandler;
-import com.kernotec.driverschedule.service.web.socket.WebSocketTopic;
+import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;

@@ -6,7 +6,7 @@ import com.kernotec.driverschedule.service.jpa.dto.trip.TripDto;
 import com.kernotec.driverschedule.service.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverschedule.service.rest.dto.trip.request.trip.TripFinalizeRequest;
 import com.kernotec.driverschedule.service.rest.socket.trip.TripSocketHandler;
-import com.kernotec.driverschedule.service.web.socket.WebSocketTopic;
+import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.Builder;

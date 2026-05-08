@@ -4,8 +4,9 @@ import com.kernotec.driverschedule.service.jpa.entity.trip.Trip;
 import com.kernotec.driverschedule.service.jpa.service.trip.TripService;
 import com.kernotec.driverschedule.service.rest.dto.trip.response.trip.TripResponse;
 import com.kernotec.driverschedule.service.rest.mapper.trip.response.trip.TripResponseMapper;
-import com.kernotec.driverschedule.service.rest.socket.SocketHandler;
-import com.kernotec.driverschedule.service.web.socket.WebSocketHandler;
+import com.kernotec.driverschedule.service.rest.socket.trip.TripSocketHandler.Request;
+import com.kernotec.driverschedule.socket.service.SocketHandler;
+import com.kernotec.driverschedule.socket.service.WebSocketHandler;
 import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 import java.util.UUID;
@@ -13,7 +14,7 @@ import lombok.Builder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TripSocketHandler extends SocketHandler<TripSocketHandler.Request, TripResponse> {
+public class TripSocketHandler extends SocketHandler<Request, TripResponse> {
 
     private final TripService tripService;
     private final TripResponseMapper tripResponseMapper;

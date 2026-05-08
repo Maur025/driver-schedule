@@ -4,8 +4,9 @@ import com.kernotec.driverschedule.service.jpa.entity.resource.Location;
 import com.kernotec.driverschedule.service.jpa.service.resource.LocationService;
 import com.kernotec.driverschedule.service.rest.dto.resource.response.location.LocationResponse;
 import com.kernotec.driverschedule.service.rest.mapper.resource.response.location.LocationResponseMapper;
-import com.kernotec.driverschedule.service.rest.socket.SocketHandler;
-import com.kernotec.driverschedule.service.web.socket.WebSocketHandler;
+import com.kernotec.driverschedule.service.rest.socket.resource.LocationSocketHandler.Request;
+import com.kernotec.driverschedule.socket.service.SocketHandler;
+import com.kernotec.driverschedule.socket.service.WebSocketHandler;
 import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 import java.util.UUID;
@@ -13,9 +14,7 @@ import lombok.Builder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LocationSocketHandler extends
-    SocketHandler<LocationSocketHandler.Request, LocationResponse>
-{
+public class LocationSocketHandler extends SocketHandler<Request, LocationResponse> {
 
     private final LocationService locationService;
     private final LocationResponseMapper locationResponseMapper;

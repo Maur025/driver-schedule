@@ -1,6 +1,10 @@
 package com.kernotec.driverschedule.service.rest.command.schedule.schedule.transportation;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
+import com.kernotec.driverschedule.notification.notification.dto.NotificationSendRequest;
+import com.kernotec.driverschedule.notification.notification.service.NotificationOrchestrator;
+import com.kernotec.driverschedule.notification.notification.templates.NotificationTemplate.DriverAssignmentCancelledTemplate;
+import com.kernotec.driverschedule.notification.notification.templates.NotificationTemplate.ScheduleCancelledTemplate;
 import com.kernotec.driverschedule.service.command.schedule.cancel.reason.CancelReasonCreateCmd;
 import com.kernotec.driverschedule.service.command.schedule.schedule.transportation.ScheduleTransportationGetDtoCmd;
 import com.kernotec.driverschedule.service.command.schedule.schedule.transportation.ScheduleTransportationUpdateCmd;
@@ -9,14 +13,10 @@ import com.kernotec.driverschedule.service.jpa.dto.schedule.ScheduleTransportati
 import com.kernotec.driverschedule.service.jpa.dto.schedule.TripAssignmentDto;
 import com.kernotec.driverschedule.service.jpa.enums.schedule.ScheduleTransportationStateEnum;
 import com.kernotec.driverschedule.service.jpa.service.schedule.ScheduleTransportationStateService;
-import com.kernotec.driverschedule.service.notification.dto.NotificationSendRequest;
-import com.kernotec.driverschedule.service.notification.service.NotificationOrchestrator;
-import com.kernotec.driverschedule.service.notification.templates.NotificationTemplate.DriverAssignmentCancelledTemplate;
-import com.kernotec.driverschedule.service.notification.templates.NotificationTemplate.ScheduleCancelledTemplate;
 import com.kernotec.driverschedule.service.rest.dto.schedule.request.schedule.transportation.ScheduleTransportationCancelRequest;
 import com.kernotec.driverschedule.service.rest.socket.schedule.ScheduleTransportationSocketHandler;
 import com.kernotec.driverschedule.service.util.ScheduleTransportationUtil;
-import com.kernotec.driverschedule.service.web.socket.WebSocketTopic;
+import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.Map;

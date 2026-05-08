@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.response.data.EntityResponse;
 import com.kernotec.driverschedule.notification.jpa.enums.PersonNotificationState;
-import com.kernotec.driverschedule.service.rest.dto.resource.response.person.PersonResponse;
+import com.kernotec.driverschedule.person.rest.dto.response.PersonResponse;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.UUID;

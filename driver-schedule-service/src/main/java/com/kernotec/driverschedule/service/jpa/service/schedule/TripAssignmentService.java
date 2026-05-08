@@ -4,13 +4,13 @@ import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.core.jpa.util.PageableUtil;
 import com.kernotec.driverschedule.common.security.auth.SecurityAuthProvider;
+import com.kernotec.driverschedule.common.security.auth.UserRoleType;
+import com.kernotec.driverschedule.person.jpa.service.PersonService;
 import com.kernotec.driverschedule.service.jpa.entity.schedule.TripAssignment;
-import com.kernotec.driverschedule.person.jpa.enums.PersonTypeEnum;
 import com.kernotec.driverschedule.service.jpa.enums.schedule.ScheduleTransportationStateEnum;
 import com.kernotec.driverschedule.service.jpa.enums.schedule.TripAssignmentStateCodeEnum;
 import com.kernotec.driverschedule.service.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverschedule.service.jpa.repository.schedule.TripAssignmentRepository;
-import com.kernotec.driverschedule.person.jpa.service.PersonService;
 import com.kernotec.driverschedule.service.jpa.specification.schedule.TripAssignmentSpecification;
 import com.kernotec.driverschedule.service.rest.dto.resource.request.AvailabilityForAssignmentRequest;
 import com.kernotec.driverschedule.service.rest.dto.schedule.request.trip.assignment.TripAssignmentFilterRequest;
@@ -52,7 +52,7 @@ public class TripAssignmentService extends BaseServiceImpl<TripAssignment, UUID>
         UUID driverId = filterRequest.getDriverId();
 
         boolean hasOnlyOneRole = securityAuthProvider.hasOnlyOneRole();
-        boolean isDriver = securityAuthProvider.userContainsRole(PersonTypeEnum.DRIVER);
+        boolean isDriver = securityAuthProvider.userContainsRole(UserRoleType.DRIVER);
 
         if (hasOnlyOneRole && isDriver) {
             driverId = personService.findIdByUserIdAuthenticateThrow();

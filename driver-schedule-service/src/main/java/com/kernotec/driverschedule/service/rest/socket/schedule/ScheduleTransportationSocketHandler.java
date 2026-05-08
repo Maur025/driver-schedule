@@ -4,8 +4,9 @@ import com.kernotec.driverschedule.service.jpa.entity.schedule.ScheduleTransport
 import com.kernotec.driverschedule.service.jpa.service.schedule.ScheduleTransportationService;
 import com.kernotec.driverschedule.service.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
 import com.kernotec.driverschedule.service.rest.mapper.schedule.response.schedule.transportation.ScheduleTransportationResponseMapper;
-import com.kernotec.driverschedule.service.rest.socket.SocketHandler;
-import com.kernotec.driverschedule.service.web.socket.WebSocketHandler;
+import com.kernotec.driverschedule.service.rest.socket.schedule.ScheduleTransportationSocketHandler.Request;
+import com.kernotec.driverschedule.socket.service.SocketHandler;
+import com.kernotec.driverschedule.socket.service.WebSocketHandler;
 import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 import java.util.UUID;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ScheduleTransportationSocketHandler extends
-    SocketHandler<ScheduleTransportationSocketHandler.Request, ScheduleTransportationResponse>
+    SocketHandler<Request, ScheduleTransportationResponse>
 {
 
     private final ScheduleTransportationService scheduleTransportationService;
