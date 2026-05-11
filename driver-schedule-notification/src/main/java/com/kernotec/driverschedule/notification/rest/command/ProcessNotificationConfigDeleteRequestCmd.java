@@ -2,8 +2,9 @@ package com.kernotec.driverschedule.notification.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverschedule.notification.command.NotificationConfigurationDeleteCmd;
+import com.kernotec.driverschedule.notification.jpa.entitiy.NotificationConfiguration;
+import com.kernotec.driverschedule.notification.jpa.service.NotificationConfigurationService;
 import jakarta.validation.constraints.NotNull;
-import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,16 @@ public class ProcessNotificationConfigDeleteRequestCmd extends
 {
 
     private final NotificationConfigurationDeleteCmd notificationConfigurationDeleteCmd;
+    private final NotificationConfigurationService notificationConfigurationService;
 
     @Override
     protected Void run(Request request) {
+        NotificationConfiguration notificationConfiguration = notificationConfigurationService.findByTokenThrow(
+            request.token());
+
         notificationConfigurationDeleteCmd.withRequest(
                 NotificationConfigurationDeleteCmd.Request.builder()
-                    .notificationConfigurationId(request.notificationConfigurationId())
+                    .notificationConfigurationId(notificationConfiguration.getId())
                     .build())
             .execute();
 
@@ -28,7 +33,7 @@ public class ProcessNotificationConfigDeleteRequestCmd extends
     }
 
     @Builder
-    public record Request(@NotNull UUID notificationConfigurationId) {
+    public record Request(@NotNull String token) {
 
     }
 }

@@ -104,14 +104,13 @@ public class NotificationConfigurationController {
     }
 
     @Operation(summary = "remove notification configuration")
-    @DeleteMapping("{notificationConfigurationId}")
+    @DeleteMapping("token/{token}")
     @ResponseStatus(HttpStatus.OK)
-    public MessageResponse delete(
-        @PathVariable("notificationConfigurationId") UUID notificationConfigurationId)
+    public MessageResponse delete(@PathVariable("token") String token)
     {
         processNotificationConfigDeleteRequestCmd.withRequest(
                 ProcessNotificationConfigDeleteRequestCmd.Request.builder()
-                    .notificationConfigurationId(notificationConfigurationId)
+                    .token(token)
                     .build())
             .execute();
 
