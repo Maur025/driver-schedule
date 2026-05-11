@@ -3,17 +3,18 @@ package com.kernotec.driverschedule.service.trip.rest.command;
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverschedule.service.schedule.command.ScheduleTransportationGetDtoCmd;
 import com.kernotec.driverschedule.service.schedule.command.ScheduleTransportationUpdateCmd;
-import com.kernotec.driverschedule.service.trip.exception.TripException;
-import com.kernotec.driverschedule.service.trip.jpa.mapper.TripDtoMapper;
 import com.kernotec.driverschedule.service.schedule.jpa.dto.ScheduleTransportationDto;
 import com.kernotec.driverschedule.service.schedule.jpa.dto.TripAssignmentDto;
+import com.kernotec.driverschedule.service.schedule.jpa.enums.ScheduleTransportationStateEnum;
+import com.kernotec.driverschedule.service.schedule.jpa.service.ScheduleTransportationStateService;
+import com.kernotec.driverschedule.service.schedule.notification.SchedulePushNotification;
+import com.kernotec.driverschedule.service.schedule.socket.ScheduleTransportationSocketHandler;
+import com.kernotec.driverschedule.service.trip.exception.TripException;
 import com.kernotec.driverschedule.service.trip.jpa.dto.TripDto;
 import com.kernotec.driverschedule.service.trip.jpa.entity.Trip;
-import com.kernotec.driverschedule.service.schedule.jpa.enums.ScheduleTransportationStateEnum;
 import com.kernotec.driverschedule.service.trip.jpa.enums.TripStateEnum;
-import com.kernotec.driverschedule.service.schedule.jpa.service.ScheduleTransportationStateService;
+import com.kernotec.driverschedule.service.trip.jpa.mapper.TripDtoMapper;
 import com.kernotec.driverschedule.service.trip.jpa.service.TripService;
-import com.kernotec.driverschedule.service.schedule.socket.ScheduleTransportationSocketHandler;
 import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -43,6 +44,7 @@ public class TripVerifyAndUpdateScheduleCmd extends
     private final ScheduleTransportationUpdateCmd scheduleTransportationUpdateCmd;
 
     private final ScheduleTransportationSocketHandler scheduleTransportationSocketHandler;
+    private final SchedulePushNotification schedulePushNotification;
 
     @Override
     protected Void run(Request request) {
@@ -84,6 +86,8 @@ public class TripVerifyAndUpdateScheduleCmd extends
                     .scheduleTransportationStateId(scheduleStateFinalizedId)
                     .build())
             .execute();
+
+        schedulePushNotification.onFinalized(scheduleTransportationId);
 
         scheduleTransportationSocketHandler.emitMessage(
             ScheduleTransportationSocketHandler.Request.builder()

@@ -1,30 +1,27 @@
 package com.kernotec.driverschedule.service.schedule.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverschedule.notification.rest.dto.request.NotificationSendRequest;
-import com.kernotec.driverschedule.notification.push.NotificationOrchestrator;
-import com.kernotec.driverschedule.service.common.notification.NotificationTemplate.DriverAssignmentTemplate;
-import com.kernotec.driverschedule.service.common.notification.NotificationTemplate.ScheduleApprovedTemplate;
+import com.kernotec.driverschedule.service.common.util.ScheduleTransportationUtil;
+import com.kernotec.driverschedule.service.common.util.ScheduleTransportationUtil.RegistryTripAssignmentRequest;
 import com.kernotec.driverschedule.service.request.command.TransportationRequestGetDtoCmd;
-import com.kernotec.driverschedule.service.request.command.TransportationRequestUpdateCmd;
 import com.kernotec.driverschedule.service.request.command.TransportationRequestLogCreateCmd;
+import com.kernotec.driverschedule.service.request.command.TransportationRequestUpdateCmd;
+import com.kernotec.driverschedule.service.request.jpa.dto.TransportationRequestDto;
+import com.kernotec.driverschedule.service.request.jpa.enums.TransportationRequestStateEnum;
+import com.kernotec.driverschedule.service.request.jpa.service.TransportationRequestStateService;
 import com.kernotec.driverschedule.service.schedule.command.ScheduleTransportationCreateCmd;
 import com.kernotec.driverschedule.service.schedule.command.ScheduleTransportationLogCreateCmd;
 import com.kernotec.driverschedule.service.schedule.exception.ScheduleTransportationException;
 import com.kernotec.driverschedule.service.schedule.jpa.enums.ScheduleTransportationStateEnum;
 import com.kernotec.driverschedule.service.schedule.jpa.service.ScheduleTransportationStateService;
-import com.kernotec.driverschedule.service.request.jpa.dto.TransportationRequestDto;
-import com.kernotec.driverschedule.service.request.jpa.enums.TransportationRequestStateEnum;
-import com.kernotec.driverschedule.service.request.jpa.service.TransportationRequestStateService;
+import com.kernotec.driverschedule.service.schedule.notification.DriverAssignmentPushNotification;
+import com.kernotec.driverschedule.service.schedule.notification.SchedulePushNotification;
 import com.kernotec.driverschedule.service.schedule.rest.dto.request.ScheduleTransportationCreateRequest;
 import com.kernotec.driverschedule.service.schedule.rest.dto.request.TripAssignmentCreateRequest;
 import com.kernotec.driverschedule.service.schedule.socket.ScheduleTransportationSocketHandler;
-import com.kernotec.driverschedule.service.common.util.ScheduleTransportationUtil;
-import com.kernotec.driverschedule.service.common.util.ScheduleTransportationUtil.RegistryTripAssignmentRequest;
 import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
@@ -53,7 +50,8 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
     private final com.kernotec.driverschedule.common.datetime.ZonedDateTimeService zonedDateTimeUtil;
     private final ScheduleTransportationUtil scheduleTransportationUtil;
     private final ScheduleTransportationSocketHandler scheduleTransportationSocketHadler;
-    private final NotificationOrchestrator notificationOrchestrator;
+    private final SchedulePushNotification schedulePushNotification;
+    private final DriverAssignmentPushNotification driverAssignmentPushNotification;
 
     @Override
     protected void validate(Request request) {
@@ -171,24 +169,13 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
         TransportationRequestDto transportationRequestDto,
         ScheduleTransportationCreateRequest scheduleCreateRequest)
     {
-        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
-            .title(ScheduleApprovedTemplate.TITLE)
-            .body(ScheduleApprovedTemplate.BODY)
-            .campaignRecipient(ScheduleApprovedTemplate.RECEIVER)
-            .dataMap(Map.of("screen", "schedule/" + scheduleTransportationId))
-            .personIds(Set.of(transportationRequestDto.getPersonRequestedId()))
-            .build());
+        schedulePushNotification.onApproved(
+            scheduleTransportationId, Set.of(transportationRequestDto.getPersonRequestedId()));
 
         Set<UUID> driverIds = scheduleTransportationUtil.getValuesOfTripAssignmentRequest(
             scheduleCreateRequest.getTripAssignments(), TripAssignmentCreateRequest::getDriverId);
 
-        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
-            .title(DriverAssignmentTemplate.TITLE)
-            .body(DriverAssignmentTemplate.BODY)
-            .campaignRecipient(DriverAssignmentTemplate.RECEIVER)
-            .dataMap(Map.of("screen", "schedule/" + scheduleTransportationId))
-            .personIds(driverIds)
-            .build());
+        driverAssignmentPushNotification.onAssignmentTo(scheduleTransportationId, driverIds);
     }
 
     private void handleSocket(UUID scheduleTransportationId,

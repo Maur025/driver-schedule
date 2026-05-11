@@ -1,24 +1,22 @@
 package com.kernotec.driverschedule.service.request.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverschedule.notification.rest.dto.request.NotificationSendRequest;
 import com.kernotec.driverschedule.notification.push.NotificationOrchestrator;
-import com.kernotec.driverschedule.service.common.notification.NotificationTemplate.RequestCancelledTemplate;
 import com.kernotec.driverschedule.person.jpa.service.PersonService;
 import com.kernotec.driverschedule.service.request.command.CancelRequestReasonCreateCmd;
 import com.kernotec.driverschedule.service.request.command.TransportationRequestGetDtoCmd;
-import com.kernotec.driverschedule.service.request.command.TransportationRequestUpdateCmd;
 import com.kernotec.driverschedule.service.request.command.TransportationRequestLogCreateCmd;
+import com.kernotec.driverschedule.service.request.command.TransportationRequestUpdateCmd;
 import com.kernotec.driverschedule.service.request.exception.TransportationRequestException;
 import com.kernotec.driverschedule.service.request.jpa.dto.TransportationRequestDto;
 import com.kernotec.driverschedule.service.request.jpa.enums.TransportationRequestStateEnum;
 import com.kernotec.driverschedule.service.request.jpa.service.TransportationRequestStateService;
+import com.kernotec.driverschedule.service.request.notification.RequestPushNotification;
 import com.kernotec.driverschedule.service.request.rest.dto.request.CancelRequestReasonRequest;
 import com.kernotec.driverschedule.service.request.socket.TransportationRequestSocketHandler;
 import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.util.Map;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +41,7 @@ public class ProcessTransportationRequestCancelledCmd extends
 
     private final TransportationRequestSocketHandler transportationRequestSocketHandler;
     private final NotificationOrchestrator notificationOrchestrator;
+    private final RequestPushNotification requestPushNotification;
 
     @Override
     protected void validate(Request request) {
@@ -98,12 +97,7 @@ public class ProcessTransportationRequestCancelledCmd extends
                     .build())
             .execute();
 
-        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
-            .title(RequestCancelledTemplate.TITLE)
-            .body(RequestCancelledTemplate.BODY)
-            .campaignRecipient(RequestCancelledTemplate.RECEIVER)
-            .dataMap(Map.of("screen", "request/" + request.transportationRequestId()))
-            .build());
+        requestPushNotification.onCancelled(request.transportationRequestId());
 
         transportationRequestSocketHandler.emitMessage(
             TransportationRequestSocketHandler.Request.builder()

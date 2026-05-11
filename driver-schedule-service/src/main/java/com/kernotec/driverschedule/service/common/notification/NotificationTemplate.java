@@ -77,6 +77,18 @@ public class NotificationTemplate {
         }
     }
 
+    public static final class ScheduleFinalizedTemplate {
+
+        public static final String TITLE = "notification.title.schedule.finalized";
+        public static final String BODY = "notification.message.schedule.finalized";
+        public static final CampaignRecipientEnum RECEIVER = CampaignRecipientEnum.ALL_SCHEDULERS;
+        public static final Map<String, String> MAP_DATA = Map.of(
+            "referenceType", "schedule", "screen", "schedule/%s");
+
+        private ScheduleFinalizedTemplate() {
+        }
+    }
+
     public static final class TripEmergencyReportedTemplate {
 
         public static final String TITLE = "notification.title.trip.emergency.reported";

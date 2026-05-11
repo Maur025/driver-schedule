@@ -1,17 +1,14 @@
 package com.kernotec.driverschedule.service.request.rest.command;
 
 import com.kernotec.core.command.AbstractCommand;
-import com.kernotec.driverschedule.notification.rest.dto.request.NotificationSendRequest;
-import com.kernotec.driverschedule.notification.push.NotificationOrchestrator;
-import com.kernotec.driverschedule.service.common.notification.NotificationTemplate.RequestRejectedTemplate;
 import com.kernotec.driverschedule.service.request.command.TransportationRequestGetDtoCmd;
 import com.kernotec.driverschedule.service.request.jpa.dto.TransportationRequestDto;
+import com.kernotec.driverschedule.service.request.notification.RequestPushNotification;
 import com.kernotec.driverschedule.service.request.rest.dto.request.RejectReasonRequest;
 import com.kernotec.driverschedule.service.request.socket.TransportationRequestSocketHandler;
 import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
@@ -27,7 +24,7 @@ public class ProcessTransportationRequestRejectedCmd extends
     private final TransportationRequestRejectedCmd transportationRequestRejectedCmd;
     private final TransportationRequestGetDtoCmd transportationRequestGetDtoCmd;
     private final TransportationRequestSocketHandler transportationRequestSocketHandler;
-    private final NotificationOrchestrator notificationOrchestrator;
+    private final RequestPushNotification requestPushNotification;
 
     @Override
     protected Void run(Request request) {
@@ -47,13 +44,10 @@ public class ProcessTransportationRequestRejectedCmd extends
         UUID userToEmit = transportationRequestDto.getPersonRequested()
             .getUserId();
 
-        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
-            .title(RequestRejectedTemplate.TITLE)
-            .body(RequestRejectedTemplate.BODY)
-            .campaignRecipient(RequestRejectedTemplate.RECEIVER)
-            .dataMap(Map.of("screen", "request/" + request.transportationRequestId()))
-            .personIds(Set.of(transportationRequestDto.getPersonRequestedId()))
-            .build());
+        requestPushNotification.onRejected(
+            request.transportationRequestId(),
+            Set.of(transportationRequestDto.getPersonRequestedId())
+        );
 
         transportationRequestSocketHandler.emitMessage(
             TransportationRequestSocketHandler.Request.builder()

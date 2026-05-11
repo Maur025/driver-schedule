@@ -1,30 +1,27 @@
 package com.kernotec.driverschedule.service.trip.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverschedule.notification.rest.dto.request.NotificationSendRequest;
-import com.kernotec.driverschedule.notification.push.NotificationOrchestrator;
-import com.kernotec.driverschedule.service.common.notification.NotificationTemplate.TripEmergencyReportedTemplate;
 import com.kernotec.driverschedule.person.jpa.service.PersonService;
+import com.kernotec.driverschedule.service.common.dto.Coordinate;
+import com.kernotec.driverschedule.service.resource.jpa.service.LocationService;
 import com.kernotec.driverschedule.service.trip.command.EmergencyReasonCreateCmd;
-import com.kernotec.driverschedule.service.trip.command.TripGetDtoCmd;
-import com.kernotec.driverschedule.service.trip.command.TripUpdateCmd;
 import com.kernotec.driverschedule.service.trip.command.TripEmergencyCreateCmd;
 import com.kernotec.driverschedule.service.trip.command.TripEmergencyLogCreateCmd;
+import com.kernotec.driverschedule.service.trip.command.TripGetDtoCmd;
 import com.kernotec.driverschedule.service.trip.command.TripLogCreateCmd;
-import com.kernotec.driverschedule.service.common.dto.Coordinate;
+import com.kernotec.driverschedule.service.trip.command.TripUpdateCmd;
 import com.kernotec.driverschedule.service.trip.exception.TripException;
 import com.kernotec.driverschedule.service.trip.jpa.dto.TripDto;
 import com.kernotec.driverschedule.service.trip.jpa.enums.TripEmergencyStateEnum;
 import com.kernotec.driverschedule.service.trip.jpa.enums.TripStateEnum;
-import com.kernotec.driverschedule.service.resource.jpa.service.LocationService;
 import com.kernotec.driverschedule.service.trip.jpa.service.TripEmergencyStateService;
 import com.kernotec.driverschedule.service.trip.jpa.service.TripStateService;
+import com.kernotec.driverschedule.service.trip.notification.TripEmergencyPushNotification;
 import com.kernotec.driverschedule.service.trip.rest.dto.request.TripEmergencyRequest;
 import com.kernotec.driverschedule.service.trip.socket.TripEmergencySocketHandler;
 import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +49,7 @@ public class ProcessTripEmergencyRequestCmd extends
     private final TripEmergencyLogCreateCmd tripEmergencyLogCreateCmd;
 
     private final TripEmergencySocketHandler tripEmergencySocketHandler;
-    private final NotificationOrchestrator notificationOrchestrator;
+    private final TripEmergencyPushNotification tripPushNotification;
 
     @Override
     protected Void run(Request request) {
@@ -80,12 +77,7 @@ public class ProcessTripEmergencyRequestCmd extends
 
         markTripInEmergency(request.tripId(), coordinate);
 
-        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
-            .title(TripEmergencyReportedTemplate.TITLE)
-            .body(TripEmergencyReportedTemplate.BODY)
-            .campaignRecipient(TripEmergencyReportedTemplate.RECEIVER)
-            .dataMap(Map.of("screen", "trip-emergency/" + tripEmergencyId))
-            .build());
+        tripPushNotification.onReported(tripEmergencyId);
 
         tripEmergencySocketHandler.emitMessage(TripEmergencySocketHandler.Request.builder()
             .tripEmergencyId(tripEmergencyId)

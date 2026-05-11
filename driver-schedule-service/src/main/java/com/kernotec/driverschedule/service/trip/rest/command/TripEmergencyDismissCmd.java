@@ -1,14 +1,11 @@
 package com.kernotec.driverschedule.service.trip.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverschedule.notification.rest.dto.request.NotificationSendRequest;
-import com.kernotec.driverschedule.notification.push.NotificationOrchestrator;
-import com.kernotec.driverschedule.service.common.notification.NotificationTemplate.TripEmergencyDissmisedTemplate;
 import com.kernotec.driverschedule.service.trip.command.EmergencyRejectReasonCreateCmd;
-import com.kernotec.driverschedule.service.trip.command.TripUpdateCmd;
 import com.kernotec.driverschedule.service.trip.command.TripEmergencyGetDtoCmd;
 import com.kernotec.driverschedule.service.trip.command.TripEmergencyUpdateCmd;
 import com.kernotec.driverschedule.service.trip.command.TripLogCreateCmd;
+import com.kernotec.driverschedule.service.trip.command.TripUpdateCmd;
 import com.kernotec.driverschedule.service.trip.exception.TripEmergencyException;
 import com.kernotec.driverschedule.service.trip.exception.TripException;
 import com.kernotec.driverschedule.service.trip.jpa.dto.TripEmergencyDto;
@@ -16,12 +13,12 @@ import com.kernotec.driverschedule.service.trip.jpa.enums.TripEmergencyStateEnum
 import com.kernotec.driverschedule.service.trip.jpa.enums.TripStateEnum;
 import com.kernotec.driverschedule.service.trip.jpa.service.TripEmergencyStateService;
 import com.kernotec.driverschedule.service.trip.jpa.service.TripStateService;
+import com.kernotec.driverschedule.service.trip.notification.TripEmergencyPushNotification;
 import com.kernotec.driverschedule.service.trip.rest.dto.request.TripEmergencyDismissRequest;
 import com.kernotec.driverschedule.service.trip.socket.TripEmergencySocketHandler;
 import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
@@ -43,7 +40,7 @@ public class TripEmergencyDismissCmd extends
     private final TripUpdateCmd tripUpdateCmd;
     private final TripEmergencySocketHandler tripEmergencySocketHandler;
     private final TripLogCreateCmd tripLogCreateCmd;
-    private final NotificationOrchestrator notificationOrchestrator;
+    private final TripEmergencyPushNotification tripEmergencyPushNotification;
 
     @Override
     protected Void run(Request request) {
@@ -88,13 +85,8 @@ public class TripEmergencyDismissCmd extends
                 .build())
             .execute();
 
-        notificationOrchestrator.sendAsyncNotification(NotificationSendRequest.builder()
-            .title(TripEmergencyDissmisedTemplate.TITLE)
-            .body(TripEmergencyDissmisedTemplate.BODY)
-            .campaignRecipient(TripEmergencyDissmisedTemplate.RECEIVER)
-            .dataMap(Map.of("screen", "trip-emergency/" + request.tripEmergencyId()))
-            .personIds(Set.of(tripEmergencyDto.getPersonEmergencyReportedId()))
-            .build());
+        tripEmergencyPushNotification.onDismissed(
+            request.tripEmergencyId(), Set.of(tripEmergencyDto.getPersonEmergencyReportedId()));
 
         tripEmergencySocketHandler.emitMessage(TripEmergencySocketHandler.Request.builder()
             .tripEmergencyId(request.tripEmergencyId())
@@ -113,8 +105,8 @@ public class TripEmergencyDismissCmd extends
 
         if (!emergenncyCurrentState.canTransitionTo(TripEmergencyStateEnum.DISMISSED)) {
             throw new TripEmergencyException(
-                "transition.not.allowed", "'" + TripEmergencyStateEnum.DISMISSED + "'",
-                HttpStatus.CONFLICT.value()
+                "transition.not.allowed",
+                "'" + TripEmergencyStateEnum.DISMISSED + "'", HttpStatus.CONFLICT.value()
             );
         }
 
@@ -124,8 +116,8 @@ public class TripEmergencyDismissCmd extends
 
         if (!tripCurrentState.equals(TripStateEnum.EMERGENCY)) {
             throw new TripException(
-                "action.not.available", "'" + TripEmergencyStateEnum.DISMISSED + "'",
-                HttpStatus.CONFLICT.value()
+                "action.not.available",
+                "'" + TripEmergencyStateEnum.DISMISSED + "'", HttpStatus.CONFLICT.value()
             );
         }
     }

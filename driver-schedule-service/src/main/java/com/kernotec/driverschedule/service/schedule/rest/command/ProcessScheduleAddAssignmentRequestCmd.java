@@ -1,16 +1,17 @@
 package com.kernotec.driverschedule.service.schedule.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
+import com.kernotec.driverschedule.service.common.util.ScheduleTransportationUtil;
+import com.kernotec.driverschedule.service.common.util.ScheduleTransportationUtil.RegistryTripAssignmentRequest;
 import com.kernotec.driverschedule.service.schedule.command.ScheduleTransportationGetDtoCmd;
 import com.kernotec.driverschedule.service.schedule.exception.ScheduleTransportationException;
 import com.kernotec.driverschedule.service.schedule.jpa.dto.ScheduleTransportationDto;
 import com.kernotec.driverschedule.service.schedule.jpa.dto.TripAssignmentDto;
 import com.kernotec.driverschedule.service.schedule.jpa.enums.ScheduleTransportationStateEnum;
+import com.kernotec.driverschedule.service.schedule.notification.DriverAssignmentPushNotification;
 import com.kernotec.driverschedule.service.schedule.rest.dto.request.ScheduleAddAssignmentRequest;
 import com.kernotec.driverschedule.service.schedule.rest.dto.request.TripAssignmentCreateRequest;
 import com.kernotec.driverschedule.service.schedule.socket.ScheduleTransportationSocketHandler;
-import com.kernotec.driverschedule.service.common.util.ScheduleTransportationUtil;
-import com.kernotec.driverschedule.service.common.util.ScheduleTransportationUtil.RegistryTripAssignmentRequest;
 import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
@@ -32,6 +33,7 @@ public class ProcessScheduleAddAssignmentRequestCmd extends
     private final ScheduleTransportationDateValidationCmd scheduleTransportationDateValidationCmd;
     private final ScheduleTransportationUtil scheduleTransportationUtil;
     private final ScheduleTransportationSocketHandler scheduleTransportationSocketHadler;
+    private final DriverAssignmentPushNotification driverAssignmentPushNotification;
 
     @Override
     protected void validate(Request request) {
@@ -105,10 +107,18 @@ public class ProcessScheduleAddAssignmentRequestCmd extends
 
         scheduleTransportationUtil.registryTripAssignments(RegistryTripAssignmentRequest.builder()
             .tripAssignmentCreateRequestList(scheduleAddAssignmentRequest.getTripAssignments())
-            .scheduleTransportationId(request.scheduleTransportationId)
+            .scheduleTransportationId(request.scheduleTransportationId())
             .estimatedStartTime(scheduleAddAssignmentRequest.getAssignFrom())
             .estimatedEndTime(scheduleAddAssignmentRequest.getAssignTo())
             .build());
+
+        Set<UUID> driverIdSet = scheduleTransportationUtil.getValuesOfTripAssignmentRequest(
+            scheduleAddAssignmentRequest.getTripAssignments(),
+            TripAssignmentCreateRequest::getDriverId
+        );
+
+        driverAssignmentPushNotification.onAssignmentTo(
+            request.scheduleTransportationId(), driverIdSet);
 
         scheduleTransportationSocketHadler.emitMessage(
             ScheduleTransportationSocketHandler.Request.builder()
