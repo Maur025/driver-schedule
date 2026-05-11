@@ -1,7 +1,7 @@
 package com.kernotec.driverschedule.service.request.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverschedule.service.exception.request.TransportationRequestException;
+import com.kernotec.driverschedule.service.request.exception.TransportationRequestException;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import lombok.Builder;

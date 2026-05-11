@@ -2,7 +2,7 @@ package com.kernotec.driverschedule.service.request.jpa.service;
 
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
-import com.kernotec.driverschedule.service.exception.request.TransportationRequestStateException;
+import com.kernotec.driverschedule.service.request.exception.TransportationRequestStateException;
 import com.kernotec.driverschedule.service.request.jpa.entity.TransportationRequestState;
 import com.kernotec.driverschedule.service.request.jpa.enums.TransportationRequestStateEnum;
 import com.kernotec.driverschedule.service.request.jpa.repository.TransportationRequestStateRepository;

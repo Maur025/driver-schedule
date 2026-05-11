@@ -1,10 +1,10 @@
 package com.kernotec.driverschedule.service.request.rest.command;
 
 import com.kernotec.core.command.AbstractCommand;
-import com.kernotec.driverschedule.notification.notification.dto.NotificationSendRequest;
-import com.kernotec.driverschedule.notification.notification.service.NotificationOrchestrator;
-import com.kernotec.driverschedule.notification.notification.templates.NotificationTemplate.RequestRejectedTemplate;
-import com.kernotec.driverschedule.service.command.request.transportation.request.TransportationRequestGetDtoCmd;
+import com.kernotec.driverschedule.notification.rest.dto.request.NotificationSendRequest;
+import com.kernotec.driverschedule.notification.push.NotificationOrchestrator;
+import com.kernotec.driverschedule.service.common.notification.NotificationTemplate.RequestRejectedTemplate;
+import com.kernotec.driverschedule.service.request.command.TransportationRequestGetDtoCmd;
 import com.kernotec.driverschedule.service.request.jpa.dto.TransportationRequestDto;
 import com.kernotec.driverschedule.service.request.rest.dto.request.RejectReasonRequest;
 import com.kernotec.driverschedule.service.request.socket.TransportationRequestSocketHandler;

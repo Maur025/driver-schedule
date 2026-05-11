@@ -1,0 +1,34 @@
+package com.kernotec.driverschedule.service.schedule.command;
+
+import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
+import com.kernotec.driverschedule.service.schedule.jpa.dto.ScheduleTransportationDto;
+import com.kernotec.driverschedule.service.schedule.jpa.mapper.ScheduleTransportationDtoMapper;
+import com.kernotec.driverschedule.service.schedule.jpa.entity.ScheduleTransportation;
+import com.kernotec.driverschedule.service.schedule.jpa.service.ScheduleTransportationService;
+import jakarta.validation.constraints.NotNull;
+import java.util.UUID;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@RequiredArgsConstructor
+@Service
+public class ScheduleTransportationGetDtoCmd extends
+    AbstractTransactionalRequiredCommand<ScheduleTransportationGetDtoCmd.Request, ScheduleTransportationDto>
+{
+
+    private final ScheduleTransportationService scheduleTransportationService;
+    private final ScheduleTransportationDtoMapper scheduleTransportationDtoMapper;
+
+    @Override
+    protected ScheduleTransportationDto run(Request request) {
+        ScheduleTransportation scheduleTransportation = scheduleTransportationService.findByIdThrow(
+            request.scheduleTransportationId);
+        return scheduleTransportationDtoMapper.toDto(scheduleTransportation);
+    }
+
+    @Builder
+    public record Request(@NotNull UUID scheduleTransportationId) {
+
+    }
+}

@@ -3,7 +3,7 @@ package com.kernotec.driverschedule.service.request.jpa.entity;
 import com.kernotec.driverschedule.common.audit.user.BaseAuditEntityUser;
 import com.kernotec.driverschedule.common.datetime.SafeZoneDateTimeConverter;
 import com.kernotec.driverschedule.person.jpa.entity.Person;
-import com.kernotec.driverschedule.service.jpa.entity.schedule.ScheduleTransportation;
+import com.kernotec.driverschedule.service.schedule.jpa.entity.ScheduleTransportation;
 import com.kernotec.driverschedule.service.request.jpa.enums.TripTypeEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

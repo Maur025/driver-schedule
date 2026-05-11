@@ -2,7 +2,7 @@ package com.kernotec.driverschedule.service.request.jpa.dto;
 
 import com.kernotec.core.jpa.dto.AuditEntityDto;
 import com.kernotec.driverschedule.person.jpa.dto.PersonDto;
-import com.kernotec.driverschedule.service.jpa.dto.resource.ReasonDto;
+import com.kernotec.driverschedule.service.resource.jpa.dto.ReasonDto;
 import com.kernotec.driverschedule.service.request.jpa.enums.TripTypeEnum;
 import com.kernotec.driverschedule.service.common.dto.Coordinate;
 import java.time.LocalDateTime;

@@ -1,0 +1,54 @@
+package com.kernotec.driverschedule.service.resource.command;
+
+import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
+import com.kernotec.driverschedule.service.resource.jpa.entity.Location;
+import com.kernotec.driverschedule.service.resource.jpa.service.LocationService;
+import com.kernotec.driverschedule.service.common.dto.Coordinate;
+import jakarta.validation.constraints.NotNull;
+import java.util.UUID;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@RequiredArgsConstructor
+@Service
+public class LocationUpdateCmd extends
+    AbstractTransactionalRequiredCommand<LocationUpdateCmd.Request, Void>
+{
+
+    private final LocationService locationService;
+
+    @Override
+    protected Void run(Request request) {
+        Location location = locationService.findByIdThrow(request.locationId);
+
+        if (request.coordinate != null) {
+            location.setCoordinate(request.coordinate);
+        }
+        if (request.name != null) {
+            location.setName(request.name);
+        }
+        if (request.description != null) {
+            location.setDescription(request.description);
+        }
+        if (request.icon != null) {
+            location.setIcon(request.icon);
+        }
+        if (request.color != null) {
+            location.setColor(request.color);
+        }
+        if (request.placeCategoryId != null) {
+            location.setPlaceCategoryId(request.placeCategoryId);
+        }
+
+        locationService.save(location);
+        return null;
+    }
+
+    @Builder
+    public record Request(@NotNull UUID locationId, Coordinate coordinate, String name,
+                          String description, String icon, String color, UUID placeCategoryId)
+    {
+
+    }
+}

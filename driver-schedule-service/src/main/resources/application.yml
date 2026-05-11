@@ -70,6 +70,12 @@ spring:
       minimum-idle: 5
       maximum-pool-size: 50
 
+  # MESSAGES
+  messages:
+    basename: common-messages, notification-messages, messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
+
 # SWAGGER
 springdoc:
   api-docs:

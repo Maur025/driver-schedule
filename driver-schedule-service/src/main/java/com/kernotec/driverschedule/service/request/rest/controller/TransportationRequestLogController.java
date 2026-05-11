@@ -6,7 +6,7 @@ import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverschedule.service.request.jpa.entity.TransportationRequestLog;
 import com.kernotec.driverschedule.service.request.jpa.service.TransportationRequestLogService;
-import com.kernotec.driverschedule.service.request.rest.ApiRequestSpec.TransportationRequestLogSpec;
+import com.kernotec.driverschedule.service.request.rest.RequestApiSpec.TransportationRequestLogSpec;
 import com.kernotec.driverschedule.service.request.rest.dto.response.TransportationRequestLogResponse;
 import com.kernotec.driverschedule.service.request.rest.mapper.response.TransportationRequestLogResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;

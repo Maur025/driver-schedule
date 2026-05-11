@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.driverschedule.common.audit.user.dto.response.AuditEntityUserResponse;
 import com.kernotec.driverschedule.service.request.jpa.enums.TripTypeEnum;
 import com.kernotec.driverschedule.person.rest.dto.response.PersonResponse;
-import com.kernotec.driverschedule.service.rest.dto.schedule.response.schedule.transportation.ScheduleTransportationResponse;
+import com.kernotec.driverschedule.service.schedule.rest.dto.response.ScheduleTransportationResponse;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;

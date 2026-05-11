@@ -2,7 +2,7 @@ package com.kernotec.driverschedule.service.request.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverschedule.service.common.service.VoucherPdfExportService;
-import com.kernotec.driverschedule.service.util.ResourceUtil;
+import com.kernotec.driverschedule.service.common.util.ResourceUtil;
 import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.sql.Connection;

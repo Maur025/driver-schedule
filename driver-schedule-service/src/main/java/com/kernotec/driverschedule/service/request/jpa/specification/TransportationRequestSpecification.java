@@ -4,7 +4,7 @@ import com.kernotec.driverschedule.service.request.jpa.entity.TransportationRequ
 import com.kernotec.driverschedule.service.request.jpa.enums.TransportationRequestStateEnum;
 import com.kernotec.driverschedule.service.request.jpa.enums.TripTypeEnum;
 import com.kernotec.driverschedule.service.request.jpa.criteria.TransportationRequestSpecificationCriteria;
-import com.kernotec.driverschedule.service.util.CommonSpecification;
+import com.kernotec.driverschedule.service.common.util.CommonSpecification;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;

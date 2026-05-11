@@ -11,7 +11,7 @@ import com.google.firebase.messaging.MessagingErrorCode;
 import com.google.firebase.messaging.MulticastMessage;
 import com.google.firebase.messaging.Notification;
 import com.google.firebase.messaging.WebpushConfig;
-import com.kernotec.driverschedule.notification.notification.enums.NotificationErrorCode;
+import com.kernotec.driverschedule.notification.jpa.enums.NotificationErrorCode;
 import com.kernotec.driverschedule.notification.rest.dto.request.NotificationHandlerRequest;
 import com.kernotec.driverschedule.notification.rest.dto.response.NotificationHandlerResponse;
 import com.kernotec.driverschedule.notification.rest.dto.response.SendResponse;

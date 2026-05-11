@@ -1,9 +1,9 @@
 package com.kernotec.driverschedule.service.request.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverschedule.service.command.request.request.coord.RequestCoordManyCreateCmd;
-import com.kernotec.driverschedule.service.command.request.transportation.request.TransportationRequestCreateCmd;
-import com.kernotec.driverschedule.service.command.request.transportation.request.log.TransportationRequestLogCreateCmd;
+import com.kernotec.driverschedule.service.request.command.RequestCoordManyCreateCmd;
+import com.kernotec.driverschedule.service.request.command.TransportationRequestCreateCmd;
+import com.kernotec.driverschedule.service.request.command.TransportationRequestLogCreateCmd;
 import com.kernotec.driverschedule.service.request.jpa.entity.RequestCoord;
 import com.kernotec.driverschedule.service.request.jpa.enums.TransportationRequestStateEnum;
 import com.kernotec.driverschedule.service.request.jpa.service.TransportationRequestStateService;
