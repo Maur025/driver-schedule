@@ -7,11 +7,12 @@ import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverschedule.notification.jpa.entitiy.NotificationConfiguration;
 import com.kernotec.driverschedule.notification.jpa.service.NotificationConfigurationService;
-import com.kernotec.driverschedule.notification.rest.dto.request.NotificationSendRequest;
 import com.kernotec.driverschedule.notification.push.NotificationOrchestrator;
 import com.kernotec.driverschedule.notification.rest.NotificationApiSpec.NotificationConfigurationSpec;
+import com.kernotec.driverschedule.notification.rest.command.ProcessNotificationConfigDeleteRequestCmd;
 import com.kernotec.driverschedule.notification.rest.command.ProcessNotificationConfigurationCreateRequestCmd;
 import com.kernotec.driverschedule.notification.rest.dto.request.NotificationConfigurationCreateRequest;
+import com.kernotec.driverschedule.notification.rest.dto.request.NotificationSendRequest;
 import com.kernotec.driverschedule.notification.rest.dto.request.NotificationSendToTestRequest;
 import com.kernotec.driverschedule.notification.rest.dto.response.NotificationConfigurationResponse;
 import com.kernotec.driverschedule.notification.rest.mapper.response.NotificationConfigurationResponseMapper;
@@ -22,6 +23,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,6 +44,7 @@ public class NotificationConfigurationController {
     private final NotificationConfigurationResponseMapper notificationConfigurationResponseMapper;
     private final ProcessNotificationConfigurationCreateRequestCmd processNotificationConfigurationCreateRequestCmd;
     private final NotificationOrchestrator notificationOrchestrator;
+    private final ProcessNotificationConfigDeleteRequestCmd processNotificationConfigDeleteRequestCmd;
 
     @Operation(summary = "find all notification configurations")
     @GetMapping
@@ -97,6 +100,24 @@ public class NotificationConfigurationController {
         return SingleResponse.<NotificationConfigurationResponse>builder()
             .code(HttpStatus.CREATED.value())
             .data(notificationConfigurationResponseMapper.toResponse(notificationConfigurationId))
+            .build();
+    }
+
+    @Operation(summary = "remove notification configuration")
+    @DeleteMapping("{notificationConfigurationId}")
+    @ResponseStatus(HttpStatus.OK)
+    public MessageResponse delete(
+        @PathVariable("notificationConfigurationId") UUID notificationConfigurationId)
+    {
+        processNotificationConfigDeleteRequestCmd.withRequest(
+                ProcessNotificationConfigDeleteRequestCmd.Request.builder()
+                    .notificationConfigurationId(notificationConfigurationId)
+                    .build())
+            .execute();
+
+        return MessageResponse.builder()
+            .code(HttpStatus.OK.value())
+            .message("remove successfully")
             .build();
     }
 
