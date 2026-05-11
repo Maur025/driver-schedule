@@ -2,9 +2,11 @@ package com.kernotec.driverschedule.service.trip.jpa.entity;
 
 import com.kernotec.driverschedule.common.audit.user.BaseAuditEntityUser;
 import com.kernotec.driverschedule.person.jpa.entity.Person;
+import com.kernotec.driverschedule.service.common.dto.Coordinate;
 import com.kernotec.driverschedule.service.schedule.jpa.entity.ScheduleTransportation;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -23,6 +25,9 @@ import lombok.Setter;
 @Entity
 @Table(name = "trip_emergencies")
 public class TripEmergency extends BaseAuditEntityUser {
+
+    @Embedded
+    private Coordinate coordinate;
 
     @Column(name = "person_emergency_reported_id", nullable = false)
     private UUID personEmergencyReportedId;

@@ -73,7 +73,8 @@ public class ProcessTripEmergencyRequestCmd extends
         Coordinate coordinate = locationService.getCoordinateOfList(
             Arrays.asList(tripEmergencyRequest.getLongitude(), tripEmergencyRequest.getLatitude()));
 
-        UUID tripEmergencyId = createTripEmergency(request.tripId(), tripDto, tripEmergencyRequest);
+        UUID tripEmergencyId = createTripEmergency(
+            request.tripId(), tripDto, tripEmergencyRequest, coordinate);
 
         markTripInEmergency(request.tripId(), coordinate);
 
@@ -88,7 +89,7 @@ public class ProcessTripEmergencyRequestCmd extends
     }
 
     private UUID createTripEmergency(UUID tripId, TripDto tripDto,
-        TripEmergencyRequest tripEmergencyRequest)
+        TripEmergencyRequest tripEmergencyRequest, Coordinate coordinate)
     {
         UUID tripEmergencyStateReportedId = tripEmergencyStateService.findIdByCodeThrow(
             TripEmergencyStateEnum.REPORTED);
@@ -102,6 +103,7 @@ public class ProcessTripEmergencyRequestCmd extends
                     .personEmergencyReportedId(personService.findIdByUserIdAuthenticateThrow())
                     .scheduleTransportationId(scheduleTransportationId)
                     .tripEmergencyStateId(tripEmergencyStateReportedId)
+                    .coordinate(coordinate)
                     .build())
             .execute();
 

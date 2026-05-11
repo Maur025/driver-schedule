@@ -1,6 +1,7 @@
 package com.kernotec.driverschedule.service.trip.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
+import com.kernotec.driverschedule.service.common.dto.Coordinate;
 import com.kernotec.driverschedule.service.trip.jpa.entity.TripEmergency;
 import com.kernotec.driverschedule.service.trip.jpa.service.TripEmergencyService;
 import jakarta.validation.constraints.NotNull;
@@ -25,6 +26,7 @@ public class TripEmergencyCreateCmd extends
         tripEmergency.setTripId(request.tripId);
         tripEmergency.setScheduleTransportationId(request.scheduleTransportationId);
         tripEmergency.setTripEmergencyStateId(request.tripEmergencyStateId);
+        tripEmergency.setCoordinate(request.coordinate());
 
         tripEmergency = tripEmergencyService.save(tripEmergency);
         return tripEmergency.getId();
@@ -33,7 +35,7 @@ public class TripEmergencyCreateCmd extends
     @Builder
     public record Request(@NotNull UUID personEmergencyReportedId, @NotNull UUID tripId,
                           @NotNull UUID scheduleTransportationId,
-                          @NotNull UUID tripEmergencyStateId)
+                          @NotNull UUID tripEmergencyStateId, @NotNull Coordinate coordinate)
     {
 
     }

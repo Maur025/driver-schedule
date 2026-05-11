@@ -17,6 +17,11 @@ import lombok.Setter;
 @JsonInclude(Include.NON_NULL)
 public class TripEmergencyResponse extends AuditEntityUserResponse {
 
+    private List<Double> coordinates;
+
+    private Double latitude;
+    private Double longitude;
+
     private UUID personEmergencyReportedId;
     private PersonResponse personEmergencyReported;
 
