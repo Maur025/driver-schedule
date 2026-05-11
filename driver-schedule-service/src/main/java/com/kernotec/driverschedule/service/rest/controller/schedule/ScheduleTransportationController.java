@@ -14,8 +14,8 @@ import com.kernotec.driverschedule.service.common.annotation.schedule.transporta
 import com.kernotec.driverschedule.service.common.annotation.schedule.transportation.CanReschedule;
 import com.kernotec.driverschedule.service.jpa.entity.schedule.ScheduleTransportation;
 import com.kernotec.driverschedule.service.jpa.service.schedule.ScheduleTransportationService;
-import com.kernotec.driverschedule.service.report.jpa.enums.ReportDispositionEnum;
-import com.kernotec.driverschedule.service.report.rest.command.pdf.PdfExportCmd;
+import com.kernotec.driverschedule.report.enums.ReportDispositionEnum;
+import com.kernotec.driverschedule.report.command.pdf.PdfExportCmd;
 import com.kernotec.driverschedule.service.rest.command.schedule.schedule.transportation.ProcessScheduleAddAssignmentRequestCmd;
 import com.kernotec.driverschedule.service.rest.command.schedule.schedule.transportation.ProcessScheduleFinalizedRequestCmd;
 import com.kernotec.driverschedule.service.rest.command.schedule.schedule.transportation.ProcessScheduleTransportationCancelRequestCmd;

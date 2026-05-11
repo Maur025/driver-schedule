@@ -9,7 +9,6 @@ import com.kernotec.driverschedule.service.jpa.service.resource.AvailabilityForA
 import com.kernotec.driverschedule.service.jpa.service.resource.VehicleService;
 import com.kernotec.driverschedule.service.rest.dto.resource.request.AvailabilityForAssignmentRequest;
 import com.kernotec.driverschedule.service.rest.dto.resource.response.AvailabilityForAssignmentResponse;
-import com.kernotec.driverschedule.service.util.ZonedDateTimeUtil;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -28,7 +27,7 @@ public class ScheduleTransportationDateValidationCmd extends
     AbstractTransactionalRequiredCommand<ScheduleTransportationDateValidationCmd.Request, Void>
 {
 
-    private final ZonedDateTimeUtil zonedDateTimeUtil;
+    private final com.kernotec.driverschedule.common.datetime.ZonedDateTimeService zonedDateTimeUtil;
     private final AvailabilityForAssignmentService availabilityForAssignmentService;
     private final VehicleService vehicleService;
     private final PersonService personService;

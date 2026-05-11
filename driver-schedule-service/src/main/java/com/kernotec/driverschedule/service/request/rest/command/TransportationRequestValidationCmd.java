@@ -2,7 +2,6 @@ package com.kernotec.driverschedule.service.request.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverschedule.service.exception.request.TransportationRequestException;
-import com.kernotec.driverschedule.service.util.ZonedDateTimeUtil;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import lombok.Builder;
@@ -18,7 +17,7 @@ public class TransportationRequestValidationCmd extends
     AbstractTransactionalRequiredCommand<TransportationRequestValidationCmd.Request, Void>
 {
 
-    private final ZonedDateTimeUtil zonedDateTimeUtil;
+    private final com.kernotec.driverschedule.common.datetime.ZonedDateTimeService zonedDateTimeUtil;
 
     @Override
     protected Void run(Request request) {

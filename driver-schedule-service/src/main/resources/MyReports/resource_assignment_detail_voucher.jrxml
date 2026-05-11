@@ -12,7 +12,7 @@
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<import value="com.kernotec.driverschedule.service.util.VoucherJasperUtil"/>
+	<import value="com.kernotec.driverschedule.service.common.service.VoucherCommonService"/>
 	<parameter name="SCHEDULE_TRANSPORTATION_ID" class="java.lang.String">
 		<defaultValueExpression><![CDATA["f19dfc57-daed-4aaf-9d30-4babd6454790"]]></defaultValueExpression>
 	</parameter>
@@ -86,7 +86,7 @@ where ta.schedule_transportation_id =  $P{SCHEDULE_TRANSPORTATION_ID}::uuid;]]>
 						<font fontName="OpenSans" size="10" isBold="true"/>
 						<paragraph leftIndent="3"/>
 					</textElement>
-					<textFieldExpression><![CDATA[VoucherJasperUtil.getPersonFullName($F{driver_name},$F{driver_last_name})]]></textFieldExpression>
+					<textFieldExpression><![CDATA[VoucherCommonService.getPersonFullName($F{driver_name},$F{driver_last_name})]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 					<reportElement x="170" y="10" width="114" height="14" uuid="777e3659-5e83-4648-98ff-15230c350cf3">
@@ -97,7 +97,7 @@ where ta.schedule_transportation_id =  $P{SCHEDULE_TRANSPORTATION_ID}::uuid;]]>
 					<textElement>
 						<font fontName="OpenSans" size="10" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[VoucherJasperUtil.getPersonPhoneContacts($F{driver_phone_list})]]></textFieldExpression>
+					<textFieldExpression><![CDATA[VoucherCommonService.getPersonPhoneContacts($F{driver_phone_list})]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 					<reportElement x="284" y="10" width="134" height="14" uuid="3b23e562-c188-4cfe-9434-10beaf23f821">

@@ -12,7 +12,6 @@ import com.kernotec.driverschedule.service.request.rest.dto.request.RequestCoord
 import com.kernotec.driverschedule.service.request.rest.dto.request.TransportationRequestCreateRequest;
 import com.kernotec.driverschedule.service.request.rest.mapper.request.RequestCoordEntityMapper;
 import com.kernotec.driverschedule.common.util.CommonUtil;
-import com.kernotec.driverschedule.service.util.ZonedDateTimeUtil;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -37,7 +36,7 @@ public class TransportationRequestFlowCreateCmd extends
     private final TransportationRequestValidationCmd transportationRequestValidationCmd;
     private final TransportationRequestCreateCmd transportationRequestCreateCmd;
     private final RequestCoordManyCreateCmd requestCoordManyCreateCmd;
-    private final ZonedDateTimeUtil zonedDateTimeUtil;
+    private final com.kernotec.driverschedule.common.datetime.ZonedDateTimeService zonedDateTimeUtil;
     private final TransportationRequestLogCreateCmd transportationRequestLogCreateCmd;
 
     @Override

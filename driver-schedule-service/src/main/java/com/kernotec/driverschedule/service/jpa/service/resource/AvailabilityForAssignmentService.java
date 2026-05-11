@@ -6,7 +6,6 @@ import com.kernotec.driverschedule.service.jpa.service.schedule.TripAssignmentSe
 import com.kernotec.driverschedule.service.rest.dto.resource.request.AvailabilityForAssignmentRequest;
 import com.kernotec.driverschedule.service.rest.dto.resource.response.AvailabilityForAssignmentResponse;
 import com.kernotec.driverschedule.service.rest.mapper.schedule.response.trip.assignment.TripAssignmentToAvailabilityMapper;
-import com.kernotec.driverschedule.service.util.ZonedDateTimeUtil;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,7 +24,7 @@ import org.springframework.stereotype.Service;
 public class AvailabilityForAssignmentService {
 
     private final MessageSource messageSource;
-    private final ZonedDateTimeUtil zonedDateTimeUtil;
+    private final com.kernotec.driverschedule.common.datetime.ZonedDateTimeService zonedDateTimeUtil;
     private final TripAssignmentService tripAssignmentService;
     private final TripAssignmentToAvailabilityMapper tripAssignmentToAvailabilityMapper;
 
@@ -101,7 +100,7 @@ public class AvailabilityForAssignmentService {
 
     private String getDateTimeInvalidMessage(ZonedDateTime dateTime, String zoneId) {
         Locale locale = getLocale();
-        ZoneId clientZoneId = ZonedDateTimeUtil.getClientZoneId(zoneId);
+        ZoneId clientZoneId = com.kernotec.driverschedule.common.datetime.ZonedDateTimeService.getClientZoneId(zoneId);
 
         String dateFormat = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", locale)
             .withZone(clientZoneId));

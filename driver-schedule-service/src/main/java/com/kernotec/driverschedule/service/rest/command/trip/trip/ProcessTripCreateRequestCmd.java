@@ -23,7 +23,6 @@ import com.kernotec.driverschedule.service.rest.dto.trip.request.trip.TripCreate
 import com.kernotec.driverschedule.service.rest.dto.trip.request.trip.TripFilterRequest;
 import com.kernotec.driverschedule.service.rest.socket.schedule.ScheduleTransportationSocketHandler;
 import com.kernotec.driverschedule.service.rest.socket.trip.TripSocketHandler;
-import com.kernotec.driverschedule.service.util.ZonedDateTimeUtil;
 import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
@@ -134,7 +133,7 @@ public class ProcessTripCreateRequestCmd extends
     }
 
     private void validateDateToStart(ZonedDateTime startDateTime, String zoneId) {
-        if (!ZonedDateTimeUtil.isSameDay(startDateTime, zoneId)) {
+        if (!com.kernotec.driverschedule.common.datetime.ZonedDateTimeService.isSameDay(startDateTime, zoneId)) {
             throw new TripException(
                 "should.start.not.on.scheduled.day", "", HttpStatus.CONFLICT.value());
         }

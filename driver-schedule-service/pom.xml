@@ -4,6 +4,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>com.kernotec.driverschedule</groupId>
+    <artifactId>driver-schedule-bom</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../driver-schedule-bom</relativePath>
+  </parent>
+
   <artifactId>driver-schedule-service</artifactId>
 
   <build>
@@ -68,10 +75,11 @@
     </dependency>
 
     <dependency>
-      <groupId>net.logstash.logback</groupId>
-      <artifactId>logstash-logback-encoder</artifactId>
-      <version>8.0</version>
+      <groupId>com.kernotec.driverschedule</groupId>
+      <artifactId>driver-schedule-report</artifactId>
     </dependency>
+
+    <!-- CORE -->
     <dependency>
       <groupId>com.kernotec</groupId>
       <artifactId>core-jpa</artifactId>
@@ -101,6 +109,12 @@
       <artifactId>core-api</artifactId>
     </dependency>
 
+    <!-- EXTERNAL -->
+    <dependency>
+      <groupId>net.logstash.logback</groupId>
+      <artifactId>logstash-logback-encoder</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
@@ -109,27 +123,10 @@
     <dependency>
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-      <version>${org.springdoc.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
-      <version>${org.springdoc.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springdoc</groupId>
-      <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-      <version>${org.springdoc.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springdoc</groupId>
-      <artifactId>springdoc-openapi-starter-webflux-api</artifactId>
-      <version>${org.springdoc.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-websocket</artifactId>
     </dependency>
 
     <dependency>
@@ -140,46 +137,27 @@
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi</artifactId>
-      <version>${poi.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-ooxml</artifactId>
-      <version>${poi.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.opencsv</groupId>
       <artifactId>opencsv</artifactId>
-      <version>${open-csv.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-csv</artifactId>
-      <version>${commons-csv.version}</version>
     </dependency>
 
     <dependency>
       <groupId>net.sf.jasperreports</groupId>
       <artifactId>jasperreports</artifactId>
-      <version>${jasperreports.version}</version>
     </dependency>
-
-    <dependency>
-      <groupId>com.google.firebase</groupId>
-      <artifactId>firebase-admin</artifactId>
-      <version>${firebase.version}</version>
-    </dependency>
-
   </dependencies>
-
-  <parent>
-    <groupId>com.kernotec.driverschedule</groupId>
-    <artifactId>driver-schedule-bom</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../driver-schedule-bom</relativePath>
-  </parent>
 
   <profiles>
     <profile>
@@ -199,14 +177,5 @@
       </properties>
     </profile>
   </profiles>
-
-  <properties>
-    <org.springdoc.version>2.2.0</org.springdoc.version>
-    <poi.version>5.4.1</poi.version>
-    <open-csv.version>5.3</open-csv.version>
-    <commons-csv.version>1.8</commons-csv.version>
-    <jasperreports.version>6.21.5</jasperreports.version>
-    <firebase.version>9.8.0</firebase.version>
-  </properties>
 
 </project>

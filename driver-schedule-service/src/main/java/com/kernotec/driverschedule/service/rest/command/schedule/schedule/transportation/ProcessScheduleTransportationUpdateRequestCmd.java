@@ -19,7 +19,6 @@ import com.kernotec.driverschedule.service.rest.dto.schedule.request.trip.assign
 import com.kernotec.driverschedule.service.rest.socket.schedule.ScheduleTransportationSocketHandler;
 import com.kernotec.driverschedule.service.util.ScheduleTransportationUtil;
 import com.kernotec.driverschedule.service.util.ScheduleTransportationUtil.RegistryTripAssignmentRequest;
-import com.kernotec.driverschedule.service.util.ZonedDateTimeUtil;
 import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -49,7 +48,7 @@ public class ProcessScheduleTransportationUpdateRequestCmd extends
     private final ScheduleTransportationGetDtoCmd scheduleTransportationGetDtoCmd;
     private final ScheduleTransportationLogCreateCmd scheduleTransportationLogCreateCmd;
 
-    private final ZonedDateTimeUtil zonedDateTimeUtil;
+    private final com.kernotec.driverschedule.common.datetime.ZonedDateTimeService zonedDateTimeUtil;
     private final ScheduleTransportationUtil scheduleTransportationUtil;
 
     private final NotificationOrchestrator notificationOrchestrator;

@@ -41,7 +41,7 @@ public class CommonSpecification {
     public static Predicate simpleDatePredicate(CriteriaBuilder cb, Path<ZonedDateTime> datePath,
         ZonedDateTime simpleDateInput, String zoneId)
     {
-        ZoneId clientZoneId = ZonedDateTimeUtil.getClientZoneId(zoneId);
+        ZoneId clientZoneId = com.kernotec.driverschedule.common.datetime.ZonedDateTimeService.getClientZoneId(zoneId);
         LocalDate simpleLocalDate = simpleDateInput.toLocalDate();
 
         ZonedDateTime startOfDay = simpleLocalDate.atStartOfDay(clientZoneId);
@@ -72,7 +72,7 @@ public class CommonSpecification {
     public static Predicate dateRangePredicate(CriteriaBuilder cb, Path<ZonedDateTime> datePath,
         ZonedDateTime fromDate, ZonedDateTime toDate, String zoneId)
     {
-        ZoneId clientZoneId = ZonedDateTimeUtil.getClientZoneId(zoneId);
+        ZoneId clientZoneId = com.kernotec.driverschedule.common.datetime.ZonedDateTimeService.getClientZoneId(zoneId);
 
         LocalDate fromLocalDate = fromDate.toLocalDate();
         ZonedDateTime startOfFromDate = fromLocalDate.atStartOfDay(clientZoneId);
@@ -99,7 +99,7 @@ public class CommonSpecification {
     public static Predicate monthDatePredicate(CriteriaBuilder cb, Path<ZonedDateTime> datePath,
         ZonedDateTime monthDateInput, String zoneId)
     {
-        ZoneId clientZoneId = ZonedDateTimeUtil.getClientZoneId(zoneId);
+        ZoneId clientZoneId = com.kernotec.driverschedule.common.datetime.ZonedDateTimeService.getClientZoneId(zoneId);
 
         LocalDate monthLocalDate = monthDateInput.withDayOfMonth(1)
             .toLocalDate();
@@ -127,7 +127,7 @@ public class CommonSpecification {
     public static Predicate yearDatePredicate(CriteriaBuilder cb, Path<ZonedDateTime> datePath,
         ZonedDateTime yearDateInput, String zoneId)
     {
-        ZoneId clientZoneId = ZonedDateTimeUtil.getClientZoneId(zoneId);
+        ZoneId clientZoneId = com.kernotec.driverschedule.common.datetime.ZonedDateTimeService.getClientZoneId(zoneId);
 
         LocalDate yearLocalDate = yearDateInput.withDayOfYear(1)
             .toLocalDate();

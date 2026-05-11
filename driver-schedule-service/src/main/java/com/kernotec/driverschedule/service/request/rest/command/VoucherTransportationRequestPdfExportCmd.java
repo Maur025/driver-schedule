@@ -1,8 +1,8 @@
 package com.kernotec.driverschedule.service.request.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
+import com.kernotec.driverschedule.service.common.service.VoucherPdfExportService;
 import com.kernotec.driverschedule.service.util.ResourceUtil;
-import com.kernotec.driverschedule.service.util.VoucherJasperUtil;
 import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.sql.Connection;
@@ -25,12 +25,12 @@ public class VoucherTransportationRequestPdfExportCmd extends
 {
 
     private final DataSource dataSource;
-    private final VoucherJasperUtil voucherJasperUtil;
+    private final VoucherPdfExportService voucherPdfExportService;
 
     @Override
     protected byte[] run(Request request) {
 
-        Map<String, Object> params = voucherJasperUtil.getCommonParams(request.zoneId);
+        Map<String, Object> params = voucherPdfExportService.getVoucherParams(request.zoneId);
         params.put("TRANSPORTATION_REQUEST_ID", request.transportationRequestId.toString());
 
         try (Connection connection = dataSource.getConnection()) {

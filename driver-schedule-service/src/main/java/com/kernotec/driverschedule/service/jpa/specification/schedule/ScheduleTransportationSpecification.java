@@ -5,7 +5,6 @@ import com.kernotec.driverschedule.service.jpa.enums.schedule.ScheduleTransporta
 import com.kernotec.driverschedule.service.jpa.enums.trip.TripStateEnum;
 import com.kernotec.driverschedule.service.jpa.specification.schedule.criteria.ScheduleTransportationSpecificationCriteria;
 import com.kernotec.driverschedule.service.util.CommonSpecification;
-import com.kernotec.driverschedule.service.util.ZonedDateTimeUtil;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
@@ -163,7 +162,7 @@ public record ScheduleTransportationSpecification(
             return Optional.empty();
         }
 
-        ZoneId clientZoneId = ZonedDateTimeUtil.getClientZoneId(criteria.getZoneId());
+        ZoneId clientZoneId = com.kernotec.driverschedule.common.datetime.ZonedDateTimeService.getClientZoneId(criteria.getZoneId());
 
         ZonedDateTime fromWithClientZone = from.withZoneSameInstant(clientZoneId);
         ZonedDateTime toWithClientZone = to.withZoneSameInstant(clientZoneId);

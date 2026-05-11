@@ -24,6 +24,7 @@
     <module>driver-schedule-person</module>
     <module>driver-schedule-user-api</module>
     <module>driver-schedule-socket</module>
+    <module>driver-schedule-report</module>
   </modules>
 
     <build>

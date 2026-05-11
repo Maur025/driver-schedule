@@ -11,8 +11,8 @@ import com.kernotec.driverschedule.service.common.annotation.transportation.requ
 import com.kernotec.driverschedule.service.common.annotation.transportation.request.CanCreateRequest;
 import com.kernotec.driverschedule.service.common.annotation.transportation.request.CanReadRequest;
 import com.kernotec.driverschedule.service.common.annotation.transportation.request.CanRejectRequest;
-import com.kernotec.driverschedule.service.report.jpa.enums.ReportDispositionEnum;
-import com.kernotec.driverschedule.service.report.rest.command.pdf.PdfExportCmd;
+import com.kernotec.driverschedule.report.enums.ReportDispositionEnum;
+import com.kernotec.driverschedule.report.command.pdf.PdfExportCmd;
 import com.kernotec.driverschedule.service.request.jpa.entity.TransportationRequest;
 import com.kernotec.driverschedule.service.request.jpa.service.TransportationRequestService;
 import com.kernotec.driverschedule.service.request.rest.ApiRequestSpec.TransportationRequestSpec;

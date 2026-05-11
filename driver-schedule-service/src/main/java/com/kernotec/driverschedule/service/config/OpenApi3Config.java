@@ -1,6 +1,7 @@
 package com.kernotec.driverschedule.service.config;
 
-import com.kernotec.driverschedule.service.config.KernotecApiDefinition.OpenApiInfo;
+import com.kernotec.driverschedule.common.properties.KernotecApiProperties;
+import com.kernotec.driverschedule.common.properties.KernotecApiProperties.OpenApiInfo;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -15,22 +16,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties(KernotecApiDefinition.class)
+@EnableConfigurationProperties(KernotecApiProperties.class)
 @SecurityScheme(name = "bearerAuth", type = SecuritySchemeType.HTTP, scheme = "bearer",
                 bearerFormat = "JWT")
 public class OpenApi3Config {
 
     @Bean
     @ConditionalOnMissingBean
-    public OpenAPI openaApiDefinition(KernotecApiDefinition kernotecApiDefinition) {
-        OpenApiInfo openApiInfo = kernotecApiDefinition.getInfo();
+    public OpenAPI openaApiDefinition(KernotecApiProperties kernotecApiProperties)
+    {
+        OpenApiInfo openApiInfo = kernotecApiProperties.getInfo();
 
         var openAPI = new OpenAPI().info(new Info().title(openApiInfo.getTitle())
                 .description(openApiInfo.getDescription())
                 .version(openApiInfo.getVersion()))
             .security(List.of(new SecurityRequirement().addList("bearerAuth")));
 
-        kernotecApiDefinition.getServers()
+        kernotecApiProperties.getServers()
             .forEach(openApiServer -> {
                 if (Strings.isNotBlank(openApiServer.getUrl())) {
                     openAPI.addServersItem(new Server().url(openApiServer.getUrl())
