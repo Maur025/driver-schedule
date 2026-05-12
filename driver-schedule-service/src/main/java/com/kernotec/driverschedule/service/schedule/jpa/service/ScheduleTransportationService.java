@@ -11,7 +11,7 @@ import com.kernotec.driverschedule.service.schedule.jpa.enums.ScheduleTransporta
 import com.kernotec.driverschedule.service.trip.jpa.enums.TripStateEnum;
 import com.kernotec.driverschedule.service.schedule.jpa.repository.ScheduleTransportationRepository;
 import com.kernotec.driverschedule.service.schedule.jpa.specification.ScheduleTransportationSpecification;
-import com.kernotec.driverschedule.service.resource.rest.dto.request.AvailabilityForAssignmentRequest;
+import com.kernotec.driverschedule.service.schedule.rest.dto.request.AvailabilityForAssignmentRequest;
 import com.kernotec.driverschedule.service.schedule.rest.dto.request.ScheduleTransportationFilterRequest;
 import java.time.ZonedDateTime;
 import java.util.List;

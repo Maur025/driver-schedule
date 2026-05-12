@@ -2,8 +2,8 @@ package com.kernotec.driverschedule.service.trip.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverschedule.person.jpa.service.PersonService;
-import com.kernotec.driverschedule.service.common.dto.Coordinate;
-import com.kernotec.driverschedule.service.resource.jpa.service.LocationService;
+import com.kernotec.driverschedule.common.dto.Coordinate;
+import com.kernotec.driverschedule.resource.jpa.service.LocationService;
 import com.kernotec.driverschedule.service.trip.command.EmergencyReasonCreateCmd;
 import com.kernotec.driverschedule.service.trip.command.TripEmergencyCreateCmd;
 import com.kernotec.driverschedule.service.trip.command.TripEmergencyLogCreateCmd;

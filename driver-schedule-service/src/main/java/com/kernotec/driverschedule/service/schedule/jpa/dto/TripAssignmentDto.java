@@ -2,7 +2,7 @@ package com.kernotec.driverschedule.service.schedule.jpa.dto;
 
 import com.kernotec.core.jpa.dto.AuditEntityDto;
 import com.kernotec.driverschedule.person.jpa.dto.PersonDto;
-import com.kernotec.driverschedule.service.resource.jpa.dto.VehicleDto;
+import com.kernotec.driverschedule.resource.jpa.dto.VehicleDto;
 import com.kernotec.driverschedule.service.trip.jpa.dto.TripDto;
 import java.time.ZonedDateTime;
 import java.util.Set;

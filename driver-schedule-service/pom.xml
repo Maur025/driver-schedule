@@ -79,6 +79,11 @@
       <artifactId>driver-schedule-report</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.kernotec.driverschedule</groupId>
+      <artifactId>driver-schedule-resource</artifactId>
+    </dependency>
+
     <!-- CORE -->
     <dependency>
       <groupId>com.kernotec</groupId>

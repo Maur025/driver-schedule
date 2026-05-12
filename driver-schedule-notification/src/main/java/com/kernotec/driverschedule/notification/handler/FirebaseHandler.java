@@ -1,7 +1,7 @@
 package com.kernotec.driverschedule.notification.handler;
 
 import com.google.firebase.messaging.AndroidConfig;
-import com.google.firebase.messaging.AndroidNotification;
+import com.google.firebase.messaging.AndroidConfig.Priority;
 import com.google.firebase.messaging.ApnsConfig;
 import com.google.firebase.messaging.Aps;
 import com.google.firebase.messaging.BatchResponse;
@@ -46,7 +46,7 @@ public class FirebaseHandler implements NotificationHandler {
             return null;
         }
 
-        BatchResponse response = send(tokens, notification, request.dataMap());
+        BatchResponse response = send(tokens, notification, getDataMap(request));
 
         return NotificationHandlerResponse.builder()
             .allSuccess(response.getFailureCount() == 0)
@@ -54,6 +54,15 @@ public class FirebaseHandler implements NotificationHandler {
             .failureCount(response.getFailureCount())
             .responses(getSendResponses(response.getResponses()))
             .build();
+    }
+
+    private Map<String, String> getDataMap(NotificationHandlerRequest request) {
+        Map<String, String> data = request.dataMap() == null ? new HashMap<>() : request.dataMap();
+
+        data.put("title", request.title());
+        data.put("body", request.body());
+
+        return data;
     }
 
     private BatchResponse send(Set<String> tokens, Notification notification,
@@ -69,12 +78,10 @@ public class FirebaseHandler implements NotificationHandler {
         MulticastMessage message = MulticastMessage.builder()
             .addAllTokens(tokens)
             .setNotification(notification)
-            .putAllData(dataMap == null ? new HashMap<>() : dataMap)
+            .putAllData(dataMap)
             .setAndroidConfig(AndroidConfig.builder()
                 .setTtl(androidExpiration)
-                .setNotification(AndroidNotification.builder()
-                    .setChannelId("kerno-booking-channel")
-                    .build())
+                .setPriority(Priority.HIGH)
                 .build())
             .setApnsConfig(ApnsConfig.builder()
                 .putHeader("apns-expiration", iosExpiration)
@@ -141,4 +148,3 @@ public class FirebaseHandler implements NotificationHandler {
         return NotificationErrorCode.fromValue(messagingErrorCode.toString());
     }
 }
-

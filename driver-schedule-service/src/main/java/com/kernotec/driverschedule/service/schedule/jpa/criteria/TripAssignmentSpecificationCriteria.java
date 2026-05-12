@@ -3,7 +3,7 @@ package com.kernotec.driverschedule.service.schedule.jpa.criteria;
 import com.kernotec.driverschedule.service.schedule.jpa.enums.ScheduleTransportationStateEnum;
 import com.kernotec.driverschedule.service.schedule.jpa.enums.TripAssignmentStateCodeEnum;
 import com.kernotec.driverschedule.service.trip.jpa.enums.TripStateEnum;
-import com.kernotec.driverschedule.service.common.criteria.CriteriaDate;
+import com.kernotec.driverschedule.common.dto.CriteriaDate;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.UUID;

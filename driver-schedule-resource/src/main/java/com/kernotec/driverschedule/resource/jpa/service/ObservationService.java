@@ -1,0 +1,40 @@
+package com.kernotec.driverschedule.resource.jpa.service;
+
+import com.kernotec.core.jpa.repository.BaseRepository;
+import com.kernotec.core.jpa.service.BaseServiceImpl;
+import com.kernotec.driverschedule.common.util.CommonUtil;
+import com.kernotec.driverschedule.resource.jpa.entity.Observation;
+import com.kernotec.driverschedule.resource.jpa.enums.ObservationTypeCodeEnum;
+import com.kernotec.driverschedule.resource.jpa.repository.ObservationRepository;
+import com.kernotec.driverschedule.resource.rest.dto.response.ObservationLookupResponse;
+import java.util.UUID;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+@AllArgsConstructor
+@Service
+public class ObservationService extends BaseServiceImpl<Observation, UUID> {
+
+    private final ObservationRepository repository;
+
+    @Override
+    protected String resourceName() {
+        return "Observation";
+    }
+
+    @Override
+    protected BaseRepository<Observation, UUID> repository() {
+        return repository;
+    }
+
+    public Page<ObservationLookupResponse> findAllToLookup(String keyword,
+        ObservationTypeCodeEnum observationType, Pageable pageable)
+    {
+        String keywordStr = CommonUtil.getSafeString(keyword);
+        String observationStr = observationType != null ? observationType.toString() : null;
+
+        return repository.findAllToLookup(keywordStr, observationStr, pageable);
+    }
+}

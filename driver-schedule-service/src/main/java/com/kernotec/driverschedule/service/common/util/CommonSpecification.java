@@ -1,6 +1,6 @@
 package com.kernotec.driverschedule.service.common.util;
 
-import com.kernotec.driverschedule.service.common.criteria.CriteriaDate;
+import com.kernotec.driverschedule.common.dto.CriteriaDate;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Path;

@@ -7,7 +7,7 @@ import com.kernotec.driverschedule.service.schedule.command.ScheduleTransportati
 import com.kernotec.driverschedule.service.schedule.command.TripAssignmentGetDtoCmd;
 import com.kernotec.driverschedule.service.trip.command.TripCreateCmd;
 import com.kernotec.driverschedule.service.trip.command.TripLogCreateCmd;
-import com.kernotec.driverschedule.service.common.dto.Coordinate;
+import com.kernotec.driverschedule.common.dto.Coordinate;
 import com.kernotec.driverschedule.service.schedule.exception.ScheduleTransportationException;
 import com.kernotec.driverschedule.service.trip.exception.TripException;
 import com.kernotec.driverschedule.service.schedule.jpa.dto.ScheduleTransportationDto;
@@ -15,7 +15,7 @@ import com.kernotec.driverschedule.service.schedule.jpa.dto.TripAssignmentDto;
 import com.kernotec.driverschedule.service.trip.jpa.entity.Trip;
 import com.kernotec.driverschedule.service.schedule.jpa.enums.ScheduleTransportationStateEnum;
 import com.kernotec.driverschedule.service.trip.jpa.enums.TripStateEnum;
-import com.kernotec.driverschedule.service.resource.jpa.service.LocationService;
+import com.kernotec.driverschedule.resource.jpa.service.LocationService;
 import com.kernotec.driverschedule.service.schedule.jpa.service.ScheduleTransportationStateService;
 import com.kernotec.driverschedule.service.trip.jpa.service.TripService;
 import com.kernotec.driverschedule.service.trip.jpa.service.TripStateService;
