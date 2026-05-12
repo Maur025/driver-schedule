@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.kernotec.core.test.UnitTest;
+import com.kernotec.driverschedule.service.common.util.CodeGeneratorUtil;
 import com.kernotec.driverschedule.service.request.jpa.enums.GenerateCodeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;

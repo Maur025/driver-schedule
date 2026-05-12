@@ -58,6 +58,12 @@
         <version>${project.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>com.kernotec.driverschedule</groupId>
+        <artifactId>driver-schedule-report</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <!-- EXTERNAL DEPENDENCIES -->
       <dependency>
         <groupId>net.logstash.logback</groupId>
@@ -73,16 +79,6 @@
       <dependency>
         <groupId>org.springdoc</groupId>
         <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
-        <version>${org.springdoc.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springdoc</groupId>
-        <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-        <version>${org.springdoc.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springdoc</groupId>
-        <artifactId>springdoc-openapi-starter-webflux-api</artifactId>
         <version>${org.springdoc.version}</version>
       </dependency>
 

@@ -3,7 +3,7 @@ package com.kernotec.driverschedule.service.request.rest.dto.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.core.rest.dto.response.data.EntityResponse;
-import com.kernotec.driverschedule.service.rest.dto.resource.response.reason.ReasonResponse;
+import com.kernotec.driverschedule.service.resource.rest.dto.response.ReasonResponse;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

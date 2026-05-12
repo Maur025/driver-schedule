@@ -2,7 +2,7 @@ package com.kernotec.driverschedule.service.request.rest.mapper.request;
 
 import com.kernotec.driverschedule.service.request.jpa.entity.RequestCoord;
 import com.kernotec.driverschedule.service.request.rest.dto.request.RequestCoordCreateRequest;
-import com.kernotec.driverschedule.service.util.GeoJsonUtil;
+import com.kernotec.driverschedule.service.common.util.GeoJsonUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

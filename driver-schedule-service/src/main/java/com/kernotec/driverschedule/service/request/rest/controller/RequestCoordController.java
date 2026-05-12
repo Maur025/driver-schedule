@@ -6,7 +6,7 @@ import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
 import com.kernotec.driverschedule.service.request.jpa.entity.RequestCoord;
 import com.kernotec.driverschedule.service.request.jpa.service.RequestCoordService;
-import com.kernotec.driverschedule.service.request.rest.ApiRequestSpec.RequestCoordSpec;
+import com.kernotec.driverschedule.service.request.rest.RequestApiSpec.RequestCoordSpec;
 import com.kernotec.driverschedule.service.request.rest.dto.response.RequestCoordResponse;
 import com.kernotec.driverschedule.service.request.rest.mapper.response.RequestCoordResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;

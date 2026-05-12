@@ -11,7 +11,7 @@ import org.mockito.InjectMocks;
 class ZonedDateTimeUtilTest extends UnitTest {
 
     @InjectMocks
-    private ZonedDateTimeUtil zonedDateTimeUtil;
+    private com.kernotec.driverschedule.common.datetime.ZonedDateTimeService zonedDateTimeUtil;
 
     @Test
     @DisplayName("should be return date join with correct hours in UTC")

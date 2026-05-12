@@ -2,7 +2,7 @@ package com.kernotec.driverschedule.service.request.jpa.criteria;
 
 import com.kernotec.driverschedule.service.request.jpa.enums.TransportationRequestStateEnum;
 import com.kernotec.driverschedule.service.request.jpa.enums.TripTypeEnum;
-import com.kernotec.driverschedule.service.jpa.specification.common.criteria.CriteriaDate;
+import com.kernotec.driverschedule.service.common.criteria.CriteriaDate;
 import java.util.Collection;
 import java.util.UUID;
 import lombok.Getter;
