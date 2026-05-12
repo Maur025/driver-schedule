@@ -5,8 +5,8 @@ import com.kernotec.driverschedule.service.request.command.TransportationRequest
 import com.kernotec.driverschedule.service.request.jpa.dto.TransportationRequestDto;
 import com.kernotec.driverschedule.service.request.notification.RequestPushNotification;
 import com.kernotec.driverschedule.service.request.rest.dto.request.RejectReasonRequest;
+import com.kernotec.driverschedule.service.request.socket.RequestSocketTopic;
 import com.kernotec.driverschedule.service.request.socket.TransportationRequestSocketHandler;
-import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.Set;
@@ -52,13 +52,13 @@ public class ProcessTransportationRequestRejectedCmd extends
         transportationRequestSocketHandler.emitMessage(
             TransportationRequestSocketHandler.Request.builder()
                 .transportationRequestId(request.transportationRequestId())
-                .topic(WebSocketTopic.TRANSPORTATION_REQUEST_REJECTED)
+                .topic(RequestSocketTopic.TRANSPORTATION_REQUEST_REJECTED)
                 .build());
 
         transportationRequestSocketHandler.emitMessage(
             TransportationRequestSocketHandler.Request.builder()
                 .transportationRequestId(request.transportationRequestId())
-                .topic(WebSocketTopic.TRANSPORTATION_REQUEST_REJECTED_TO_USER)
+                .topic(RequestSocketTopic.TRANSPORTATION_REQUEST_REJECTED_TO_USER)
                 .toList(Set.of(userToEmit))
                 .build());
 

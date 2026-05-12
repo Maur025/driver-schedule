@@ -11,8 +11,8 @@ import com.kernotec.driverschedule.service.schedule.jpa.enums.ScheduleTransporta
 import com.kernotec.driverschedule.service.schedule.notification.DriverAssignmentPushNotification;
 import com.kernotec.driverschedule.service.schedule.rest.dto.request.ScheduleAddAssignmentRequest;
 import com.kernotec.driverschedule.service.schedule.rest.dto.request.TripAssignmentCreateRequest;
+import com.kernotec.driverschedule.service.schedule.socket.ScheduleSocketTopic;
 import com.kernotec.driverschedule.service.schedule.socket.ScheduleTransportationSocketHandler;
-import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashSet;
@@ -123,7 +123,7 @@ public class ProcessScheduleAddAssignmentRequestCmd extends
         scheduleTransportationSocketHadler.emitMessage(
             ScheduleTransportationSocketHandler.Request.builder()
                 .scheduleTransportationId(request.scheduleTransportationId())
-                .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_CREATED)
+                .topic(ScheduleSocketTopic.SCHEDULE_TRANSPORTATION_CREATED)
                 .build());
 
         return null;

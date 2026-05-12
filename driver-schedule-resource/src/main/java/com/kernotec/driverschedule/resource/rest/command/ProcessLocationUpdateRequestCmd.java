@@ -6,7 +6,7 @@ import com.kernotec.driverschedule.resource.command.LocationUpdateCmd;
 import com.kernotec.driverschedule.resource.jpa.service.LocationService;
 import com.kernotec.driverschedule.resource.rest.dto.request.LocationUpdateRequest;
 import com.kernotec.driverschedule.resource.socket.LocationSocketHandler;
-import com.kernotec.driverschedule.socket.WebSocketTopic;
+import com.kernotec.driverschedule.resource.socket.ResourceSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.Builder;
@@ -48,7 +48,7 @@ public class ProcessLocationUpdateRequestCmd extends
 
         locationSocketHandler.emitMessage(LocationSocketHandler.Request.builder()
             .locationId(request.locationId())
-            .topic(WebSocketTopic.LOCATION_UPDATED)
+            .topic(ResourceSocketTopic.LOCATION_UPDATED)
             .build());
 
         return null;

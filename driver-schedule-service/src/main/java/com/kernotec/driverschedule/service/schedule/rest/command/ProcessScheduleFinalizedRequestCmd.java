@@ -3,20 +3,20 @@ package com.kernotec.driverschedule.service.schedule.rest.command;
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverschedule.service.schedule.command.ScheduleTransportationGetDtoCmd;
 import com.kernotec.driverschedule.service.schedule.command.ScheduleTransportationUpdateCmd;
-import com.kernotec.driverschedule.service.trip.command.TripManyUpdateCmd;
-import com.kernotec.driverschedule.service.trip.command.TripLogManyCreateCmd;
 import com.kernotec.driverschedule.service.schedule.exception.ScheduleTransportationException;
 import com.kernotec.driverschedule.service.schedule.jpa.dto.ScheduleTransportationDto;
+import com.kernotec.driverschedule.service.schedule.jpa.enums.ScheduleTransportationStateEnum;
+import com.kernotec.driverschedule.service.schedule.jpa.service.ScheduleTransportationStateService;
+import com.kernotec.driverschedule.service.schedule.socket.ScheduleSocketTopic;
+import com.kernotec.driverschedule.service.schedule.socket.ScheduleTransportationSocketHandler;
+import com.kernotec.driverschedule.service.trip.command.TripLogManyCreateCmd;
+import com.kernotec.driverschedule.service.trip.command.TripManyUpdateCmd;
 import com.kernotec.driverschedule.service.trip.jpa.dto.TripDto;
 import com.kernotec.driverschedule.service.trip.jpa.entity.Trip;
 import com.kernotec.driverschedule.service.trip.jpa.entity.TripLog;
-import com.kernotec.driverschedule.service.schedule.jpa.enums.ScheduleTransportationStateEnum;
 import com.kernotec.driverschedule.service.trip.jpa.enums.TripStateEnum;
-import com.kernotec.driverschedule.service.schedule.jpa.service.ScheduleTransportationStateService;
 import com.kernotec.driverschedule.service.trip.jpa.service.TripService;
 import com.kernotec.driverschedule.service.trip.jpa.service.TripStateService;
-import com.kernotec.driverschedule.service.schedule.socket.ScheduleTransportationSocketHandler;
-import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -79,7 +79,7 @@ public class ProcessScheduleFinalizedRequestCmd extends
 
         scheduleTransportationSocketHandler.emitMessage(
             ScheduleTransportationSocketHandler.Request.builder()
-                .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_FINALIZED)
+                .topic(ScheduleSocketTopic.SCHEDULE_TRANSPORTATION_FINALIZED)
                 .scheduleTransportationId(request.scheduleTransportationId())
                 .build());
 

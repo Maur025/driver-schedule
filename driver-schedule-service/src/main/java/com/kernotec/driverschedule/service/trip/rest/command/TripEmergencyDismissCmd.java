@@ -16,7 +16,7 @@ import com.kernotec.driverschedule.service.trip.jpa.service.TripStateService;
 import com.kernotec.driverschedule.service.trip.notification.TripEmergencyPushNotification;
 import com.kernotec.driverschedule.service.trip.rest.dto.request.TripEmergencyDismissRequest;
 import com.kernotec.driverschedule.service.trip.socket.TripEmergencySocketHandler;
-import com.kernotec.driverschedule.socket.WebSocketTopic;
+import com.kernotec.driverschedule.service.trip.socket.TripSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.Set;
@@ -90,7 +90,7 @@ public class TripEmergencyDismissCmd extends
 
         tripEmergencySocketHandler.emitMessage(TripEmergencySocketHandler.Request.builder()
             .tripEmergencyId(request.tripEmergencyId())
-            .topic(WebSocketTopic.TRIP_EMERGENCY_DISMISSED_TO_USER)
+            .topic(TripSocketTopic.TRIP_EMERGENCY_DISMISSED_TO_USER)
             .toList(Set.of(tripEmergencyDto.getPersonEmergencyReported()
                 .getUserId()))
             .build());

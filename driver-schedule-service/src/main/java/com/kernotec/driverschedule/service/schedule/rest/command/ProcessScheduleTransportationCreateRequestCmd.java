@@ -18,8 +18,8 @@ import com.kernotec.driverschedule.service.schedule.notification.DriverAssignmen
 import com.kernotec.driverschedule.service.schedule.notification.SchedulePushNotification;
 import com.kernotec.driverschedule.service.schedule.rest.dto.request.ScheduleTransportationCreateRequest;
 import com.kernotec.driverschedule.service.schedule.rest.dto.request.TripAssignmentCreateRequest;
+import com.kernotec.driverschedule.service.schedule.socket.ScheduleSocketTopic;
 import com.kernotec.driverschedule.service.schedule.socket.ScheduleTransportationSocketHandler;
-import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.Set;
@@ -187,13 +187,13 @@ public class ProcessScheduleTransportationCreateRequestCmd extends
         scheduleTransportationSocketHadler.emitMessage(
             ScheduleTransportationSocketHandler.Request.builder()
                 .scheduleTransportationId(scheduleTransportationId)
-                .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_CREATED)
+                .topic(ScheduleSocketTopic.SCHEDULE_TRANSPORTATION_CREATED)
                 .build());
 
         scheduleTransportationSocketHadler.emitMessage(
             ScheduleTransportationSocketHandler.Request.builder()
                 .scheduleTransportationId(scheduleTransportationId)
-                .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_CREATED_TO_USER)
+                .topic(ScheduleSocketTopic.SCHEDULE_TRANSPORTATION_CREATED_TO_USER)
                 .toList(Set.of(userToEmit))
                 .build());
     }

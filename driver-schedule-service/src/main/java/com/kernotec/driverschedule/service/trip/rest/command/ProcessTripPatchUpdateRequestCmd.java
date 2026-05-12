@@ -1,18 +1,18 @@
 package com.kernotec.driverschedule.service.trip.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverschedule.service.trip.command.TripGetDtoCmd;
-import com.kernotec.driverschedule.service.trip.command.TripUpdateCmd;
-import com.kernotec.driverschedule.service.trip.command.TripLogCreateCmd;
 import com.kernotec.driverschedule.common.dto.Coordinate;
+import com.kernotec.driverschedule.resource.jpa.service.LocationService;
+import com.kernotec.driverschedule.service.trip.command.TripGetDtoCmd;
+import com.kernotec.driverschedule.service.trip.command.TripLogCreateCmd;
+import com.kernotec.driverschedule.service.trip.command.TripUpdateCmd;
 import com.kernotec.driverschedule.service.trip.exception.TripException;
 import com.kernotec.driverschedule.service.trip.jpa.dto.TripDto;
 import com.kernotec.driverschedule.service.trip.jpa.enums.TripStateEnum;
-import com.kernotec.driverschedule.resource.jpa.service.LocationService;
 import com.kernotec.driverschedule.service.trip.jpa.service.TripStateService;
 import com.kernotec.driverschedule.service.trip.rest.dto.request.TripUpdatePatchRequest;
 import com.kernotec.driverschedule.service.trip.socket.TripSocketHandler;
-import com.kernotec.driverschedule.socket.WebSocketTopic;
+import com.kernotec.driverschedule.service.trip.socket.TripSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.UUID;
@@ -101,7 +101,7 @@ public class ProcessTripPatchUpdateRequestCmd extends
 
         tripSocketHandler.emitMessage(TripSocketHandler.Request.builder()
             .tripId(request.tripId())
-            .topic(WebSocketTopic.TRIP_CHANGED)
+            .topic(TripSocketTopic.TRIP_CHANGED)
             .build());
 
         return null;

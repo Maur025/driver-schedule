@@ -13,8 +13,8 @@ import com.kernotec.driverschedule.service.request.jpa.enums.TransportationReque
 import com.kernotec.driverschedule.service.request.jpa.service.TransportationRequestStateService;
 import com.kernotec.driverschedule.service.request.notification.RequestPushNotification;
 import com.kernotec.driverschedule.service.request.rest.dto.request.CancelRequestReasonRequest;
+import com.kernotec.driverschedule.service.request.socket.RequestSocketTopic;
 import com.kernotec.driverschedule.service.request.socket.TransportationRequestSocketHandler;
-import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
@@ -102,7 +102,7 @@ public class ProcessTransportationRequestCancelledCmd extends
         transportationRequestSocketHandler.emitMessage(
             TransportationRequestSocketHandler.Request.builder()
                 .transportationRequestId(request.transportationRequestId())
-                .topic(WebSocketTopic.TRANSPORTATION_REQUEST_CANCELLED)
+                .topic(RequestSocketTopic.TRANSPORTATION_REQUEST_CANCELLED)
                 .build());
 
         return null;

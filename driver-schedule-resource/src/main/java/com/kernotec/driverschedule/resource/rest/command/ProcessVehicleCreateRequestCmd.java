@@ -3,8 +3,8 @@ package com.kernotec.driverschedule.resource.rest.command;
 import com.kernotec.core.command.AbstractCommand;
 import com.kernotec.driverschedule.resource.command.VehicleCreateCmd;
 import com.kernotec.driverschedule.resource.rest.dto.request.VehicleCreateRequest;
+import com.kernotec.driverschedule.resource.socket.ResourceSocketTopic;
 import com.kernotec.driverschedule.resource.socket.VehicleSocketHandler;
-import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.Builder;
@@ -35,7 +35,7 @@ public class ProcessVehicleCreateRequestCmd extends
 
         vehicleSocketHandler.emitMessage(VehicleSocketHandler.Request.builder()
             .vehicleId(vehicleId)
-            .topic(WebSocketTopic.VEHICLE_CREATED)
+            .topic(ResourceSocketTopic.VEHICLE_CREATED)
             .build());
 
         return vehicleId;

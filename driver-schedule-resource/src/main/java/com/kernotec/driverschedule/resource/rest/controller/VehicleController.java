@@ -24,6 +24,7 @@ import com.kernotec.driverschedule.resource.rest.dto.request.VehicleUpdateReques
 import com.kernotec.driverschedule.resource.rest.dto.response.VehicleLookupResponse;
 import com.kernotec.driverschedule.resource.rest.dto.response.VehicleResponse;
 import com.kernotec.driverschedule.resource.rest.mapper.response.VehicleResponseMapper;
+import com.kernotec.driverschedule.resource.socket.ResourceSocketTopic;
 import com.kernotec.driverschedule.socket.WebSocketTopic;
 import com.kernotec.driverschedule.socket.service.WebSocketHandler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -161,8 +162,8 @@ public class VehicleController {
     @ResponseStatus(HttpStatus.OK)
     public MessageResponse testWebSocket() {
         webSocketHandler.emitMessage(
-            WebSocketTopic.VEHICLE_CREATED, WebSocketSingleResponse.<Vehicle>builder()
-                .topic(WebSocketTopic.VEHICLE_CREATED)
+            ResourceSocketTopic.VEHICLE_CREATED, WebSocketSingleResponse.<Vehicle>builder()
+                .topic(ResourceSocketTopic.VEHICLE_CREATED)
                 .timestamp(ZonedDateTime.now())
                 .data(new Vehicle())
                 .build()

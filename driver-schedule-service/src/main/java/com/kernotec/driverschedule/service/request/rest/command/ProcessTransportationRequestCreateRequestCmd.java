@@ -5,8 +5,8 @@ import com.kernotec.driverschedule.service.request.jpa.entity.TransportationRequ
 import com.kernotec.driverschedule.service.request.jpa.service.TransportationRequestService;
 import com.kernotec.driverschedule.service.request.notification.RequestPushNotification;
 import com.kernotec.driverschedule.service.request.rest.dto.request.TransportationRequestCreateRequest;
+import com.kernotec.driverschedule.service.request.socket.RequestSocketTopic;
 import com.kernotec.driverschedule.service.request.socket.TransportationRequestSocketHandler;
-import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
@@ -39,7 +39,7 @@ public class ProcessTransportationRequestCreateRequestCmd extends
         transportationRequestSocketHandler.emitMessage(
             TransportationRequestSocketHandler.Request.builder()
                 .transportationRequestId(transportationRequestId)
-                .topic(WebSocketTopic.TRANSPORTATION_REQUEST_CREATED)
+                .topic(RequestSocketTopic.TRANSPORTATION_REQUEST_CREATED)
                 .build());
 
         return transportationRequestService.findByIdThrow(transportationRequestId);

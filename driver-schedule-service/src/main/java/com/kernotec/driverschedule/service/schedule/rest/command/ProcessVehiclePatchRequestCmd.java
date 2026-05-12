@@ -3,13 +3,13 @@ package com.kernotec.driverschedule.service.schedule.rest.command;
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.core.exception.custom.base.DefaultMultipleException;
 import com.kernotec.driverschedule.resource.command.VehicleUpdateCmd;
+import com.kernotec.driverschedule.resource.rest.dto.request.VehiclePatchRequest;
+import com.kernotec.driverschedule.resource.socket.ResourceSocketTopic;
+import com.kernotec.driverschedule.resource.socket.VehicleSocketHandler;
 import com.kernotec.driverschedule.service.schedule.jpa.entity.TripAssignment;
 import com.kernotec.driverschedule.service.schedule.jpa.service.TripAssignmentService;
-import com.kernotec.driverschedule.resource.rest.dto.request.VehiclePatchRequest;
 import com.kernotec.driverschedule.service.schedule.rest.dto.response.TripAssignmentResponse;
 import com.kernotec.driverschedule.service.schedule.rest.mapper.response.assignment.TripAssignmentResponseMapper;
-import com.kernotec.driverschedule.resource.socket.VehicleSocketHandler;
-import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ public class ProcessVehiclePatchRequestCmd extends
 
         vehicleSocketHandler.emitMessage(VehicleSocketHandler.Request.builder()
             .vehicleId(request.vehicleId())
-            .topic(WebSocketTopic.VEHICLE_UPDATED)
+            .topic(ResourceSocketTopic.VEHICLE_UPDATED)
             .build());
 
         return null;

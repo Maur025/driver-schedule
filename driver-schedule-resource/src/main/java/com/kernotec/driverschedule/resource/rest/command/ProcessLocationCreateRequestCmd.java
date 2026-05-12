@@ -7,7 +7,7 @@ import com.kernotec.driverschedule.resource.exception.LocationException;
 import com.kernotec.driverschedule.resource.jpa.service.LocationService;
 import com.kernotec.driverschedule.resource.rest.dto.request.LocationCreateRequest;
 import com.kernotec.driverschedule.resource.socket.LocationSocketHandler;
-import com.kernotec.driverschedule.socket.WebSocketTopic;
+import com.kernotec.driverschedule.resource.socket.ResourceSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
@@ -56,7 +56,7 @@ public class ProcessLocationCreateRequestCmd extends
 
         locationSocketHandler.emitMessage(LocationSocketHandler.Request.builder()
             .locationId(locationId)
-            .topic(WebSocketTopic.LOCATION_CREATED)
+            .topic(ResourceSocketTopic.LOCATION_CREATED)
             .build());
 
         return locationId;

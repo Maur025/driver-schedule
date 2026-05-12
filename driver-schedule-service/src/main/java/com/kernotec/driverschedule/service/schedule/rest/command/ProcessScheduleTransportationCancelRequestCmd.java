@@ -13,8 +13,8 @@ import com.kernotec.driverschedule.service.schedule.jpa.service.ScheduleTranspor
 import com.kernotec.driverschedule.service.schedule.notification.DriverAssignmentPushNotification;
 import com.kernotec.driverschedule.service.schedule.notification.SchedulePushNotification;
 import com.kernotec.driverschedule.service.schedule.rest.dto.request.ScheduleTransportationCancelRequest;
+import com.kernotec.driverschedule.service.schedule.socket.ScheduleSocketTopic;
 import com.kernotec.driverschedule.service.schedule.socket.ScheduleTransportationSocketHandler;
-import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.Set;
@@ -113,13 +113,13 @@ public class ProcessScheduleTransportationCancelRequestCmd extends
         scheduleTransportationSocketHandler.emitMessage(
             ScheduleTransportationSocketHandler.Request.builder()
                 .scheduleTransportationId(scheduleTransportationId)
-                .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_CANCELLED)
+                .topic(ScheduleSocketTopic.SCHEDULE_TRANSPORTATION_CANCELLED)
                 .build());
 
         scheduleTransportationSocketHandler.emitMessage(
             ScheduleTransportationSocketHandler.Request.builder()
                 .scheduleTransportationId(scheduleTransportationId)
-                .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_CANCELLED_TO_USER)
+                .topic(ScheduleSocketTopic.SCHEDULE_TRANSPORTATION_CANCELLED_TO_USER)
                 .toList(Set.of(userToEmit))
                 .build());
     }
