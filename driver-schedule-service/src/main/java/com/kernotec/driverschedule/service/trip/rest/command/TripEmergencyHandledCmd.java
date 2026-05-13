@@ -23,8 +23,8 @@ import com.kernotec.driverschedule.service.trip.jpa.service.TripStateService;
 import com.kernotec.driverschedule.service.trip.notification.TripEmergencyPushNotification;
 import com.kernotec.driverschedule.service.trip.rest.dto.request.TripEmergencyHandledRequest;
 import com.kernotec.driverschedule.service.trip.socket.TripEmergencySocketHandler;
+import com.kernotec.driverschedule.service.trip.socket.TripSocketHandler;
 import com.kernotec.driverschedule.service.trip.socket.TripSocketTopic;
-import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.Set;
@@ -57,6 +57,7 @@ public class TripEmergencyHandledCmd extends
 
     private final TripEmergencySocketHandler tripEmergencySocketHandler;
     private final TripEmergencyPushNotification tripEmergencyPushNotification;
+    private final TripSocketHandler tripSocketHandler;
 
     @Override
     protected Void run(Request request) {
@@ -160,6 +161,13 @@ public class TripEmergencyHandledCmd extends
                 .tripStateId(tripStateFinalizedId)
                 .build())
             .execute();
+
+        tripSocketHandler.emitMessage(TripSocketHandler.Request.builder()
+            .tripId(tripEmergencyDto.getTripId())
+            .topic(TripSocketTopic.TRIP_FINALIZED_TO_USER)
+            .toList(Set.of(tripEmergencyDto.getPersonEmergencyReported()
+                .getUserId()))
+            .build());
     }
 
     private void assignmentDriversInSchedule(

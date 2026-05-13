@@ -15,8 +15,11 @@ import com.kernotec.driverschedule.service.trip.jpa.dto.TripDto;
 import com.kernotec.driverschedule.service.trip.jpa.entity.Trip;
 import com.kernotec.driverschedule.service.trip.jpa.entity.TripLog;
 import com.kernotec.driverschedule.service.trip.jpa.enums.TripStateEnum;
+import com.kernotec.driverschedule.service.trip.jpa.mapper.TripDtoMapper;
 import com.kernotec.driverschedule.service.trip.jpa.service.TripService;
 import com.kernotec.driverschedule.service.trip.jpa.service.TripStateService;
+import com.kernotec.driverschedule.service.trip.socket.TripSocketHandler;
+import com.kernotec.driverschedule.service.trip.socket.TripSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -45,6 +48,8 @@ public class ProcessScheduleFinalizedRequestCmd extends
     private final ScheduleTransportationUpdateCmd scheduleTransportationUpdateCmd;
     private final ScheduleTransportationStateService scheduleTransportationStateService;
     private final ScheduleTransportationSocketHandler scheduleTransportationSocketHandler;
+    private final TripSocketHandler tripSocketHandler;
+    private final TripDtoMapper tripDtoMapper;
 
     @Override
     protected Void run(Request request) {
@@ -101,6 +106,7 @@ public class ProcessScheduleFinalizedRequestCmd extends
             .collect(Collectors.toSet());
 
         List<Trip> trips = tripService.findByIdIn(tripIds);
+        List<TripDto> tripDtoList = tripDtoMapper.toDto(trips);
 
         List<TripLog> tripLogs = new ArrayList<>();
 
@@ -120,6 +126,18 @@ public class ProcessScheduleFinalizedRequestCmd extends
                 .tripLogList(tripLogs)
                 .build())
             .execute();
+
+        for (TripDto tripDto : tripDtoList) {
+            UUID userId = tripDto.getTripAssignment()
+                .getDriver()
+                .getUserId();
+
+            tripSocketHandler.emitMessage(TripSocketHandler.Request.builder()
+                .tripId(tripDto.getId())
+                .topic(TripSocketTopic.TRIP_FINALIZED_TO_USER)
+                .toList(Set.of(userId))
+                .build());
+        }
     }
 
     private TripLog getTripLog(UUID tripId, UUID tripStateId) {
