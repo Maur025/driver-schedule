@@ -1,7 +1,8 @@
 package com.kernotec.driverschedule.service.trip.rest.mapper.response;
 
+import com.kernotec.driverschedule.common.mapping.DateResponseMapper;
 import com.kernotec.driverschedule.person.rest.mapper.response.PersonResponseWithContactMapper;
-import com.kernotec.driverschedule.service.common.util.GeoJsonUtil;
+import com.kernotec.driverschedule.common.util.GeoJsonUtil;
 import com.kernotec.driverschedule.service.schedule.rest.mapper.response.ScheduleTransportationToAvailabilityMapper;
 import com.kernotec.driverschedule.service.trip.jpa.entity.TripEmergency;
 import com.kernotec.driverschedule.service.trip.rest.dto.response.TripEmergencyResponse;
@@ -15,7 +16,7 @@ import org.mapstruct.Mapping;
     uses = {TripResponseToEmergencyMapper.class, ScheduleTransportationToAvailabilityMapper.class,
         PersonResponseWithContactMapper.class, EmergencyReasonWithReasonResponseMapper.class,
         EmergencyRejectWithReasonResponseMapper.class, EmergencyResponseResponseToTripMapper.class,
-        com.kernotec.driverschedule.common.mapping.DateResponseMapper.class, GeoJsonUtil.class})
+        DateResponseMapper.class, GeoJsonUtil.class})
 public interface TripEmergencyResponseMapper {
 
     @Mapping(target = "createdByUser", ignore = true)

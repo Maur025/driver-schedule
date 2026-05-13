@@ -8,6 +8,7 @@ import com.kernotec.driverschedule.service.schedule.jpa.dto.TripAssignmentDto;
 import com.kernotec.driverschedule.service.schedule.jpa.enums.ScheduleTransportationStateEnum;
 import com.kernotec.driverschedule.service.schedule.jpa.service.ScheduleTransportationStateService;
 import com.kernotec.driverschedule.service.schedule.notification.SchedulePushNotification;
+import com.kernotec.driverschedule.service.schedule.socket.ScheduleSocketTopic;
 import com.kernotec.driverschedule.service.schedule.socket.ScheduleTransportationSocketHandler;
 import com.kernotec.driverschedule.service.trip.exception.TripException;
 import com.kernotec.driverschedule.service.trip.jpa.dto.TripDto;
@@ -15,7 +16,6 @@ import com.kernotec.driverschedule.service.trip.jpa.entity.Trip;
 import com.kernotec.driverschedule.service.trip.jpa.enums.TripStateEnum;
 import com.kernotec.driverschedule.service.trip.jpa.mapper.TripDtoMapper;
 import com.kernotec.driverschedule.service.trip.jpa.service.TripService;
-import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
@@ -92,7 +92,7 @@ public class TripVerifyAndUpdateScheduleCmd extends
         scheduleTransportationSocketHandler.emitMessage(
             ScheduleTransportationSocketHandler.Request.builder()
                 .scheduleTransportationId(scheduleTransportationId)
-                .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_FINALIZED)
+                .topic(ScheduleSocketTopic.SCHEDULE_TRANSPORTATION_FINALIZED)
                 .build());
 
         return null;

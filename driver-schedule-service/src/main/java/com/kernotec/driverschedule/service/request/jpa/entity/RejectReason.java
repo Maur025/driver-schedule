@@ -1,7 +1,7 @@
 package com.kernotec.driverschedule.service.request.jpa.entity;
 
 import com.kernotec.core.jpa.entity.BaseAuditEntity;
-import com.kernotec.driverschedule.service.resource.jpa.entity.Reason;
+import com.kernotec.driverschedule.resource.jpa.entity.Reason;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

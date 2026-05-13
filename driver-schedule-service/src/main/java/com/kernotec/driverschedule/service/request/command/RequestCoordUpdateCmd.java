@@ -3,7 +3,7 @@ package com.kernotec.driverschedule.service.request.command;
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverschedule.service.request.jpa.entity.RequestCoord;
 import com.kernotec.driverschedule.service.request.jpa.service.RequestCoordService;
-import com.kernotec.driverschedule.service.common.dto.Coordinate;
+import com.kernotec.driverschedule.common.dto.Coordinate;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.UUID;

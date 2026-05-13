@@ -1,9 +1,9 @@
 package com.kernotec.driverschedule.service.trip.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
+import com.kernotec.driverschedule.common.dto.Coordinate;
 import com.kernotec.driverschedule.person.jpa.service.PersonService;
-import com.kernotec.driverschedule.service.common.dto.Coordinate;
-import com.kernotec.driverschedule.service.resource.jpa.service.LocationService;
+import com.kernotec.driverschedule.resource.jpa.service.LocationService;
 import com.kernotec.driverschedule.service.trip.command.EmergencyReasonCreateCmd;
 import com.kernotec.driverschedule.service.trip.command.TripEmergencyCreateCmd;
 import com.kernotec.driverschedule.service.trip.command.TripEmergencyLogCreateCmd;
@@ -19,7 +19,7 @@ import com.kernotec.driverschedule.service.trip.jpa.service.TripStateService;
 import com.kernotec.driverschedule.service.trip.notification.TripEmergencyPushNotification;
 import com.kernotec.driverschedule.service.trip.rest.dto.request.TripEmergencyRequest;
 import com.kernotec.driverschedule.service.trip.socket.TripEmergencySocketHandler;
-import com.kernotec.driverschedule.socket.WebSocketTopic;
+import com.kernotec.driverschedule.service.trip.socket.TripSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.UUID;
@@ -82,7 +82,7 @@ public class ProcessTripEmergencyRequestCmd extends
 
         tripEmergencySocketHandler.emitMessage(TripEmergencySocketHandler.Request.builder()
             .tripEmergencyId(tripEmergencyId)
-            .topic(WebSocketTopic.TRIP_EMERGENCY_REPORTED)
+            .topic(TripSocketTopic.TRIP_EMERGENCY_REPORTED)
             .build());
 
         return null;

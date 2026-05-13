@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.kernotec.driverschedule.service.request.jpa.enums.TransportationRequestStateEnum;
 import com.kernotec.driverschedule.service.request.jpa.enums.TripTypeEnum;
-import com.kernotec.driverschedule.service.common.dto.FilterDateRequest;
+import com.kernotec.driverschedule.common.dto.FilterDateRequest;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -6,7 +6,7 @@ import com.kernotec.driverschedule.service.trip.jpa.dto.TripDto;
 import com.kernotec.driverschedule.service.trip.jpa.enums.TripStateEnum;
 import com.kernotec.driverschedule.service.trip.rest.dto.request.TripFinalizeRequest;
 import com.kernotec.driverschedule.service.trip.socket.TripSocketHandler;
-import com.kernotec.driverschedule.socket.WebSocketTopic;
+import com.kernotec.driverschedule.service.trip.socket.TripSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.Builder;
@@ -55,7 +55,7 @@ public class ProcessFlowTripFinalizeRequestCmd extends
 
         tripSocketHandler.emitMessage(TripSocketHandler.Request.builder()
             .tripId(request.tripId())
-            .topic(WebSocketTopic.TRIP_FINALIZED)
+            .topic(TripSocketTopic.TRIP_FINALIZED)
             .build());
 
         return null;

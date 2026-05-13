@@ -1,6 +1,7 @@
 package com.kernotec.driverschedule.notification.handler;
 
 import com.google.firebase.messaging.AndroidConfig;
+import com.google.firebase.messaging.AndroidConfig.Priority;
 import com.google.firebase.messaging.AndroidNotification;
 import com.google.firebase.messaging.ApnsConfig;
 import com.google.firebase.messaging.Aps;
@@ -46,7 +47,7 @@ public class FirebaseHandler implements NotificationHandler {
             return null;
         }
 
-        BatchResponse response = send(tokens, notification, request.dataMap());
+        BatchResponse response = send(tokens, notification, getDataMap(request));
 
         return NotificationHandlerResponse.builder()
             .allSuccess(response.getFailureCount() == 0)
@@ -56,38 +57,27 @@ public class FirebaseHandler implements NotificationHandler {
             .build();
     }
 
+    private Map<String, String> getDataMap(NotificationHandlerRequest request) {
+        Map<String, String> data = request.dataMap() == null ? new HashMap<>() : request.dataMap();
+
+        String screen = data.get("screen");
+
+        data.put("title", screen);
+        data.put("body", request.body());
+
+        return data;
+    }
+
     private BatchResponse send(Set<String> tokens, Notification notification,
         Map<String, String> dataMap)
     {
-        long expiration_seconds = getExpirationInSeconds();
-        long iosExpirationLong = (System.currentTimeMillis() / 1000) + expiration_seconds;
-
-        String webExpiration = String.valueOf(expiration_seconds);
-        String iosExpiration = String.valueOf(iosExpirationLong);
-        long androidExpiration = getExpirationInMilliseconds();
-
         MulticastMessage message = MulticastMessage.builder()
             .addAllTokens(tokens)
             .setNotification(notification)
-            .putAllData(dataMap == null ? new HashMap<>() : dataMap)
-            .setAndroidConfig(AndroidConfig.builder()
-                .setTtl(androidExpiration)
-                .setNotification(AndroidNotification.builder()
-                    .setChannelId("kerno-booking-channel")
-                    .build())
-                .build())
-            .setApnsConfig(ApnsConfig.builder()
-                .putHeader("apns-expiration", iosExpiration)
-                .setAps(Aps.builder()
-                    .setBadge(1)
-                    .setSound("default")
-                    .setThreadId("kerno-booking-thread")
-                    .build())
-                .build())
-            .setWebpushConfig(WebpushConfig.builder()
-                .putHeader("TTL", webExpiration)
-                .putHeader("Urgency", "high")
-                .build())
+            .putAllData(dataMap)
+            .setAndroidConfig(getAndroidConfig())
+            .setApnsConfig(getApnsConfig())
+            .setWebpushConfig(getWebpushConfig())
             .build();
 
         try {
@@ -96,6 +86,43 @@ public class FirebaseHandler implements NotificationHandler {
             log.error("Error while sending many notifications", ex);
             throw new RuntimeException(ex);
         }
+    }
+
+    private AndroidConfig getAndroidConfig() {
+        long androidExpiration = getExpirationInMilliseconds();
+
+        return AndroidConfig.builder()
+            .setTtl(androidExpiration)
+            .setPriority(Priority.HIGH)
+            .setNotification(AndroidNotification.builder()
+                .setChannelId("kerno-booking-channel")
+                .setDefaultSound(true)
+                .build())
+            .build();
+    }
+
+    private ApnsConfig getApnsConfig() {
+        long iosExpirationLong = (System.currentTimeMillis() / 1000) + getExpirationInSeconds();
+        String iosExpiration = String.valueOf(iosExpirationLong);
+
+        return ApnsConfig.builder()
+            .putHeader("apns-expiration", iosExpiration)
+            .setAps(Aps.builder()
+                .setContentAvailable(true)
+                .setBadge(1)
+                .setSound("default")
+                .setThreadId("kerno-booking-thread")
+                .build())
+            .build();
+    }
+
+    private WebpushConfig getWebpushConfig() {
+        String webExpiration = String.valueOf(getExpirationInSeconds());
+
+        return WebpushConfig.builder()
+            .putHeader("TTL", webExpiration)
+            .putHeader("Urgency", "high")
+            .build();
     }
 
     private long getExpirationInMilliseconds() {
@@ -141,4 +168,3 @@ public class FirebaseHandler implements NotificationHandler {
         return NotificationErrorCode.fromValue(messagingErrorCode.toString());
     }
 }
-

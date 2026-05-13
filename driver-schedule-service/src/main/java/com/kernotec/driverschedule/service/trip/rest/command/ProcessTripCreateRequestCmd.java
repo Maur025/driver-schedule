@@ -2,28 +2,29 @@ package com.kernotec.driverschedule.service.trip.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.core.jpa.util.PageableUtil;
+import com.kernotec.driverschedule.common.dto.Coordinate;
 import com.kernotec.driverschedule.person.jpa.service.PersonService;
+import com.kernotec.driverschedule.resource.jpa.service.LocationService;
 import com.kernotec.driverschedule.service.schedule.command.ScheduleTransportationUpdateCmd;
 import com.kernotec.driverschedule.service.schedule.command.TripAssignmentGetDtoCmd;
-import com.kernotec.driverschedule.service.trip.command.TripCreateCmd;
-import com.kernotec.driverschedule.service.trip.command.TripLogCreateCmd;
-import com.kernotec.driverschedule.service.common.dto.Coordinate;
 import com.kernotec.driverschedule.service.schedule.exception.ScheduleTransportationException;
-import com.kernotec.driverschedule.service.trip.exception.TripException;
 import com.kernotec.driverschedule.service.schedule.jpa.dto.ScheduleTransportationDto;
 import com.kernotec.driverschedule.service.schedule.jpa.dto.TripAssignmentDto;
-import com.kernotec.driverschedule.service.trip.jpa.entity.Trip;
 import com.kernotec.driverschedule.service.schedule.jpa.enums.ScheduleTransportationStateEnum;
-import com.kernotec.driverschedule.service.trip.jpa.enums.TripStateEnum;
-import com.kernotec.driverschedule.service.resource.jpa.service.LocationService;
 import com.kernotec.driverschedule.service.schedule.jpa.service.ScheduleTransportationStateService;
+import com.kernotec.driverschedule.service.schedule.socket.ScheduleSocketTopic;
+import com.kernotec.driverschedule.service.schedule.socket.ScheduleTransportationSocketHandler;
+import com.kernotec.driverschedule.service.trip.command.TripCreateCmd;
+import com.kernotec.driverschedule.service.trip.command.TripLogCreateCmd;
+import com.kernotec.driverschedule.service.trip.exception.TripException;
+import com.kernotec.driverschedule.service.trip.jpa.entity.Trip;
+import com.kernotec.driverschedule.service.trip.jpa.enums.TripStateEnum;
 import com.kernotec.driverschedule.service.trip.jpa.service.TripService;
 import com.kernotec.driverschedule.service.trip.jpa.service.TripStateService;
 import com.kernotec.driverschedule.service.trip.rest.dto.request.TripCreateRequest;
 import com.kernotec.driverschedule.service.trip.rest.dto.request.TripFilterRequest;
-import com.kernotec.driverschedule.service.schedule.socket.ScheduleTransportationSocketHandler;
 import com.kernotec.driverschedule.service.trip.socket.TripSocketHandler;
-import com.kernotec.driverschedule.socket.WebSocketTopic;
+import com.kernotec.driverschedule.service.trip.socket.TripSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -118,7 +119,7 @@ public class ProcessTripCreateRequestCmd extends
 
         tripSocketHandler.emitMessage(TripSocketHandler.Request.builder()
             .tripId(tripId)
-            .topic(WebSocketTopic.TRIP_STARTED)
+            .topic(TripSocketTopic.TRIP_STARTED)
             .build());
 
         return tripId;
@@ -133,7 +134,9 @@ public class ProcessTripCreateRequestCmd extends
     }
 
     private void validateDateToStart(ZonedDateTime startDateTime, String zoneId) {
-        if (!com.kernotec.driverschedule.common.datetime.ZonedDateTimeService.isSameDay(startDateTime, zoneId)) {
+        if (!com.kernotec.driverschedule.common.datetime.ZonedDateTimeService.isSameDay(
+            startDateTime, zoneId))
+        {
             throw new TripException(
                 "should.start.not.on.scheduled.day", "", HttpStatus.CONFLICT.value());
         }
@@ -165,7 +168,7 @@ public class ProcessTripCreateRequestCmd extends
         scheduleTransportationSocketHandler.emitMessage(
             ScheduleTransportationSocketHandler.Request.builder()
                 .scheduleTransportationId(scheduleTransportationId)
-                .topic(WebSocketTopic.SCHEDULE_TRANSPORTATION_ON_PROGRESS)
+                .topic(ScheduleSocketTopic.SCHEDULE_TRANSPORTATION_ON_PROGRESS)
                 .build());
     }
 

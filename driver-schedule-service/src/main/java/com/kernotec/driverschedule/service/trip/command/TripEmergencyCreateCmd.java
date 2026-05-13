@@ -1,7 +1,7 @@
 package com.kernotec.driverschedule.service.trip.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
-import com.kernotec.driverschedule.service.common.dto.Coordinate;
+import com.kernotec.driverschedule.common.dto.Coordinate;
 import com.kernotec.driverschedule.service.trip.jpa.entity.TripEmergency;
 import com.kernotec.driverschedule.service.trip.jpa.service.TripEmergencyService;
 import jakarta.validation.constraints.NotNull;

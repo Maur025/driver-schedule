@@ -3,7 +3,7 @@ package com.kernotec.driverschedule.service.trip.command;
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
 import com.kernotec.driverschedule.service.trip.jpa.entity.TripLog;
 import com.kernotec.driverschedule.service.trip.jpa.service.TripLogService;
-import com.kernotec.driverschedule.service.common.dto.Coordinate;
+import com.kernotec.driverschedule.common.dto.Coordinate;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.Builder;

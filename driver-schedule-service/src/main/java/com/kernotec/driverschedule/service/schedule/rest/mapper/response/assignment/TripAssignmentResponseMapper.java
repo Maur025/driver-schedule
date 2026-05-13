@@ -3,7 +3,7 @@ package com.kernotec.driverschedule.service.schedule.rest.mapper.response.assign
 import com.kernotec.driverschedule.service.schedule.jpa.entity.TripAssignment;
 import com.kernotec.driverschedule.service.schedule.rest.dto.response.TripAssignmentResponse;
 import com.kernotec.driverschedule.person.rest.mapper.response.PersonResponseWithContactMapper;
-import com.kernotec.driverschedule.service.resource.rest.mapper.response.VehicleResponseFlatMapper;
+import com.kernotec.driverschedule.resource.rest.mapper.response.VehicleResponseFlatMapper;
 import com.kernotec.driverschedule.service.schedule.rest.mapper.response.ScheduleTransportationResponseToAssignMapper;
 import com.kernotec.driverschedule.service.trip.rest.mapper.response.TripResponseToAssignMapper;
 import java.util.List;

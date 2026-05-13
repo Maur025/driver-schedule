@@ -3,7 +3,7 @@ package com.kernotec.driverschedule.service.request.rest.mapper.response;
 import com.kernotec.driverschedule.common.audit.user.mapper.AuthUserDataResponseMapper;
 import com.kernotec.driverschedule.service.request.jpa.entity.TransportationRequest;
 import com.kernotec.driverschedule.service.request.rest.dto.response.TransportationRequestResponse;
-import com.kernotec.driverschedule.service.common.util.GeoJsonUtil;
+import com.kernotec.driverschedule.common.util.GeoJsonUtil;
 import java.util.List;
 import java.util.Set;
 import org.mapstruct.Mapper;

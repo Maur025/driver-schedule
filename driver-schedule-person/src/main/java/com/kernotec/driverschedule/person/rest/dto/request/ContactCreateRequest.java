@@ -24,5 +24,6 @@ public class ContactCreateRequest extends BaseRequest {
     private String value;
 
     private UUID contactCategoryId;
+    // Only update
     private UUID personId;
 }

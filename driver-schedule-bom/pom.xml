@@ -64,6 +64,12 @@
         <version>${project.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>com.kernotec.driverschedule</groupId>
+        <artifactId>driver-schedule-resource</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <!-- EXTERNAL DEPENDENCIES -->
       <dependency>
         <groupId>net.logstash.logback</groupId>

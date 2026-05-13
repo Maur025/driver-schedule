@@ -1,8 +1,8 @@
 package com.kernotec.driverschedule.service.request.jpa.entity;
 
 import com.kernotec.core.jpa.entity.BaseAuditEntity;
-import com.kernotec.driverschedule.service.resource.jpa.entity.Location;
-import com.kernotec.driverschedule.service.common.dto.Coordinate;
+import com.kernotec.driverschedule.resource.jpa.entity.Location;
+import com.kernotec.driverschedule.common.dto.Coordinate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;

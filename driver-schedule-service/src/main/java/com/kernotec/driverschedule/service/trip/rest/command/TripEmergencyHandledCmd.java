@@ -23,6 +23,7 @@ import com.kernotec.driverschedule.service.trip.jpa.service.TripStateService;
 import com.kernotec.driverschedule.service.trip.notification.TripEmergencyPushNotification;
 import com.kernotec.driverschedule.service.trip.rest.dto.request.TripEmergencyHandledRequest;
 import com.kernotec.driverschedule.service.trip.socket.TripEmergencySocketHandler;
+import com.kernotec.driverschedule.service.trip.socket.TripSocketTopic;
 import com.kernotec.driverschedule.socket.WebSocketTopic;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
@@ -91,7 +92,7 @@ public class TripEmergencyHandledCmd extends
 
         tripEmergencySocketHandler.emitMessage(TripEmergencySocketHandler.Request.builder()
             .tripEmergencyId(request.tripEmergencyId())
-            .topic(WebSocketTopic.TRIP_EMERGENCY_HANDLED_TO_USER)
+            .topic(TripSocketTopic.TRIP_EMERGENCY_HANDLED_TO_USER)
             .toList(Set.of(tripEmergencyDto.getPersonEmergencyReported()
                 .getUserId()))
             .build());
