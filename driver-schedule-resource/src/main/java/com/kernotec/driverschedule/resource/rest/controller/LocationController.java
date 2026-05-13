@@ -1,17 +1,22 @@
 package com.kernotec.driverschedule.resource.rest.controller;
 
 import com.kernotec.core.jpa.util.PageableUtil;
+import com.kernotec.core.rest.dto.response.MessageResponse;
 import com.kernotec.core.rest.dto.response.PageResponse;
 import com.kernotec.core.rest.dto.response.PaginationResponse;
 import com.kernotec.core.rest.dto.response.SingleResponse;
+import com.kernotec.driverschedule.common.csv.imports.CsvImportCmd;
 import com.kernotec.driverschedule.resource.authorize.annotation.CanCreateLocation;
 import com.kernotec.driverschedule.resource.authorize.annotation.CanReadLocation;
 import com.kernotec.driverschedule.resource.authorize.annotation.CanUpdateLocation;
 import com.kernotec.driverschedule.resource.jpa.entity.Location;
 import com.kernotec.driverschedule.resource.jpa.service.LocationService;
 import com.kernotec.driverschedule.resource.rest.ResourceApiSpec.LocationSpec;
+import com.kernotec.driverschedule.resource.rest.command.LocationCsvImportGetDtoCmd;
+import com.kernotec.driverschedule.resource.rest.command.LocationCsvImportSaveCmd;
 import com.kernotec.driverschedule.resource.rest.command.ProcessLocationCreateRequestCmd;
 import com.kernotec.driverschedule.resource.rest.command.ProcessLocationUpdateRequestCmd;
+import com.kernotec.driverschedule.resource.rest.dto.LocationCsvImportDto;
 import com.kernotec.driverschedule.resource.rest.dto.request.LocationCreateRequest;
 import com.kernotec.driverschedule.resource.rest.dto.request.LocationUpdateRequest;
 import com.kernotec.driverschedule.resource.rest.dto.response.LocationResponse;
@@ -23,6 +28,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,8 +36,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = LocationSpec.TAG_NAME, description = LocationSpec.TAG_DESCRIPTION)
 @RequestMapping(path = LocationSpec.BASE_PATH)
@@ -43,6 +51,9 @@ public class LocationController {
     private final LocationResponseMapper locationResponseMapper;
     private final ProcessLocationCreateRequestCmd processLocationCreateRequestCmd;
     private final ProcessLocationUpdateRequestCmd processLocationUpdateRequestCmd;
+    private final CsvImportCmd<LocationCsvImportDto> csvImportCmd;
+    private final LocationCsvImportGetDtoCmd locationCsvImportGetDtoCmd;
+    private final LocationCsvImportSaveCmd locationCsvImportSaveCmd;
 
     @Operation(summary = "find all locations")
     @GetMapping
@@ -133,6 +144,33 @@ public class LocationController {
         return SingleResponse.<LocationResponse>builder()
             .code(HttpStatus.OK.value())
             .message("Location updated successfully")
+            .build();
+    }
+
+    @Operation(summary = "import locations of csv file")
+    @PostMapping(value = "imports/csv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public MessageResponse importLocationsFromCsv(
+        @RequestPart(value = "file") MultipartFile multipartFile)
+    {
+        csvImportCmd.withRequest(CsvImportCmd.Request.<LocationCsvImportDto>builder()
+                .excelFile(multipartFile)
+                .mapperCallback(csvData -> locationCsvImportGetDtoCmd.withRequest(
+                        LocationCsvImportGetDtoCmd.Request.builder()
+                            .csvData(csvData)
+                            .build())
+                    .execute())
+                .saveCallback(dtoList -> locationCsvImportSaveCmd.withRequest(
+                        LocationCsvImportSaveCmd.Request.builder()
+                            .locationCsvImportDtoList(dtoList)
+                            .build())
+                    .execute())
+                .build())
+            .execute();
+
+        return MessageResponse.builder()
+            .code(HttpStatus.OK.value())
+            .message("Locations imported successfully")
             .build();
     }
 }

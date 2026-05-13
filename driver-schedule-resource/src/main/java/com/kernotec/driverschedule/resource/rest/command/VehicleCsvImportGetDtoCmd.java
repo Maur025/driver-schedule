@@ -1,6 +1,7 @@
 package com.kernotec.driverschedule.resource.rest.command;
 
 import com.kernotec.core.command.AbstractCommand;
+import com.kernotec.driverschedule.common.util.CsvImportUtil;
 import com.kernotec.driverschedule.resource.jpa.enums.VehicleTypeEnum;
 import com.kernotec.driverschedule.resource.rest.dto.VehicleCsvImportDto;
 import jakarta.validation.constraints.NotNull;
@@ -18,18 +19,17 @@ public class VehicleCsvImportGetDtoCmd extends
     protected VehicleCsvImportDto run(Request request) {
         String[] csvData = request.csvData;
 
-        if (csvData == null) {
+        if (csvData == null || csvData.length == 0) {
             return null;
         }
 
         var vehicleExcelImportDto = new VehicleCsvImportDto();
 
-        vehicleExcelImportDto.setVehicleNumber(csvData[0].isBlank() ? null : csvData[0]);
-        vehicleExcelImportDto.setModel(csvData[1].isBlank() ? null : csvData[1]);
-        vehicleExcelImportDto.setCapacity(
-            csvData[2].isBlank() ? null : Integer.parseInt(csvData[2]));
+        vehicleExcelImportDto.setVehicleNumber(CsvImportUtil.getValueOfCsv(csvData[1]));
+        vehicleExcelImportDto.setModel(CsvImportUtil.getValueOfCsv(csvData[2]));
+        vehicleExcelImportDto.setCapacity(CsvImportUtil.getIntegerValueOfCsv(csvData[3]));
         vehicleExcelImportDto.setVehicleType(
-            csvData[3].isBlank() ? null : getVehicleTypeEnum(csvData[3]));
+            getVehicleTypeEnum(CsvImportUtil.getValueOfCsv(csvData[4])));
 
         return vehicleExcelImportDto;
     }
