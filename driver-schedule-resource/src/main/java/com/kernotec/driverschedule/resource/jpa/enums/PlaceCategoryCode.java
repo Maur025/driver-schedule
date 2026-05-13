@@ -70,7 +70,6 @@ public enum PlaceCategoryCode {
             }
 
             if (entry.getValueEs()
-                .toLowerCase()
                 .equalsIgnoreCase(valueEs))
             {
                 return entry;
