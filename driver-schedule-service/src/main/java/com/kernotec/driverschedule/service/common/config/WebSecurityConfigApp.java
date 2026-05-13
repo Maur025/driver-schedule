@@ -1,5 +1,6 @@
 package com.kernotec.driverschedule.service.common.config;
 
+import com.kernotec.driverschedule.service.common.bucket.LimitRateFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -18,6 +19,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -25,17 +27,12 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @EnableWebSecurity
 public class WebSecurityConfigApp {
 
-    private static final AntPathRequestMatcher[] AUTH_WHITELIST = {
-        new AntPathRequestMatcher("/v3/api-docs/**"),
-        new AntPathRequestMatcher("/swagger-ui/**"),
-        new AntPathRequestMatcher("/swagger-ui.html"),
-        new AntPathRequestMatcher("/webjars/**"),
-        new AntPathRequestMatcher("/*/v3/api-docs/**"),
-        new AntPathRequestMatcher("/*/swagger-ui/**"),
-        new AntPathRequestMatcher("/*/swagger-ui.html"),
-        new AntPathRequestMatcher("/actuator/**"),
-        new AntPathRequestMatcher("/ws-driver-schedule/**")
-    };
+    private static final AntPathRequestMatcher[] AUTH_WHITELIST = {new AntPathRequestMatcher(
+        "/v3/api-docs/**"), new AntPathRequestMatcher("/swagger-ui/**"), new AntPathRequestMatcher(
+        "/swagger-ui.html"), new AntPathRequestMatcher("/webjars/**"), new AntPathRequestMatcher(
+        "/*/v3/api-docs/**"), new AntPathRequestMatcher("/*/swagger-ui/**"),
+        new AntPathRequestMatcher("/*/swagger-ui.html"), new AntPathRequestMatcher("/actuator/**"),
+        new AntPathRequestMatcher("/ws-driver-schedule/**")};
 
     @Autowired
     @Qualifier("webAuthenticationEntryPoint")
@@ -50,7 +47,8 @@ public class WebSecurityConfigApp {
     @Primary
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain apiFilterChain(HttpSecurity httpSecurity,
-        CorsConfigurationSource configurationSource) throws Exception
+        CorsConfigurationSource configurationSource, LimitRateFilter limitRateFilter)
+        throws Exception
     {
         httpSecurity.cors(configurer -> configurer.configurationSource(configurationSource))
             .csrf(AbstractHttpConfigurer::disable)
@@ -62,6 +60,8 @@ public class WebSecurityConfigApp {
                 .authenticated())
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(
                 jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
+            // UsernamePasswordAuthenticationFilter to locate at the beginning of hierarchy
+            .addFilterBefore(limitRateFilter, UsernamePasswordAuthenticationFilter.class)
             .exceptionHandling(configurer -> {
                 configurer.authenticationEntryPoint(webAuthenticationEntryPoint);
                 configurer.accessDeniedHandler(webAccessDeniedHandler);

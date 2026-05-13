@@ -136,3 +136,11 @@ firebase-config-props:
   universe-domain: "${FIREBASE_UNIVERSE:googleapis.com}"
   connection-timeout: "${FIREBASE_CONNECTION_TIMEOUT:5000}"
   read-timeout: "${FIREBASE_READ_TIMEOUT:10000}"
+
+# BUCKET4J CONFIG
+bucket-4j-config:
+  capacity: ${SERVICE_BUCKET_CAPACITY:50}
+  refill-tokens: ${SERVICE_BUCKET_REFILL_TOKENS:10}
+  refill-period-in-seconds: ${SERVICE_BUCKET_REFILL_PERIOD:1}
+  bucket-cache-expire-in-minutes: ${SERVICE_BUCKET_CACHE_EXPIRE:60}
+  bucket-cache-max-size: ${SERVICE_BUCKET_CACHE_MAX_SIZE:10000}
