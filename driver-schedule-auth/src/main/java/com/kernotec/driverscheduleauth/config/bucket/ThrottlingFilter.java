@@ -38,6 +38,7 @@ public class ThrottlingFilter extends OncePerRequestFilter {
             );
             response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setHeader("Retry-After", "60");
             response.getWriter()
                 .write("""
                     {
