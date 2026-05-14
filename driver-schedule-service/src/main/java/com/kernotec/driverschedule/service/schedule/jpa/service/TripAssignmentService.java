@@ -9,11 +9,11 @@ import com.kernotec.driverschedule.person.jpa.service.PersonService;
 import com.kernotec.driverschedule.service.schedule.jpa.entity.TripAssignment;
 import com.kernotec.driverschedule.service.schedule.jpa.enums.ScheduleTransportationStateEnum;
 import com.kernotec.driverschedule.service.schedule.jpa.enums.TripAssignmentStateCodeEnum;
-import com.kernotec.driverschedule.service.trip.jpa.enums.TripStateEnum;
 import com.kernotec.driverschedule.service.schedule.jpa.repository.TripAssignmentRepository;
 import com.kernotec.driverschedule.service.schedule.jpa.specification.TripAssignmentSpecification;
 import com.kernotec.driverschedule.service.schedule.rest.dto.request.AvailabilityForAssignmentRequest;
 import com.kernotec.driverschedule.service.schedule.rest.dto.request.TripAssignmentFilterRequest;
+import com.kernotec.driverschedule.service.trip.jpa.enums.TripStateEnum;
 import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -68,7 +68,7 @@ public class TripAssignmentService extends BaseServiceImpl<TripAssignment, UUID>
                 .withScheduleTransportationStates(filterRequest.getScheduleTransportationStates())
                 .withDriverId(driverId)
                 .withVehicleId(filterRequest.getVehicleId())
-                .withTripStates(filterRequest.getTripStates()), pageable
+                .withExistingTripStates(filterRequest.getTripStates()), pageable
         );
     }
 
