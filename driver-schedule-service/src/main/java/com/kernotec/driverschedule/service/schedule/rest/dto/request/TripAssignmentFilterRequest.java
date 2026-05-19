@@ -31,4 +31,6 @@ public class TripAssignmentFilterRequest extends BaseRequest {
     private String zoneId;
 
     private Set<TripStateEnum> tripStates;
+
+    private Boolean includeEmptyTrips;
 }
