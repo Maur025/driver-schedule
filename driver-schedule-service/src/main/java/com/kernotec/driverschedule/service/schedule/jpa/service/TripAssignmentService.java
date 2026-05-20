@@ -54,8 +54,17 @@ public class TripAssignmentService extends BaseServiceImpl<TripAssignment, UUID>
         boolean hasOnlyOneRole = securityAuthProvider.hasOnlyOneRole();
         boolean isDriver = securityAuthProvider.userContainsRole(UserRoleType.DRIVER);
 
+        Set<TripStateEnum> includeEmptyTripStates = null;
+        Set<TripStateEnum> tripStates = null;
+
         if (hasOnlyOneRole && isDriver) {
             driverId = personService.findIdByUserIdAuthenticateThrow();
+        }
+
+        if (filterRequest.getIncludeEmptyTrips() == null || filterRequest.getIncludeEmptyTrips()) {
+            includeEmptyTripStates = filterRequest.getTripStates();
+        } else {
+            tripStates = filterRequest.getTripStates();
         }
 
         return repository.findAll(
@@ -68,7 +77,8 @@ public class TripAssignmentService extends BaseServiceImpl<TripAssignment, UUID>
                 .withScheduleTransportationStates(filterRequest.getScheduleTransportationStates())
                 .withDriverId(driverId)
                 .withVehicleId(filterRequest.getVehicleId())
-                .withExistingTripStates(filterRequest.getTripStates()), pageable
+                .withExistingTripStates(includeEmptyTripStates)
+                .withTripStates(tripStates), pageable
         );
     }
 
