@@ -44,6 +44,7 @@ public record PersonSpecification(PersonSpecificationCriteria criteria) implemen
         Map<PersonSpecificationJoinEnum, Join<?, ?>> joinMap = new HashMap<>();
 
         addPersonTypeFilter(root, cb, joinMap).ifPresent(predicateList::add);
+        addDeletedFilter(root, cb).ifPresent(predicateList::add);
 
         query.distinct(true);
         return cb.and(predicateList.toArray(Predicate[]::new));
@@ -62,5 +63,15 @@ public record PersonSpecification(PersonSpecificationCriteria criteria) implemen
                 getOrCreatePersonTypeJoin(joinMap, root).get("code"),
                 String.valueOf(personType)
             ));
+    }
+
+    public PersonSpecification withDeleted(Boolean deleted) {
+        this.criteria.setDeleted(deleted);
+        return this;
+    }
+
+    private Optional<Predicate> addDeletedFilter(Root<Person> root, CriteriaBuilder cb) {
+        return Optional.ofNullable(criteria.getDeleted())
+            .map(deleted -> cb.equal(root.get("deleted"), deleted));
     }
 }

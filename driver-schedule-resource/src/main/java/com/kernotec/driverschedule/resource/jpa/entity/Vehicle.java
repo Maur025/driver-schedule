@@ -19,7 +19,7 @@ import lombok.Setter;
 @Table(name = "vehicles")
 public class Vehicle extends BaseAuditEntityUser {
 
-    @Column(name = "vehicle_number", nullable = false)
+    @Column(name = "vehicle_number", nullable = false, unique = true)
     private String vehicleNumber;
 
     @Column(name = "model")
