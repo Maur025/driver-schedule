@@ -7,7 +7,7 @@
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="500"/>
 	<import value="java.time.LocalDate"/>
 	<import value="java.time.LocalDateTime"/>
-	<import value="com.kernotec.driverschedule.service.common.service.VoucherCommonService"/>
+	<import value="com.kernotec.driverschedule.service.scheduling.common.service.VoucherCommonService"/>
 	<parameter name="TRANSPORTATION_REQUEST_ID" class="java.lang.String">
 		<defaultValueExpression><![CDATA["90236f15-6d52-4d24-9258-8a06f3322519"]]></defaultValueExpression>
 	</parameter>
