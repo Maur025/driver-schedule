@@ -1,0 +1,38 @@
+package com.kernotec.driverschedule.service.scheduling.command.trip;
+
+import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
+import com.kernotec.driverschedule.service.scheduling.jpa.entity.EmergencyRejectReason;
+import com.kernotec.driverschedule.service.scheduling.jpa.service.EmergencyRejectReasonService;
+import jakarta.validation.constraints.NotNull;
+import java.util.UUID;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@RequiredArgsConstructor
+@Service
+public class EmergencyRejectReasonCreateCmd extends
+    AbstractTransactionalRequiredCommand<EmergencyRejectReasonCreateCmd.Request, UUID>
+{
+
+    private final EmergencyRejectReasonService emergencyRejectReasonService;
+
+    @Override
+    protected UUID run(Request request) {
+        var emergencyRejectReason = new EmergencyRejectReason();
+
+        emergencyRejectReason.setOtherReason(request.otherReason());
+        emergencyRejectReason.setReasonId(request.reasonId());
+        emergencyRejectReason.setTripEmergencyId(request.tripEmergencyId());
+
+        emergencyRejectReason = emergencyRejectReasonService.save(emergencyRejectReason);
+        return emergencyRejectReason.getId();
+    }
+
+    @Builder
+    public record Request(String otherReason, @NotNull UUID reasonId,
+                          @NotNull UUID tripEmergencyId)
+    {
+
+    }
+}

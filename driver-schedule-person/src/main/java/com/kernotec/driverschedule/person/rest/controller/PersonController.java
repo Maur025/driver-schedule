@@ -71,10 +71,11 @@ public class PersonController {
         @RequestParam(name = "page", defaultValue = "0") Integer page,
         @RequestParam(name = "size", defaultValue = "20") Integer size,
         @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy,
-        @RequestParam(name = "descending", defaultValue = "true") boolean descending)
+        @RequestParam(name = "descending", defaultValue = "true") boolean descending,
+        @RequestParam(name = "deleted", defaultValue = "false") boolean deleted)
     {
         Pageable pageable = PageableUtil.of(page, size, sortBy, descending);
-        Page<Person> personPage = personService.findAll(pageable);
+        Page<Person> personPage = personService.findAllWithFilters(deleted, pageable);
 
         return PageResponse.<PersonResponse>builder()
             .code(HttpStatus.OK.value())

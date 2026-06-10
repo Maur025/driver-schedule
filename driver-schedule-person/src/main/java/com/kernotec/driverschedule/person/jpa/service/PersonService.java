@@ -76,7 +76,8 @@ public class PersonService extends BaseServiceImpl<Person, UUID> {
     public Page<Person> findAllByPersonType(PersonTypeEnum personType, Pageable pageable) {
         return repository.findAll(
             PersonSpecification.builder()
-                .withPersonType(personType), pageable
+                .withPersonType(personType)
+                .withDeleted(false), pageable
         );
     }
 
@@ -126,5 +127,12 @@ public class PersonService extends BaseServiceImpl<Person, UUID> {
 
     public List<Person> canNotBeUsedAsDriver(Collection<UUID> ids) {
         return findByIdInAndDeletedAndPersonTypesNotIn(ids, true, Set.of(PersonTypeEnum.DRIVER));
+    }
+
+    public Page<Person> findAllWithFilters(Boolean deleted, Pageable pageable) {
+        return repository.findAll(
+            PersonSpecification.builder()
+                .withDeleted(deleted), pageable
+        );
     }
 }

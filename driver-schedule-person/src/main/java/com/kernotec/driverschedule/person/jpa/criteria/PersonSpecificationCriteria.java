@@ -9,4 +9,5 @@ import lombok.Setter;
 public class PersonSpecificationCriteria {
 
     private PersonTypeEnum personType;
+    private Boolean deleted;
 }
