@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.kernotec.driverschedule</groupId>
+    <artifactId>driver-schedule-bom</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../driver-schedule-bom</relativePath>
+  </parent>
+
+  <artifactId>driver-schedule-report</artifactId>
+
+  <dependencies>
+    <!-- INTERNAL -->
+    <dependency>
+      <groupId>com.kernotec.driverschedule</groupId>
+      <artifactId>driver-schedule-common</artifactId>
+    </dependency>
+
+    <!-- CORE -->
+    <dependency>
+      <groupId>com.kernotec</groupId>
+      <artifactId>core-rest</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.kernotec</groupId>
+      <artifactId>core-test</artifactId>
+    </dependency>
+
+    <!--  EXTERNAL -->
+    <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>

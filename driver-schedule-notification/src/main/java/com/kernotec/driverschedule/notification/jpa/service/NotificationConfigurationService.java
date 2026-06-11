@@ -1,5 +1,6 @@
 package com.kernotec.driverschedule.notification.jpa.service;
 
+import com.kernotec.core.exception.ResourceNotFoundException;
 import com.kernotec.core.jpa.repository.BaseRepository;
 import com.kernotec.core.jpa.service.BaseServiceImpl;
 import com.kernotec.driverschedule.common.util.CommonUtil;
@@ -44,6 +45,11 @@ public class NotificationConfigurationService extends
     public Optional<NotificationConfiguration> findByToken(String token)
     {
         return findByTokenAndDeleted(token, false);
+    }
+
+    public NotificationConfiguration findByTokenThrow(String token) {
+        return findByToken(token).orElseThrow(
+            () -> new ResourceNotFoundException("Notificaton Configuration"));
     }
 
     public List<NotificationConfiguration> findByPersonIdInAndActivedAndDeleted(

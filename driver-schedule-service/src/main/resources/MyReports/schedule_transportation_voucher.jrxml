@@ -5,7 +5,7 @@
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="436"/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="552"/>
-	<import value="com.kernotec.driverschedule.service.util.VoucherJasperUtil"/>
+	<import value="com.kernotec.driverschedule.service.scheduling.common.service.VoucherCommonService"/>
 	<parameter name="SCHEDULE_TRANSPORTATION_ID" class="java.lang.String">
 		<defaultValueExpression><![CDATA["458c3bd3-cc4a-455e-a26c-e85ceea119a8"]]></defaultValueExpression>
 	</parameter>
@@ -206,19 +206,19 @@ preq.last_name;]]>
 					<subreportParameterExpression><![CDATA[$P{TITLE_LOGO_IMG}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="VOUCHER_STATUS">
-					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getVoucherLabelScheduleState($F{schedule_state_code})]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[VoucherCommonService.getVoucherLabelScheduleState($F{schedule_state_code})]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="TRANSPORTATION_REQUEST_CODE">
 					<subreportParameterExpression><![CDATA[$F{request_unique_code}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="SHOW_REASON_MESSAGE">
-					<subreportParameterExpression><![CDATA[VoucherJasperUtil.isShowScheduleReasonMessage($F{request_unique_code},$F{cancel_reasons_count},$F{reschedule_reasons_count})]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[VoucherCommonService.isShowScheduleReasonMessage($F{request_unique_code},$F{cancel_reasons_count},$F{reschedule_reasons_count})]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="REASON_MESSAGE">
-					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getScheduleReasonMessage($F{schedule_state_code},$F{cancel_reason_list},$F{reschedule_reason_list})]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[VoucherCommonService.getScheduleReasonMessage($F{schedule_state_code},$F{cancel_reason_list},$F{reschedule_reason_list})]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="LABEL_FOR_REASON">
-					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getReasonLabelMessage($F{schedule_state_code},false)]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[VoucherCommonService.getReasonLabelMessage($F{schedule_state_code},false)]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="REQUEST_NUMBER">
 					<subreportParameterExpression><![CDATA[$F{correlative}]]></subreportParameterExpression>
@@ -233,13 +233,13 @@ preq.last_name;]]>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<subreportParameter name="CREATE_AT_FORMAT">
-					<subreportParameterExpression><![CDATA[VoucherJasperUtil.formatDateToVoucher($F{created_at},$P{ZONE_ID})]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[VoucherCommonService.formatDateToVoucher($F{created_at},$P{ZONE_ID})]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="DATE_FROM_FORMAT">
-					<subreportParameterExpression><![CDATA[VoucherJasperUtil.formatDateToVoucher($F{schedule_from},$P{ZONE_ID})]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[VoucherCommonService.formatDateToVoucher($F{schedule_from},$P{ZONE_ID})]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="DATE_TO_FORMAT">
-					<subreportParameterExpression><![CDATA[VoucherJasperUtil.formatDateToVoucher($F{schedule_to},$P{ZONE_ID})]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[VoucherCommonService.formatDateToVoucher($F{schedule_to},$P{ZONE_ID})]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="CLOCK_ICON_IMG">
 					<subreportParameterExpression><![CDATA[$P{CLOCK_ICON_IMG}]]></subreportParameterExpression>
@@ -254,28 +254,28 @@ preq.last_name;]]>
 					<subreportParameterExpression><![CDATA[$P{PHONE_ICON_IMG}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="REQUESTED_FOR">
-					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getPersonFullName($F{person_requested_name},$F{person_requested_last_name})]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[VoucherCommonService.getPersonFullName($F{person_requested_name},$F{person_requested_last_name})]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="TRIP_TYPE">
-					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getRequestTripType($F{trip_type})]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[VoucherCommonService.getRequestTripType($F{trip_type})]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="SHORT_NOTICE">
-					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getRequestWithAdvance($F{is_short_notice})]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[VoucherCommonService.getRequestWithAdvance($F{is_short_notice})]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="NUMBER_PASSENGERS">
 					<subreportParameterExpression><![CDATA[$F{people_number}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="ASSET_PICKUP">
-					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getRequestAssetPickup($F{is_asset_pickup})]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[VoucherCommonService.getRequestAssetPickup($F{is_asset_pickup})]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="REQUESTED_FOR_CONTACT">
-					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getPersonPhoneContacts($F{preq_phone_list})]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[VoucherCommonService.getPersonPhoneContacts($F{preq_phone_list})]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="WAS_REQUESTED_BY_SCHEDULER">
 					<subreportParameterExpression><![CDATA[$F{was_requested_by_scheduler}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="REQUESTED_BY">
-					<subreportParameterExpression><![CDATA[VoucherJasperUtil.getRequestedByFullName($F{created_by_user})]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[VoucherCommonService.getRequestedByFullName($F{created_by_user})]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA["header_voucher.jasper"]]></subreportExpression>

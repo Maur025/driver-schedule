@@ -1,8 +1,10 @@
 package com.kernotec.driverschedule.notification.rest.command;
 
 import com.kernotec.core.command.AbstractTransactionalRequiredCommand;
+import com.kernotec.core.exception.ResourceNotFoundException;
 import com.kernotec.driverschedule.common.security.auth.SecurityAuthProvider;
 import com.kernotec.driverschedule.notification.command.NotificationConfigurationCreateCmd;
+import com.kernotec.driverschedule.notification.command.NotificationConfigurationUpdateCmd;
 import com.kernotec.driverschedule.notification.jpa.entitiy.NotificationConfiguration;
 import com.kernotec.driverschedule.notification.jpa.service.NotificationConfigurationService;
 import com.kernotec.driverschedule.notification.rest.dto.request.NotificationConfigurationCreateRequest;
@@ -24,6 +26,7 @@ public class ProcessNotificationConfigurationCreateRequestCmd extends
     private final SecurityAuthProvider securityAuthProvider;
     private final NotificationConfigurationCreateCmd notificationConfigurationCreateCmd;
     private final NotificationConfigurationService notificationConfigurationService;
+    private final NotificationConfigurationUpdateCmd notificationConfigurationUpdateCmd;
 
     @Override
     protected UUID run(Request request) {
@@ -35,8 +38,8 @@ public class ProcessNotificationConfigurationCreateRequestCmd extends
         UUID personId = personService.findIdByUserIdAuthenticateThrow();
         UUID userId = securityAuthProvider.getUserId();
 
-        return notificationConfigOptional.map(NotificationConfiguration::getId)
-            .orElseGet(() -> notificationConfigurationCreateCmd.withRequest(
+        if (notificationConfigOptional.isEmpty()) {
+            return notificationConfigurationCreateCmd.withRequest(
                     NotificationConfigurationCreateCmd.Request.builder()
                         .userId(userId)
                         .deviceId(notificationConfigCreateRequest.getDeviceId())
@@ -45,7 +48,27 @@ public class ProcessNotificationConfigurationCreateRequestCmd extends
                         .isActive(true)
                         .personId(personId)
                         .build())
-                .execute());
+                .execute();
+        }
+
+        NotificationConfiguration notificationConfiguration = notificationConfigOptional.orElseThrow(
+            () -> new ResourceNotFoundException("Notification configuration"));
+
+        if (notificationConfiguration.getPersonId()
+            .equals(personId))
+        {
+            return notificationConfiguration.getId();
+        }
+
+        notificationConfigurationUpdateCmd.withRequest(
+                NotificationConfigurationUpdateCmd.Request.builder()
+                    .notificationConfigurationId(notificationConfiguration.getId())
+                    .personId(personId)
+                    .userId(userId)
+                    .build())
+            .execute();
+
+        return notificationConfiguration.getId();
     }
 
     @Builder

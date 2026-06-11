@@ -1,0 +1,20 @@
+package com.kernotec.driverschedule.service.scheduling.jpa.mapper;
+
+import com.kernotec.driverschedule.service.scheduling.jpa.dto.TripAssignmentDto;
+import com.kernotec.driverschedule.person.jpa.mapper.PersonDtoFlatMapper;
+import com.kernotec.driverschedule.resource.jpa.mapper.VehicleDtoFlatMapper;
+import com.kernotec.driverschedule.service.scheduling.jpa.entity.TripAssignment;
+import java.util.List;
+import java.util.Set;
+import org.mapstruct.Mapper;
+
+@Mapper(uses = {VehicleDtoFlatMapper.class, PersonDtoFlatMapper.class,
+    ScheduleTransportationDtoMapper.class})
+public interface TripAssignmentDtoMapper {
+
+    TripAssignmentDto toDto(TripAssignment tripAssignment);
+
+    List<TripAssignmentDto> toDto(List<TripAssignment> tripAssignmentList);
+
+    Set<TripAssignmentDto> toDto(Set<TripAssignment> tripAssignmentSet);
+}

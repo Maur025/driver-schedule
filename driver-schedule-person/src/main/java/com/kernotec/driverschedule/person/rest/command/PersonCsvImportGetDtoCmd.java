@@ -1,6 +1,8 @@
 package com.kernotec.driverschedule.person.rest.command;
 
 import com.kernotec.core.command.AbstractCommand;
+import com.kernotec.driverschedule.common.util.CsvImportUtil;
+import com.kernotec.driverschedule.person.jpa.enums.PersonTypeEnum;
 import com.kernotec.driverschedule.person.rest.dto.PersonCsvImportDto;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -15,16 +17,22 @@ public class PersonCsvImportGetDtoCmd extends
 
     @Override
     protected PersonCsvImportDto run(Request request) {
-        String[] csvData = request.csvData;
+        String[] csvData = request.csvData();
+
+        if (csvData == null || csvData.length == 0) {
+            return null;
+        }
 
         var personCsvImportDto = new PersonCsvImportDto();
 
-        personCsvImportDto.setName(csvData[0].isBlank() ? null : csvData[0]);
-        personCsvImportDto.setLastName(csvData[1].isBlank() ? null : csvData[1]);
-        personCsvImportDto.setDocument(csvData[2].isBlank() ? null : csvData[2]);
-        personCsvImportDto.setPhone(csvData[3].isBlank() ? null : csvData[3]);
-        personCsvImportDto.setUsername(csvData[4].isBlank() ? null : csvData[4]);
-        personCsvImportDto.setPersonType(csvData[5].isBlank() ? null : csvData[5]);
+        personCsvImportDto.setUsername(CsvImportUtil.getValueOfCsv(csvData[1]));
+        personCsvImportDto.setName(CsvImportUtil.getValueOfCsv(csvData[2]));
+        personCsvImportDto.setLastName(CsvImportUtil.getValueOfCsv(csvData[3]));
+        personCsvImportDto.setDocument(CsvImportUtil.getValueOfCsv(csvData[4]));
+        personCsvImportDto.setPhoneWhatsapp(CsvImportUtil.getValueOfCsv(csvData[5]));
+        personCsvImportDto.setPhoneWork(CsvImportUtil.getValueOfCsv(csvData[6]));
+        personCsvImportDto.setPersonType(
+            PersonTypeEnum.getByValueEs(CsvImportUtil.getValueOfCsv(csvData[7])));
 
         return personCsvImportDto;
     }

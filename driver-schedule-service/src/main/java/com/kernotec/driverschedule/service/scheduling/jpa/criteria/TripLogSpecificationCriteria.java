@@ -1,0 +1,17 @@
+package com.kernotec.driverschedule.service.scheduling.jpa.criteria;
+
+import com.kernotec.driverschedule.service.scheduling.jpa.enums.TripStateEnum;
+import com.kernotec.driverschedule.common.dto.CriteriaDate;
+import java.util.Set;
+import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class TripLogSpecificationCriteria extends CriteriaDate {
+
+    private UUID tripId;
+
+    private Set<TripStateEnum> tripStates;
+}
