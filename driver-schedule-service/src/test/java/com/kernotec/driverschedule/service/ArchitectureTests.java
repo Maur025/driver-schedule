@@ -10,8 +10,8 @@ public class ArchitectureTests {
     void verifyArchitecture() {
         ApplicationModules modules = ApplicationModules.of("com.kernotec.driverschedule");
 
-        new Documenter(modules).writeModulesAsPlantUml()
-            .writeIndividualModulesAsPlantUml();
+        /*new Documenter(modules).writeModulesAsPlantUml()
+            .writeIndividualModulesAsPlantUml();*/
 
         // verify
         // modules.verify();
